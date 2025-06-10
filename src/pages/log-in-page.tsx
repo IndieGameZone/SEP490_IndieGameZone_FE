@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { login } from "@/lib/api/auth-api";
 import toast from "react-hot-toast";
 import useAuthStore from "@/store/use-auth-store";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "@/lib/api/config/firebase";
 type FieldType = {
   userNameOrEmail: string;
   password: string;
@@ -53,6 +55,21 @@ const LogInPage = () => {
     }
   }, []);
   
+
+  const handleLoginGoogle = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        console.log(result);
+        
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+
   return (
     <div className="grid grid-cols-2 h-screen bg-zinc-800">
       <div
@@ -150,7 +167,9 @@ const LogInPage = () => {
               paddingBlock: 20,
               fontWeight: "bold",
               textTransform: "uppercase",
+              
             }}
+            onClick={handleLoginGoogle}
             disabled={isSumitting}
           >
             <img src={googleIcon} alt="" className="size-4 me-2" />
