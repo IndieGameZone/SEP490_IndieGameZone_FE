@@ -3,6 +3,7 @@ import useAgeRestrictionStore from "@/store/use-age-restriction-store";
 import useCategoryStore from "@/store/use-category-store";
 import useLanguageStore from "@/store/use-language-store";
 import useTagStore from "@/store/use-tag-store";
+import { GameInfo } from "@/types/game";
 import {
   Checkbox,
   Form,
@@ -17,31 +18,40 @@ import { CheckboxGroupProps } from "antd/es/checkbox";
 import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
 
-type FieldType = {
-  name: string;
-  coverImage: string;
-  videoLink: string;
-  price: number;
-  allowDonate: boolean;
-  shortDescription: string;
-  description: string;
-  averageSession: number;
-  ageRestrictionId: string;
-  categoryId: string;
-  gameStatusId: string;
-  languageIds: string[];
-  tagIds: string[];
-  file: {
-    platformId: string;
-    file: string;
-  };
-};
+type FieldType = GameInfo
 
 const pricingOptions: CheckboxGroupProps<string>["options"] = [
   { label: "Free", value: "free" },
   { label: "Paid", value: "paid" },
 ];
-
+const releaseStatusOptions = [
+  {
+    label: "Released",
+    value: "Released",
+    description: "Project is complete, but might receive some updates",
+  },
+  {
+    label: "In Development",
+    value: "In Development",
+    description: "Project is in active developerment (or in early access)",
+  },
+  {
+    label: "On Hold",
+    value: "On Hold",
+    description: "Development is paused for now",
+  },
+  {
+    label: "Canceled",
+    value: "Canceled",
+    description: "Development has stopped indefinitely",
+  },
+  {
+    label: "Prototype",
+    value: "Prototype",
+    description:
+      "An early prototype for testing an idea out, fate of the project unknown",
+  },
+];
 const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
   const [pricingOption, setPricingOption] = useState("free");
   const [allowDonate, setAllowDonate] = useState(false);
@@ -122,7 +132,7 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
           style={{ width: 500 }}
         />
       </Form.Item>
-      <Form.Item
+      <Form.Item<FieldType>
         label={<span className="font-bold">Category</span>}
         name={"categoryId"}
         extra="Select the category that best describes your game."
@@ -140,7 +150,7 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
           loading={loadingCategories}
         />
       </Form.Item>
-      <Form.Item
+      <Form.Item<FieldType>
         label={<span className="font-bold">Tags</span>}
         name="tagIds"
         extra="Any other keywords someone might search to find your game. Max of 10."
@@ -185,9 +195,7 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
         name="ageRestrictionId"
         extra="Select the appropriate age rating for your game"
         style={{ width: 500, marginBottom: 20 }}
-        rules={[
-          { required: true, message: "Please select content rating" },
-        ]}
+        rules={[{ required: true, message: "Please select content rating" }]}
       >
         <Select
           showSearch
@@ -202,19 +210,41 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
             }))}
           optionRender={(option) => (
             <div>
-              <div className="text-lg font-semibold">{option.data.label}</div>
-              <p className="text-wrap">{option.data.desc}</p>
+              <div className="font-semibold">{option.data.label}</div>
+              <p className="text-wrap text-sm text-zinc-500">{option.data.desc}</p>
             </div>
           )}
           loading={loadingAgeRestrictions}
         />
       </Form.Item>
-      <Form.Item<FieldType> name="description" label={<span className="font-bold">Description</span>}>
+      <Form.Item
+        label={<span className="font-bold">Release Status</span>}
+        name={"releaseStatus"}
+        rules={[{ required: true, message: "Please select a release status" }]}
+        style={{ width: 500, marginBottom: 20 }}
+      >
+        <Select
+          showSearch
+          optionFilterProp="label"
+          placeholder="Click to view options"
+          options={releaseStatusOptions}
+          optionRender={(option) => (
+            <div>
+              <div className="font-semibold">{option.data.label}</div>
+              <p className="text-wrap text-sm text-zinc-500">{option.data.description}</p>
+            </div>
+          )}
+        />
+      </Form.Item>
+      <Form.Item<FieldType>
+        name="description"
+        label={<span className="font-bold">Description</span>}
+      >
         <Tiptap />
       </Form.Item>
       {/* PRICING */}
       <h2 className="text-2xl mb-3">Pricing</h2>
-      <Form.Item
+      <Form.Item<FieldType>
         extra={
           pricingOption == "free" && "The game's files will be freely available"
         }

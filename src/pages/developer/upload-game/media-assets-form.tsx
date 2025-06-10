@@ -1,3 +1,4 @@
+import { GameMediaAssets } from "@/types/game";
 import {
   Button,
   Form,
@@ -17,11 +18,7 @@ import { HiMiniInboxArrowDown } from "react-icons/hi2";
 
 const { Dragger } = Upload;
 
-type FieldType = {
-  coverImage: UploadFile[];
-  gameImages: UploadFile[];
-  videoLink: string;
-};
+type FieldType = GameMediaAssets;
 
 type UploadFileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -70,9 +67,8 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
     if (!value || YOUTUBE_REGEX.test(value)) {
       return Promise.resolve();
     }
-    return Promise.reject(new Error('Please enter a valid YouTube URL'));
+    return Promise.reject(new Error("Please enter a valid YouTube URL"));
   };
-
 
   const props = {
     name: "file",
@@ -154,6 +150,8 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
       <Form.Item<FieldType>
         label={<span className="font-bold">Game Screenshots</span>}
         name={"gameImages"}
+        valuePropName="fileList"
+        getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
         extra="Screenshots will appear on your game's page. Optional but highly recommended. Upload 3 to 5 for best results."
       >
         <Upload
@@ -194,9 +192,7 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
       <Form.Item<FieldType>
         name="videoLink"
         label={<span className="font-bold">Gameplay video or trailer</span>}
-        rules={[
-          { validator: validateYouTubeUrl },
-        ]}
+        rules={[{ validator: validateYouTubeUrl }]}
         style={{ width: 500, marginBottom: 20 }}
         extra="Provide a link to YouTube"
       >

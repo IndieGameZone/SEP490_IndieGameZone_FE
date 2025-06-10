@@ -9,7 +9,7 @@ interface GameState {
     rerender: () => void;
 }
 
-const useCategoryStore = create<GameState>((set) => ({
+const useGameStore = create<GameState>((set) => ({
     gameImages: [],
     loading: false,
     error: null,
@@ -19,4 +19,4 @@ const useCategoryStore = create<GameState>((set) => ({
     },
 }));
 
-export default useCategoryStore;
+export default useGameStore;
