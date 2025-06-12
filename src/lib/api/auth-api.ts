@@ -47,6 +47,23 @@ export const login = async (request: LoginRequest) => {
   }
 }
 
+type GoogleLoginRequest = {
+  idToken: string;
+  birthday: string;
+  role: string;
+}
+
+export const googleLogin = async (request: GoogleLoginRequest) => {
+  try {
+    // Wrap request trong dto object theo yêu cầu của backend
+    const requestBody = { dto: request };
+    const result = await axiosClient.post(`/api/authentications/google-login`, requestBody);
+    return { error: null, data: result.data, success: true };
+  } catch (error: any) {
+    return handleApiError(error);
+  }
+}
+
 export const prepareRegisterData = (formValues: any) => {
   return {
     email: formValues.email,
@@ -54,6 +71,14 @@ export const prepareRegisterData = (formValues: any) => {
     birthday: formValues.birthday?.format('YYYY-MM-DD') || formValues.birthday,
     password: formValues.password,
     confirmPassword: formValues.confirmPassword || formValues['Repeat password'],
+    role: formValues.Role || formValues.role || 'Player'
+  };
+};
+
+export const prepareGoogleLoginData = (idToken: string, formValues: any) => {
+  return {
+    idToken: idToken,
+    birthday: formValues.birthday?.format('YYYY-MM-DD') || formValues.birthday,
     role: formValues.Role || formValues.role || 'Player'
   };
 };
