@@ -43,7 +43,7 @@ const UploadProcessPage = () => {
   const [currentFileName, setCurrentFileName] = useState("file");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [coverImageUrl, setCoverImageUrl] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState("Unexpected error occur!");
+  const [errorMessage, setErrorMessage] = useState("");
   const [isFinished, setIsFinished] = useState(false);
   const [gameId, setGameId] = useState("");
   const navigate = useNavigate();
@@ -55,9 +55,6 @@ const UploadProcessPage = () => {
     if (!isSaved) {
       navigate("/dev/upload-game");
       return;
-    }
-    if (!isUploading && !isFinished && !errorMessage) {
-      handleUploadCoverImage();
     }
   }, []);
 
@@ -110,11 +107,10 @@ const UploadProcessPage = () => {
   };
 
   const handleUploadFiles = async () => {
-    console.log("HANDLE UPLOAD FILE")
+    // console.log("HANDLE UPLOAD FILE");
     if (isUploading) return;
     setIsUploading(true);
     setTotalItems(gameFiles.files.length);
-    setCurrentItem(0);
     setUploadProgress(0);
     const filesToUpload = gameFiles.files;
     for (let i = currentItem; i < filesToUpload.length; i++) {
@@ -122,13 +118,14 @@ const UploadProcessPage = () => {
       setCurrentFileName(file.fileName ?? "");
 
       if (file.originFileObj) {
+        // console.log("Uploading ", file.name);
         const uploadResult = await uploadFile(file);
         if (uploadResult.error) {
           setErrorMessage(`Failed to upload ${file.name} Please try again.`);
           setIsUploading(false);
           return;
         } else {
-          console.log("Add game file")
+          // console.log("Add game file");
           const addFileResult = await addGameFile(gameId, {
             file: uploadResult.data,
             platformId: gameFiles.files[i].platformId,
@@ -148,12 +145,13 @@ const UploadProcessPage = () => {
       }
     }
     setIsUploading(false);
-    setCurrentTask((prev) => prev + 1);
+    setCurrentTask(4);
     setIsFinished(true);
+    setCurrentItem(0);
   };
 
   const handleUploadCoverImage = async () => {
-    console.log("HANDLE UPLOAD COVER IMAGE")
+    // console.log("HANDLE UPLOAD COVER IMAGE");
     if (isUploading) return;
     setIsUploading(true);
     setTotalItems(1);
@@ -175,18 +173,20 @@ const UploadProcessPage = () => {
     } else {
       handleUnexpectedError();
     }
-    setCurrentTask((prev) => prev + 1);
+    setCurrentTask(1);
+    setCurrentItem(0);
     setIsUploading(false);
   };
 
   const handleUploadImages = async () => {
-    console.log("HANDLE UPLOAD IMAGES")
+    // console.log("HANDLE UPLOAD IMAGES");
     if (isUploading) return;
     setIsUploading(true);
     setTotalItems(gameMediaAssets.gameImages.length);
-    setCurrentItem(0);
     setUploadProgress(0);
     const filesToUpload = gameMediaAssets.gameImages;
+    // console.log("Currenet Item: ", currentItem);
+    // console.log("gameImages: ", filesToUpload)
     for (let i = currentItem; i < filesToUpload.length; i++) {
       const file = filesToUpload[i];
       setCurrentFileName(file.fileName ?? "");
@@ -205,12 +205,14 @@ const UploadProcessPage = () => {
         return;
       }
     }
-    setCurrentTask((prev) => prev + 1);
+    setCurrentTask(2);
     setIsUploading(false);
+    setCurrentItem(0);
+    // console.log("UPLOAD IMAGE DONE")
   };
 
   const handleUploadGameInfo = async () => {
-    console.log("HANDLE UPLOAD GAME INFO");
+    // console.log("HANDLE UPLOAD GAME INFO");
     if (isUploading) return;
     if (!profile) {
       handleUnexpectedError();
@@ -218,7 +220,6 @@ const UploadProcessPage = () => {
     }
     setIsUploading(true);
     setTotalItems(1);
-    setCurrentItem(0);
     setUploadProgress(0);
     const uploadResult = await addGame(profile.id, {
       ageRestrictionId: gameInfo.ageRestrictionId,
@@ -245,11 +246,13 @@ const UploadProcessPage = () => {
     } else {
       setGameId(uploadResult.data);
     }
-    setCurrentTask((prev) => prev + 1);
+    setCurrentTask(3);
+    setCurrentItem(0);
     setIsUploading(false);
   };
 
   const handleRetry = () => {
+    // console.log(currentTask);
     setErrorMessage("");
     setIsUploading(false);
   };
