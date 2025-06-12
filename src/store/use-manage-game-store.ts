@@ -8,7 +8,7 @@ interface ManageGameState {
     setGameInfo: (info: GameInfo) => void;
     setGameMediaAssets: (mediaAssets: GameMediaAssets) => void;
     setGameFiles: (files: GameFiles) => void;
-    loadState: () => void;
+    loadState: () => boolean;
     saveState: () => void;
     clearState: () => void;
     loading: boolean;
@@ -16,6 +16,7 @@ interface ManageGameState {
     renderKey: number;
     rerender: () => void;
     isSaved: boolean;
+    isLoaded: boolean;
 }
 
 const initState: GameData = {
@@ -30,13 +31,13 @@ const initState: GameData = {
         releaseStatus: "Released",
         description: "",
         price: 0,
-        allowDonate: false
+        allowDonate: false,
+        pricingOption: "Free",
+        visibility: "Public"
     },
     gameMediaAssets: {
         coverImage: [],
-        coverImageUrl: "",
         gameImages: [],
-        gameImageUrls: [],
         videoLink: ""
     },
     gameFiles: {
@@ -65,22 +66,25 @@ const useManageGameStore = create<ManageGameState>((set, get) => ({
         if (stored) {
             const parsed = JSON.parse(stored);
             set({
-                gameInfo: parsed.gameInfo,
-                gameMediaAssets: parsed.gameMediaAssets,
-                gameFiles: parsed.gameFiles
+                gameInfo: parsed.info,
+                gameMediaAssets: parsed.mediaAssets,
+                gameFiles: parsed.files
             });
+            set({ isLoaded: true })
+            return true;
         } else {
             set({ isSaved: false })
+            return false;
         }
     },
     saveState: () => {
         const stateToSave = {
             info: get().gameInfo,
-            mediaAssets: get().gameMediaAssets,
-            files: get().gameFiles,
+            mediaAssets: { ...get().gameMediaAssets, coverImage: null, gameImages: null },
+            files: { ...get().gameFiles, files: null },
         }
         localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
-        set({ isSaved: true });
+        set({ isSaved: true })
     },
     clearState: () => {
         localStorage.removeItem(STORAGE_KEY);
@@ -89,6 +93,7 @@ const useManageGameStore = create<ManageGameState>((set, get) => ({
             gameMediaAssets: initState.gameMediaAssets,
             gameFiles: initState.gameFiles
         })
+        set({ isSaved: false });
     },
     loading: false,
     error: null,
@@ -97,6 +102,7 @@ const useManageGameStore = create<ManageGameState>((set, get) => ({
         set(prev => ({ renderKey: prev.renderKey + 1 }))
     },
     isSaved: false,
+    isLoaded: false,
 }));
 
 export default useManageGameStore;

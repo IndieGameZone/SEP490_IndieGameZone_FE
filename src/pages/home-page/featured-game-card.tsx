@@ -1,19 +1,29 @@
 import { formatCurrencyVND } from "@/lib/currency";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Lightbox from "yet-another-react-lightbox";
 
 const FeaturedGameCard = ({ game }: any) => {
   const [index, setIndex] = useState(-1);
-  const gameImages = game.images.map((imageUrl: string) => ({
-    src: imageUrl,
-  }));
-  const slides = [
-    {
-      src: game.coverImage,
-    },
-    ...gameImages,
-  ];
+  const [gameImages, setGameImages] = useState<any>([]);
+  const [slides, setSlides] = useState<any>([])
+  useEffect(() => {
+    setGameImages( game.images.map((imageUrl: string) => ({
+      src: imageUrl,
+    })));
+  }, [game])
+
+  useEffect(() => {
+    setSlides(
+      [
+        {
+          src: game.coverImage,
+        },
+        ...gameImages,
+      ]
+    )
+  }, [gameImages])
+  
   return (
     <div>
       <Lightbox

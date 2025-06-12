@@ -7,19 +7,30 @@ import MediaAssetsForm from "./media-assets-form";
 import GameFilesForm from "./game-files-form";
 import useManageGameStore from "@/store/use-manage-game-store";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { GameFiles, GameInfo, GameMediaAssets } from "@/types/game";
+import { FaArrowRight } from "react-icons/fa";
+import { MdCancel } from "react-icons/md";
 
 const DevUploadGamePage = () => {
-  const [infoForm] = Form.useForm();
-  const [mediaForm] = Form.useForm();
-  const [fileForm] = Form.useForm();
+  const [infoForm] = Form.useForm<GameInfo>();
+  const [mediaForm] = Form.useForm<GameMediaAssets>();
+  const [fileForm] = Form.useForm<GameFiles>();
+  const {
+    setGameInfo,
+    setGameFiles,
+    setGameMediaAssets,
+    gameInfo,
+    gameMediaAssets,
+    gameFiles,
+    saveState,
+    loadState,
+    isLoaded,
+  } = useManageGameStore();
   const navigate = useNavigate();
-  const { setGameInfo, setGameFiles, setGameMediaAssets, saveState } =
-    useManageGameStore();
 
-  const handleSaveDraft = () => {
-    console.log(infoForm.getFieldsValue());
-    console.log(mediaForm.getFieldsValue());
-    console.log(fileForm.getFieldsValue());
+  const handleCancel = () => {
+    navigate("/dev/manage-game");
   };
   const handleSubmit = async () => {
     try {
@@ -32,10 +43,45 @@ const DevUploadGamePage = () => {
       saveState();
       navigate("/dev/upload-game/preview");
     } catch (error) {
-      console.log(error);
       message.error("Make sure all fields are filled correctly!");
     }
   };
+
+  useEffect(() => {
+    if (!isLoaded) {
+      loadState();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isLoaded) {
+      infoForm.setFieldsValue({
+        name: gameInfo.name,
+        shortDescription: gameInfo.shortDescription,
+        averageSession: gameInfo.averageSession,
+        categoryId: gameInfo.categoryId,
+        tagIds: gameInfo.tagIds,
+        languageIds: gameInfo.languageIds,
+        ageRestrictionId: gameInfo.ageRestrictionId,
+        releaseStatus: gameInfo.releaseStatus,
+        description: gameInfo.description,
+        price: gameInfo.price,
+        allowDonate: gameInfo.allowDonate,
+        pricingOption: gameInfo.pricingOption,
+        visibility: gameInfo.visibility,
+      });
+      mediaForm.setFieldsValue({
+        coverImage: gameMediaAssets.coverImage,
+        gameImages: gameMediaAssets.gameImages,
+        videoLink: gameMediaAssets.videoLink,
+      });
+
+      fileForm.setFieldsValue({
+        files: gameFiles.files,
+        installInstruction: gameFiles.installInstruction,
+      });
+    }
+  }, [isLoaded]);
 
   return (
     <div className="bg-zinc-900">
@@ -56,8 +102,10 @@ const DevUploadGamePage = () => {
         </StepLayout>
         <hr className="border-zinc-600 my-5" />
         <div className="flex justify-center gap-3">
-          <Button onClick={handleSaveDraft}>Save as Draft</Button>
-          <Button type="primary" onClick={handleSubmit}>
+          <Button onClick={handleCancel} icon={<MdCancel />}>
+            Cancel
+          </Button>
+          <Button type="primary" onClick={handleSubmit} icon={<FaArrowRight />}>
             Continue to Preview
           </Button>
         </div>
