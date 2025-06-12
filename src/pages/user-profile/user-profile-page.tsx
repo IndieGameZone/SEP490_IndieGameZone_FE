@@ -1,6 +1,6 @@
 import { Button, Checkbox, Form, FormProps, Input, Radio } from "antd";
 import UploadAvatar from "./upload-avatar";
-import Tiptap from "@/components/tiptap/tiptap";
+import Tiptap from "@/components/tiptap/tiptap-editor";
 import { Link } from "react-router-dom";
 type FieldType = {
   username?: string;

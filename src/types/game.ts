@@ -13,28 +13,30 @@ export type GameInfo = {
     tagIds: string[];
     languageIds: string[];
     ageRestrictionId: string;
-    releaseStatus: "Released" | "In Development" | "On Hold" | "Canceled" | "Prototype";
+    releaseStatus: "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";
     description: string;
     price: number;
     allowDonate: boolean;
+    pricingOption: "Free" | "Paid";
+    visibility: "Draft" | "Restricted" | "Public"
 };
 
 export type GameMediaAssets = {
     coverImage: UploadFile[];
-    coverImageUrl: string;
     gameImages: UploadFile[];
-    gameImageUrls: string[],
     videoLink: string;
 };
 
 export type GameFiles = {
-    files: {
-        displayName: string;
-        file: UploadFile[];
-        fileUrls: string;
-        platformId: string;
-    }[];
+    files: GameFile[];
     installInstruction: string;
+}
+
+export type GameFile = {
+    displayName: string;
+    file: UploadFile[];
+    platformId: string;
+    fileSize: number;
 }
 
 export type GameData = {

@@ -1,4 +1,8 @@
-import { EditorProvider, useCurrentEditor } from "@tiptap/react";
+import {
+  Editor,
+  EditorContent,
+  useEditor,
+} from "@tiptap/react";
 import {
   FaBold,
   FaCode,
@@ -29,13 +33,9 @@ import {
   LuSquareCode,
   LuWrapText,
 } from "react-icons/lu";
+import { useEffect } from "react";
 
-const MenuBar = () => {
-  const { editor } = useCurrentEditor();
-  if (!editor) {
-    return null;
-  }
-
+const MenuBar = ({ editor }: { editor: Editor }) => {
   const handleAddYoutube = () => {
     const url = prompt("Enter Youtube URL");
     if (url) {
@@ -114,7 +114,7 @@ const MenuBar = () => {
           }
           value={editor.getAttributes("textStyle").color ?? "#000000"}
           data-testid="setColor"
-          style={{maxWidth: 100}}
+          style={{ maxWidth: 100 }}
         />
         <Button
           htmlType="button"
@@ -256,7 +256,7 @@ const MenuBar = () => {
     </>
   );
 };
-const Tiptap = ({
+const TiptapEditor = ({
   value = "<p></p>",
   onChange = () => {},
   className,
@@ -267,51 +267,60 @@ const Tiptap = ({
   className?: string;
   darkTheme?: boolean;
 }) => {
+  const editor = useEditor({
+    extensions: extensions,
+    content: value,
+    editable: true,
+    onUpdate({ editor }) {
+      onChange(editor.getHTML());
+    },
+    editorProps: {
+      attributes: {
+        class: cn(
+          `prose
+          leading-normal
+          prose-headings:my-2 
+          prose-strong:text-white
+          prose-ul:m-0
+          prose-p:m-0 
+          prose-li:m-0
+          max-w-none 
+          prose-ol:list-decimal 
+          prose-ul:list-disc 
+          prose-hr:my-5
+          outline-none 
+          p-5`,
+          darkTheme &&
+            `
+            text-white 
+            prose-headings:text-white 
+            prose-hr:border-white 
+            prose-blockquote:text-white
+            `,
+          className
+        ),
+      },
+    },
+  });
+  useEffect(() => {
+    if (!editor) return;
+    const current = editor.getHTML();
+    if (value !== current) {
+      editor.commands.setContent(value, false); // false = don't emit another update event
+    }
+  }, [value, editor]);
   return (
-    <div className="border bg-zinc-800 rounded border-zinc-600 overflow-hidden">
-      <EditorProvider
-        slotBefore={
-          <>
-            <MenuBar />
-          </>
-        }
-        extensions={extensions}
-        content={value}
-        editable={true}
-        onUpdate={({ editor }) => {
-          onChange(editor.getHTML());
-        }}
-        editorProps={{
-          attributes: {
-            class: cn(
-              `prose
-              leading-normal
-              prose-headings:mb-2 
-              prose-ul:m-0
-              prose-p:m-0 
-              prose-li:m-0
-              max-w-none 
-              prose-ol:list-decimal 
-              prose-ul:list-disc 
-              prose-hr:my-5
-              outline-none 
-              p-5`,
-              darkTheme &&
-                `
-                text-white 
-                prose-headings:text-white 
-                prose-hr:border-white 
-                prose-blockquote:text-white
-                `,
-              className
-            ),
-          },
-        }}
-      >
-        {null}
-      </EditorProvider>
+    <div
+      className={`border rounded overflow-hidden ${
+        darkTheme ? "bg-zinc-800 border-zinc-600" : "bg-white border-gray-300"
+      } ${className}`}
+    >
+      {/* render your menu bar, passing the editor instance */}
+      {editor && <MenuBar editor={editor} />}
+      {/* this is the actual editable area */}
+      <EditorContent editor={editor} />
     </div>
   );
 };
 
-export default Tiptap;
+export default TiptapEditor;
