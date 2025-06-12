@@ -59,7 +59,6 @@ export const addGame = async (developerId: string, request: AddGameRequest) => {
     request.languageIds.forEach(x => {
         formData.append("LanguageIds", x);
     })
-    formData.append("Price", request.price.toString());
     request.tagIds.forEach(x => {
         formData.append("TagIds", x)
     })
