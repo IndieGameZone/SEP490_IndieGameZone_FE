@@ -42,6 +42,7 @@ type AddGameRequest = {
     tagIds: string[];
     gameImages: string[];
 }
+
 export const addGame = async (developerId: string, request: AddGameRequest) => {
     const formData = new FormData();
     formData.append("Name", request.name);
@@ -68,6 +69,15 @@ export const addGame = async (developerId: string, request: AddGameRequest) => {
     })
     try {
         const { data } = await axiosClient.post(`/api/users/${developerId}/games`, formData);
+        return { error: null, data: data, success: true };
+    } catch (error) {
+        return handleApiError(error);
+    }
+}
+
+export const getGamesByDeveloperId = async (developerId: string) => {
+    try {
+        const { data } = await axiosClient.get(`/api/users/${developerId}/games`);
         return { error: null, data: data, success: true };
     } catch (error) {
         return handleApiError(error);

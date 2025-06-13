@@ -44,3 +44,16 @@ export type GameData = {
     gameMediaAssets: GameMediaAssets,
     gameFiles: GameFiles
 }
+
+export type Game = {
+    id: string;
+    name: string;
+    coverImage: string;
+    description: string;
+    status: "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";
+    allowDonation: boolean;
+    price: number;
+    priceAfterDiscount: number;
+    discount: any[];
+    visibility: "Draft" | "Restricted" | "Public"
+}
