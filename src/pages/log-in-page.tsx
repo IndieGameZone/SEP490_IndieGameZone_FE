@@ -1,25 +1,36 @@
-import { Form, Input, Button, FormProps } from "antd";
+import { Form, Input, Button, FormProps, Modal, Select, DatePicker } from "antd";
 import logo from "@/assets/indiegamezone-logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import background from "@/assets/wow-bg.jpg";
 import googleIcon from "@/assets/google_icon.png";
 import { useEffect, useState } from "react";
-import { login } from "@/lib/api/auth-api";
+import { login, googleLogin } from "@/lib/api/auth-api";
 import toast from "react-hot-toast";
 import useAuthStore from "@/store/use-auth-store";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/api/config/firebase";
+import dayjs from "dayjs";
+
 type FieldType = {
   userNameOrEmail: string;
   password: string;
 };
 
+type GoogleFormType = {
+  birthday: any;
+  role: string;
+};
+
 const LogInPage = () => {
   const [form] = Form.useForm();
+  const [googleForm] = Form.useForm();
   const [isSumitting, setIsSumitting] = useState(false);
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
+  const [googleIdToken, setGoogleIdToken] = useState<string>("");
   const { fetchProfile } = useAuthStore();
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     setIsSumitting(true);
     setError("");
@@ -42,33 +53,73 @@ const LogInPage = () => {
     }
   };
 
-  // const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-  //   errorInfo
-  // ) => {
-  //   console.log("Failed:", errorInfo);
-  // };
-
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token) {
       navigate("/");
     }
   }, []);
-  
 
   const handleLoginGoogle = () => {
+    setIsSumitting(true);
     signInWithPopup(auth, googleProvider)
-      .then((result) => {
+      .then(async (result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
-        console.log(result);
+        const idToken = await result.user.getIdToken();
         
-        navigate("/");
+        console.log("Google login result:", result);
+        console.log("ID Token:", idToken);
+        
+        // Vì backend yêu cầu birthday và role, ta sẽ luôn hiện modal
+        // để user nhập thông tin. Nếu user đã tồn tại, backend sẽ handle việc update
+        setGoogleIdToken(idToken);
+        setIsGoogleModalOpen(true);
+        setIsSumitting(false);
       })
       .catch((error) => {
-        console.log(error);
+        console.log("Google login error:", error);
+        setIsSumitting(false);
+        toast.error("Google login failed");
       });
   };
 
+  const handleGoogleFormSubmit = async (values: GoogleFormType) => {
+    setIsSumitting(true);
+    
+    const googleLoginData = {
+      IdToken: googleIdToken,
+      Birthday: values.birthday.format('YYYY-MM-DD'),
+      Role: values.role
+    };
+
+    console.log("Sending Google login data:", googleLoginData); // Debug log
+
+    const result = await googleLogin(googleLoginData);
+    setIsSumitting(false);
+
+    if (result.success) {
+      localStorage.setItem("accessToken", result.data);
+      toast.success("Login successfully");
+      setIsGoogleModalOpen(false);
+      fetchProfile();
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    } else {
+      console.log("Google login error:", result); // Debug log
+      if (result.data) {
+        toast.error(result.data.detail || result.error);
+      } else {
+        toast.error(result.error);
+      }
+    }
+  };
+
+  const handleModalCancel = () => {
+    setIsGoogleModalOpen(false);
+    setGoogleIdToken("");
+    googleForm.resetFields();
+  };
 
   return (
     <div className="grid grid-cols-2 h-screen bg-zinc-800">
@@ -98,7 +149,6 @@ const LogInPage = () => {
             layout="vertical"
             autoComplete="off"
             onFinish={onFinish}
-            // onFinishFailed={onFinishFailed}
             form={form}
           >
             <Form.Item
@@ -167,7 +217,6 @@ const LogInPage = () => {
               paddingBlock: 20,
               fontWeight: "bold",
               textTransform: "uppercase",
-              
             }}
             onClick={handleLoginGoogle}
             disabled={isSumitting}
@@ -183,6 +232,74 @@ const LogInPage = () => {
           </Link>
         </div>
       </div>
+
+      {/* Google Additional Info Modal */}
+      <Modal
+        title="Complete Your Profile"
+        open={isGoogleModalOpen}
+        onCancel={handleModalCancel}
+        footer={null}
+        destroyOnClose={true}
+      >
+        <p className="mb-4 text-gray-600">
+          Please provide additional information to complete your registration.
+        </p>
+        <Form
+          form={googleForm}
+          layout="vertical"
+          onFinish={handleGoogleFormSubmit}
+        >
+          <Form.Item
+            label={<span className="font-bold">Birthday</span>}
+            name="birthday"
+            rules={[
+              { required: true, message: "Please select your birthday" }
+            ]}
+          >
+            <DatePicker
+              style={{ width: '100%', paddingBlock: 10 }}
+              placeholder="Select your birthday"
+              disabledDate={(current) => {
+                return current && current > dayjs().endOf('day');
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label={<span className="font-bold">Role</span>}
+            name="role"
+            rules={[
+              { required: true, message: "Please select your role" }
+            ]}
+          >
+            <Select
+              placeholder="Select your role"
+              style={{ height: 50 }}
+              options={[
+                { value: 'Player', label: 'Player' },
+                { value: 'Developer', label: 'Developer' },
+                { value: 'Publisher', label: 'Publisher' }
+              ]}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              loading={isSumitting}
+              style={{
+                paddingBlock: 20,
+                fontWeight: "bold",
+                textTransform: "uppercase",
+              }}
+            >
+              Complete Registration
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
