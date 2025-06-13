@@ -10,12 +10,12 @@ export const handleApiError = (error: any) => {
     }
 };
 
-type AddGameFileRequest = {
+type AddGameFilesRequest = {
     platformId: string;
     file: string;
-}
+}[];
 
-export const addGameFile = async (gameId: string, request: AddGameFileRequest) => {
+export const addGameFiles = async (gameId: string, request: AddGameFilesRequest) => {
     try {
         const { data } = await axiosClient.post(`/api/games/${gameId}/game-platforms`, request);
         return { error: null, data: data, success: true };
@@ -53,6 +53,7 @@ export const addGame = async (developerId: string, request: AddGameRequest) => {
     formData.append("AllowDonation", request.allowDonation ? "true" : "false");
     formData.append("Status", request.status);
     formData.append("Visibility", request.visibility);
+    formData.append("categoryId", request.categoryId);
     formData.append("Price", request.price + "");
     formData.append("AverageSession", request.averageSession + "");
     formData.append("AgeRestrictionId", request.ageRestrictionId);

@@ -32,7 +32,7 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const {gameMediaAssets} = useManageGameStore();
+  const { gameMediaAssets } = useManageGameStore();
 
   const handleChange = ({
     fileList: newFileList,
@@ -85,7 +85,7 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
       };
       reader.readAsDataURL(file);
 
-      return false; 
+      return false;
     },
     onRemove: () => {
       setCoverImageUrl(undefined);
@@ -111,14 +111,14 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
 
   useEffect(() => {
     if (gameMediaAssets.coverImage && gameMediaAssets.coverImage[0]) {
-      const file = gameMediaAssets.coverImage[0].originFileObj
+      const file = gameMediaAssets.coverImage[0].originFileObj;
       if (file) {
         const url = URL.createObjectURL(file);
         setCoverImageUrl(url);
       }
     }
-  }, [])
-  
+  }, []);
+
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item<FieldType>
@@ -157,7 +157,15 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
         name={"gameImages"}
         valuePropName="fileList"
         getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
-        extra="Screenshots will appear on your game's page. Optional but highly recommended. Upload 3 to 5 for best results."
+        extra="Screenshots will appear on your game's page. Upload 3 to 5 for best results."
+        rules={[
+          {
+            validator: (_, value) =>
+              value && value.length > 0
+                ? Promise.resolve()
+                : Promise.reject(new Error("Please select at least one image")),
+          },
+        ]}
       >
         <Upload
           listType="picture"
@@ -165,6 +173,7 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
           onChange={handleChange}
           beforeUpload={beforeUpload}
           onPreview={handlePreview}
+          accept="image/*"
           maxCount={10}
           multiple
           showUploadList={{

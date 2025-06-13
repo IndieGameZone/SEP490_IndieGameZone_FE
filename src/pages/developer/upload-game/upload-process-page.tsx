@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import paperPlane from "@/assets/gif/paper-plane.gif";
 import { Button, Progress, UploadFile, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import { addGame, addGameFile } from "@/lib/api/game-api";
+import { addGame, addGameFiles } from "@/lib/api/game-api";
 import useAuthStore from "@/store/use-auth-store";
 import cancleIcon from "@/assets/cancel.png";
 import checkedIcon from "@/assets/checked.png";
@@ -28,6 +28,10 @@ const TASKS = [
   },
   {
     id: 4,
+    name: "Attaching game's files",
+  },
+  {
+    id: 5,
     name: "DONE",
   },
 ];
@@ -46,6 +50,7 @@ const UploadProcessPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isFinished, setIsFinished] = useState(false);
   const [gameId, setGameId] = useState("");
+  const [gamePlatforms, setGamePlatforms] = useState<any[]>([]);
   const navigate = useNavigate();
 
   const { isSaved, gameFiles, gameMediaAssets, gameInfo } =
@@ -68,6 +73,8 @@ const UploadProcessPage = () => {
         handleUploadGameInfo();
       } else if (currentTask == 3) {
         handleUploadFiles();
+      } else if (currentTask == 4) {
+        handleAddGameFiles();
       }
     }
   }, [isUploading, errorMessage]);
@@ -126,17 +133,10 @@ const UploadProcessPage = () => {
           return;
         } else {
           // console.log("Add game file");
-          const addFileResult = await addGameFile(gameId, {
+          setGamePlatforms(prev => [... prev, {
             file: uploadResult.data,
             platformId: gameFiles.files[i].platformId,
-          });
-          if (addFileResult.error) {
-            setErrorMessage(
-              `Failed to upload ${file.fileName} Please try again.`
-            );
-            setIsUploading(false);
-            return;
-          }
+          }]);
           setCurrentItem((prev) => prev + 1);
         }
       } else {
@@ -144,11 +144,28 @@ const UploadProcessPage = () => {
         return;
       }
     }
-    setIsUploading(false);
     setCurrentTask(4);
-    setIsFinished(true);
+    setIsUploading(false);
     setCurrentItem(0);
   };
+
+  const handleAddGameFiles = async () => {
+    if (isUploading) return;
+    setIsUploading(true);
+    setTotalItems(gamePlatforms.length);
+    setUploadProgress(0);
+    const addFilesResult = await addGameFiles(gameId, gamePlatforms);
+    if (addFilesResult.error) {
+      setErrorMessage(`Failed to attach game files Please try again.`);
+      setIsUploading(false);
+      return;
+    }
+    setUploadProgress(100);
+    setIsUploading(false);
+    setCurrentTask(5);
+    setIsFinished(true);
+    setCurrentItem(0);
+  }
 
   const handleUploadCoverImage = async () => {
     // console.log("HANDLE UPLOAD COVER IMAGE");
@@ -189,7 +206,7 @@ const UploadProcessPage = () => {
     // console.log("gameImages: ", filesToUpload)
     for (let i = currentItem; i < filesToUpload.length; i++) {
       const file = filesToUpload[i];
-      setCurrentFileName(file.fileName ?? "");
+      setCurrentFileName(file.name ?? "");
       if (file.originFileObj) {
         const uploadResult = await uploadFile(file);
         if (uploadResult.error) {
@@ -285,10 +302,10 @@ const UploadProcessPage = () => {
       )}
       <div className="w-[300px]">
         <h1 className="-mt-10">
-          {currentTaskMessage} [{currentTask}/{4}]
+          {currentTaskMessage} [{currentTask}/{5}]
         </h1>
         <Progress
-          percent={Math.round((currentTask / 3) * 100)}
+          percent={Math.round((currentTask / 5) * 100)}
           status={
             isUploading
               ? "active"
