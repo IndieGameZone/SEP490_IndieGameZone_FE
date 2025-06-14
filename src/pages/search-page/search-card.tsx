@@ -1,7 +1,8 @@
+import MaxWidthWrapper from "@/components/max-width-wrapper";
 import { Checkbox, CheckboxProps, Slider } from "antd";
 import Search from "antd/es/input/Search";
 import { useState } from "react";
-import { CiFilter } from "react-icons/ci";
+import { FaFilter } from "react-icons/fa";
 
 const SearchCard = () => {
   const [price, setPrice] = useState(800000);
@@ -9,11 +10,11 @@ const SearchCard = () => {
     console.log(`checked = ${e.target.checked}`);
   };
   return (
-    <>
-      <div className=" flex justify-between  w-full bg-gray-900 px-10 py-5 text-white rounded">
+    <MaxWidthWrapper>
+      <div className="bg-zinc-900 flex justify-between px-10 py-5 rounded">
         <div>
           <div className="flex gap-2 items-center mb-4">
-            <CiFilter size={16} />
+            <FaFilter size={16} />
             <span className="text">Filter search results</span>
           </div>
 
@@ -38,10 +39,16 @@ const SearchCard = () => {
           <div className="">
             <div className="flex flex-col pt-8 gap-4">
               <span className="font-bold">Tags</span>
-              <div >
+              <div>
                 <Checkbox.Group
                   className="flex flex-col gap-2"
-                  options={["Action", "Adventure", "RPG", "Strategy", "Multiplayer"]}
+                  options={[
+                    "Action",
+                    "Adventure",
+                    "RPG",
+                    "Strategy",
+                    "Multiplayer",
+                  ]}
                   defaultValue={["Action", "Adventure"]}
                   onChange={(checkedValues) => {
                     console.log("checked = ", checkedValues);
@@ -49,47 +56,58 @@ const SearchCard = () => {
                 />
               </div>
               <div>
-                <Search placeholder="Search for other tags" style={{ width: 200 }} />
+                <Search
+                  placeholder="Search for other tags"
+                  style={{ width: 200 }}
+                />
               </div>
             </div>
           </div>
         </div>
         <div>
-            <div className="flex flex-col pt-8 gap-4">
-                <span className="font-bold">Platforms</span>
-                <div>
-                <Checkbox.Group
-                    className="flex flex-col gap-2"
-                    options={["PC", "PlayStation", "Xbox", "Nintendo Switch"]}
-                    defaultValue={["PC", "PlayStation"]}
-                    onChange={(checkedValues) => {
-                    console.log("checked = ", checkedValues);
-                    }}
-                />
-                </div>
-                
+          <div className="flex flex-col pt-8 gap-4">
+            <span className="font-bold">Platforms</span>
+            <div>
+              <Checkbox.Group
+                className="flex flex-col gap-2"
+                options={["PC", "PlayStation", "Xbox", "Nintendo Switch"]}
+                defaultValue={["PC", "PlayStation"]}
+                onChange={(checkedValues) => {
+                  console.log("checked = ", checkedValues);
+                }}
+              />
             </div>
+          </div>
         </div>
         <div>
-            <div className="flex flex-col pt-8 gap-4">
-                <span className="font-bold">Languages</span>
-                <div>
-                <Checkbox.Group
-                    className="flex flex-col gap-2"
-                    options={["VietNamese", "Chinese", "English", "Japanese", "Korean"]}
-                    defaultValue={["VietNamese"]}
-                    onChange={(checkedValues) => {
-                    console.log("checked = ", checkedValues);
-                    }}
-                />
-                </div>
-                <div>
-                    <Search placeholder="Search for other languages" style={{ width: 200 }} />
-                </div>
-            </div>  
+          <div className="flex flex-col pt-8 gap-4">
+            <span className="font-bold">Languages</span>
+            <div>
+              <Checkbox.Group
+                className="flex flex-col gap-2"
+                options={[
+                  "VietNamese",
+                  "Chinese",
+                  "English",
+                  "Japanese",
+                  "Korean",
+                ]}
+                defaultValue={["VietNamese"]}
+                onChange={(checkedValues) => {
+                  console.log("checked = ", checkedValues);
+                }}
+              />
+            </div>
+            <div>
+              <Search
+                placeholder="Search for other languages"
+                style={{ width: 200 }}
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </>
+    </MaxWidthWrapper>
   );
 };
 
