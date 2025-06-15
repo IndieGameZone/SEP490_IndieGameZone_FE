@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input } from "antd";
 import GenreCard from "../home-page/genre-card";
 import genre1 from "@/assets/genre-1.jpg";
@@ -10,16 +10,83 @@ import GameCard from "./game-card";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
 import { FaFilter } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { searchGames, GameSearchResponse } from "@/lib/api/game-api";
+import Loader from "@/components/loader";
+
 const SearchPage = () => {
   const [activeTab, setActiveTab] = useState("Most popular");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [games, setGames] = useState<any[]>([]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize] = useState(6);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastGameRef = useRef<HTMLDivElement | null>(null);
 
-  const tabs = [
-    "Most popular",
-    "Hot & Trending",
-    "Best",
-    "Best Seller",
-    "Latest",
-  ];
+  const tabs = ["Most popular", "Hot & Trending", "Best", "Best Seller", "Latest"];
+
+  const fetchGames = async (page: number) => {
+    setIsLoading(true);
+    try {
+      const params = {
+        searchTerm,
+        pageNumber: page,
+        pageSize,
+        censorStatus: "approved",
+      };
+      const { data, error } = await searchGames(params);
+      if (error) throw new Error(error);
+
+      const newGames = Array.isArray(data) ? data : (data as GameSearchResponse).items || [];
+      setGames((prevGames) => [...prevGames, ...newGames]);
+      setHasMore(newGames.length === pageSize);
+    } catch (error) {
+      console.error("Error fetching games:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoading || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setPageNumber((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (lastGameRef.current) {
+      observer.observe(lastGameRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [isLoading, hasMore]);
+
+  useEffect(() => {
+    setGames([]);
+    setPageNumber(1);
+    setHasMore(true);
+    fetchGames(1);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (pageNumber > 1) {
+      fetchGames(pageNumber);
+    }
+  }, [pageNumber]);
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+  };
 
   return (
     <div className="pb-10">
@@ -40,39 +107,26 @@ const SearchPage = () => {
             placeholder="Search for game titles, genres, tags, developers,..."
             style={{ width: 700 }}
             size="large"
+            onSearch={handleSearch}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div>
           <div className="py-4">
-            <span className=" font-bold text-3xl">Popular Genres</span>
+            <span className="font-bold text-3xl">Popular Genres</span>
           </div>
           <div className="grid grid-cols-4 gap-3">
-            <GenreCard
-              title="Open world"
-              to="/search?genre=1"
-              background={genre1}
-            />
-            <GenreCard
-              title="Adventure"
-              to="/search?genre=2"
-              background={genre2}
-            />
-            <GenreCard
-              title="Action RPG"
-              to="/search?genre=3"
-              background={genre3}
-            />
+            <GenreCard title="Open world" to="/search?genre=1" background={genre1} />
+            <GenreCard title="Adventure" to="/search?genre=2" background={genre2} />
+            <GenreCard title="Action RPG" to="/search?genre=3" background={genre3} />
             <GenreCard title="FPS" to="/search?genre=4" background={genre4} />
           </div>
           <div className="py-2">
             <div className="py-4 flex flex-col gap-1.5">
               <span className="text-xl text-gray-400 font-semibold">
-                Search results for <span className="text-orange-300">SEARCH KEY</span>
+                Search results for <span className="text-orange-300">{searchTerm || "SEARCH KEY"}</span>
               </span>
-              <span className="">
-                200,000 results match your search. 20,000 titles have been
-                hidden based on your interests.
-              </span>
+              <span>{games.length} results match your search.</span>
             </div>
           </div>
         </div>
@@ -101,9 +155,17 @@ const SearchPage = () => {
         <hr className="border-b border-zinc-700 mb-5"></hr>
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <GameCard key={`game-card-${i}`} />
+            {games.map((game, index) => (
+              <div key={game.id || index} ref={index === games.length - 1 ? lastGameRef : null}>
+                <GameCard game={game} />
+              </div>
             ))}
+            {isLoading && (
+              <div className="col-span-full flex justify-center items-center">
+                <Loader />
+              </div>
+            )}
+            {!hasMore && games.length > 0 && <div className="text-center text-gray-500">No more games to load</div>}
           </div>
         </div>
       </MaxWidthWrapper>
