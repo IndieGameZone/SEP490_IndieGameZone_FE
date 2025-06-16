@@ -38,6 +38,7 @@ const TiptapView = ({
             prose-headings:text-white 
             prose-hr:border-white 
             prose-blockquote:text-white
+            prose-code:text-green-400
             `,
           className
         ),

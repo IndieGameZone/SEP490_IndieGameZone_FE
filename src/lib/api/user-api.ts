@@ -21,9 +21,29 @@ export const getAllAccounts = async () => {
         return handleApiError(error);
     }
 };
+
 export const getUserById = async (id: string) => {
   try {
     const { data } = await axiosClient.get(`/api/users/${id}`);
+    return { error: null, data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+type UpdateUserRequest = {
+  fullName: string;
+  avatar?: string;
+  bio?: string;
+  birthday: string;
+  facebookLink?: string;
+  bankName?: string;
+  bankAccount?: string;
+}
+
+export const updateUser = async (userId: string, request: UpdateUserRequest) => {
+  try {
+    const { data } = await axiosClient.put(`/api/users/${userId}`, request);
     return { error: null, data, success: true };
   } catch (error) {
     return handleApiError(error);

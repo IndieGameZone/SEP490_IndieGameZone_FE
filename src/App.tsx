@@ -12,14 +12,14 @@ import UserProfileContainer from "./containers/user-profile-container";
 import DeveloperDashboardContainer from "./containers/developer-dashboard-container";
 
 function App() {
-  const { fetchProfile } = useAuthStore();
+  const { fetchProfile, renderKey } = useAuthStore();
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token) {
       fetchProfile();
     }
-  }, []);
+  }, [renderKey]);
 
   return (
     <Routes>
