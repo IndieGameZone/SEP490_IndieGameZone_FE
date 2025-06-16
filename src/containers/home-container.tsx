@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import VerifyEmailPage from "@/pages/verify-email-page";
 import SearchPage from "@/pages/search-page/search-page";
 import ForumPage from "@/pages/forum-page/forum-page";
+import ViewProfilePage from "@/pages/user-profile/view-profile-page";
 
 const HomeContainer = () => {
   return (
@@ -12,6 +13,7 @@ const HomeContainer = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/profile/:userId" element={<ViewProfilePage />} />
         <Route path="/search/*" element={<SearchPage />} />
         <Route path="/forum/*" element={<ForumPage />} />
         <Route path="*" element={<NotFoundPage />} />

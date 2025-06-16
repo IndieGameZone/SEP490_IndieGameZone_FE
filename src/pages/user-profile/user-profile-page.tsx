@@ -2,6 +2,7 @@ import { Button, Checkbox, Form, FormProps, Input, Radio } from "antd";
 import UploadAvatar from "./upload-avatar";
 import Tiptap from "@/components/tiptap/tiptap-editor";
 import { Link } from "react-router-dom";
+import useAuthStore from "@/store/use-auth-store";
 type FieldType = {
   username?: string;
   displayName?: string;
@@ -12,6 +13,7 @@ type FieldType = {
 };
 
 const UserProfilePage = () => {
+  const { profile } = useAuthStore();
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log("Success:", values);
   };
@@ -27,7 +29,7 @@ const UserProfilePage = () => {
       <h1 className="font-bold text-2xl">Profile</h1>
       <div className="mb-3">
         <Link
-          to={"/profile/1"}
+          to={`/profile/${profile?.id}`}
           className="text-sm text-zinc-500 hover:text-zinc-200 duration-300"
         >
           (View my profile)
@@ -107,9 +109,7 @@ const UserProfilePage = () => {
             className="max-w-[600px]"
             valuePropName="checked"
           >
-            <Checkbox>
-              Show content marked as adult in search & browse
-            </Checkbox>
+            <Checkbox>Show content marked as adult in search & browse</Checkbox>
           </Form.Item>
           <div className="max-w-[600px]">
             <p className="mb-1 font-bold">Bio</p>
