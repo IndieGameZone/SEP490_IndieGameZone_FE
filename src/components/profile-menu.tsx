@@ -21,7 +21,7 @@ const ProfileMenu = () => {
       key: "1",
       label: "My Profile",
       icon: <FaUserAlt />,
-      onClick: () => navigate("/account/profile"),
+      onClick: () => navigate(`/profile/${profile?.id}`),
     },
     {
       type: "divider",

@@ -1,19 +1,92 @@
-import { Button, Checkbox, Form, FormProps, Input, Radio } from "antd";
+import {
+  Button,
+  Checkbox,
+  DatePicker,
+  Form,
+  FormProps,
+  Input,
+  Radio,
+  message,
+} from "antd";
 import UploadAvatar from "./upload-avatar";
-import Tiptap from "@/components/tiptap/tiptap-editor";
 import { Link } from "react-router-dom";
+import useAuthStore from "@/store/use-auth-store";
+import TiptapEditor from "@/components/tiptap/tiptap-editor";
+import moment, { Moment } from "moment";
+import { RuleObject } from "antd/es/form";
+import { useEffect, useState } from "react";
+import { useForm } from "antd/es/form/Form";
+import { updateUser } from "@/lib/api/user-api";
+
 type FieldType = {
-  username?: string;
-  displayName?: string;
-  website?: string;
+  username: string;
+  email: string;
+  fullName: string;
+  birthday: Moment;
   accountType: "Developer" | "Player";
   showAdultContent: boolean;
-  bio: string;
+  bio?: string;
+  facebookLink?: string;
+};
+
+const validateBirthday = (_: any, value: Moment) => {
+  if (!value) {
+    return Promise.reject("Please select your birthday");
+  }
+
+  const today = moment();
+  const minDate = today.clone().subtract(120, "years");
+
+  if (value.isAfter(today)) {
+    return Promise.reject("Birthday cannot be in the future");
+  }
+
+  if (value.isBefore(minDate)) {
+    return Promise.reject("Birthday must be within the last 120 years");
+  }
+
+  return Promise.resolve();
+};
+
+const validateFacebookUrl = async (_: RuleObject, value: string) => {
+  if (!value) return Promise.resolve();
+
+  try {
+    const url = new URL(value);
+    if (!/^https?:\/\/(www\.)?facebook\.com\//.test(url.href)) {
+      return Promise.reject("Please enter a valid Facebook URL");
+    }
+    return Promise.resolve();
+  } catch {
+    return Promise.reject("Please enter a valid URL");
+  }
 };
 
 const UserProfilePage = () => {
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log("Success:", values);
+  const { profile, rerender, renderKey } = useAuthStore();
+  const [loading, setLoading] = useState(false);
+  const [form] = useForm<FieldType>();
+  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+    if (!profile) return;
+    setLoading(true);
+    const result = await updateUser(profile.id, {
+      avatar: profile.avatar,
+      bio: values.bio,
+      birthday: values.birthday.toISOString(),
+      facebookLink: values.facebookLink,
+      fullName: values.fullName,
+      bankAccount: profile.bankAccount,
+      bankName: profile.bankName,
+    });
+    if (result.error) {
+      message.error("Failed to update profile. Please try again.");
+    } else {
+      message.success("Update profile successfully.");
+      setTimeout(() => {
+        rerender();
+      }, 1000);
+    }
+    setLoading(false);
   };
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
@@ -22,12 +95,26 @@ const UserProfilePage = () => {
     console.log("Failed:", errorInfo);
   };
 
+  useEffect(() => {
+    if (profile) {
+      form.setFieldsValue({
+        accountType: profile.role.name == "Developer" ? "Developer" : "Player",
+        bio: profile.bio,
+        birthday: profile.birthday ? moment(profile.birthday) : undefined,
+        email: profile.email,
+        facebookLink: profile.facebookLink,
+        fullName: profile.fullName,
+        username: profile.userName,
+      });
+    }
+  }, [renderKey]);
+
   return (
     <div className="p-5">
       <h1 className="font-bold text-2xl">Profile</h1>
       <div className="mb-3">
         <Link
-          to={"/profile/1"}
+          to={`/profile/${profile?.id}`}
           className="text-sm text-zinc-500 hover:text-zinc-200 duration-300"
         >
           (View my profile)
@@ -45,53 +132,72 @@ const UserProfilePage = () => {
       </div>
       <div className="mt-3">
         <Form
-          name="basic"
+          name="edit-profile-form"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
           layout="vertical"
+          form={form}
         >
-          <div>
-            <p className="mb-1 font-bold">
-              Username <span className="font-normal">(*)</span>
-            </p>
+          <Form.Item<FieldType>
+            name="username"
+            label={<div className="font-bold">Username</div>}
+            rules={[{ required: true, message: "Please enter your username!" }]}
+            style={{ marginBottom: 15 }}
+            extra="Shown next to your profile image"
+          >
+            <Input
+              className="max-w-[600px]"
+              placeholder="Enter your username"
+              disabled
+            />
+          </Form.Item>
+          <Form.Item<FieldType>
+            name="email"
+            label={<div className="font-bold">Email</div>}
+            rules={[{ required: true, message: "Please enter your email!" }]}
+            style={{ marginBottom: 15 }}
+            extra="Used to log in and recover your password"
+          >
+            <Input
+              className="max-w-[600px]"
+              placeholder="Enter your email"
+              disabled
+            />
+          </Form.Item>
+          <div className="max-w-[600px] mb-3">
             <Form.Item<FieldType>
-              name="username"
+              name="fullName"
+              label={<p className="font-bold">Full name</p>}
+              style={{ marginBottom: 15 }}
               rules={[
-                { required: true, message: "Please input your username!" },
+                { required: true, message: "Please enter your full name!" },
               ]}
             >
-              <Input
-                className="max-w-[600px]"
-                placeholder="Enter your username"
-              />
+              <Input placeholder="Enter your full name" />
             </Form.Item>
           </div>
-
-          <div className="max-w-[600px] mb-3">
-            <p className="mb-1 font-bold">Display name</p>
-            <Form.Item<FieldType>
-              name="displayName"
-              style={{ marginBottom: 5 }}
-            >
-              <Input placeholder="Enter your display name" />
-            </Form.Item>
-            <p className="text-sm text-gray-400">
-              Name to be shown in place of your username, leave blank to default
-              to username
-            </p>
-          </div>
+          <Form.Item
+            label={<p className="font-bold">Birthday</p>}
+            name="birthday"
+            rules={[
+              { required: true, message: "Please select your birthday!" },
+              { validator: validateBirthday },
+            ]}
+          >
+            <DatePicker className="max-w-[600px]" format="DD-MM-YYYY" />
+          </Form.Item>
 
           <div className="max-w-[600px]">
-            <p className="mb-1 font-bold">Account type</p>
             <Form.Item<FieldType>
               name="accountType"
+              label={<p className="font-bold">Account type</p>}
               initialValue={"Player"}
               rules={[
                 { required: true, message: "Please select your account type!" },
               ]}
             >
-              <Radio.Group>
+              <Radio.Group disabled>
                 <Radio value="Player"> Player </Radio>
                 <Radio value="Developer"> Developer </Radio>
               </Radio.Group>
@@ -107,18 +213,28 @@ const UserProfilePage = () => {
             className="max-w-[600px]"
             valuePropName="checked"
           >
-            <Checkbox>
-              Show content marked as adult in search & browse
-            </Checkbox>
+            <Checkbox>Show content marked as adult in search & browse</Checkbox>
           </Form.Item>
           <div className="max-w-[600px]">
-            <p className="mb-1 font-bold">Bio</p>
-            <Form.Item<FieldType> name="bio">
-              <Tiptap />
+            <Form.Item<FieldType>
+              name="bio"
+              label={<p className="font-bold">Bio</p>}
+              extra="Briefly introduce yourself"
+            >
+              <TiptapEditor type="minimal" />
             </Form.Item>
           </div>
-          <Form.Item label={null}>
-            <Button type="primary" htmlType="submit">
+          <Form.Item<FieldType>
+            label={<p className="font-bold">Facebook Profile Link</p>}
+            name="facebookLink"
+            className="max-w-[600px]"
+            rules={[{ validator: validateFacebookUrl }]}
+            extra="Link to your Facebook account (optional)"
+          >
+            <Input placeholder="https://www.facebook.com/your.profile" />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={loading}>
               Save
             </Button>
           </Form.Item>

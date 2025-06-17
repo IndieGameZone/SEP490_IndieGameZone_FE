@@ -1,51 +1,72 @@
-import { Avatar, Button } from "antd";
-// import { useDropzone } from "react-dropzone";
-// import toast from "react-hot-toast";
+import { uploadFile } from "@/lib/api/file-api";
+import { updateUser } from "@/lib/api/user-api";
+import useAuthStore from "@/store/use-auth-store";
+import { Avatar, Button, Upload, message } from "antd";
+import { useState } from "react";
 import { CiUser } from "react-icons/ci";
 import { FaUpload } from "react-icons/fa";
 
-// const MAX_FILE_SIZE = 5000000;
-// function checkFileType(file: File) {
-//   if (file == null) return true;
-//   if (file?.name) {
-//     const fileType = file.name.split(".").pop();
-//     if (fileType === "png" || fileType === "jpeg" || fileType === "jpg")
-//       return true;
-//   }
-//   return false;
-// }
-
-// const acceptedFileTypes = {
-//   "image/jpeg": [],
-//   "image/png": [],
-// };
-
 const UploadAvatar = () => {
-//   const onDrop = async (acceptedFiles: File[]) => {
-//     toast("Update avatar successfully", {
-//       icon: "✅",
-//       style: {
-//         borderRadius: "10px",
-//         background: "#333",
-//         color: "#fff",
-//       },
-//     });
-//   };
+  const [imageUrl, setImageUrl] = useState("");
+  const { profile, rerender } = useAuthStore();
+  const handleBeforeUpload = async (file: File) => {
+    if (!profile) return;
+    const isImage = file.type.startsWith("image/");
+    if (!isImage) {
+      message.error("You can only upload image files!");
+      return false;
+    }
+    var url = imageUrl;
+    if (!url) {
+      const result = await uploadFile(file);
+      if (result.error) {
+        message.error("Failed to upload image. Please try again.");
+      } else {
+        setImageUrl(result.data);
+        url = result.data;
+      }
+    }
 
-//   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-//     onDrop,
-//     accept: acceptedFileTypes,
-//   });
-
+    const updateAvatarResult = await updateUser(profile.id, {
+      birthday: profile.birthday,
+      fullName: profile.fullName ?? "",
+      avatar: url,
+      bankAccount: profile.bankAccount,
+      bankName: profile.bankName,
+      bio: profile.bio,
+      facebookLink: profile.facebookLink,
+    });
+    if (updateAvatarResult.error) {
+      message.error("Failed to upload image. Please try again.");
+    } else {
+      message.success("Update avatar successfully!");
+      setTimeout(() => {
+        rerender();
+      }, 1000);
+    }
+    return false;
+  };
   return (
     <div>
       <div className="flex gap-3">
         <Avatar size={100} icon={<CiUser />} />
-        <button className="size-[100px] flex justify-center items-center border border-zinc-500 hover:border-orange-500 cursor-pointer rounded-full duration-300 hover:text-orange-500">
-          <FaUpload className="size-8" />
-        </button>
+        <Upload
+          beforeUpload={handleBeforeUpload}
+          showUploadList={false}
+          accept="image/*"
+        >
+          <button className="size-[100px] flex justify-center items-center border border-zinc-500 hover:border-orange-500 cursor-pointer rounded-full duration-300 hover:text-orange-500">
+            <FaUpload className="size-8" />
+          </button>{" "}
+        </Upload>
       </div>
-      <Button className="mt-3">Upload Image</Button>
+      <Upload
+        beforeUpload={handleBeforeUpload}
+        showUploadList={false}
+        accept="image/*"
+      >
+        <Button className="mt-3">Upload Image</Button>
+      </Upload>
     </div>
   );
 };

@@ -13,7 +13,7 @@ export type User = {
     fullName?: string;
     avatar?: string;
     bio?: string;
-    birthday?: string;
+    birthday: string;
     facebookLink?: string;
     bankName?: string;
     bankAccount?: string;
