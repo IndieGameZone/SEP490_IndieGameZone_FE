@@ -14,7 +14,7 @@ import useAuthStore from "@/store/use-auth-store";
 import TiptapEditor from "@/components/tiptap/tiptap-editor";
 import moment, { Moment } from "moment";
 import { RuleObject } from "antd/es/form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { updateUser } from "@/lib/api/user-api";
 
@@ -27,6 +27,25 @@ type FieldType = {
   showAdultContent: boolean;
   bio?: string;
   facebookLink?: string;
+};
+
+const validateBirthday = (_: any, value: Moment) => {
+  if (!value) {
+    return Promise.reject("Please select your birthday");
+  }
+
+  const today = moment();
+  const minDate = today.clone().subtract(120, "years");
+
+  if (value.isAfter(today)) {
+    return Promise.reject("Birthday cannot be in the future");
+  }
+
+  if (value.isBefore(minDate)) {
+    return Promise.reject("Birthday must be within the last 120 years");
+  }
+
+  return Promise.resolve();
 };
 
 const validateFacebookUrl = async (_: RuleObject, value: string) => {
@@ -44,10 +63,12 @@ const validateFacebookUrl = async (_: RuleObject, value: string) => {
 };
 
 const UserProfilePage = () => {
-  const { profile, rerender } = useAuthStore();
+  const { profile, rerender, renderKey } = useAuthStore();
+  const [loading, setLoading] = useState(false);
   const [form] = useForm<FieldType>();
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!profile) return;
+    setLoading(true);
     const result = await updateUser(profile.id, {
       avatar: profile.avatar,
       bio: values.bio,
@@ -65,6 +86,7 @@ const UserProfilePage = () => {
         rerender();
       }, 1000);
     }
+    setLoading(false);
   };
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
@@ -85,7 +107,7 @@ const UserProfilePage = () => {
         username: profile.userName,
       });
     }
-  }, []);
+  }, [renderKey]);
 
   return (
     <div className="p-5">
@@ -160,6 +182,7 @@ const UserProfilePage = () => {
             name="birthday"
             rules={[
               { required: true, message: "Please select your birthday!" },
+              { validator: validateBirthday },
             ]}
           >
             <DatePicker className="max-w-[600px]" format="DD-MM-YYYY" />
@@ -211,7 +234,7 @@ const UserProfilePage = () => {
             <Input placeholder="https://www.facebook.com/your.profile" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={loading}>
               Save
             </Button>
           </Form.Item>

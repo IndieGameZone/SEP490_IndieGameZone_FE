@@ -20,7 +20,7 @@ function App() {
       fetchProfile();
     }
   }, [renderKey]);
-
+  console.log("rendered");
   return (
     <Routes>
       <Route
