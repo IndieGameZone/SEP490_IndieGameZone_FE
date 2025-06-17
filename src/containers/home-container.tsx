@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import VerifyEmailPage from "@/pages/verify-email-page";
 import SearchPage from "@/pages/search-page/search-page";
 import ForumPage from "@/pages/forum-page/forum-page";
+import DetailGamePages from "@/pages/detail-game";
 
 const HomeContainer = () => {
   return (
@@ -13,6 +14,7 @@ const HomeContainer = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/search/*" element={<SearchPage />} />
+        <Route path="/detail-game/:gameId" element={<DetailGamePages />} />{" "}
         <Route path="/forum/*" element={<ForumPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
