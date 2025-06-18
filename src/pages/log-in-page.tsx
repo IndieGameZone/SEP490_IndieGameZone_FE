@@ -1,13 +1,26 @@
-import { Form, Input, Button, Modal, Select, DatePicker, FormProps } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Modal,
+  Select,
+  DatePicker,
+  FormProps,
+} from "antd";
 import logo from "@/assets/indiegamezone-logo.svg";
 import background from "@/assets/wow-bg.jpg";
 import googleIcon from "@/assets/google_icon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { login, googleLogin, getUserInfo, prepareGoogleLoginData } from "@/lib/api/auth-api";
+import {
+  login,
+  googleLogin,
+  getUserInfo,
+  prepareGoogleLoginData,
+} from "@/lib/api/auth-api";
 import toast from "react-hot-toast";
 import useAuthStore from "@/store/use-auth-store";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/api/config/firebase";
 import dayjs from "dayjs";
 
@@ -56,7 +69,7 @@ const LogInPage = () => {
     setIsSubmitting(true);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const credential = GoogleAuthProvider.credentialFromResult(result);
       const idToken = await result.user.getIdToken();
       setGoogleIdToken(idToken);
 
@@ -77,7 +90,10 @@ const LogInPage = () => {
 
         if (birthday && role) {
           // Nếu đã có birthday và role, login thẳng
-          const googleLoginData = prepareGoogleLoginData(idToken, { birthday: dayjs(birthday), role });
+          const googleLoginData = prepareGoogleLoginData(idToken, {
+            birthday: dayjs(birthday),
+            role,
+          });
           const loginResult = await googleLogin(googleLoginData);
           if (loginResult.success) {
             localStorage.setItem("accessToken", loginResult.data);
@@ -159,16 +175,24 @@ const LogInPage = () => {
               label={<span className="font-bold">Email or username</span>}
               name="userNameOrEmail"
               rules={[
-                { required: true, message: "Please enter your email or username" },
+                {
+                  required: true,
+                  message: "Please enter your email or username",
+                },
               ]}
             >
-              <Input placeholder="Enter your email" style={{ paddingBlock: 10 }} />
+              <Input
+                placeholder="Enter your email"
+                style={{ paddingBlock: 10 }}
+              />
             </Form.Item>
 
             <Form.Item
               label={<span className="font-bold">Password</span>}
               name="password"
-              rules={[{ required: true, message: "Please enter your password" }]}
+              rules={[
+                { required: true, message: "Please enter your password" },
+              ]}
             >
               <Input.Password
                 placeholder="Enter your password"
@@ -247,7 +271,9 @@ const LogInPage = () => {
             <DatePicker
               style={{ width: "100%", paddingBlock: 10 }}
               placeholder="Select your birthday"
-              disabledDate={(current) => current && current > dayjs().endOf("day")}
+              disabledDate={(current) =>
+                current && current > dayjs().endOf("day")
+              }
             />
           </Form.Item>
 

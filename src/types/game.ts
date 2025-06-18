@@ -1,4 +1,6 @@
 import { UploadFile } from "antd";
+import { Category } from "./category";
+import { Tag } from "./tag";
 
 export type Image = {
     id: string;
@@ -50,10 +52,13 @@ export type Game = {
     name: string;
     coverImage: string;
     description: string;
+    shortDescription: string;
     status: "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";
     allowDonation: boolean;
     price: number;
     priceAfterDiscount: number;
     discount: any[];
     visibility: "Draft" | "Restricted" | "Public"
+    category: Category;
+    gameTags: { tag: Tag }[];
 }

@@ -1,20 +1,9 @@
+import { Game } from "@/types/game";
 import { Tag } from "antd";
 import { FaStar } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-interface GameCardProps {
-  game?: {
-    id?: string;
-    name?: string;
-    coverImage?: string;
-    shortDescription?: string;
-    gameTags?: { tag: { name: string } }[];
-    price?: number;
-    priceAfterDiscount?: number;
-    category?: { name?: string };
-  };
-}
-
-const GameCard = ({ game }: GameCardProps) => {
+const GameCard = ({ game }: { game: Game }) => {
   if (!game || !game.id) {
     return (
       <div className="bg-zinc-900 rounded-lg p-4 text-center text-gray-500">
@@ -32,22 +21,24 @@ const GameCard = ({ game }: GameCardProps) => {
 
   return (
     <div className="bg-zinc-900 rounded-lg shadow-lg transform border highlight-hover overflow-hidden">
-      <div>
+      <Link to={`/game/${game.id}`}>
         <img
           src={game.coverImage || "https://via.placeholder.com/300x150"}
           alt={`${game.name} cover image`}
           className="w-full h-48 object-cover"
         />
-      </div>
+      </Link>
 
       <div className="p-3">
         <div className="flex-1">
           <div className="flex justify-between">
             <div>
-              <h3 className="font-bold text-lg truncate">
-                {game.name || "Unnamed Game"}
-              </h3>
-              <p className="text-xs">{game.category?.name}</p>
+              <Link to={`/game/${game.id}`}>
+                <h3 className="font-bold text-lg truncate">{game.name}</h3>
+              </Link>
+              <Link to={`/search?category=${game.category?.id}`}>
+                <p className="text-xs">{game.category?.name}</p>
+              </Link>
             </div>
             <div>
               <p className="text-sm font-semibold text-green-500">
@@ -61,10 +52,12 @@ const GameCard = ({ game }: GameCardProps) => {
           </div>
           <p className="py-1 text-sm text-zinc-500">{game.shortDescription}</p>
           <div className="flex items-center mt-1">
-            {game.gameTags?.map((tag, index) => (
-              <Tag key={index} color="orange">
-                {tag.tag.name}
-              </Tag>
+            {game.gameTags?.map((tag, index: number) => (
+              <Link to={`/search?tag=${tag.tag.id}`}>
+                <Tag key={index} color="orange">
+                  {tag.tag.name}
+                </Tag>
+              </Link>
             ))}
           </div>
         </div>
