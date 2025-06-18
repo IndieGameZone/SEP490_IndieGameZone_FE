@@ -1,5 +1,6 @@
 import DeveloperDashboardLayout from "@/layouts/developer-dashboard-layout";
 import HomeLayout from "@/layouts/home-layout";
+import DevCommercialPackagePage from "@/pages/developer/commercial-packages/dev-commercial-package-page";
 import DevDashBoardPage from "@/pages/developer/dev-dashboard-page";
 import DevManageGamesPage from "@/pages/developer/manage-games/dev-manage-games-page";
 import DevUploadGamePage from "@/pages/developer/upload-game/dev-upload-game-page";
@@ -17,13 +18,11 @@ const DeveloperDashboardContainer = () => {
           <Route path="/dashboard" element={<DevDashBoardPage />} />
           <Route path="/upload-game" element={<DevUploadGamePage />} />
           <Route
-            path="/upload-game/preview"
-            element={<PreviewUploadPage />}
+            path="/commercial-packages"
+            element={<DevCommercialPackagePage />}
           />
-          <Route
-            path="/upload-game/upload"
-            element={<UploadProcessPage />}
-          />
+          <Route path="/upload-game/preview" element={<PreviewUploadPage />} />
+          <Route path="/upload-game/upload" element={<UploadProcessPage />} />
           <Route path="/manage-games" element={<DevManageGamesPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
