@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { searchGames, GameSearchResponse } from "@/lib/api/game-api";
 import Loader from "@/components/loader";
 import useDebounce from "@/hooks/useDebounce";
+import notFoundIcon from "@/assets/not-found-icon.svg";
 
 interface FilterData {
   price?: number;
@@ -34,8 +35,17 @@ const SearchPage = () => {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const lastGameRef = useRef<HTMLDivElement | null>(null);
 
-  const tabs = ["Most popular", "Hot & Trending", "Best", "Best Seller", "Latest"];
-  const { debouncedValue: debouncedSearchTerm, isDebouncing } = useDebounce(searchTerm, 1000);
+  const tabs = [
+    "Most popular",
+    "Hot & Trending",
+    "Best",
+    "Best Seller",
+    "Latest",
+  ];
+  const { debouncedValue: debouncedSearchTerm, isDebouncing } = useDebounce(
+    searchTerm,
+    1000
+  );
 
   const fetchGames = async (page: number, resetGames = false) => {
     setIsLoading(true);
@@ -53,7 +63,9 @@ const SearchPage = () => {
       const { data, error } = await searchGames(params);
       console.log("API response:", JSON.stringify(data, null, 2));
       if (error) throw new Error(error);
-      const newGames = Array.isArray(data) ? data : (data as GameSearchResponse).items || [];
+      const newGames = Array.isArray(data)
+        ? data
+        : (data as GameSearchResponse).items || [];
       if (resetGames) {
         setGames(newGames);
       } else {
@@ -67,7 +79,10 @@ const SearchPage = () => {
     }
   };
 
-  const memoizedFetchGames = useCallback(fetchGames, [debouncedSearchTerm, filters]);
+  const memoizedFetchGames = useCallback(fetchGames, [
+    debouncedSearchTerm,
+    filters,
+  ]);
 
   useEffect(() => {
     if (isLoading || !hasMore) return;
@@ -138,23 +153,45 @@ const SearchPage = () => {
           />
         </div>
         <div>
-          <div className="py-4">
-            <span className="font-bold text-3xl">Popular Genres</span>
-          </div>
-          <div className="grid grid-cols-4 gap-3">
-            <GenreCard title="Open world" to="/search?genre=1" background={genre1} />
-            <GenreCard title="Adventure" to="/search?genre=2" background={genre2} />
-            <GenreCard title="Action RPG" to="/search?genre=3" background={genre3} />
-            <GenreCard title="FPS" to="/search?genre=4" background={genre4} />
-          </div>
-          <div className="py-2">
-            <div className="py-4 flex flex-col gap-1.5">
-              <span className="text-xl text-gray-400 font-semibold">
-                Search results for <span className="text-orange-300">{searchTerm || "SEARCH KEY"}</span>
-              </span>
-              <span>{games.length} results match your search.</span>
+          {searchTerm ? (
+            <div className="py-2">
+              <div className="py-4 flex flex-col gap-1.5">
+                <span className="text-xl text-gray-400 font-semibold">
+                  Search results for{" "}
+                  <span className="text-orange-300">
+                    {searchTerm}
+                  </span>
+                </span>
+                <span>{games.length} results match your search.</span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="py-4">
+              <h2 className="font-bold text-3xl py-2">Popular Genres</h2>
+              <div className="grid grid-cols-4 gap-3">
+                <GenreCard
+                  title="Open world"
+                  to="/search?genre=1"
+                  background={genre1}
+                />
+                <GenreCard
+                  title="Adventure"
+                  to="/search?genre=2"
+                  background={genre2}
+                />
+                <GenreCard
+                  title="Action RPG"
+                  to="/search?genre=3"
+                  background={genre3}
+                />
+                <GenreCard
+                  title="FPS"
+                  to="/search?genre=4"
+                  background={genre4}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </MaxWidthWrapper>
       <SearchCard onFilterChange={handleFilterChange} />
@@ -183,19 +220,32 @@ const SearchPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {(isDebouncing || isLoading) && (
               <div className="col-span-full flex justify-center items-center">
-                <Loader /> 
+                <Loader />
               </div>
             )}
-            {!isDebouncing && !isLoading && games.length > 0 && games.map((game, index) => (
-              <div key={game.id || index} ref={index === games.length - 1 ? lastGameRef : null}>
-                <GameCard game={game} />
-              </div>
-            ))}
+            {!isDebouncing &&
+              !isLoading &&
+              games.length > 0 &&
+              games.map((game, index) => (
+                <div
+                  key={game.id || index}
+                  ref={index === games.length - 1 ? lastGameRef : null}
+                >
+                  <GameCard game={game} />
+                </div>
+              ))}
             {!isDebouncing && !isLoading && !hasMore && games.length > 0 && (
-              <div className="col-span-full text-center text-gray-500">No more games to load</div>
+              <div className="col-span-full text-center text-zinc-500 py-10">
+                No more games to load
+              </div>
             )}
             {!isDebouncing && !isLoading && games.length === 0 && (
-              <div className="col-span-full text-center text-gray-500">No games found matching your criteria</div>
+              <div className="col-span-full flex flex-col items-center py-10 gap-5">
+                <img src={notFoundIcon} />
+                <div className="text-zinc-500 font-semibold text-lg">
+                  No games found matching your criteria
+                </div>
+              </div>
             )}
           </div>
         </div>

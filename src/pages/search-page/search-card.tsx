@@ -85,7 +85,7 @@ const SearchCard = ({ onFilterChange }: SearchCardProps) => {
 
   return (
     <MaxWidthWrapper>
-      <div className="bg-zinc-900 flex justify-between px-10 py-5 rounded">
+      <div className="bg-zinc-900 flex justify-between px-10 py-5 rounded border border-zinc-700">
         <div>
           <div className="flex gap-2 items-center mb-4">
             <FaFilter size={16} />
