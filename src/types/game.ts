@@ -1,6 +1,8 @@
 import { UploadFile } from "antd";
 import { Category } from "./category";
 import { Tag } from "./tag";
+import { Language } from "./language";
+import { AgeRestriction } from "./age-restriction";
 
 export type Image = {
     id: string;
@@ -61,4 +63,15 @@ export type Game = {
     visibility: "Draft" | "Restricted" | "Public"
     category: Category;
     gameTags: { tag: Tag }[];
+    gameLanguages: { language: Language }[];
+    gameImages: GameImage[],
+    ageRestriction: AgeRestriction;
+    averageSession: number;
+    videoLink: string;
+    gamePlatforms: any[];
+}
+
+type GameImage = {
+    id: string;
+    image: string;
 }

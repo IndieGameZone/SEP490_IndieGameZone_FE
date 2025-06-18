@@ -84,7 +84,7 @@ type GameSearchParams = {
   pageNumber?: number;
   pageSize?: number;
   price?: number;
-  Tags?: string[]; 
+  Tags?: string[];
   Languages?: string[];
   Platforms?: string[];
 };
@@ -114,9 +114,17 @@ export const searchGames = async (
 
     const queryString = searchParams.toString();
     const url = queryString ? `/api/active-games?${queryString}` : "/api/active-games";
-    console.log("Request URL:", url); 
 
     const { data } = await axiosClient.get<GameSearchResponse>(url);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const getGameById = async (gameId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/games/${gameId}`);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
