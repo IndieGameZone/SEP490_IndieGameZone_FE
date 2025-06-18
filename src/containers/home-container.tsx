@@ -6,6 +6,7 @@ import VerifyEmailPage from "@/pages/verify-email-page";
 import SearchPage from "@/pages/search-page/search-page";
 import ForumPage from "@/pages/forum-page/forum-page";
 import ViewProfilePage from "@/pages/user-profile/view-profile-page";
+import DetailGamePages from "@/pages/detail-game";
 
 const HomeContainer = () => {
   return (
@@ -15,6 +16,7 @@ const HomeContainer = () => {
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/profile/:userId" element={<ViewProfilePage />} />
         <Route path="/search/*" element={<SearchPage />} />
+        <Route path="/detail-game/:gameId" element={<DetailGamePages />} />{" "}
         <Route path="/forum/*" element={<ForumPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

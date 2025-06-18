@@ -1,85 +1,124 @@
-import { axiosClient } from './config/axios-client';
+import { Game } from "@/types/game";
+import { axiosClient } from "./config/axios-client";
 
-export const handleApiError = (error: any) => {
-    try {
-        const errorMessage = error.response?.data.message || error?.message || 'An unexpected error occurred.';
-        const data = null;
-        return { error: errorMessage, data };
-    } catch (err) {
-        throw new Error('An unexpected error occurred.');
-    }
+export const handleApiError = (error: any): { error: string | null; data: any; success: boolean } => {
+  try {
+    const errorMessage = error.response?.data.message || error?.message || "An unexpected error occurred.";
+    const data = null;
+    return { error: errorMessage, data, success: false };
+  } catch (err) {
+    return { error: "An unexpected error occurred.", data: null, success: false };
+  }
 };
 
 type AddGameFilesRequest = {
-    platformId: string;
-    file: string;
+  platformId: string;
+  file: string;
 }[];
 
 export const addGameFiles = async (gameId: string, request: AddGameFilesRequest) => {
-    try {
-        const { data } = await axiosClient.post(`/api/games/${gameId}/game-platforms`, request);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
-}
+  try {
+    const { data } = await axiosClient.post(`/api/games/${gameId}/game-platforms`, request);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 
 type AddGameRequest = {
-    name: string;
-    coverImage: string;
-    videoLink: string;
-    shortDescription: string;
-    installInstruction: string;
-    description: string;
-    allowDonation: boolean;
-    status: string;
-    visibility: string;
-    price: number;
-    averageSession: number;
-    ageRestrictionId: string;
-    categoryId: string;
-    languageIds: string[];
-    tagIds: string[];
-    gameImages: string[];
-}
+  name: string;
+  coverImage: string;
+  videoLink: string;
+  shortDescription: string;
+  installInstruction: string;
+  description: string;
+  allowDonation: boolean;
+  status: string;
+  visibility: string;
+  price: number;
+  averageSession: number;
+  ageRestrictionId: string;
+  categoryId: string;
+  languageIds: string[];
+  tagIds: string[];
+  gameImages: string[];
+};
 
 export const addGame = async (developerId: string, request: AddGameRequest) => {
-    const formData = new FormData();
-    formData.append("Name", request.name);
-    formData.append("CoverImage", request.coverImage);
-    formData.append("VideoLink", request.videoLink);
-    formData.append("ShortDescription", request.shortDescription);
-    formData.append("InstallInstruction", request.installInstruction);
-    formData.append("Description", request.description);
-    formData.append("AllowDonation", request.allowDonation ? "true" : "false");
-    formData.append("Status", request.status);
-    formData.append("Visibility", request.visibility);
-    formData.append("categoryId", request.categoryId);
-    formData.append("Price", request.price + "");
-    formData.append("AverageSession", request.averageSession + "");
-    formData.append("AgeRestrictionId", request.ageRestrictionId);
-    request.languageIds.forEach(x => {
-        formData.append("LanguageIds", x);
-    })
-    request.tagIds.forEach(x => {
-        formData.append("TagIds", x)
-    })
-    request.gameImages.forEach(x => {
-        formData.append("GameImages", x)
-    })
-    try {
-        const { data } = await axiosClient.post(`/api/users/${developerId}/games`, formData);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
-}
+  const formData = new FormData();
+  formData.append("Name", request.name);
+  formData.append("CoverImage", request.coverImage);
+  formData.append("VideoLink", request.videoLink);
+  formData.append("ShortDescription", request.shortDescription);
+  formData.append("InstallInstruction", request.installInstruction);
+  formData.append("Description", request.description);
+  formData.append("AllowDonation", request.allowDonation ? "true" : "false");
+  formData.append("Status", request.status);
+  formData.append("Visibility", request.visibility);
+  formData.append("categoryId", request.categoryId);
+  formData.append("Price", request.price + "");
+  formData.append("AverageSession", request.averageSession + "");
+  formData.append("AgeRestrictionId", request.ageRestrictionId);
+  request.languageIds.forEach((x) => formData.append("LanguageIds", x));
+  request.tagIds.forEach((x) => formData.append("TagIds", x));
+  request.gameImages.forEach((x) => formData.append("GameImages", x));
+  try {
+    const { data } = await axiosClient.post(`/api/users/${developerId}/games`, formData);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 
 export const getGamesByDeveloperId = async (developerId: string) => {
-    try {
-        const { data } = await axiosClient.get(`/api/users/${developerId}/games`);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+  try {
+    const { data } = await axiosClient.get(`/api/users/${developerId}/games`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+type GameSearchParams = {
+  searchTerm?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  price?: number;
+  Tags?: string[]; 
+  Languages?: string[];
+  Platforms?: string[];
+};
+
+export interface GameSearchResponse {
+  items: Game[];
+  totalCount?: number;
+  pageNumber?: number;
+  pageSize?: number;
+  totalPages?: number;
 }
+
+export const searchGames = async (
+  params: GameSearchParams = {}
+): Promise<{ error: string | null; data: GameSearchResponse; success: boolean }> => {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params.searchTerm) searchParams.append("SearchTerm", params.searchTerm);
+    if (params.pageNumber !== undefined) searchParams.append("PageNumber", params.pageNumber.toString());
+    if (params.pageSize !== undefined) searchParams.append("PageSize", params.pageSize.toString());
+    if (params.price !== undefined) searchParams.append("Price", params.price.toString());
+    if (params.Tags && params.Tags.length > 0) params.Tags.forEach((id) => searchParams.append("Tags", id)); // Sửa thành Tags
+    if (params.Languages && params.Languages.length > 0)
+      params.Languages.forEach((id) => searchParams.append("Languages", id));
+    if (params.Platforms && params.Platforms.length > 0)
+      params.Platforms.forEach((id) => searchParams.append("Platforms", id));
+
+    const queryString = searchParams.toString();
+    const url = queryString ? `/api/active-games?${queryString}` : "/api/active-games";
+    console.log("Request URL:", url); 
+
+    const { data } = await axiosClient.get<GameSearchResponse>(url);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

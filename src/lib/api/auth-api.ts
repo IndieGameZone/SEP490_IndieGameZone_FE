@@ -8,10 +8,10 @@ export interface ApiResponse {
 
 export const handleApiError = (error: any): ApiResponse => {
   try {
-    const errorMessage = error.response?.data.message || error?.message || 'An unexpected error occurred.';
+    const errorMessage = error.response?.data.message || error?.message || "An unexpected error occurred.";
     return { error: errorMessage, data: error.response?.data, success: false };
   } catch (err) {
-    return { error: 'An unexpected error occurred.', data: null, success: false };
+    return { error: "An unexpected error occurred.", data: null, success: false };
   }
 };
 
@@ -22,7 +22,7 @@ type RegisterRequest = {
   password: string;
   confirmPassword: string;
   role: string;
-}
+};
 
 export const register = async (request: RegisterRequest) => {
   try {
@@ -31,12 +31,12 @@ export const register = async (request: RegisterRequest) => {
   } catch (error: any) {
     return handleApiError(error);
   }
-}
+};
 
 type LoginRequest = {
-  userNameOrEmail: string,
-  password: string
-}
+  userNameOrEmail: string;
+  password: string;
+};
 
 export const login = async (request: LoginRequest) => {
   try {
@@ -45,41 +45,39 @@ export const login = async (request: LoginRequest) => {
   } catch (error: any) {
     return handleApiError(error);
   }
-}
+};
 
 type GoogleLoginRequest = {
   idToken: string;
   birthday: string;
   role: string;
-}
+};
 
 export const googleLogin = async (request: GoogleLoginRequest) => {
   try {
-    // Wrap request trong dto object theo yêu cầu của backend
-    const requestBody = { dto: request };
-    const result = await axiosClient.post(`/api/authentications/google-login`, requestBody);
+    const result = await axiosClient.post(`/api/authentications/google-login`, request);
     return { error: null, data: result.data, success: true };
   } catch (error: any) {
     return handleApiError(error);
   }
-}
+};
 
 export const prepareRegisterData = (formValues: any) => {
   return {
     email: formValues.email,
     userName: formValues.userName,
-    birthday: formValues.birthday?.format('YYYY-MM-DD') || formValues.birthday,
+    birthday: formValues.birthday?.format("YYYY-MM-DD") || formValues.birthday,
     password: formValues.password,
-    confirmPassword: formValues.confirmPassword || formValues['Repeat password'],
-    role: formValues.Role || formValues.role || 'Player'
+    confirmPassword: formValues.confirmPassword || formValues["Repeat password"],
+    role: formValues.Role || formValues.role || "Player",
   };
 };
 
 export const prepareGoogleLoginData = (idToken: string, formValues: any) => {
   return {
     idToken: idToken,
-    birthday: formValues.birthday?.format('YYYY-MM-DD') || formValues.birthday,
-    role: formValues.Role || formValues.role || 'Player'
+    birthday: formValues.birthday?.format("YYYY-MM-DD") || formValues.birthday,
+    role: formValues.Role || formValues.role || "Player",
   };
 };
 
@@ -90,7 +88,7 @@ export const getUserInfo = async () => {
   } catch (error: any) {
     return handleApiError(error);
   }
-}
+};
 
 export const verifyEmail = async (token: string, userId: string) => {
   try {
@@ -99,15 +97,15 @@ export const verifyEmail = async (token: string, userId: string) => {
   } catch (error: any) {
     return handleApiError(error);
   }
-}
+};
 
 export const resendVerificationemail = async (email: string) => {
   try {
     const result = await axiosClient.post(`/api/authentications/resend-confirmation`, {
-      email: email
+      email: email,
     });
     return { error: null, data: result.data, success: true };
   } catch (error: any) {
     return handleApiError(error);
   }
-}
+};
