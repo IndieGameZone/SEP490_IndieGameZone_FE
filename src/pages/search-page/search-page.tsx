@@ -59,9 +59,9 @@ const SearchPage = () => {
         Languages: filters.Languages,
         Platforms: filters.Platforms,
       };
-      console.log("Final params sent to API:", JSON.stringify(params, null, 2));
+      // console.log("Final params sent to API:", JSON.stringify(params, null, 2));
       const { data, error } = await searchGames(params);
-      console.log("API response:", JSON.stringify(data, null, 2));
+      // console.log("API response:", JSON.stringify(data, null, 2));
       if (error) throw new Error(error);
       const newGames = Array.isArray(data)
         ? data
@@ -73,7 +73,7 @@ const SearchPage = () => {
       }
       setHasMore(newGames.length === pageSize);
     } catch (error) {
-      console.error("Error fetching games:", error);
+      // console.error("Error fetching games:", error);
     } finally {
       setIsLoading(false);
     }
@@ -125,7 +125,7 @@ const SearchPage = () => {
   };
 
   const handleFilterChange = useCallback((filterData: FilterData) => {
-    console.log("Filter changed:", filterData);
+    // console.log("Filter changed:", filterData);
     setFilters(filterData);
   }, []);
 
@@ -228,7 +228,7 @@ const SearchPage = () => {
               games.length > 0 &&
               games.map((game, index) => (
                 <div
-                  key={game.id || index}
+                  key={game.id}
                   ref={index === games.length - 1 ? lastGameRef : null}
                 >
                   <GameCard game={game} />

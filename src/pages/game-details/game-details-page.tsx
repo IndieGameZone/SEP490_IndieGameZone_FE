@@ -14,18 +14,18 @@ import {
 import { useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
 import { FaFlag, FaInfoCircle, FaLink, FaStar } from "react-icons/fa";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
-import devAvatar from "@/assets/mock/dev-avatar.webp";
 import { IoIosChatboxes, IoMdMore } from "react-icons/io";
 import GameOverView from "./game-overview";
 import GameReviews from "./game-reviews";
 import GameForum from "./game-forum";
+import FaultTolerantImage from "@/components/fault-tolerant-image";
 
 const GameDetailsPage = () => {
   const { gameId } = useParams();
@@ -116,7 +116,7 @@ const GameDetailsPage = () => {
       <ScrollToTop />
       <div className="grid grid-cols-3 gap-3 bg-zinc-900">
         {game?.coverImage ? (
-          <img
+          <FaultTolerantImage
             src={game.coverImage}
             alt="game cover image"
             className="aspect-4/3 object-cover rounded w-full highlight-hover cursor-pointer"
@@ -145,14 +145,17 @@ const GameDetailsPage = () => {
           </div>
 
           <div className="my-2 flex gap-3 items-center justify-between bg-zinc-900 drop-shadow rounded-lg p-2">
-            <div className="flex items-center gap-3">
-              {devAvatar ? (
-                <Avatar src={devAvatar} />
+            <Link
+              to={`/profile/${game.developers.id}`}
+              className="flex items-center gap-3"
+            >
+              {game.developers.avatar ? (
+                <Avatar src={game.developers.avatar} />
               ) : (
                 <Avatar icon={<CiUser />} />
               )}
-              <p className="font-semibold">Username</p>
-            </div>
+              <p className="font-semibold">{game.developers.userName}</p>
+            </Link>
 
             <div>
               <Button style={{ width: 150 }}>Follow</Button>

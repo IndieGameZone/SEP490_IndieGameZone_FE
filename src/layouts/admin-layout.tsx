@@ -49,6 +49,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       },
     },
   ];
+  
   const items: MenuProps["items"] = [
     {
       key: "/admin/dashboard",
@@ -139,7 +140,6 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         token: {
           colorPrimary: "#FF6600",
           borderRadius: 2,
-          colorLink: "#FFF",
         },
       }}
     >

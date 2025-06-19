@@ -3,6 +3,8 @@ import { Category } from "./category";
 import { Tag } from "./tag";
 import { Language } from "./language";
 import { AgeRestriction } from "./age-restriction";
+import { Platform } from "./platform";
+import { User } from "./user";
 
 export type Image = {
     id: string;
@@ -32,15 +34,13 @@ export type GameMediaAssets = {
 };
 
 export type GameFiles = {
-    files: GameFile[];
+    files: {
+        displayName: string;
+        file: UploadFile[];
+        platformId: string;
+        fileSize: number;
+    }[];
     installInstruction: string;
-}
-
-export type GameFile = {
-    displayName: string;
-    file: UploadFile[];
-    platformId: string;
-    fileSize: number;
 }
 
 export type GameData = {
@@ -68,10 +68,19 @@ export type Game = {
     ageRestriction: AgeRestriction;
     averageSession: number;
     videoLink: string;
-    gamePlatforms: any[];
+    gamePlatforms: GameFile[];
+    developers: User;
+    createdAt: string;
 }
 
 type GameImage = {
     id: string;
     image: string;
+}
+
+type GameFile = {
+    id: string;
+    displayName: string;
+    size: number;
+    platform: Platform
 }

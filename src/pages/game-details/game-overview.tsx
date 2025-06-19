@@ -42,7 +42,11 @@ const GameOverView = () => {
           )}
 
           <h3 className="text-xl font-bold my-2">Description</h3>
-          <TiptapView value={game.description} />
+          {game.description ? (
+            <TiptapView value={game.description} />
+          ) : (
+            <p className="text-zinc-400">No description</p>
+          )}
           <hr className="mt-10 mb-5 border-zinc-700" />
           <div className="flex justify-between">
             <div>
@@ -56,7 +60,7 @@ const GameOverView = () => {
                   </tr>
                   <tr>
                     <td className="pe-5">Released on</td>
-                    <td className="font-semibold">{formatDate(new Date())}</td>
+                    <td className="font-semibold">{formatDate(new Date(game.createdAt))}</td>
                   </tr>
                 </tbody>
               </table>
@@ -66,7 +70,7 @@ const GameOverView = () => {
               <div className="bg-orange-900 py-3 px-5 text-2xl font-bold text-center text-orange-200 border-e border-zinc-700">
                 {game.ageRestriction.code}
               </div>
-              <p className="text-xs p-3 bg-zinc-800 font-semibold text-zinc-300">
+              <p className="text-xs p-3 bg-zinc-900 font-semibold text-zinc-300">
                 {game.ageRestriction.description}
               </p>
             </div>
@@ -108,23 +112,23 @@ const GameOverView = () => {
                         key={`game-file-${index}`}
                         className="flex gap-2 items-center p-2 bg-zinc-800 rounded"
                       >
-                        {file.platformId ==
+                        {file.platform.id ==
                         defaultPlatforms.windowsPlatformId ? (
                           <FaWindows />
-                        ) : file.platformId ==
+                        ) : file.platform.id ==
                           defaultPlatforms.macOsPlatformId ? (
                           <FaApple />
-                        ) : file.platformId ==
+                        ) : file.platform.id ==
                           defaultPlatforms.linuxPlatformId ? (
                           <FaLinux />
                         ) : (
                           <FaFileArchive />
                         )}
                         <span className="font-semibold max-w-50 text-ellipsis overflow-clip">
-                          {file.displayName}
+                          {file.displayName ? file.displayName : "unnamed file"}
                         </span>
                         <span className="text-sm text-zinc-400">
-                          ({(file.fileSize / 1024 / 1024).toFixed(1)} MB)
+                          ({(file.size / 1024 / 1024).toFixed(1)} MB)
                         </span>
                       </div>
                     );

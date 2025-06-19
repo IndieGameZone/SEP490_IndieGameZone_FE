@@ -1,7 +1,10 @@
+import { formatCurrencyVND } from "@/lib/currency";
 import { Game } from "@/types/game";
 import { Tag } from "antd";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import imagePlaceholder from "@/assets/image-placeholder.webp";
+import FaultTolerantImage from "@/components/fault-tolerant-image";
 
 const GameCard = ({ game }: { game: Game }) => {
   if (!game || !game.id) {
@@ -14,16 +17,11 @@ const GameCard = ({ game }: { game: Game }) => {
 
   const rating = 4.5;
 
-  const displayPrice =
-    game.priceAfterDiscount === 0
-      ? "Free"
-      : `$${game.priceAfterDiscount || game.price || 0}`;
-
   return (
     <div className="bg-zinc-900 rounded-lg shadow-lg transform border highlight-hover overflow-hidden">
       <Link to={`/game/${game.id}`}>
-        <img
-          src={game.coverImage || "https://via.placeholder.com/300x150"}
+        <FaultTolerantImage
+          src={game.coverImage || imagePlaceholder}
           alt={`${game.name} cover image`}
           className="w-full h-48 object-cover"
         />
@@ -37,12 +35,12 @@ const GameCard = ({ game }: { game: Game }) => {
                 <h3 className="font-bold text-lg truncate">{game.name}</h3>
               </Link>
               <Link to={`/search?category=${game.category?.id}`}>
-                <p className="text-xs">{game.category?.name}</p>
+                <p className="text-xs hover:underline">{game.category?.name}</p>
               </Link>
             </div>
             <div>
               <p className="text-sm font-semibold text-green-500">
-                {displayPrice}
+                {game.price == 0 ? "Free" : formatCurrencyVND(game.price)}
               </p>
               <div className="flex items-center gap-2">
                 <span>{rating}</span>
@@ -53,7 +51,7 @@ const GameCard = ({ game }: { game: Game }) => {
           <p className="py-1 text-sm text-zinc-500">{game.shortDescription}</p>
           <div className="flex items-center mt-1">
             {game.gameTags?.map((tag, index: number) => (
-              <Link to={`/search?tag=${tag.tag.id}`}>
+              <Link to={`/search?tag=${tag.tag.id}`} key={`game-tag-${index}`}>
                 <Tag key={index} color="orange">
                   {tag.tag.name}
                 </Tag>
