@@ -1,19 +1,16 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "antd";
-import GenreCard from "../home-page/genre-card";
-import genre1 from "@/assets/genre-1.jpg";
-import genre2 from "@/assets/genre-2.jpg";
-import genre3 from "@/assets/genre-3.jpg";
-import genre4 from "@/assets/genre-4.jpg";
+
 import SearchCard from "./search-card";
 import GameCard from "./game-card";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
-import { FaFilter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { searchGames, GameSearchResponse } from "@/lib/api/game-api";
 import Loader from "@/components/loader";
 import useDebounce from "@/hooks/useDebounce";
 import notFoundIcon from "@/assets/not-found-icon.svg";
+import PopularGenresSection from "./popular-genres-section";
+import { MdOutlineSort } from "react-icons/md";
 
 interface FilterData {
   price?: number;
@@ -158,46 +155,20 @@ const SearchPage = () => {
               <div className="py-4 flex flex-col gap-1.5">
                 <span className="text-xl text-gray-400 font-semibold">
                   Search results for{" "}
-                  <span className="text-orange-300">
-                    {searchTerm}
-                  </span>
+                  <span className="text-orange-300">{searchTerm}</span>
                 </span>
                 <span>{games.length} results match your search.</span>
               </div>
             </div>
           ) : (
-            <div className="py-4">
-              <h2 className="font-bold text-3xl py-2">Popular Genres</h2>
-              <div className="grid grid-cols-4 gap-3">
-                <GenreCard
-                  title="Open world"
-                  to="/search?genre=1"
-                  background={genre1}
-                />
-                <GenreCard
-                  title="Adventure"
-                  to="/search?genre=2"
-                  background={genre2}
-                />
-                <GenreCard
-                  title="Action RPG"
-                  to="/search?genre=3"
-                  background={genre3}
-                />
-                <GenreCard
-                  title="FPS"
-                  to="/search?genre=4"
-                  background={genre4}
-                />
-              </div>
-            </div>
+            <PopularGenresSection />
           )}
         </div>
       </MaxWidthWrapper>
       <SearchCard onFilterChange={handleFilterChange} />
       <MaxWidthWrapper className="flex gap-3">
         <div className="flex items-center gap-2">
-          <FaFilter />
+          <MdOutlineSort />
           <span className="text-xs">Sort by</span>
         </div>
         {tabs.map((tab) => (

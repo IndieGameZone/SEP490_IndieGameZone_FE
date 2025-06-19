@@ -1,17 +1,57 @@
 import FaultTolerantImage from "@/components/fault-tolerant-image";
+import { formatCurrencyVND } from "@/lib/currency";
 import { Game } from "@/types/game";
+import { Tag } from "antd";
+import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const GameCard = ({ game }: { game: Game }) => {
+  const rating = 4.5;
+
   return (
-    <Link to={`/dev/game/${game.id}`}>
-      <div className="bg-zinc-800 rounded overflow-hidden highlight-hover">
-        <FaultTolerantImage src={game.coverImage} alt="" className="aspect-4/3 object-cover" />
-        <div className="p-2">
-          <p className="font-semibold">{game.name}</p>
+    <div className="bg-zinc-900 rounded-lg shadow-lg border highlight-hover overflow-hidden">
+      <Link to={`/game/${game.id}`}>
+        <FaultTolerantImage
+          src={game.coverImage}
+          alt={`${game.name} cover image`}
+          className="w-full h-48 object-cover"
+        />
+      </Link>
+
+      <div className="p-3">
+        <div className="flex-1">
+          <div className="flex justify-between">
+            <div>
+              <Link to={`/game/${game.id}`}>
+                <h3 className="font-bold text-lg truncate">{game.name}</h3>
+              </Link>
+              <Link to={`/search?category=${game.category?.id}`}>
+                <p className="text-xs hover:underline">{game.category?.name}</p>
+              </Link>
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-green-500">
+                {game.price == 0 ? "Free" : formatCurrencyVND(game.price)}
+              </p>
+              <div className="flex items-center gap-2">
+                <span>{rating}</span>
+                <FaStar />
+              </div>
+            </div>
+          </div>
+          <p className="py-1 text-sm text-zinc-500">{game.shortDescription}</p>
+          <div className="flex items-center mt-1">
+            {game.gameTags?.map((tag, index: number) => (
+              <Link to={`/search?tag=${tag.tag.id}`} key={`game-tag-${index}`}>
+                <Tag key={index} color="orange">
+                  {tag.tag.name}
+                </Tag>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

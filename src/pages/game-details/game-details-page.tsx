@@ -26,11 +26,13 @@ import GameOverView from "./game-overview";
 import GameReviews from "./game-reviews";
 import GameForum from "./game-forum";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
+import useAuthStore from "@/store/use-auth-store";
 
 const GameDetailsPage = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
   const { fetchGameById, loading, error, game } = useGameStore();
+  const { profile } = useAuthStore();
   const [index, setIndex] = useState(-1);
 
   const tabItems: TabsProps["items"] = [
@@ -76,6 +78,7 @@ const GameDetailsPage = () => {
       label: <div>Report user</div>,
       key: "1",
       icon: <FaFlag />,
+      disabled: profile?.id == game?.developers.id
     },
   ];
 
@@ -158,7 +161,12 @@ const GameDetailsPage = () => {
             </Link>
 
             <div>
-              <Button style={{ width: 150 }}>Follow</Button>
+              <Button
+                style={{ width: 150 }}
+                disabled={profile?.id == game.developers.id}
+              >
+                Follow
+              </Button>
               <Dropdown menu={{ items: devProfileItems }}>
                 <Button icon={<IoMdMore />}></Button>
               </Dropdown>

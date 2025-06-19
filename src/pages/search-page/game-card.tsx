@@ -3,7 +3,6 @@ import { Game } from "@/types/game";
 import { Tag } from "antd";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import imagePlaceholder from "@/assets/image-placeholder.webp";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 
 const GameCard = ({ game }: { game: Game }) => {
@@ -18,10 +17,10 @@ const GameCard = ({ game }: { game: Game }) => {
   const rating = 4.5;
 
   return (
-    <div className="bg-zinc-900 rounded-lg shadow-lg transform border highlight-hover overflow-hidden">
+    <div className="bg-zinc-900 rounded-lg shadow-lg border highlight-hover overflow-hidden">
       <Link to={`/game/${game.id}`}>
         <FaultTolerantImage
-          src={game.coverImage || imagePlaceholder}
+          src={game.coverImage}
           alt={`${game.name} cover image`}
           className="w-full h-48 object-cover"
         />
