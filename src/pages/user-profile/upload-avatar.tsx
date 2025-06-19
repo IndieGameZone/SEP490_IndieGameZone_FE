@@ -9,6 +9,7 @@ import { FaUpload } from "react-icons/fa";
 const UploadAvatar = () => {
   const [imageUrl, setImageUrl] = useState("");
   const { profile, rerender } = useAuthStore();
+  const [isUploading, setIsUploading] = useState(false);
   const handleBeforeUpload = async (file: File) => {
     if (!profile) return;
     const isImage = file.type.startsWith("image/");
@@ -25,10 +26,12 @@ const UploadAvatar = () => {
       return Upload.LIST_IGNORE;
     }
     var url = imageUrl;
+    setIsUploading(true);
     if (!url) {
       const result = await uploadFile(file);
       if (result.error) {
         message.error("Failed to upload image. Please try again.");
+        setIsUploading(false);
         return false;
       } else {
         setImageUrl(result.data);
@@ -38,12 +41,13 @@ const UploadAvatar = () => {
 
     const updateAvatarResult = await updateUser(profile.id, {
       birthday: profile.birthday,
-      fullName: profile.fullName ?? "",
+      fullName: profile.fullname ?? "",
       avatar: url,
       bankAccount: profile.bankAccount,
       bankName: profile.bankName,
       bio: profile.bio,
       facebookLink: profile.facebookLink,
+      youtubeChannelLink: profile.youtubeChannelLink,
     });
     if (updateAvatarResult.error) {
       message.error("Failed to upload image. Please try again.");
@@ -53,6 +57,7 @@ const UploadAvatar = () => {
         rerender();
       }, 1000);
     }
+    setIsUploading(false);
     return false;
   };
   return (
@@ -68,7 +73,7 @@ const UploadAvatar = () => {
           showUploadList={false}
           accept=".png,.jpeg,.jpg"
         >
-          <button className="size-[100px] flex justify-center items-center border border-zinc-500 hover:border-orange-500 cursor-pointer rounded-full duration-300 hover:text-orange-500">
+          <button className="size-[100px] flex justify-center items-center border border-zinc-500 hover:border-orange-500 cursor-pointer rounded-full duration-300 hover:text-orange-500" disabled={isUploading}>
             <FaUpload className="size-8" />
           </button>{" "}
         </Upload>
@@ -78,7 +83,7 @@ const UploadAvatar = () => {
         showUploadList={false}
         accept="image/*"
       >
-        <Button className="mt-3">Upload Image</Button>
+        <Button className="mt-3" loading={isUploading}>Upload Image</Button>
       </Upload>
       <p className="py-1 text-zinc-500 text-sm">Supported format: JPG, PNG</p>
     </div>

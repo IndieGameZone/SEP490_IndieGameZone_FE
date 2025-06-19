@@ -66,11 +66,11 @@ const DetailUser: React.FC = () => {
   };
 
   const handleEdit = () => {
-    message.info(`Edit user: ${user?.fullName || user?.userName}`);
+    message.info(`Edit user: ${user?.fullname || user?.userName}`);
   };
 
   const handleDelete = () => {
-    const displayName = user?.fullName || user?.userName;
+    const displayName = user?.fullname || user?.userName;
     message.info(`Delete user: ${displayName}`);
   };
 
@@ -137,7 +137,7 @@ const DetailUser: React.FC = () => {
               <div className="flex flex-col md:flex-row justify-between items-start mb-4">
                 <div>
                   <Title level={3} className="mb-1">
-                    {user.fullName || user.userName}
+                    {user.fullname || user.userName}
                   </Title>
                   <Text type="secondary" className="text-lg">
                     @{user.userName}

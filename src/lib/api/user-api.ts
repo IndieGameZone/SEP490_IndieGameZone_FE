@@ -39,11 +39,12 @@ type UpdateUserRequest = {
   facebookLink?: string;
   bankName?: string;
   bankAccount?: string;
+  youtubeChannelLink?: string;
 }
 
 export const updateUser = async (userId: string, request: UpdateUserRequest) => {
   const formData = new FormData();
-  formData.append("FullName", request.fullName);
+  formData.append("Fullname", request.fullName);
   if (request.avatar)
     formData.append("Avatar", request.avatar);
   if (request.bio)
@@ -53,8 +54,16 @@ export const updateUser = async (userId: string, request: UpdateUserRequest) => 
     formData.append("BankName", request.bankName);
   if (request.bankAccount)
     formData.append("BankAccount", request.bankAccount);
+  if (request.facebookLink)
+    formData.append("FacebookLink", request.facebookLink);
+  if (request.youtubeChannelLink)
+    formData.append("YoutubeChannelLink", request.youtubeChannelLink);
   try {
-    const { data } = await axiosClient.put(`/api/users/${userId}`, request);
+    const { data } = await axiosClient.put(`/api/users/${userId}`, request, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return { error: null, data, success: true };
   } catch (error) {
     return handleApiError(error);

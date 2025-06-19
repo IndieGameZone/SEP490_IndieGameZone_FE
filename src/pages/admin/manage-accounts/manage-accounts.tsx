@@ -55,11 +55,11 @@ const ManageAccounts: React.FC = () => {
   };
 
   const handleEdit = (user: User) => {
-    message.info(`Edit user: ${user.fullName || user.userName}`);
+    message.info(`Edit user: ${user.fullname || user.userName}`);
   };
 
   const handleDelete = (user: User) => {
-    const displayName = user.fullName || user.userName;
+    const displayName = user.fullname || user.userName;
     Modal.confirm({
       title: 'Are you sure?',
       content: `Do you want to delete user "${displayName}"?`,
@@ -235,7 +235,7 @@ const ManageAccounts: React.FC = () => {
 
   const filteredUsers = users.filter(user => {
     const searchLower = searchText.toLowerCase();
-    const fullName = user.fullName || '';
+    const fullName = user.fullname || '';
     const email = user.email || '';
     const userName = user.userName || '';
     

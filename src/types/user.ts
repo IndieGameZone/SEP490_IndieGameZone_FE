@@ -10,11 +10,12 @@ export type User = {
     isActive: boolean;
     joinedDate: string;
     lastLogin: string;
-    fullName?: string;
+    fullname?: string;
     avatar?: string;
     bio?: string;
     birthday: string;
     facebookLink?: string;
+    youtubeChannelLink?: string;
     bankName?: string;
     bankAccount?: string;
     role: {

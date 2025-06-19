@@ -17,6 +17,8 @@ import { RuleObject } from "antd/es/form";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { updateUser } from "@/lib/api/user-api";
+import { isValidYouTubeChannelUrl } from "@/lib/url";
+import { FaFacebookSquare, FaYoutube } from "react-icons/fa";
 
 type FieldType = {
   username: string;
@@ -27,6 +29,7 @@ type FieldType = {
   showAdultContent: boolean;
   bio?: string;
   facebookLink?: string;
+  youtubeChannelLink?: string;
 };
 
 const validateBirthday = (_: any, value: Moment) => {
@@ -62,6 +65,14 @@ const validateFacebookUrl = async (_: RuleObject, value: string) => {
   }
 };
 
+const validateYoutubeUrl = async (_: RuleObject, value: string) => {
+  if (!value) return Promise.resolve();
+  if (!isValidYouTubeChannelUrl(value)) {
+    return Promise.reject("Please enter a valid Youtube URL");
+  }
+  return Promise.resolve();
+};
+
 const UserProfilePage = () => {
   const { profile, rerender, renderKey } = useAuthStore();
   const [loading, setLoading] = useState(false);
@@ -72,8 +83,9 @@ const UserProfilePage = () => {
     const result = await updateUser(profile.id, {
       avatar: profile.avatar,
       bio: values.bio,
-      birthday: values.birthday.toISOString(),
+      birthday: values.birthday.format("YYYY-MM-DD"),
       facebookLink: values.facebookLink,
+      youtubeChannelLink: values.youtubeChannelLink,
       fullName: values.fullName,
       bankAccount: profile.bankAccount,
       bankName: profile.bankName,
@@ -103,8 +115,9 @@ const UserProfilePage = () => {
         birthday: profile.birthday ? moment(profile.birthday) : undefined,
         email: profile.email,
         facebookLink: profile.facebookLink,
-        fullName: profile.fullName,
+        fullName: profile.fullname,
         username: profile.userName,
+        youtubeChannelLink: profile.youtubeChannelLink,
       });
     }
   }, [renderKey]);
@@ -180,10 +193,7 @@ const UserProfilePage = () => {
           <Form.Item
             label={<p className="font-bold">Birthday</p>}
             name="birthday"
-            rules={[
-              { required: true, message: "Please select your birthday!" },
-              { validator: validateBirthday },
-            ]}
+            rules={[{ validator: validateBirthday }]}
           >
             <DatePicker className="max-w-[600px]" format="DD-MM-YYYY" />
           </Form.Item>
@@ -225,13 +235,31 @@ const UserProfilePage = () => {
             </Form.Item>
           </div>
           <Form.Item<FieldType>
-            label={<p className="font-bold">Facebook Profile Link</p>}
+            label={
+              <div className="flex gap-2 items-center font-bold">
+                <FaFacebookSquare />
+                Facebook Profile Link
+              </div>
+            }
             name="facebookLink"
             className="max-w-[600px]"
             rules={[{ validator: validateFacebookUrl }]}
             extra="Link to your Facebook account (optional)"
           >
             <Input placeholder="https://www.facebook.com/your.profile" />
+          </Form.Item>
+          <Form.Item<FieldType>
+            label={
+              <div className="flex gap-2 items-center font-bold">
+                <FaYoutube />Youtube Channel Link
+              </div>
+            }
+            name="youtubeChannelLink"
+            className="max-w-[600px]"
+            rules={[{ validator: validateYoutubeUrl }]}
+            extra="Link to your Youtube channel (optional)"
+          >
+            <Input placeholder="https://www.youtube.com/@handle" />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={loading}>
