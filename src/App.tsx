@@ -47,7 +47,14 @@ function App() {
           </AuthLayout>
         }
       />
-      <Route element={<RequireAuth allowedRoles={["Admin", "Moderator"]} />}>
+      <Route
+        element={
+          <RequireAuth
+            allowedRoles={["Admin", "Moderator"]}
+            returnUrl="/admin/log-in"
+          />
+        }
+      >
         <Route path="/admin/*" element={<AdminContainer />} />
       </Route>
       <Route element={<RequireAuth allowedRoles={["Developer", "Player"]} />}>

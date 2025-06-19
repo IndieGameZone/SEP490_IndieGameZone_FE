@@ -18,7 +18,6 @@ const FaultTolerantImage = ({
   const handleError = () => {
     setImageSrc(fallback);
   };
-  console.log(imageSrc);
   return (
     <img
       src={imageSrc}

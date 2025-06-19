@@ -4,7 +4,13 @@ import { Navigate, Outlet } from "react-router-dom";
 import { ConfigProvider, theme } from "antd";
 import UnauthorizedPage from "@/pages/errors/unauthorized-page";
 
-const RequireAuth = ({ allowedRoles = [] }: { allowedRoles: string[] }) => {
+const RequireAuth = ({
+  allowedRoles = [],
+  returnUrl = "/log-in",
+}: {
+  allowedRoles: string[];
+  returnUrl?: string;
+}) => {
   const { loading, profile, error } = useAuthStore();
   const token = localStorage.getItem("accessToken");
   if (loading)
@@ -22,7 +28,7 @@ const RequireAuth = ({ allowedRoles = [] }: { allowedRoles: string[] }) => {
       </ConfigProvider>
     );
   if ((!profile && error) || !token) {
-    return <Navigate to="/log-in" replace />;
+    return <Navigate to={returnUrl} replace />;
   }
   if (profile) {
     if (allowedRoles.includes(profile.role.name)) {

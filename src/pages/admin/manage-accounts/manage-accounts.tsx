@@ -42,7 +42,6 @@ const ManageAccounts: React.FC = () => {
       
       if (response.success) {
         setUsers(response.data);
-        message.success(`Loaded ${response.data.length} users successfully`);
       } else {
         message.error(`Failed to fetch users: ${response.error}`);
       }

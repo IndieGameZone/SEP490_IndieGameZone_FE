@@ -32,9 +32,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const handleLogout = () => {
     navigate("/admin/log-in");
-    setTimeout(() => {
-      logout();
-    }, 100);
+    logout();
   };
 
   const navigate = useNavigate();
@@ -49,7 +47,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       },
     },
   ];
-  
+
   const items: MenuProps["items"] = [
     {
       key: "/admin/dashboard",
@@ -123,6 +121,15 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         navigate("/admin/manage-platforms");
       },
     },
+    {
+      key: "log-out",
+      icon: <FaDoorOpen />,
+      label: "Log out",
+      onClick: () => {
+        handleLogout();
+      },
+      danger: true,
+    },
   ];
 
   const {
@@ -131,7 +138,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     document.body.classList.remove("dark");
-  }, [])
+  }, []);
 
   return (
     <ConfigProvider
