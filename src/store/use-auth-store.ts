@@ -39,7 +39,7 @@ const useAuthStore = create<AuthState>((set) => ({
     },
     logout: () => {
         localStorage.clear();
-        set({ profile: undefined })
+        set({ profile: undefined });
     }
 }));
 

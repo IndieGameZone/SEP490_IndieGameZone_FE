@@ -2,7 +2,7 @@ import { Form, Input, Button, FormProps } from "antd";
 import logo from "@/assets/indiegamezone-logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import googleIcon from "@/assets/google_icon.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { login } from "@/lib/api/auth-api";
 import toast from "react-hot-toast";
 import useAuthStore from "@/store/use-auth-store";
@@ -14,7 +14,7 @@ type FieldType = {
 const LoginAdminPage = () => {
   const [form] = Form.useForm();
   const [isSumitting, setIsSumitting] = useState(false);
-  const { fetchProfile } = useAuthStore();
+  const { fetchProfile, profile, logout } = useAuthStore();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -35,13 +35,29 @@ const LoginAdminPage = () => {
       }
     } else {
       localStorage.setItem("accessToken", result.data);
-      toast.success("Login successfully");
       fetchProfile();
-      setTimeout(() => {
-        navigate("/admin");
-      }, 1000);
     }
   };
+
+  useEffect(() => {
+    if (profile) {
+      if (profile.role.name == "Admin") {
+        toast.success("Login successfully");
+        setTimeout(() => {
+          navigate("/admin");
+        }, 1000);
+      } else if (profile.role.name == "Moderator") {
+        toast.success("Login successfully");
+        setTimeout(() => {
+          navigate("/moderator");
+        }, 1000);
+      } else {
+        setError("Your account does not have permission to access this system.")
+        logout();
+      }
+    }
+  }, [profile]);
+
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat "

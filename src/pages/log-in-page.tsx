@@ -43,7 +43,7 @@ const LogInPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
   const [googleIdToken, setGoogleIdToken] = useState<string>("");
-  const { fetchProfile } = useAuthStore();
+  const { fetchProfile, profile } = useAuthStore();
   const navigate = useNavigate();
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
@@ -99,7 +99,6 @@ const LogInPage = () => {
             localStorage.setItem("accessToken", loginResult.data);
             toast.success("Login successfully");
             fetchProfile();
-            setTimeout(() => navigate("/"), 1000);
           } else {
             toast.error(loginResult.data?.detail || loginResult.error);
           }
@@ -142,6 +141,24 @@ const LogInPage = () => {
     setGoogleIdToken("");
     googleForm.resetFields();
   };
+
+  useEffect(() => {
+    if (profile) {
+      if (profile.role.name == "Admin") {
+        setTimeout(() => {
+          navigate("/admin");
+        }, 1000);
+      } else if (profile.role.name == "Moderator") {
+        setTimeout(() => {
+          navigate("/moderator");
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      }
+    }
+  }, [profile]);
 
   return (
     <div className="grid grid-cols-2 h-screen bg-zinc-800">
