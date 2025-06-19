@@ -16,11 +16,20 @@ const UploadAvatar = () => {
       message.error("You can only upload image files!");
       return false;
     }
+    const isJpgOrPng =
+      file.type === "image/jpeg" ||
+      file.type === "image/png" ||
+      file.type === "image/jpg";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+      return Upload.LIST_IGNORE;
+    }
     var url = imageUrl;
     if (!url) {
       const result = await uploadFile(file);
       if (result.error) {
         message.error("Failed to upload image. Please try again.");
+        return false;
       } else {
         setImageUrl(result.data);
         url = result.data;
@@ -49,11 +58,15 @@ const UploadAvatar = () => {
   return (
     <div>
       <div className="flex gap-3">
-        <Avatar size={100} icon={<CiUser />} />
+        {profile?.avatar ? (
+          <Avatar size={100} src={profile.avatar} />
+        ) : (
+          <Avatar size={100} icon={<CiUser />} />
+        )}
         <Upload
           beforeUpload={handleBeforeUpload}
           showUploadList={false}
-          accept="image/*"
+          accept=".png,.jpeg,.jpg"
         >
           <button className="size-[100px] flex justify-center items-center border border-zinc-500 hover:border-orange-500 cursor-pointer rounded-full duration-300 hover:text-orange-500">
             <FaUpload className="size-8" />
@@ -67,6 +80,7 @@ const UploadAvatar = () => {
       >
         <Button className="mt-3">Upload Image</Button>
       </Upload>
+      <p className="py-1 text-zinc-500 text-sm">Supported format: JPG, PNG</p>
     </div>
   );
 };
