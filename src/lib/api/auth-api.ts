@@ -112,7 +112,6 @@ export const resendVerificationemail = async (email: string) => {
 type CheckFirstRequest = {
   idToken: string;
 };
-
 export const checkFirstLogin = async (request: CheckFirstRequest) => {
   try {
     const result = await axiosClient.post(`/api/authentications/google-login/check-first`, request);

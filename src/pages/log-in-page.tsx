@@ -87,7 +87,6 @@ const LogInPage = () => {
   const handleGoogleFormSubmit = async (values: GoogleFormType) => {
     setIsSubmitting(true);
     const googleLoginData = prepareGoogleLoginData(googleIdToken, values);
-    console.log("Sending data to backend:", googleLoginData);
     const result = await googleLogin(googleLoginData);
     setIsSubmitting(false);
 
