@@ -30,7 +30,7 @@ const DevUploadGamePage = () => {
   const navigate = useNavigate();
 
   const handleCancel = () => {
-    navigate("/dev/manage-game");
+    navigate("/dev/manage-games");
   };
   const handleSubmit = async () => {
     try {

@@ -10,7 +10,7 @@ const GameCard = ({ game }: { game: Game }) => {
 
   return (
     <div className="bg-zinc-900 rounded-lg shadow-lg border highlight-hover overflow-hidden">
-      <Link to={`/game/${game.id}`}>
+      <Link to={`/dev/game/${game.id}`}>
         <FaultTolerantImage
           src={game.coverImage}
           alt={`${game.name} cover image`}
@@ -22,7 +22,7 @@ const GameCard = ({ game }: { game: Game }) => {
         <div className="flex-1">
           <div className="flex justify-between">
             <div>
-              <Link to={`/game/${game.id}`}>
+              <Link to={`/dev/game/${game.id}`}>
                 <h3 className="font-bold text-lg truncate">{game.name}</h3>
               </Link>
               <Link to={`/search?category=${game.category?.id}`}>

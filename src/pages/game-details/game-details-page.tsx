@@ -27,6 +27,7 @@ import GameReviews from "./game-reviews";
 import GameForum from "./game-forum";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 import useAuthStore from "@/store/use-auth-store";
+import GameNotFound from "@/pages/errors/game-not-found";
 
 const GameDetailsPage = () => {
   const { gameId } = useParams();
@@ -78,7 +79,7 @@ const GameDetailsPage = () => {
       label: <div>Report user</div>,
       key: "1",
       icon: <FaFlag />,
-      disabled: profile?.id == game?.developers.id
+      disabled: profile?.id == game?.developers.id,
     },
   ];
 
@@ -97,17 +98,7 @@ const GameDetailsPage = () => {
     return <Loader />;
   }
   if (error) {
-    return (
-      <div className="min-h-[70vh] flex items-center justify-center px-4">
-        <div className="bg-zinc-800 shadow-xl rounded-2xl p-8 max-w-md text-center border border-orange-500">
-          <h1 className="text-3xl font-bold text-red-600 mb-4">
-            Game Not Found
-          </h1>
-          <p className="mb-6">We couldn't find the game you're looking for.</p>
-          <Button onClick={() => navigate(-1)}>Go Back</Button>
-        </div>
-      </div>
-    );
+    return <GameNotFound />;
   }
   if (!game) return;
   const slides = [
