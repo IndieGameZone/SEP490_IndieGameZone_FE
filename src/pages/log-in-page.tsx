@@ -145,7 +145,7 @@ const LogInPage = () => {
       </div>
 
       <div className="flex items-center justify-center flex-col">
-        <div className="w-full max-w-md p-4 shadow-lg rounded-xl">
+        <div className="w-full max-w-md p-4 rounded-xl">
           <img src={logo} alt="" className="mb-10" />
           <Form layout="vertical" autoComplete="off" onFinish={onFinish} form={form}>
             <Form.Item
