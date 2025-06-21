@@ -160,7 +160,7 @@ const ManageGames: React.FC = () => {
   })();
 
   const formatPrice = (price: number): string => {
-    return (price / 1000).toLocaleString("vi-VN") + "k VND";
+    return (price ).toLocaleString("vi-VN") + " VND";
   };
 
   const columns: ColumnsType<GameListItem> = [
