@@ -12,20 +12,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  optimizeDeps: {
-    include: [
-      "antd",
-      "antd/es/button",
-      "antd/es/modal",
-      "antd/es/message",
-      "rc-util",
-    ],
-    exclude: [
-      "@babel/runtime"
-    ]
-  },
   build: {
     chunkSizeWarningLimit: 600,
+    minify: 'terser',
     rollupOptions: {
       output: {
         manualChunks(id) {
