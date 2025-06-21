@@ -3,7 +3,7 @@ export const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 export const axiosClient = axios.create({
     baseURL: BASE_URL,
-    withCredentials: true, 
+    withCredentials: true,
 });
 
 let isRefreshing = false;
@@ -40,9 +40,11 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
     (response: AxiosResponse): AxiosResponse => response,
     async (error: AxiosError): Promise<unknown> => {
+        const token = localStorage.getItem('accessToken');
         const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
-
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        console.log("Checking token expired error");
+        console.log(error.response);
+        if (error.response?.status === 401 && token && !originalRequest._retry) {
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
@@ -60,7 +62,6 @@ axiosClient.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                const token = localStorage.getItem('accessToken');
                 const response = await axios.post<string>(
                     `${BASE_URL}/api/authentications/refresh-token`,
                     {},

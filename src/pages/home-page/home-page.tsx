@@ -11,10 +11,12 @@ import genre2 from "@/assets/genre-2.jpg";
 import genre3 from "@/assets/genre-3.jpg";
 import genre4 from "@/assets/genre-4.jpg";
 import GenreCard from "./genre-card";
+import CookieConsent from "@/components/cookie-consent";
 
 const HomePage = () => {
   return (
     <MaxWidthWrapper>
+      <CookieConsent />
       <div className="flex justify-center items-center gap-5 p-5 font-bold text-xl">
         <Link to={"/"} className="hover-underline">
           Discover
@@ -50,7 +52,7 @@ const HomePage = () => {
             className="cursor-box btn-1 font-bold drop-shadow relative"
           >
             <MdMoneyOff className="absolute size-24 -right-7 text-zinc-500 -z-10" />
-             Free Games
+            Free Games
           </Link>
           <Link
             to={"/tags"}
@@ -82,11 +84,7 @@ const HomePage = () => {
             to="/search?genre=3"
             background={genre3}
           />
-          <GenreCard
-            title="FPS"
-            to="/search?genre=4"
-            background={genre4}
-          />
+          <GenreCard title="FPS" to="/search?genre=4" background={genre4} />
         </div>
       </section>
     </MaxWidthWrapper>

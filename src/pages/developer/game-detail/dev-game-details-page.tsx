@@ -74,7 +74,7 @@ const DevGameDetailPages = () => {
         defaultActiveKey="game-info"
         centered
         items={tabItems}
-        tabBarStyle={{ background: "#18181b" }}
+        tabBarStyle={{ background: "#18181b", marginBottom: 0 }}
       />
     </div>
   );
