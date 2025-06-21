@@ -58,6 +58,7 @@ export type Game = {
     status: "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";
     allowDonation: boolean;
     price: number;
+    censorStatus: "Approved" | "Rejected" | "PendingAiReview" | "PendingManualReview";
     priceAfterDiscount: number;
     discount: any[];
     visibility: "Draft" | "Restricted" | "Public"
@@ -70,6 +71,10 @@ export type Game = {
     videoLink: string;
     gamePlatforms: GameFile[];
     developers: User;
+    updatedAt: string;
+    numberOfReviews: number;
+    averageRating: number;
+    censorAt: string;
     createdAt: string;
 }
 
