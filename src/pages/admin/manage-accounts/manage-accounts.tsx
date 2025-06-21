@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Table, Button, Tag, Avatar, Input, Card, Dropdown, Modal, message, Tooltip } from "antd";
 import {
   UserOutlined,
-  EditOutlined,
   DeleteOutlined,
   PlusOutlined,
   SearchOutlined,

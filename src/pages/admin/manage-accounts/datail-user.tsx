@@ -18,7 +18,6 @@ import {
 import {
   ArrowLeftOutlined,
   UserOutlined,
-  EditOutlined,
   DeleteOutlined,
   PhoneOutlined,
   MailOutlined,
