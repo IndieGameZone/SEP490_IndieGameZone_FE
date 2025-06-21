@@ -11,12 +11,10 @@ import genre2 from "@/assets/genre-2.jpg";
 import genre3 from "@/assets/genre-3.jpg";
 import genre4 from "@/assets/genre-4.jpg";
 import GenreCard from "./genre-card";
-import CookieConsent from "@/components/cookie-consent";
 
 const HomePage = () => {
   return (
     <MaxWidthWrapper>
-      <CookieConsent />
       <div className="flex justify-center items-center gap-5 p-5 font-bold text-xl">
         <Link to={"/"} className="hover-underline">
           Discover
