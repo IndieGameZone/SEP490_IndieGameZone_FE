@@ -1,31 +1,17 @@
-import {
-  Form,
-  Input,
-  Button,
-  Modal,
-  Select,
-  DatePicker,
-  FormProps,
-} from "antd";
+import { Form, Input, Button, Modal, Select, DatePicker, FormProps } from "antd";
 import logo from "@/assets/indiegamezone-logo.svg";
 import background from "@/assets/wow-bg.jpg";
 import googleIcon from "@/assets/google_icon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import {
-  login,
-  googleLogin,
-  getUserInfo,
-  prepareGoogleLoginData,
-} from "@/lib/api/auth-api";
+import { login, googleLogin, checkFirstLogin, prepareGoogleLoginData, prepareCheckFirstData } from "@/lib/api/auth-api";
 import toast from "react-hot-toast";
 import useAuthStore from "@/store/use-auth-store";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/api/config/firebase";
 import dayjs from "dayjs";
 
-// Giả định RoleEnum của backend
-type RoleEnum = "Player" | "Developer" | "Publisher";
+type RoleEnum = "Player" | "Developer";
 
 type FieldType = {
   userNameOrEmail: string;
@@ -69,46 +55,27 @@ const LogInPage = () => {
     setIsSubmitting(true);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      // const credential = GoogleAuthProvider.credentialFromResult(result);
       const idToken = await result.user.getIdToken();
       setGoogleIdToken(idToken);
 
-      // Kiểm tra thông tin người dùng từ API getUserInfo
-      const userInfoResult = await getUserInfo();
-      console.log("User info:", userInfoResult.data); // Debug dữ liệu trả về
-      if (userInfoResult.success && userInfoResult.data) {
-        let birthday = userInfoResult.data.birthday;
-        let role = userInfoResult.data.role;
+      const checkResult = await checkFirstLogin(prepareCheckFirstData(idToken));
 
-        // Xử lý trường hợp dữ liệu nested (ví dụ: profile.birthday)
-        if (!birthday && userInfoResult.data.profile?.birthday) {
-          birthday = userInfoResult.data.profile.birthday;
-        }
-        if (!role && userInfoResult.data.profile?.role) {
-          role = userInfoResult.data.profile.role;
-        }
-
-        if (birthday && role) {
-          // Nếu đã có birthday và role, login thẳng
-          const googleLoginData = prepareGoogleLoginData(idToken, {
-            birthday: dayjs(birthday),
-            role,
-          });
-          const loginResult = await googleLogin(googleLoginData);
+      if (checkResult.success && checkResult.data && typeof checkResult.data.isFirstTime === "boolean") {
+        if (checkResult.data.isFirstTime) {
+          setIsGoogleModalOpen(true);
+        } else {
+          const loginResult = await googleLogin(prepareGoogleLoginData(idToken, {}));
           if (loginResult.success) {
-            localStorage.setItem("accessToken", loginResult.data);
+            localStorage.setItem("accessToken", checkResult.data.accessToken || loginResult.data);
             toast.success("Login successfully");
             fetchProfile();
+            setTimeout(() => navigate("/"), 1000);
           } else {
             toast.error(loginResult.data?.detail || loginResult.error);
           }
-        } else {
-          // Nếu chưa có, mở modal để điền
-          setIsGoogleModalOpen(true);
         }
       } else {
-        // Nếu getUserInfo thất bại hoặc không có dữ liệu, mở modal
-        setIsGoogleModalOpen(true);
+        toast.error("Failed to check first login status");
       }
     } catch (error) {
       toast.error("Google login failed");
@@ -120,8 +87,6 @@ const LogInPage = () => {
   const handleGoogleFormSubmit = async (values: GoogleFormType) => {
     setIsSubmitting(true);
     const googleLoginData = prepareGoogleLoginData(googleIdToken, values);
-
-    console.log("Sending data to backend:", googleLoginData); // Debug dữ liệu gửi lên
     const result = await googleLogin(googleLoginData);
     setIsSubmitting(false);
 
@@ -173,8 +138,8 @@ const LogInPage = () => {
         <div className="absolute top-52 w-2/3 left-7">
           <p className="font-extrabold text-5xl">Play Bold. Publish Free.</p>
           <p className="">
-            Empowering developers to publish their vision, and players to find
-            the next big thing before it goes mainstream.
+            Empowering developers to publish their vision, and players to find the next big thing before it goes
+            mainstream.
           </p>
         </div>
       </div>
@@ -182,12 +147,7 @@ const LogInPage = () => {
       <div className="flex items-center justify-center flex-col">
         <div className="w-full max-w-md p-4 shadow-lg rounded-xl">
           <img src={logo} alt="" className="mb-10" />
-          <Form
-            layout="vertical"
-            autoComplete="off"
-            onFinish={onFinish}
-            form={form}
-          >
+          <Form layout="vertical" autoComplete="off" onFinish={onFinish} form={form}>
             <Form.Item
               label={<span className="font-bold">Email or username</span>}
               name="userNameOrEmail"
@@ -198,23 +158,15 @@ const LogInPage = () => {
                 },
               ]}
             >
-              <Input
-                placeholder="Enter your email"
-                style={{ paddingBlock: 10 }}
-              />
+              <Input placeholder="Enter your email" style={{ paddingBlock: 10 }} />
             </Form.Item>
 
             <Form.Item
               label={<span className="font-bold">Password</span>}
               name="password"
-              rules={[
-                { required: true, message: "Please enter your password" },
-              ]}
+              rules={[{ required: true, message: "Please enter your password" }]}
             >
-              <Input.Password
-                placeholder="Enter your password"
-                style={{ paddingBlock: 10 }}
-              />
+              <Input.Password placeholder="Enter your password" style={{ paddingBlock: 10 }} />
             </Form.Item>
             <div className="flex justify-end">
               <Link to="/recover-password" className="text-xs text-zinc-700">
@@ -272,14 +224,8 @@ const LogInPage = () => {
         footer={null}
         destroyOnClose={true}
       >
-        <p className="mb-4 text-gray-600">
-          Please provide additional information to complete your registration.
-        </p>
-        <Form
-          form={googleForm}
-          layout="vertical"
-          onFinish={handleGoogleFormSubmit}
-        >
+        <p className="mb-4 text-gray-600">Please provide additional information to complete your registration.</p>
+        <Form form={googleForm} layout="vertical" onFinish={handleGoogleFormSubmit}>
           <Form.Item
             label={<span className="font-bold">Birthday</span>}
             name="birthday"
@@ -288,9 +234,7 @@ const LogInPage = () => {
             <DatePicker
               style={{ width: "100%", paddingBlock: 10 }}
               placeholder="Select your birthday"
-              disabledDate={(current) =>
-                current && current > dayjs().endOf("day")
-              }
+              disabledDate={(current) => current && current > dayjs().endOf("day")}
             />
           </Form.Item>
 
@@ -305,7 +249,6 @@ const LogInPage = () => {
               options={[
                 { value: "Player", label: "Player" },
                 { value: "Developer", label: "Developer" },
-                { value: "Publisher", label: "Publisher" },
               ]}
             />
           </Form.Item>

@@ -12,6 +12,7 @@ import { FaDoorOpen, FaTags, FaWindows } from "react-icons/fa";
 import { CiDiscount1, CiUser } from "react-icons/ci";
 import { TbCancel } from "react-icons/tb";
 import useProfileStore from "@/store/use-auth-store";
+import { CgGames } from "react-icons/cg";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -63,6 +64,14 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       label: "Manage Accounts",
       onClick: () => {
         navigate("/admin/manage-accounts");
+      },
+    },
+      {
+      key: "Manage Games",
+      icon: <CgGames/>,
+      label: "Manage Games",
+      onClick: () => {
+        navigate("/admin/manage-games");
       },
     },
     {
