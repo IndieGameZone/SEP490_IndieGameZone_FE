@@ -14,6 +14,7 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 600,
+    minify: 'terser',
     rollupOptions: {
       output: {
         manualChunks(id) {

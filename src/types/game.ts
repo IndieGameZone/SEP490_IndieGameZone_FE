@@ -24,7 +24,7 @@ export type GameInfo = {
     price: number;
     allowDonate: boolean;
     pricingOption: "Free" | "Paid";
-    visibility: "Draft" | "Restricted" | "Public"
+    visibility: "Draft" | "Restricted" | "Public",
 };
 
 export type GameMediaAssets = {
@@ -76,6 +76,7 @@ export type Game = {
     averageRating: number;
     censorAt: string;
     createdAt: string;
+    installInstruction: string;
 }
 
 type GameImage = {
