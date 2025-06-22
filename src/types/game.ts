@@ -58,7 +58,7 @@ export type Game = {
     status: "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";
     allowDonation: boolean;
     price: number;
-    censorStatus: "Approved" | "Rejected" | "PendingAiReview" | "PendingManualReview";
+    censorStatus: "Approved" | "Rejected" | "PendingAIReview" | "PendingManualReview";
     priceAfterDiscount: number;
     discount: any[];
     visibility: "Draft" | "Restricted" | "Public"
@@ -77,6 +77,7 @@ export type Game = {
     censorAt: string;
     createdAt: string;
     installInstruction: string;
+    moderator?: User;
 }
 
 type GameImage = {

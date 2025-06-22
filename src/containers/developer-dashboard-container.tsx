@@ -1,33 +1,56 @@
+import SuspenseFallback from "@/components/suspense-fallback";
 import DeveloperDashboardLayout from "@/layouts/developer-dashboard-layout";
 import HomeLayout from "@/layouts/home-layout";
-import DevCommercialPackagePage from "@/pages/developer/commercial-packages/dev-commercial-package-page";
-import DevDashBoardPage from "@/pages/developer/dev-dashboard-page";
-import DevGameDetailsPage from "@/pages/developer/game-detail/dev-game-details-page";
-import DevManageGamesPage from "@/pages/developer/manage-games/dev-manage-games-page";
-import DevUploadGamePage from "@/pages/developer/upload-game/dev-upload-game-page";
-import PreviewUploadPage from "@/pages/developer/upload-game/preview-upload-page";
-import UploadProcessPage from "@/pages/developer/upload-game/upload-process-page";
-import NotFoundPage from "@/pages/errors/simple-not-found-page";
+import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
+
+const DevCommercialPackagePage = lazy(
+  () =>
+    import("@/pages/developer/commercial-packages/dev-commercial-package-page")
+);
+const DevDashBoardPage = lazy(
+  () => import("@/pages/developer/dev-dashboard-page")
+);
+const DevGameDetailsPage = lazy(
+  () => import("@/pages/developer/game-detail/dev-game-details-page")
+);
+const DevManageGamesPage = lazy(
+  () => import("@/pages/developer/manage-games/dev-manage-games-page")
+);
+const DevUploadGamePage = lazy(
+  () => import("@/pages/developer/upload-game/dev-upload-game-page")
+);
+const PreviewUploadPage = lazy(
+  () => import("@/pages/developer/upload-game/preview-upload-page")
+);
+const UploadProcessPage = lazy(
+  () => import("@/pages/developer/upload-game/upload-process-page")
+);
+const NotFoundPage = lazy(() => import("@/pages/errors/simple-not-found-page"));
 
 const DeveloperDashboardContainer = () => {
   return (
     <HomeLayout>
       <DeveloperDashboardLayout>
-        <Routes>
-          <Route path="/" element={<DevDashBoardPage />} />
-          <Route path="/dashboard" element={<DevDashBoardPage />} />
-          <Route path="/upload-game" element={<DevUploadGamePage />} />
-          <Route path="/game/:gameId" element={<DevGameDetailsPage />} />
-          <Route
-            path="/commercial-packages"
-            element={<DevCommercialPackagePage />}
-          />
-          <Route path="/upload-game/preview" element={<PreviewUploadPage />} />
-          <Route path="/upload-game/upload" element={<UploadProcessPage />} />
-          <Route path="/manage-games" element={<DevManageGamesPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <Suspense fallback={<SuspenseFallback />}>
+          <Routes>
+            <Route path="/" element={<DevDashBoardPage />} />
+            <Route path="/dashboard" element={<DevDashBoardPage />} />
+            <Route path="/upload-game" element={<DevUploadGamePage />} />
+            <Route path="/game/:gameId" element={<DevGameDetailsPage />} />
+            <Route
+              path="/commercial-packages"
+              element={<DevCommercialPackagePage />}
+            />
+            <Route
+              path="/upload-game/preview"
+              element={<PreviewUploadPage />}
+            />
+            <Route path="/upload-game/upload" element={<UploadProcessPage />} />
+            <Route path="/manage-games" element={<DevManageGamesPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
       </DeveloperDashboardLayout>
     </HomeLayout>
   );
