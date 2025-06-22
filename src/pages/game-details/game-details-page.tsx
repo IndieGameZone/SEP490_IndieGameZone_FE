@@ -89,7 +89,7 @@ const GameDetailsPage = () => {
     } else {
       navigate("/");
     }
-  }, []);
+  }, [gameId]);
 
   if (!gameId) {
     return <Navigate to={`/`} />;
@@ -105,6 +105,7 @@ const GameDetailsPage = () => {
     { src: game.coverImage },
     ...game.gameImages.map((image) => ({ src: image.image })),
   ];
+  
   return (
     <MaxWidthWrapper className="py-5">
       <ScrollToTop />

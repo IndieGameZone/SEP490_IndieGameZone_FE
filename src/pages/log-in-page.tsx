@@ -222,7 +222,7 @@ const LogInPage = () => {
         open={isGoogleModalOpen}
         onCancel={handleModalCancel}
         footer={null}
-        destroyOnClose={true}
+        destroyOnHidden={true}
       >
         <p className="mb-4 text-gray-600">Please provide additional information to complete your registration.</p>
         <Form form={googleForm} layout="vertical" onFinish={handleGoogleFormSubmit}>

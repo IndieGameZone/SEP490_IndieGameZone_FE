@@ -74,10 +74,11 @@ export type Game = {
     updatedAt: string;
     numberOfReviews: number;
     averageRating: number;
-    censorAt: string;
+    censorAt?: string;
     createdAt: string;
     installInstruction: string;
     moderator?: User;
+    censorReason?: string;
 }
 
 type GameImage = {
@@ -85,9 +86,10 @@ type GameImage = {
     image: string;
 }
 
-type GameFile = {
+export type GameFile = {
     id: string;
     displayName: string;
     size: number;
-    platform: Platform
+    platform: Platform;
+    file: string;
 }

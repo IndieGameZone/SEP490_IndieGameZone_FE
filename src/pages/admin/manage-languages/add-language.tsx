@@ -46,7 +46,7 @@ const AddLanguageModal = ({ open, onClose, onSuccess }: AddLanguageModalProps) =
       onCancel={handleCancel}
       onOk={() => form.submit()}
       confirmLoading={loading}
-      destroyOnClose
+      destroyOnHidden
     >
       <Form
         form={form}

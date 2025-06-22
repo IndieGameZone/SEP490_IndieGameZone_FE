@@ -10,11 +10,17 @@ import {
   Select,
   Upload,
   UploadFile,
+  message,
 } from "antd";
 import { useEffect } from "react";
 import { FaMinus, FaPlus, FaUpload } from "react-icons/fa";
 
 type FieldType = GameFiles;
+
+const allowedTypes = [
+  '.exe', '.msi', '.sh', '.bat', '.apk',
+  '.zip', '.rar', '.7z', '.tar', '.gz',
+];
 
 const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
   const { fetchPlatforms, platforms, loading } = usePlatformStore();
@@ -31,6 +37,15 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
   }, []);
 
   const handleBeforeUpload = (file: UploadFile, index: number) => {
+    const isAllowed = allowedTypes.some(type =>
+      file.name.toLowerCase().endsWith(type)
+    );
+
+    if (!isAllowed) {
+      message.error(`${file.name} is not a valid executable or compressed file`);
+      return false;
+    }
+
     const currentList = form.getFieldValue("files") || [];
     const currentItem = currentList[index] || {};
     const updatedList = [...currentList];
@@ -88,6 +103,7 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
                       showRemoveIcon: true,
                     }}
                     beforeUpload={(file) => handleBeforeUpload(file, index)}
+                    accept={allowedTypes.join(',')}
                   >
                     <Button icon={<FaUpload />}>Select File</Button>
                   </Upload>

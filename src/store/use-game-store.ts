@@ -1,22 +1,29 @@
-import { getGameById, getGamesByDeveloperId } from '@/lib/api/game-api';
-import { Game } from '@/types/game';
+import { getGameById, getGameFiles, getGamesByDeveloperId } from '@/lib/api/game-api';
+import { Game, GameFile } from '@/types/game';
 import { create } from 'zustand';
 
 interface GameState {
     games: Game[];
+    gameFiles: GameFile[],
     game?: Game;
+    installInstruction?: string;
     loading: boolean;
+    loadingFiles: boolean;
     error: string | null;
     fetchGameByDeveloperId: (developerId: string) => void;
     fetchGameById: (gameId: string) => void;
+    fetchGameFiles: (gameId: string) => void;
+    clearGameStore: () => void;
     renderKey: number;
     rerender: () => void;
 }
 
 const useGameStore = create<GameState>((set) => ({
     games: [],
+    gameFiles: [],
     game: undefined,
     loading: false,
+    loadingFiles: false,
     error: null,
     renderKey: 0,
     rerender: () => {
@@ -48,6 +55,22 @@ const useGameStore = create<GameState>((set) => ({
             set({ loading: false, error: error.message });
         }
     },
+    fetchGameFiles: async (gameId) => {
+        set({ loadingFiles: true, error: null });
+        try {
+            const response = await getGameFiles(gameId);
+            if (!response.error) {
+                set({ gameFiles: response.data.gamePlatforms, installInstruction: response.data.installInstruction, loadingFiles: false });
+            } else {
+                set({ loadingFiles: false, error: response.error });
+            }
+        } catch (error: any) {
+            set({ loadingFiles: false, error: error.message });
+        }
+    },
+    clearGameStore: () => {
+        set({ loading: false, gameFiles: [], game: undefined, games: [] });
+    }
 }));
 
 export default useGameStore;

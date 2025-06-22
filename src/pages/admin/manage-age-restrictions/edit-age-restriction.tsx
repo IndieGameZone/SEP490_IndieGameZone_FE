@@ -65,7 +65,7 @@ const EditAgeRestrictionModal = ({
       onCancel={handleCancel}
       onOk={() => form.submit()}
       confirmLoading={loading}
-      destroyOnClose
+      destroyOnHidden
     >
       <Form
         form={form}

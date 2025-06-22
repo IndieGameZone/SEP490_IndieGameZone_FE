@@ -106,7 +106,7 @@ const GameOverView = () => {
                   You will get access to the following files:
                 </p>
                 <div className="flex flex-col gap-2">
-                  {game.gamePlatforms.map((file, index) => {
+                  {game.gamePlatforms?.map((file, index) => {
                     return (
                       <div
                         key={`game-file-${index}`}

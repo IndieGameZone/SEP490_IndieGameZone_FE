@@ -48,7 +48,7 @@ const AddCategories = ({ open, onClose, onSuccess }: AddCategoryModalProps) => {
       onCancel={handleCancel}
       onOk={() => form.submit()}
       confirmLoading={loading}
-      destroyOnClose
+      destroyOnHidden
     >
       <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
         <Form.Item

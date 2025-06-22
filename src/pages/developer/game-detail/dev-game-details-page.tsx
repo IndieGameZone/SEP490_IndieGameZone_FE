@@ -14,14 +14,13 @@ const DevGameDetailPages = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
   const { fetchGameById, loading, error, game } = useGameStore();
-  // const [index, setIndex] = useState(-1);
   useEffect(() => {
     if (gameId) {
       fetchGameById(gameId);
     } else {
       navigate("/");
     }
-  }, []);
+  }, [gameId]);
 
   const tabItems: TabsProps["items"] = [
     {
@@ -55,7 +54,7 @@ const DevGameDetailPages = () => {
       children: <GameReviewTab />,
     },
   ];
-
+  
   if (!gameId) {
     return <Navigate to={`/`} />;
   }

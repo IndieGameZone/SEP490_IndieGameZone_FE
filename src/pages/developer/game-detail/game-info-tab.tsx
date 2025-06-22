@@ -4,10 +4,11 @@ import ModerationStatus from "@/components/moderation-status";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import VisibilityStatus from "@/components/visibility-status";
 import { formatCurrencyVND } from "@/lib/currency";
-import { formatDate } from "@/lib/date";
+import { formatDate, formatDateTime } from "@/lib/date";
 import useGameStore from "@/store/use-game-store";
+import usePlatformStore from "@/store/use-platform-store";
 import { Button, Descriptions, DescriptionsProps, Tag } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEye, FaPencilAlt } from "react-icons/fa";
 import ReactPlayer from "react-player";
 import { useNavigate } from "react-router-dom";
@@ -16,24 +17,35 @@ import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import FileCard from "./file-card";
+import DeleteGameButton from "./delete-game-button";
 
 const GameInfoTab = () => {
   const { game } = useGameStore();
   const navigate = useNavigate();
   const [index, setIndex] = useState(-1);
+  const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
+  const { fetchGameFiles, gameFiles } = useGameStore();
 
   const handleViewGamePage = () => {
     navigate(`/game/${game?.id}`);
   };
 
-  if (!game) return;
+  useEffect(() => {
+    if (game) {
+      fetchPlatforms();
+      fetchGameFiles(game.id);
+    }
+  }, []);
 
+  if (!game) return;
+  const defaultPlatforms = getDefaultPlatforms();
   const infoItems: DescriptionsProps["items"] = [
     {
       key: "game-name",
       label: "Game name",
       children: game?.name,
-      span: 3,
+      span: 2,
     },
     {
       key: "category",
@@ -45,7 +57,7 @@ const GameInfoTab = () => {
       key: "tags",
       label: "Tags",
       children: (
-        <div className="flex">
+        <div className="flex flex-wrap">
           {game?.gameTags.map((tag) => (
             <Tag key={tag.tag.id} color="orange">
               {tag.tag.name}
@@ -53,19 +65,33 @@ const GameInfoTab = () => {
           ))}
         </div>
       ),
-      span: 2,
+      span: 1,
     },
     {
       key: "short-description",
       label: "Short description",
       children: game?.shortDescription,
-      span: 3,
+      span: 2,
     },
     {
       key: "created-date",
       label: "Created date",
-      children: game ? formatDate(new Date(game.createdAt)) : "none",
-      span: 3,
+      children: game ? (
+        formatDate(new Date(game.createdAt))
+      ) : (
+        <span className="text-gray-500">None</span>
+      ),
+      span: 1,
+    },
+    {
+      key: "updated-date",
+      label: "Updated date",
+      children: game.updatedAt ? (
+        formatDate(new Date(game.updatedAt))
+      ) : (
+        <span className="text-gray-500">None</span>
+      ),
+      span: 1,
     },
     {
       key: "average-time",
@@ -77,22 +103,23 @@ const GameInfoTab = () => {
       key: "visibility",
       label: "Visibility",
       children: <VisibilityStatus status={game.visibility} />,
-      span: 2,
+      span: 1,
     },
     {
       key: "price",
       label: "Price",
       children: game?.price != 0 ? formatCurrencyVND(game?.price ?? 0) : "Free",
+      span: 1
     },
     {
       key: "allows-donation",
       label: "Allows donation",
       children: game?.allowDonation ? "Yes" : "No",
-      span: 2,
+      span: 1,
     },
     {
-      key: "moderation-status",
-      label: "Moderation status",
+      key: "censor-status",
+      label: "Censor status",
       children: <ModerationStatus status={game.censorStatus} />,
       span: 1,
     },
@@ -104,11 +131,22 @@ const GameInfoTab = () => {
       ) : game.censorStatus == "Approved" ? (
         <AITag />
       ) : (
-        <span className="text-gray-500">none</span>
+        <span className="text-gray-500">None</span>
+      ),
+      span: 1,
+    },
+    {
+      key: "censored-at",
+      label: "Censored at",
+      children: game.censorAt ? (
+        formatDateTime(new Date(game.censorAt))
+      ) : (
+        <span className="text-gray-500">None</span>
       ),
       span: 2,
     },
   ];
+
   const descriptionItems: DescriptionsProps["items"] = [
     {
       key: "description",
@@ -127,6 +165,20 @@ const GameInfoTab = () => {
         ...game.gameImages.map((image) => ({ src: image.image })),
       ]
     : [];
+
+  if (game.censorReason) {
+    infoItems.push({
+      key: "censor-reason",
+      label: "Reason for censorship",
+      children: game.censorReason ? (
+        <span className="text-red-400">{game.censorReason}</span>
+      ) : (
+        <span className="text-gray-500">None</span>
+      ),
+      span: 3,
+    });
+  }
+
   return (
     <div className="bg-zinc-900 p-3 grid grid-cols-12 gap-5">
       <Lightbox
@@ -137,6 +189,7 @@ const GameInfoTab = () => {
         plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
       />
       <div className="col-span-12 flex gap-3 justify-end">
+        <DeleteGameButton />
         <Button icon={<FaEye />} onClick={handleViewGamePage}>
           View game's page
         </Button>
@@ -185,11 +238,31 @@ const GameInfoTab = () => {
             <div className="text-gray-500">None</div>
           )}
         </div>
+        <div className="bg-zinc-800 rounded p-3 mt-3">
+          <h3 className="font-bold mb-2">Game files</h3>
+          <div className="flex flex-col gap-2">
+            {gameFiles.map((file, index) => {
+              return (
+                <FileCard
+                  file={file}
+                  key={`game-file-${index}`}
+                  defaultPlatforms={defaultPlatforms}
+                />
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       <div className="col-span-8 bg-zinc-800 p-3 rounded ">
-        <Descriptions title="Game Infomation" bordered items={infoItems} />
         <Descriptions
+          title="Game Infomation"
+          column={2}
+          bordered
+          items={infoItems}
+        />
+        <Descriptions
+          column={2}
           layout="vertical"
           bordered
           items={descriptionItems}

@@ -130,11 +130,31 @@ export const getGameById = async (gameId: string) => {
     return handleApiError(error);
   }
 };
+
+export const deleteGame = async (developerId: string, gameId: string) => {
+  try {
+    const { data } = await axiosClient.delete(`/api/users/${developerId}/games/${gameId}`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const getGameFiles = async (gameId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/games/${gameId}/platform-file`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+
 export const getAllGamesAdmin = async () => {
-    try {
-        const { data } = await axiosClient.get(`/api/games`);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+  try {
+    const { data } = await axiosClient.get(`/api/games`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 }

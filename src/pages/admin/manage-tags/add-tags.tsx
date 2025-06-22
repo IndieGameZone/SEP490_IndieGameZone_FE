@@ -50,7 +50,7 @@ const AddTags = ({ open, onClose, onSuccess }: AddTagModalProps) => {
         onCancel={handleCancel}
         onOk={() => form.submit()}
         confirmLoading={loading}
-        destroyOnClose
+        destroyOnHidden
         forceRender
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">

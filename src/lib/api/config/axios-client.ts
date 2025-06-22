@@ -42,8 +42,6 @@ axiosClient.interceptors.response.use(
     async (error: AxiosError): Promise<unknown> => {
         const token = localStorage.getItem('accessToken');
         const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
-        console.log("Checking token expired error");
-        console.log(error.response);
         if (error.response?.status === 401 && token && !originalRequest._retry) {
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {

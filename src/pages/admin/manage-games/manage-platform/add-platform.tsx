@@ -50,7 +50,7 @@ const AddPlatform = ({ open, onClose, onSuccess }: AddPlatformModalProps) => {
         onCancel={handleCancel}
         onOk={() => form.submit()}
         confirmLoading={loading}
-        destroyOnClose
+        destroyOnHidden
         forceRender
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
