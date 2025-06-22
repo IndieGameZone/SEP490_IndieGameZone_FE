@@ -6,7 +6,7 @@ import { FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const DeleteGameButton = () => {
-  const [messageApi] = message.useMessage();
+  const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
   const { profile } = useAuthStore();
   const { game, clearGameStore } = useGameStore();
@@ -26,7 +26,7 @@ const DeleteGameButton = () => {
       messageApi.destroy();
       message.success("Delete game successfully!");
       clearGameStore();
-      
+
       setTimeout(() => {
         navigate("/dev/manage-games");
       }, 1000);
@@ -34,17 +34,20 @@ const DeleteGameButton = () => {
   };
 
   return (
-    <Popconfirm
-      title="Are you sure you want to delete this game?"
-      description="This action cannot be undone."
-      onConfirm={confirmDelete}
-      okText="Yes, delete"
-      cancelText="Cancel"
-    >
-      <Button type="default" danger icon={<FaTrash />}>
-        Delete Game
-      </Button>
-    </Popconfirm>
+    <>
+      {contextHolder}
+      <Popconfirm
+        title="Are you sure you want to delete this game?"
+        description="This action cannot be undone."
+        onConfirm={confirmDelete}
+        okText="Yes, delete"
+        cancelText="Cancel"
+      >
+        <Button type="default" danger icon={<FaTrash />}>
+          Delete Game
+        </Button>
+      </Popconfirm>
+    </>
   );
 };
 

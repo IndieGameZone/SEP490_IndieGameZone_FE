@@ -57,7 +57,7 @@ const GameInfoTab = () => {
       key: "tags",
       label: "Tags",
       children: (
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap gap-y-2">
           {game?.gameTags.map((tag) => (
             <Tag key={tag.tag.id} color="orange">
               {tag.tag.name}
@@ -109,7 +109,7 @@ const GameInfoTab = () => {
       key: "price",
       label: "Price",
       children: game?.price != 0 ? formatCurrencyVND(game?.price ?? 0) : "Free",
-      span: 1
+      span: 1,
     },
     {
       key: "allows-donation",
@@ -203,7 +203,7 @@ const GameInfoTab = () => {
           <img
             src={game?.coverImage}
             alt="game's cover image"
-            className="aspect-video object-contain bg-zinc-900 rounded highlight-hover cursor-pointer"
+            className="aspect-video object-contain bg-zinc-900 rounded highlight-hover cursor-pointer w-full"
             onClick={() => {
               setIndex(0);
             }}
@@ -250,6 +250,7 @@ const GameInfoTab = () => {
                 />
               );
             })}
+            {gameFiles && <span className="text-gray-500">None</span>}
           </div>
         </div>
       </div>
