@@ -68,7 +68,7 @@ const ProfileMenu = () => {
     <Dropdown
       menu={{ items }}
       trigger={["click"]}
-      dropdownRender={(menu: any) => (
+      popupRender={(menu: any) => (
         <div style={contentStyle}>
           <div className="font-semibold p-3">
             <p className="text-lg">{profile?.userName}</p>

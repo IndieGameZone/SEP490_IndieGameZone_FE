@@ -1,9 +1,12 @@
+import AITag from "@/components/ai-tag";
 import ExpandableWrapper from "@/components/expandable-wrapper";
+import ModerationStatus from "@/components/moderation-status";
 import TiptapView from "@/components/tiptap/tiptap-view";
+import VisibilityStatus from "@/components/visibility-status";
 import { formatCurrencyVND } from "@/lib/currency";
 import { formatDate } from "@/lib/date";
 import useGameStore from "@/store/use-game-store";
-import { Badge, Button, Descriptions, DescriptionsProps, Tag } from "antd";
+import { Button, Descriptions, DescriptionsProps, Tag } from "antd";
 import { useState } from "react";
 import { FaEye, FaPencilAlt } from "react-icons/fa";
 import ReactPlayer from "react-player";
@@ -24,7 +27,6 @@ const GameInfoTab = () => {
   };
 
   if (!game) return;
-  console.log(game);
 
   const infoItems: DescriptionsProps["items"] = [
     {
@@ -62,7 +64,7 @@ const GameInfoTab = () => {
     {
       key: "created-date",
       label: "Created date",
-      children: game ? formatDate(new Date(game.createdAt)) : "",
+      children: game ? formatDate(new Date(game.createdAt)) : "none",
       span: 3,
     },
     {
@@ -74,8 +76,8 @@ const GameInfoTab = () => {
     {
       key: "visibility",
       label: "Visibility",
-      children: <Badge status="processing" text="Running" />,
-      span: 3,
+      children: <VisibilityStatus status={game.visibility} />,
+      span: 2,
     },
     {
       key: "price",
@@ -86,6 +88,24 @@ const GameInfoTab = () => {
       key: "allows-donation",
       label: "Allows donation",
       children: game?.allowDonation ? "Yes" : "No",
+      span: 2,
+    },
+    {
+      key: "moderation-status",
+      label: "Moderation status",
+      children: <ModerationStatus status={game.censorStatus} />,
+      span: 1,
+    },
+    {
+      key: "moderated-by",
+      label: "Moderated by",
+      children: game.moderator ? (
+        game.moderator.fullname
+      ) : game.censorStatus == "Approved" ? (
+        <AITag />
+      ) : (
+        <span className="text-gray-500">none</span>
+      ),
       span: 2,
     },
   ];
@@ -158,6 +178,7 @@ const GameInfoTab = () => {
               className="react-player"
               url={game?.videoLink}
               width="100%"
+              height={200}
               controls
             />
           ) : (
