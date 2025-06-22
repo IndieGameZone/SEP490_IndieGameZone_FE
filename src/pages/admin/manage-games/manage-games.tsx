@@ -30,8 +30,16 @@ interface GameListItem {
   averageRating: number;
   numberOfReviews: number;
   discount: number;
-  tags: string[];
-  category: string;
+  gameTags: Array<{
+    tag: {
+      id: string;
+      name: string;
+    };
+  }>;
+  category: {
+    id: string;
+    name: string;
+  };
 }
 
 const ManageGames: React.FC = () => {
@@ -160,7 +168,7 @@ const ManageGames: React.FC = () => {
   })();
 
   const formatPrice = (price: number): string => {
-    return (price ).toLocaleString("vi-VN") + " VND";
+    return price.toLocaleString("vi-VN") + " VND";
   };
 
   const columns: ColumnsType<GameListItem> = [
@@ -179,7 +187,7 @@ const ManageGames: React.FC = () => {
               fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZmlsZQAAKJFjYGASSSwoyGFhYGDIzSspCnJ3UoiIjFJgf8LAwSDCIMogwMCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsis7PPOq3QdDFcvjV3jOD1boQVTPQrgSkktTgbSf4A4LbmgqISBgTEFyFYuLykAsTuAbJEioKOA7DkgdjqEvQHEToKwj4DVhAQ5A9k3gGyB5IxEoBmML4BsnSQk8XQkNtReEOBxcfXxUQg1Mjc0dyHgXNJBSWpFCYh2zi+oLMpMzyhRcASGUqqCZ16yno6CkYGRAQMDKMwhqj/fAIcloxgHQqxAjIHBEugw5sUIsSQpBobtQPdLciLEVJYzMPBHMDBsayhILEqEO4DxG0txmrERhM29nYGBddr//5/DGRjYNRkY/l7////39v///y4Dmn+LgeHANwDrkl1AuO+pmgAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAwqADAAQAAAABAAAAwwAAAAD9b/HnAAAHlklEQVR4Ae3dP3Ik1RnG4W+FuCCSlkwkGCM7sLOzgUJSFthFdm/ZjaNkdXa3aBwmY+g3rBp7hl51T0+n6s39nmAk1C"
             />
             <div className="absolute -top-1 -right-1">
-              <Tag color={getCategoryColor(record.category)}>{record.category}</Tag>
+              <Tag color={getCategoryColor(record.category?.name || 'Unknown')}>{record.category?.name || 'Unknown'}</Tag>
             </div>
           </div>
           <div className="flex-1 min-w-0">
@@ -194,18 +202,18 @@ const ManageGames: React.FC = () => {
               </Text>
             </div>
             <div className="flex items-center gap-2">
-              <Rate disabled defaultValue={record.averageRating} className="text-xs" />
+              <Rate disabled defaultValue={record.averageRating || 0} className="text-xs" />
               <Text type="secondary" className="text-xs">
-                {record.averageRating.toFixed(1)} ({record.numberOfReviews} reviews)
+                {(record.averageRating || 0).toFixed(1)} ({record.numberOfReviews || 0} reviews)
               </Text>
             </div>
             <div className="flex flex-wrap gap-1 mt-2">
-              {record.tags.slice(0, 3).map((tag, index) => (
-                <Tag key={index} className="text-xs">
-                  {tag}
+              {(record.gameTags || []).slice(0, 3).map((gameTag, index) => (
+                <Tag key={gameTag?.tag?.id || index} className="text-xs">
+                  {gameTag?.tag?.name || 'Unknown'}
                 </Tag>
               ))}
-              {record.tags.length > 3 && <Tag className="text-xs">+{record.tags.length - 3} more</Tag>}
+              {(record.gameTags || []).length > 3 && <Tag className="text-xs">+{(record.gameTags || []).length - 3} more</Tag>}
             </div>
           </div>
         </div>
@@ -217,18 +225,18 @@ const ManageGames: React.FC = () => {
       key: "price",
       render: (_, record: GameListItem) => (
         <div className="text-right">
-          {record.discount > 0 ? (
+          {(record.discount || 0) > 0 ? (
             <div>
-              <div className="text-lg font-bold text-green-600">{formatPrice(record.priceAfterDiscount)}</div>
-              <div className="text-sm text-gray-500 line-through">{formatPrice(record.price)}</div>
+              <div className="text-lg font-bold text-green-600">{formatPrice(record.priceAfterDiscount || 0)}</div>
+              <div className="text-sm text-gray-500 line-through">{formatPrice(record.price || 0)}</div>
               <Tag color="red">{record.discount}% OFF</Tag>
             </div>
           ) : (
-            <div className="text-lg font-bold text-gray-900">{formatPrice(record.price)}</div>
+            <div className="text-lg font-bold text-gray-900">{formatPrice(record.price || 0)}</div>
           )}
         </div>
       ),
-      sorter: (a, b) => a.priceAfterDiscount - b.priceAfterDiscount,
+      sorter: (a, b) => (a.priceAfterDiscount || 0) - (b.priceAfterDiscount || 0),
     },
     {
       title: "Status",
@@ -237,7 +245,7 @@ const ManageGames: React.FC = () => {
       render: (status: string) => getStatusTag(status),
       filters: [
         { text: "Approved", value: "Approved" },
-        { text: "Pending Review", value: "PendingManualReview" },
+        { text: "Pending Manual Review", value: "PendingManualReview" },
         { text: "Pending AI Review", value: "PendingAiReview" },
         { text: "Rejected", value: "Rejected" },
       ],
@@ -375,10 +383,10 @@ const ManageGames: React.FC = () => {
   const filteredGames = games.filter((game) => {
     const searchLower = searchText.toLowerCase();
     return (
-      game.name.toLowerCase().includes(searchLower) ||
-      game.shortDescription.toLowerCase().includes(searchLower) ||
-      game.category.toLowerCase().includes(searchLower) ||
-      game.tags.some((tag) => tag.toLowerCase().includes(searchLower))
+      (game.name || "").toLowerCase().includes(searchLower) ||
+      (game.shortDescription || "").toLowerCase().includes(searchLower) ||
+      (game.category?.name || "").toLowerCase().includes(searchLower) ||
+      (game.gameTags || []).some((gameTag) => (gameTag?.tag?.name || '').toLowerCase().includes(searchLower))
     );
   });
 
@@ -441,7 +449,7 @@ const ManageGames: React.FC = () => {
               <Card className="border-0 shadow-md bg-gradient-to-br from-orange-500 to-orange-600 text-white">
                 <div className="text-center">
                   <div className="text-2xl font-bold">{totalPending}</div>
-                  <div className="text-orange-500">Pending Review</div>
+                  <div className="text-orange-500">Pending Manual Review</div>
                 </div>
               </Card>
               <Card className="border-0 shadow-md bg-gradient-to-br from-purple-500 to-purple-600 text-white">
