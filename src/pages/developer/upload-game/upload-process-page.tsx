@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import paperPlane from "@/assets/gif/paper-plane.gif";
 import { Button, Progress, UploadFile, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import { addGame, addGameFiles } from "@/lib/api/game-api";
+import { addGame, addGameFiles, deleteGame } from "@/lib/api/game-api";
 import useAuthStore from "@/store/use-auth-store";
 import cancleIcon from "@/assets/cancel.png";
 import checkedIcon from "@/assets/checked.png";
 import { axiosClient } from "@/lib/api/config/axios-client";
+import skullImage from "@/assets/death.png";
 
 const TASKS = [
   {
@@ -42,15 +43,17 @@ const UploadProcessPage = () => {
   const [currentTaskMessage, setCurrentTaskMessage] = useState(
     TASKS[currentTask].name
   );
+  const [currentTaskMessage2, setcurrentTaskMessage2] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(50);
-  const [currentFileName, setCurrentFileName] = useState("file");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [coverImageUrl, setCoverImageUrl] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isFinished, setIsFinished] = useState(false);
   const [gameId, setGameId] = useState("");
   const [gamePlatforms, setGamePlatforms] = useState<any[]>([]);
+  const [isHarmful, setIsHarmful] = useState(false);
+  const [deleteAttempts, setDeleteAttempts] = useState(0);
   const navigate = useNavigate();
 
   const { isSaved, gameFiles, gameMediaAssets, gameInfo } =
@@ -62,6 +65,8 @@ const UploadProcessPage = () => {
       return;
     }
   }, []);
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     if (isSaved && !isUploading && !isFinished && !errorMessage) {
@@ -83,10 +88,26 @@ const UploadProcessPage = () => {
     setCurrentTaskMessage(TASKS[currentTask].name);
   }, [currentTask]);
 
+  useEffect(() => {
+    if (isHarmful) {
+      console.log("ATTEMPT TO DELETE GAME #" + deleteAttempts);
+      handleDeleteGame();
+    }
+  }, [isHarmful, deleteAttempts]);
+
+  const handleDeleteGame = async () => {
+    if (gameId && profile) {
+      const result = await deleteGame(profile.id, gameId);
+      if (result.error) {
+        setDeleteAttempts((prev) => prev + 1);
+      }
+    }
+  };
+
   const handleApiError = (error: any) => {
     try {
       const errorMessage =
-        error.response?.data.message ||
+        error.response?.data ||
         error?.message ||
         "An unexpected error occurred.";
       const data = null;
@@ -104,6 +125,11 @@ const UploadProcessPage = () => {
       const { data } = await axiosClient.post(`/api/files`, formData, {
         onUploadProgress: (event: any) => {
           const percent = Math.round((event.loaded * 100) / event.total);
+          if (currentTask == 3 && percent == 100) {
+            setcurrentTaskMessage2(
+              "Scanning for harmful files\n(may take a few second)"
+            );
+          }
           setUploadProgress(percent);
         },
       });
@@ -122,21 +148,32 @@ const UploadProcessPage = () => {
     const filesToUpload = gameFiles.files;
     for (let i = currentItem; i < filesToUpload.length; i++) {
       const file = filesToUpload[i].file[0];
-      setCurrentFileName(file.fileName ?? "");
+      setcurrentTaskMessage2(`Uploading ${file.name}.`);
 
       if (file.originFileObj) {
         // console.log("Uploading ", file.name);
         const uploadResult = await uploadFile(file);
         if (uploadResult.error) {
-          setErrorMessage(`Failed to upload ${file.name} Please try again.`);
+          if (
+            uploadResult.error ==
+            "File analysis failed. Please ensure the file is safe and appropriate."
+          ) {
+            setErrorMessage(`${file.name}`);
+            setIsHarmful(true);
+          } else {
+            setErrorMessage(`Failed to upload ${file.name} Please try again.`);
+          }
           setIsUploading(false);
           return;
         } else {
           // console.log("Add game file");
-          setGamePlatforms(prev => [... prev, {
-            file: uploadResult.data,
-            platformId: gameFiles.files[i].platformId,
-          }]);
+          setGamePlatforms((prev) => [
+            ...prev,
+            {
+              file: uploadResult.data,
+              platformId: gameFiles.files[i].platformId,
+            },
+          ]);
           setCurrentItem((prev) => prev + 1);
         }
       } else {
@@ -154,6 +191,7 @@ const UploadProcessPage = () => {
     setIsUploading(true);
     setTotalItems(gamePlatforms.length);
     setUploadProgress(0);
+    setcurrentTaskMessage2(`Attaching game files.`);
     const addFilesResult = await addGameFiles(gameId, gamePlatforms);
     if (addFilesResult.error) {
       setErrorMessage(`Failed to attach game files Please try again.`);
@@ -165,7 +203,7 @@ const UploadProcessPage = () => {
     setCurrentTask(5);
     setIsFinished(true);
     setCurrentItem(0);
-  }
+  };
 
   const handleUploadCoverImage = async () => {
     // console.log("HANDLE UPLOAD COVER IMAGE");
@@ -175,6 +213,7 @@ const UploadProcessPage = () => {
     setCurrentItem(0);
     setUploadProgress(0);
     const coverImageFile = gameMediaAssets.coverImage[0];
+    setcurrentTaskMessage2(`Uploading cover image.`);
     if (coverImageFile.originFileObj) {
       const uploadResult = await uploadFile(coverImageFile);
       if (uploadResult.error) {
@@ -206,7 +245,7 @@ const UploadProcessPage = () => {
     // console.log("gameImages: ", filesToUpload)
     for (let i = currentItem; i < filesToUpload.length; i++) {
       const file = filesToUpload[i];
-      setCurrentFileName(file.name ?? "");
+      setcurrentTaskMessage2(`Uploading ${file.name}.`);
       if (file.originFileObj) {
         const uploadResult = await uploadFile(file);
         if (uploadResult.error) {
@@ -238,6 +277,7 @@ const UploadProcessPage = () => {
     setIsUploading(true);
     setTotalItems(1);
     setUploadProgress(0);
+    setcurrentTaskMessage2(`Uploading game information.`);
     const uploadResult = await addGame(profile.id, {
       ageRestrictionId: gameInfo.ageRestrictionId,
       allowDonation: gameInfo.allowDonate,
@@ -287,6 +327,25 @@ const UploadProcessPage = () => {
   };
 
   if (!isSaved) return;
+  if (isHarmful) {
+    return (
+      <div className="flex flex-col justify-center items-center pb-20">
+        <img src={skullImage} className="size-48 mt-10" alt="" />
+        <h1 className="mt-10 text-3xl font-bold text-red-500">⚠ ATTENTION ⚠</h1>
+        <p className="text-center text-amber-200">
+          We detected possible harmful materials in {errorMessage}.<br /> Please
+          make sure your file does not contain any malicious code!
+        </p>
+        <Button
+          danger
+          className="mt-5"
+          onClick={() => navigate("/dev/manage-games")}
+        >
+          I understand!
+        </Button>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col justify-center items-center pb-20">
       {isUploading ? (
@@ -317,7 +376,7 @@ const UploadProcessPage = () => {
           }
         />
         <h2 className="mt-2">
-          Uploading {currentFileName} [{currentItem}/{totalItems}]
+          {currentTaskMessage2} [{currentItem}/{totalItems}]
         </h2>
         <Progress
           percent={uploadProgress}
