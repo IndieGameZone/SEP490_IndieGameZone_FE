@@ -130,3 +130,11 @@ export const getGameById = async (gameId: string) => {
     return handleApiError(error);
   }
 };
+export const getAllGamesAdmin = async () => {
+    try {
+        const { data } = await axiosClient.get(`/api/games`);
+        return { error: null, data: data, success: true };
+    } catch (error) {
+        return handleApiError(error);
+    }
+}
