@@ -1,8 +1,5 @@
-import AITag from "@/components/ai-tag";
 import ExpandableWrapper from "@/components/expandable-wrapper";
-import ModerationStatus from "@/components/moderation-status";
 import TiptapView from "@/components/tiptap/tiptap-view";
-import VisibilityStatus from "@/components/visibility-status";
 import { formatCurrencyVND } from "@/lib/currency";
 import { formatDate, formatDateTime } from "@/lib/date";
 import useGameStore from "@/store/use-game-store";
@@ -19,6 +16,7 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import FileCard from "./file-card";
 import DeleteGameButton from "./delete-game-button";
+import { AITag, ModerationStatusBadge, VisibilityStatus } from "@/components/status-tags";
 
 const GameInfoTab = () => {
   const { game } = useGameStore();
@@ -120,7 +118,7 @@ const GameInfoTab = () => {
     {
       key: "censor-status",
       label: "Censor status",
-      children: <ModerationStatus status={game.censorStatus} />,
+      children: <ModerationStatusBadge status={game.censorStatus} />,
       span: 1,
     },
     {

@@ -19,12 +19,12 @@ export type GameInfo = {
     tagIds: string[];
     languageIds: string[];
     ageRestrictionId: string;
-    releaseStatus: "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";
+    releaseStatus: GameStatus;
     description: string;
     price: number;
     allowDonate: boolean;
     pricingOption: "Free" | "Paid";
-    visibility: "Draft" | "Restricted" | "Public",
+    visibility: GameVisibility,
 };
 
 export type GameMediaAssets = {
@@ -55,13 +55,13 @@ export type Game = {
     coverImage: string;
     description: string;
     shortDescription: string;
-    status: "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";
+    status: GameStatus;
     allowDonation: boolean;
     price: number;
-    censorStatus: "Approved" | "Rejected" | "PendingAIReview" | "PendingManualReview";
+    censorStatus: GameCensorStatus;
     priceAfterDiscount: number;
     discount: number;
-    visibility: "Draft" | "Restricted" | "Public"
+    visibility: GameVisibility;
     category: Category;
     gameTags: { tag: Tag }[];
     gameLanguages: { language: Language }[];
@@ -80,6 +80,10 @@ export type Game = {
     moderator?: User;
     censorReason?: string;
 }
+
+export type GameStatus = "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";
+export type GameCensorStatus = "Approved" | "Rejected" | "PendingAIReview" | "PendingManualReview";
+export type GameVisibility = "Draft" | "Restricted" | "Public";
 
 type GameImage = {
     id: string;

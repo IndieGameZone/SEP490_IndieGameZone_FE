@@ -1,60 +1,12 @@
 import { formatCurrencyVND } from "@/lib/currency";
-import { Game } from "@/types/game";
+import { Game, GameCensorStatus } from "@/types/game";
 import { CalendarOutlined, UserOutlined } from "@ant-design/icons";
 import { Image, Rate, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import ActionMenu from "./action-menu";
+import { CategoryTag, ModerationStatusTag } from "@/components/status-tags";
 
 const { Text, Title } = Typography;
-
-const getStatusTag = (status: string) => {
-  const statusConfig = {
-    Approved: { color: "green", text: "Approved" },
-    PendingManualReview: { color: "orange", text: "Pending Review" },
-    PendingAiReview: { color: "blue", text: "Pending AI Review" },
-    Rejected: { color: "red", text: "Rejected" },
-  };
-  const config =
-    statusConfig[status as keyof typeof statusConfig] ||
-    statusConfig.PendingManualReview;
-  return (
-    <Tag color={config.color} className="font-medium">
-      {config.text}
-    </Tag>
-  );
-};
-
-const getCategoryColor = (() => {
-  const antdTagColors = [
-    "magenta",
-    "red",
-    "volcano",
-    "orange",
-    "gold",
-    "lime",
-    "green",
-    "cyan",
-    "blue",
-    "geekblue",
-    "purple",
-  ];
-
-  const colors: { [key: string]: string } = {};
-
-  const getRandomAntdColor = (): string => {
-    const randomIndex = Math.floor(Math.random() * antdTagColors.length);
-    return antdTagColors[randomIndex];
-  };
-
-  return (category: string): string => {
-    if (colors[category]) {
-      return colors[category];
-    }
-    const newColor = getRandomAntdColor();
-    colors[category] = newColor;
-    return newColor;
-  };
-})();
 
 const columns: ColumnsType<Game> = [
   {
@@ -72,9 +24,7 @@ const columns: ColumnsType<Game> = [
             fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZmlsZQAAKJFjYGASSSwoyGFhYGDIzSspCnJ3UoiIjFJgf8LAwSDCIMogwMCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsis7PPOq3QdDFcvjV3jOD1boQVTPQrgSkktTgbSf4A4LbmgqISBgTEFyFYuLykAsTuAbJEioKOA7DkgdjqEvQHEToKwj4DVhAQ5A9k3gGyB5IxEoBmML4BsnSQk8XQkNtReEOBxcfXxUQg1Mjc0dyHgXNJBSWpFCYh2zi+oLMpMzyhRcASGUqqCZ16yno6CkYGRAQMDKMwhqj/fAIcloxgHQqxAjIHBEugw5sUIsSQpBobtQPdLciLEVJYzMPBHMDBsayhILEqEO4DxG0txmrERhM29nYGBddr//5/DGRjYNRkY/l7////39v///y4Dmn+LgeHANwDrkl1AuO+pmgAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAwqADAAQAAAABAAAAwwAAAAD9b/HnAAAHlklEQVR4Ae3dP3Ik1RnG4W+FuCCSlkwkGCM7sLOzgUJSFthFdm/ZjaNkdXa3aBwmY+g3rBp7hl51T0+n6s39nmAk1C"
           />
           <div className="absolute -top-1 -right-1">
-            <Tag color={getCategoryColor(record.category?.name || "Unknown")}>
-              {record.category?.name || "Unknown"}
-            </Tag>
+            <CategoryTag category={record.category} />
           </div>
         </div>
         <div className="flex-1 min-w-0">
@@ -148,7 +98,9 @@ const columns: ColumnsType<Game> = [
     title: "Status",
     dataIndex: "censorStatus",
     key: "censorStatus",
-    render: (status: string) => getStatusTag(status),
+    render: (status: GameCensorStatus) => (
+      <ModerationStatusTag status={status} />
+    ),
     filters: [
       { text: "Approved", value: "Approved" },
       { text: "Pending Manual Review", value: "PendingManualReview" },
