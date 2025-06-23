@@ -79,7 +79,7 @@ const GameDetailsPage = () => {
       label: <div>Report user</div>,
       key: "1",
       icon: <FaFlag />,
-      disabled: profile?.id == game?.developers.id,
+      disabled: profile?.id == game?.developer.id,
     },
   ];
 
@@ -141,21 +141,21 @@ const GameDetailsPage = () => {
 
           <div className="my-2 flex gap-3 items-center justify-between bg-zinc-900 drop-shadow rounded-lg p-2">
             <Link
-              to={`/profile/${game.developers.id}`}
+              to={`/profile/${game.developer.id}`}
               className="flex items-center gap-3"
             >
-              {game.developers.avatar ? (
-                <Avatar src={game.developers.avatar} />
+              {game.developer.avatar ? (
+                <Avatar src={game.developer.avatar} />
               ) : (
                 <Avatar icon={<CiUser />} />
               )}
-              <p className="font-semibold">{game.developers.userName}</p>
+              <p className="font-semibold">{game.developer.userName}</p>
             </Link>
 
             <div>
               <Button
                 style={{ width: 150 }}
-                disabled={profile?.id == game.developers.id}
+                disabled={profile?.id == game.developer.id}
               >
                 Follow
               </Button>

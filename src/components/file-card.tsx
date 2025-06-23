@@ -11,9 +11,11 @@ import {
 const FileCard = ({
   file,
   defaultPlatforms,
+  darkTheme = true,
 }: {
   file: GameFile;
   defaultPlatforms: any;
+  darkTheme?: boolean;
 }) => {
   const handleDownload = () => {
     const link = document.createElement("a");
@@ -25,7 +27,11 @@ const FileCard = ({
   };
 
   return (
-    <div className="flex justify-between p-2 bg-zinc-900 rounded border border-zinc-700">
+    <div
+      className={`flex justify-between p-2 ${
+        darkTheme ? "bg-zinc-900 border-zinc-700" : "bg-zinc-100 border-zinc-300"
+      } rounded border `}
+    >
       <div className="flex gap-2 items-center flex-1">
         {file.platform.id == defaultPlatforms.windowsPlatformId ? (
           <FaWindows />

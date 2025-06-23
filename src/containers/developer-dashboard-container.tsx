@@ -12,7 +12,7 @@ const DevDashBoardPage = lazy(
   () => import("@/pages/developer/dev-dashboard-page")
 );
 const DevGameDetailsPage = lazy(
-  () => import("@/pages/developer/game-detail/dev-game-details-page")
+  () => import("@/pages/developer/game-details/dev-game-details-page")
 );
 const DevManageGamesPage = lazy(
   () => import("@/pages/developer/manage-games/dev-manage-games-page")

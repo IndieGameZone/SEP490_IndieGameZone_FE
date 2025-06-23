@@ -70,7 +70,7 @@ export type Game = {
     averageSession: number;
     videoLink: string;
     gamePlatforms: GameFile[];
-    developers: User;
+    developer: User;
     updatedAt: string;
     numberOfReviews: number;
     averageRating: number;

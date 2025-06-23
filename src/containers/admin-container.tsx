@@ -1,5 +1,6 @@
 import SuspenseFallback from "@/components/suspense-fallback";
 import AdminLayout from "@/layouts/admin-layout";
+import AdminGameDetail from "@/pages/admin/game-details/admin-game-details";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
@@ -45,7 +46,7 @@ const AdminContainer = () => {
           <Route path="/manage-accounts" element={<ManageAccounts />} />
           <Route path="/manage-categories" element={<ManageCategories />} />
           <Route path="/detail-user/:id" element={<DetailUser />} />
-
+          <Route path="/game/:gameId" element={<AdminGameDetail />} />
           <Route
             path="/manage-age-restrictions"
             element={<ManageAgeRestrictionPage />}

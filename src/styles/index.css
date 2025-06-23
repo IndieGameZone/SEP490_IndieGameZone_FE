@@ -183,7 +183,7 @@ select:-webkit-autofill:focus {
 
 .highlight-hover {
   border-width: 2px;
-  border-color: black;
+  border-color: transparent;
   transition-duration: 300ms;
   transition-property: border-color;
 }

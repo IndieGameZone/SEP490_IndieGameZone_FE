@@ -14,16 +14,21 @@ import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import FileCard from "./file-card";
+import FileCard from "../../../components/file-card";
 import DeleteGameButton from "./delete-game-button";
-import { AITag, ModerationStatusBadge, VisibilityStatus } from "@/components/status-tags";
+import {
+  AITag,
+  ModerationStatusBadge,
+  VisibilityStatus,
+} from "@/components/status-tags";
+import GameNotFound from "@/pages/errors/game-not-found";
 
 const GameInfoTab = () => {
-  const { game } = useGameStore();
+  const { game, error } = useGameStore();
   const navigate = useNavigate();
   const [index, setIndex] = useState(-1);
   const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
-  const { fetchGameFiles, gameFiles } = useGameStore();
+  const { fetchGameFiles, gameFiles, installInstruction } = useGameStore();
 
   const handleViewGamePage = () => {
     navigate(`/game/${game?.id}`);
@@ -37,6 +42,9 @@ const GameInfoTab = () => {
   }, []);
 
   if (!game) return;
+  if (error) {
+    return <GameNotFound />;
+  }
   const defaultPlatforms = getDefaultPlatforms();
   const infoItems: DescriptionsProps["items"] = [
     {
@@ -157,6 +165,20 @@ const GameInfoTab = () => {
     },
   ];
 
+  const installInstructionItems: DescriptionsProps["items"] = [
+    {
+      key: "install-instruction",
+      label: "Install Instruction",
+      children: installInstruction ? (
+        <ExpandableWrapper>
+          <TiptapView value={installInstruction} darkTheme={false} />
+        </ExpandableWrapper>
+      ) : (
+        <span className="text-gray-500">None</span>
+      ),
+    },
+  ];
+
   const slides = game
     ? [
         { src: game.coverImage },
@@ -265,6 +287,13 @@ const GameInfoTab = () => {
           layout="vertical"
           bordered
           items={descriptionItems}
+          style={{ marginTop: 15 }}
+        />
+        <Descriptions
+          column={2}
+          layout="vertical"
+          bordered
+          items={installInstructionItems}
           style={{ marginTop: 15 }}
         />
       </div>

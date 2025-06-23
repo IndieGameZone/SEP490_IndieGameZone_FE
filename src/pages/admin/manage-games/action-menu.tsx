@@ -28,7 +28,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
   };
 
   const handleView = (game: Game) => {
-    navigate(`/admin/game-detail/${game.id}`);
+    navigate(`/admin/game/${game.id}`);
   };
 
   const handleApprove = (game: Game) => {
