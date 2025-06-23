@@ -60,6 +60,12 @@ const GameInfoTab = () => {
       span: 1,
     },
     {
+      key: "average-time",
+      label: "Average time",
+      children: game?.averageSession + " minute(s)",
+      span: 1,
+    },
+    {
       key: "tags",
       label: "Tags",
       children: (
@@ -71,7 +77,7 @@ const GameInfoTab = () => {
           ))}
         </div>
       ),
-      span: 1,
+      span: 2,
     },
     {
       key: "short-description",
@@ -100,18 +106,6 @@ const GameInfoTab = () => {
       span: 1,
     },
     {
-      key: "average-time",
-      label: "Average time",
-      children: game?.averageSession + " minute(s)",
-      span: 1,
-    },
-    {
-      key: "visibility",
-      label: "Visibility",
-      children: <VisibilityStatus status={game.visibility} />,
-      span: 1,
-    },
-    {
       key: "price",
       label: "Price",
       children: game?.price != 0 ? formatCurrencyVND(game?.price ?? 0) : "Free",
@@ -121,6 +115,12 @@ const GameInfoTab = () => {
       key: "allows-donation",
       label: "Allows donation",
       children: game?.allowDonation ? "Yes" : "No",
+      span: 1,
+    },
+    {
+      key: "visibility",
+      label: "Visibility",
+      children: <VisibilityStatus status={game.visibility} />,
       span: 1,
     },
     {
@@ -149,7 +149,7 @@ const GameInfoTab = () => {
       ) : (
         <span className="text-gray-500">None</span>
       ),
-      span: 2,
+      span: 1,
     },
   ];
 

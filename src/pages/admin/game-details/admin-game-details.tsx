@@ -73,6 +73,12 @@ const AdminGameDetail = () => {
       span: 1,
     },
     {
+      key: "average-time",
+      label: "Average time",
+      children: game?.averageSession + " minute(s)",
+      span: 1,
+    },
+    {
       key: "tags",
       label: "Tags",
       children: (
@@ -84,7 +90,7 @@ const AdminGameDetail = () => {
           ))}
         </div>
       ),
-      span: 1,
+      span: 2,
     },
     {
       key: "short-description",
@@ -113,18 +119,6 @@ const AdminGameDetail = () => {
       span: 1,
     },
     {
-      key: "average-time",
-      label: "Average time",
-      children: game?.averageSession + " minute(s)",
-      span: 1,
-    },
-    {
-      key: "visibility",
-      label: "Visibility",
-      children: <VisibilityStatus status={game.visibility} />,
-      span: 1,
-    },
-    {
       key: "price",
       label: "Price",
       children: game?.price != 0 ? formatCurrencyVND(game?.price ?? 0) : "Free",
@@ -134,6 +128,12 @@ const AdminGameDetail = () => {
       key: "allows-donation",
       label: "Allows donation",
       children: game?.allowDonation ? "Yes" : "No",
+      span: 1,
+    },
+    {
+      key: "visibility",
+      label: "Visibility",
+      children: <VisibilityStatus status={game.visibility} />,
       span: 1,
     },
     {
@@ -162,7 +162,7 @@ const AdminGameDetail = () => {
       ) : (
         <span className="text-gray-500">None</span>
       ),
-      span: 2,
+      span: 1,
     },
   ];
 
@@ -229,11 +229,7 @@ const AdminGameDetail = () => {
         <Button icon={<FaEye />} onClick={handleViewGamePage}>
           View game's page
         </Button>
-        <Button
-          icon={<IoMdClose />}
-          type="primary"
-          danger
-        >
+        <Button icon={<IoMdClose />} type="primary" danger>
           Decline game
         </Button>
         <Button
@@ -252,7 +248,7 @@ const AdminGameDetail = () => {
           bordered
           items={infoItems}
         />
-        <h3 className="font-bold mb-2">Cover Image</h3>
+        <h3 className="font-bold my-2">Cover Image</h3>
         <img
           src={game?.coverImage}
           alt="game's cover image"
@@ -269,7 +265,7 @@ const AdminGameDetail = () => {
                 src={image.image}
                 key={`game-image-${image.id}`}
                 alt=""
-                className="aspect-video object-contain bg-zinc-200 rounded highlight-hover cursor-pointer"
+                className="aspect-video object-contain bg-zinc-200 rounded highlight-hover cursor-pointer w-full"
                 onClick={() => {
                   setIndex(index + 1);
                 }}
@@ -280,10 +276,8 @@ const AdminGameDetail = () => {
         <h3 className="font-bold mt-4">Gameplay/trailer</h3>
         {game?.videoLink ? (
           <ReactPlayer
-            className="react-player"
+            className="react-player aspect-video"
             url={game?.videoLink}
-            width="100%"
-            height={200}
             controls
           />
         ) : (
