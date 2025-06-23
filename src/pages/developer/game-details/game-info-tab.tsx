@@ -22,6 +22,7 @@ import {
   VisibilityStatus,
 } from "@/components/status-tags";
 import GameNotFound from "@/pages/errors/game-not-found";
+import { CiWarning } from "react-icons/ci";
 
 const GameInfoTab = () => {
   const { game, error } = useGameStore();
@@ -275,7 +276,19 @@ const GameInfoTab = () => {
         </div>
       </div>
 
-      <div className="col-span-8 bg-zinc-800 p-3 rounded ">
+      <div className="col-span-8 bg-zinc-800 p-3 rounded">
+        {game.censorStatus == "PendingManualReview" && (
+          <div className="bg-orange-900 p-3 rounded mb-2 border-orange-500 border flex gap-3 items-center">
+            <CiWarning className="size-9" />
+            <div>
+              Your game content has been flagged as {" "}
+              <span className="font-bold">not safe/appropriate</span> by AI.
+              <br />
+              Our moderation team will examine your game to ensure it is safe
+              before it is made public.
+            </div>
+          </div>
+        )}
         <Descriptions
           title="Game Infomation"
           column={2}
