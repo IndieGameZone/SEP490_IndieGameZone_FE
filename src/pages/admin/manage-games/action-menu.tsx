@@ -9,10 +9,13 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import useGameStore from "@/store/use-game-store";
+import { updateGameActivation } from "@/lib/api/game-api";
 
 const ActionMenu = ({ record }: { record: Game }) => {
   const navigate = useNavigate();
-  const { rerender } = useGameStore();
+  const { fetchGameById, rerender } = useGameStore();
+  const [messageApi, contextHolder] = message.useMessage();
+
   const handleDelete = (game: Game) => {
     Modal.confirm({
       title: "Are you sure?",
@@ -21,7 +24,10 @@ const ActionMenu = ({ record }: { record: Game }) => {
       okType: "danger",
       cancelText: "No",
       onOk() {
-        message.success(`Game "${game.name}" deleted successfully`);
+        messageApi.open({
+          type: "success",
+          content: `Game "${game.name}" deleted successfully`,
+        });
         setTimeout(rerender, 1000);
       },
     });
@@ -38,9 +44,20 @@ const ActionMenu = ({ record }: { record: Game }) => {
       okText: "Approve",
       okType: "primary",
       cancelText: "Cancel",
-      onOk() {
-        message.success(`Game "${game.name}" approved successfully`);
-        setTimeout(rerender, 1000);
+      async onOk() {
+        const result = await updateGameActivation(game.id, "Approved");
+        if (result.success) {
+          messageApi.open({
+            type: "success",
+            content: `Game "${game.name}" approved successfully`,
+          });
+          setTimeout(() => fetchGameById(game.id), 1000); 
+        } else {
+          messageApi.open({
+            type: "error",
+            content: result.error || "Failed to approve game",
+          });
+        }
       },
     });
   };
@@ -52,60 +69,73 @@ const ActionMenu = ({ record }: { record: Game }) => {
       okText: "Reject",
       okType: "danger",
       cancelText: "Cancel",
-      onOk() {
-        message.success(`Game "${game.name}" rejected`);
-        setTimeout(rerender, 1000);
+      async onOk() {
+        const result = await updateGameActivation(game.id, "Rejected");
+        if (result.success) {
+          messageApi.open({
+            type: "success",
+            content: `Game "${game.name}" rejected`,
+          });
+          setTimeout(() => fetchGameById(game.id), 1000); 
+        } else {
+          messageApi.open({
+            type: "error",
+            content: result.error || "Failed to reject game",
+          });
+        }
       },
     });
   };
 
   return (
-    <Dropdown
-      menu={{
-        items: [
-          {
-            key: "view",
-            label: "View Details",
-            icon: <EyeOutlined />,
-            onClick: () => handleView(record),
-          },
-
-          ...(record.censorStatus === "PendingManualReview" ||
-          record.censorStatus === "PendingAIReview"
-            ? [
-                {
-                  type: "divider" as const,
-                },
-                {
-                  key: "approve",
-                  label: "Approve",
-                  icon: <CheckCircleOutlined className="text-green-500" />,
-                  onClick: () => handleApprove(record),
-                },
-                {
-                  key: "reject",
-                  label: "Reject",
-                  icon: <CloseCircleOutlined className="text-red-500" />,
-                  onClick: () => handleReject(record),
-                },
-              ]
-            : []),
-          {
-            type: "divider" as const,
-          },
-          {
-            key: "delete",
-            label: "Delete Game",
-            icon: <DeleteOutlined />,
-            danger: true,
-            onClick: () => handleDelete(record),
-          },
-        ],
-      }}
-      trigger={["click"]}
-    >
-      <Button type="text" icon={<MoreOutlined />} />
-    </Dropdown>
+    <>
+      {contextHolder}
+      <Dropdown
+        menu={{
+          items: [
+            {
+              key: "view",
+              label: "View Details",
+              icon: <EyeOutlined />,
+              onClick: () => handleView(record),
+            },
+            ...(record.censorStatus === "PendingManualReview" ||
+            record.censorStatus === "PendingAIReview"
+              ? [
+                  {
+                    type: "divider" as const,
+                  },
+                  {
+                    key: "approve",
+                    label: "Approve",
+                    icon: <CheckCircleOutlined className="text-green-500" />,
+                    onClick: () => handleApprove(record),
+                  },
+                  {
+                    key: "reject",
+                    label: "Reject",
+                    icon: <CloseCircleOutlined className="text-red-500" />,
+                    onClick: () => handleReject(record),
+                  },
+                ]
+              : []),
+            {
+              type: "divider" as const,
+            },
+            {
+              key: "delete",
+              label: "Delete Game",
+              icon: <DeleteOutlined />,
+              danger: true,
+              onClick: () => handleDelete(record),
+            },
+          ],
+        }}
+        trigger={["click"]}
+      >
+        <Button type="text" icon={<MoreOutlined />} />
+      </Dropdown>
+    </>
   );
 };
 

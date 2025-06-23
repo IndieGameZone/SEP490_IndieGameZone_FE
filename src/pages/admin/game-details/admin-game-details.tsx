@@ -7,13 +7,14 @@ import {
   VisibilityStatus,
 } from "@/components/status-tags";
 import TiptapView from "@/components/tiptap/tiptap-view";
+import { updateGameActivation } from "@/lib/api/game-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { formatDate, formatDateTime } from "@/lib/date";
 import DeleteGameButton from "@/pages/developer/game-details/delete-game-button";
 import GameNotFound from "@/pages/errors/game-not-found";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
-import { Button, Descriptions, DescriptionsProps, Tag } from "antd";
+import { Button, Descriptions, DescriptionsProps, Tag, message, Modal } from "antd";
 import { useEffect, useState } from "react";
 import { FaCheck, FaEye } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
@@ -32,6 +33,9 @@ const AdminGameDetail = () => {
   const [index, setIndex] = useState(-1);
   const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
   const { fetchGameFiles, gameFiles, installInstruction } = useGameStore();
+  const [isApproving, setIsApproving] = useState(false);
+  const [isDeclining, setIsDeclining] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     if (game) {
@@ -215,8 +219,78 @@ const AdminGameDetail = () => {
   const handleViewGamePage = () => {
     navigate(`/game/${game?.id}`);
   };
+
+  const handleApprove = () => {
+    Modal.confirm({
+      title: "Approve Game",
+      content: `Are you sure you want to approve game "${game.name}"?`,
+      okText: "Approve",
+      okType: "primary",
+      okButtonProps: { icon: <FaCheck /> },
+      cancelText: "Cancel",
+      onOk: async () => {
+        setIsApproving(true);
+        if (gameId) {
+          const result = await updateGameActivation(gameId, "Approved");
+          if (result.success) {
+            messageApi.open({
+              type: "success",
+              content: `Game "${game.name}" approved successfully`,
+            });
+            fetchGameById(gameId);
+          } else {
+            messageApi.open({
+              type: "error",
+              content: result.error || "Failed to approve game",
+            });
+          }
+        }
+        setIsApproving(false);
+      },
+      onCancel() {
+        setIsApproving(false);
+      },
+    });
+  };
+
+  const handleDecline = () => {
+    Modal.confirm({
+      title: "Decline Game",
+      content: `Are you sure you want to decline game "${game.name}"?`,
+      okText: "Decline",
+      okType: "danger",
+      okButtonProps: { icon: <IoMdClose /> },
+      cancelText: "Cancel",
+      onOk: async () => {
+        setIsDeclining(true);
+        if (gameId) {
+          const result = await updateGameActivation(gameId, "Rejected");
+          if (result.success) {
+            messageApi.open({
+              type: "success",
+              content: `Game "${game.name}" rejected`,
+            });
+            fetchGameById(gameId);
+          } else {
+            messageApi.open({
+              type: "error",
+              content: result.error || "Failed to reject game",
+            });
+          }
+        }
+        setIsDeclining(false);
+      },
+      onCancel() {
+        setIsDeclining(false);
+      },
+    });
+  };
+
+  const isPending = game.censorStatus === "PendingAIReview" || game.censorStatus === "PendingManualReview";
+
   return (
     <div className="bg-zinc-100 p-3 flex flex-col gap-5">
+      {contextHolder}
       <Lightbox
         index={index}
         slides={slides}
@@ -229,20 +303,28 @@ const AdminGameDetail = () => {
         <Button icon={<FaEye />} onClick={handleViewGamePage}>
           View game's page
         </Button>
-        <Button
-          icon={<IoMdClose />}
-          type="primary"
-          danger
-        >
-          Decline game
-        </Button>
-        <Button
-          icon={<FaCheck />}
-          type="primary"
-          style={{ backgroundColor: "green" }}
-        >
-          Approve game
-        </Button>
+        {isPending && (
+          <>
+            <Button
+              icon={<IoMdClose />}
+              type="primary"
+              danger
+              onClick={handleDecline}
+              loading={isDeclining}
+            >
+              Decline game
+            </Button>
+            <Button
+              icon={<FaCheck />}
+              type="primary"
+              style={{ backgroundColor: "green" }}
+              onClick={handleApprove}
+              loading={isApproving}
+            >
+              Approve game
+            </Button>
+          </>
+        )}
       </div>
 
       <div className="bg-white p-3 rounded ">
