@@ -69,3 +69,50 @@ export const updateUser = async (userId: string, request: UpdateUserRequest) => 
     return handleApiError(error);
   }
 };
+
+type CreateBanHistoryRequest = {
+  banDate: string;
+  unbanDate?: string;
+  reason: string;
+  userId: string;
+};
+
+export const getAllBanHistories = async () => {
+  try {
+    const { data } = await axiosClient.get(`/api/ban-histories`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const getBanHistoryById = async (id: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/ban-histories/${id}`);
+    return { error: null, data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const createBanHistory = async (request: CreateBanHistoryRequest) => {
+  try {
+    const { data } = await axiosClient.post(`/api/ban-histories`, request, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return { error: null, data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const unbanUserById = async (id: string) => {
+  try {
+    const { data } = await axiosClient.patch(`/api/ban-histories/${id}/unban`);
+    return { error: null, data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

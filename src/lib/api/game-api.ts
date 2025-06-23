@@ -158,3 +158,18 @@ export const getAllGamesAdmin = async () => {
     return handleApiError(error);
   }
 }
+export const updateGameActivation = async (gameId: string, censorStatus: string) => {
+  try {
+    const validStatuses = ['Approved', 'Rejected'];
+    if (!validStatuses.includes(censorStatus)) {
+      return { error: "censorStatus must be either 'Approved' or 'Rejected'", data: null, success: false };
+    }
+
+    const { data } = await axiosClient.put(`/api/games/${gameId}/activation`, null, {
+      params: { censorStatus },
+    });
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
