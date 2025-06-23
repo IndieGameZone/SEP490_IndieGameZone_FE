@@ -18,7 +18,7 @@ const ManageGames = lazy(
   () => import("@/pages/admin/manage-games/manage-games")
 );
 const ManagePlatforms = lazy(
-  () => import("@/pages/admin/manage-games/manage-platform/manage-platform")
+  () => import("@/pages/admin/manage-platform/manage-platform")
 );
 const ManageCategories = lazy(
   () => import("@/pages/admin/manage-categories/manage-categories")

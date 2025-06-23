@@ -60,7 +60,7 @@ export type Game = {
     price: number;
     censorStatus: "Approved" | "Rejected" | "PendingAIReview" | "PendingManualReview";
     priceAfterDiscount: number;
-    discount: any[];
+    discount: number;
     visibility: "Draft" | "Restricted" | "Public"
     category: Category;
     gameTags: { tag: Tag }[];

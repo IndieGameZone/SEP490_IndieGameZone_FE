@@ -1,0 +1,112 @@
+import { Game } from "@/types/game";
+import { Button, Dropdown, Modal, message } from "antd";
+import {
+  DeleteOutlined,
+  MoreOutlined,
+  EyeOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import useGameStore from "@/store/use-game-store";
+
+const ActionMenu = ({ record }: { record: Game }) => {
+  const navigate = useNavigate();
+  const { rerender } = useGameStore();
+  const handleDelete = (game: Game) => {
+    Modal.confirm({
+      title: "Are you sure?",
+      content: `Do you want to delete game "${game.name}"?`,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        message.success(`Game "${game.name}" deleted successfully`);
+        setTimeout(rerender, 1000);
+      },
+    });
+  };
+
+  const handleView = (game: Game) => {
+    navigate(`/admin/game-detail/${game.id}`);
+  };
+
+  const handleApprove = (game: Game) => {
+    Modal.confirm({
+      title: "Approve Game",
+      content: `Do you want to approve game "${game.name}"?`,
+      okText: "Approve",
+      okType: "primary",
+      cancelText: "Cancel",
+      onOk() {
+        message.success(`Game "${game.name}" approved successfully`);
+        setTimeout(rerender, 1000);
+      },
+    });
+  };
+
+  const handleReject = (game: Game) => {
+    Modal.confirm({
+      title: "Reject Game",
+      content: `Do you want to reject game "${game.name}"?`,
+      okText: "Reject",
+      okType: "danger",
+      cancelText: "Cancel",
+      onOk() {
+        message.success(`Game "${game.name}" rejected`);
+        setTimeout(rerender, 1000);
+      },
+    });
+  };
+
+  return (
+    <Dropdown
+      menu={{
+        items: [
+          {
+            key: "view",
+            label: "View Details",
+            icon: <EyeOutlined />,
+            onClick: () => handleView(record),
+          },
+
+          ...(record.censorStatus === "PendingManualReview" ||
+          record.censorStatus === "PendingAIReview"
+            ? [
+                {
+                  type: "divider" as const,
+                },
+                {
+                  key: "approve",
+                  label: "Approve",
+                  icon: <CheckCircleOutlined className="text-green-500" />,
+                  onClick: () => handleApprove(record),
+                },
+                {
+                  key: "reject",
+                  label: "Reject",
+                  icon: <CloseCircleOutlined className="text-red-500" />,
+                  onClick: () => handleReject(record),
+                },
+              ]
+            : []),
+          {
+            type: "divider" as const,
+          },
+          {
+            key: "delete",
+            label: "Delete Game",
+            icon: <DeleteOutlined />,
+            danger: true,
+            onClick: () => handleDelete(record),
+          },
+        ],
+      }}
+      trigger={["click"]}
+    >
+      <Button type="text" icon={<MoreOutlined />} />
+    </Dropdown>
+  );
+};
+
+export default ActionMenu;

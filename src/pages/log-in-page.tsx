@@ -95,7 +95,6 @@ const LogInPage = () => {
       toast.success("Login successfully");
       setIsGoogleModalOpen(false);
       fetchProfile();
-      setTimeout(() => navigate("/"), 1000);
     } else {
       toast.error(result.data?.detail || result.error);
     }
