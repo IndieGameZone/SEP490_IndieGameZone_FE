@@ -37,7 +37,7 @@ const ManageGames: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <GamesStatistics />
           <Card className="mb-6 shadow-lg border-0 bg-white/70 backdrop-blur-sm">
             <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">

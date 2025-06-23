@@ -1,5 +1,5 @@
 import useGameStore from "@/store/use-game-store";
-import { Card, Typography } from "antd";
+import { Statistic, Typography } from "antd";
 
 const { Text, Title } = Typography;
 
@@ -20,7 +20,7 @@ const GamesStatistics = () => {
     (g) => g.censorStatus === "PendingAIReview"
   ).length;
   return (
-    <div className="mb-8">
+    <div className="mb-8 bg-white p-3 rounded drop-shadow">
       <div className="flex items-center gap-3 mb-4">
         <div>
           <img src="/igz_ic.svg" width={50} />
@@ -38,37 +38,42 @@ const GamesStatistics = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-        <Card className="border-0 shadow-md bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-          <div className="text-center">
-            <div className="text-2xl font-bold">{games.length}</div>
-            <div className="text-blue-500">Total Games</div>
-          </div>
-        </Card>
-        <Card className="border-0 shadow-md bg-gradient-to-br from-green-500 to-green-600 text-white">
-          <div className="text-center">
-            <div className="text-2xl font-bold">{totalApproved}</div>
-            <div className="text-green-500">Approved</div>
-          </div>
-        </Card>
-        <Card className="border-0 shadow-md bg-gradient-to-br from-red-500 to-red-600 text-white">
-          <div className="text-center">
-            <div className="text-2xl font-bold">{totalRejected}</div>
-            <div className="text-red-500">Rejected</div>
-          </div>
-        </Card>
-        <Card className="border-0 shadow-md bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-          <div className="text-center">
-            <div className="text-2xl font-bold">{totalPending}</div>
-            <div className="text-orange-500">Pending Manual Review</div>
-          </div>
-        </Card>
-        <Card className="border-0 shadow-md bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-          <div className="text-center">
-            <div className="text-2xl font-bold">{totalPendingAI}</div>
-            <div className="text-purple-500">Pending AI Review</div>
-          </div>
-        </Card>
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="shadow-md bg-gradient-to-br from-blue-500 to-blue-600 rounded p-5">
+          <Statistic
+            title={<span className="text-white">Total Games</span>}
+            value={games.length}
+            valueStyle={{ color: "white" }}
+          />
+        </div>
+        <div className="rounded shadow-md bg-gradient-to-br from-green-500 to-green-600 p-5">
+          <Statistic
+            title={<span className="text-white">Approved</span>}
+            value={totalApproved}
+            valueStyle={{ color: "white" }}
+          />
+        </div>
+        <div className="rounded shadow-md bg-gradient-to-br from-red-500 to-red-600 p-5">
+          <Statistic
+            title={<span className="text-white">Rejected</span>}
+            value={totalRejected}
+            valueStyle={{ color: "white" }}
+          />
+        </div>
+        <div className="rounded shadow-md bg-gradient-to-br from-orange-500 to-orange-600 p-5">
+          <Statistic
+            title={<span className="text-white">Pending Manual Review</span>}
+            value={totalPending}
+            valueStyle={{ color: "white" }}
+          />
+        </div>
+        <div className="rounded shadow-md bg-gradient-to-br from-purple-500 to-purple-600 p-5">
+          <Statistic
+            title={<span className="text-white">Pending AI Review</span>}
+            value={totalPendingAI}
+            valueStyle={{ color: "white" }}
+          />
+        </div>
       </div>
     </div>
   );

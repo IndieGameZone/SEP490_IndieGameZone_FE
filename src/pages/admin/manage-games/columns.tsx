@@ -14,7 +14,7 @@ const columns: ColumnsType<Game> = [
     key: "gameInfo",
     render: (_, record: Game) => (
       <div className="flex items-center gap-4">
-        <div className="relative">
+        <div className="flex flex-col gap-1 items-center">
           <Image
             src={record.coverImage}
             alt={record.name}
@@ -23,10 +23,9 @@ const columns: ColumnsType<Game> = [
             className="rounded-lg object-cover shadow-sm"
             fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZmlsZQAAKJFjYGASSSwoyGFhYGDIzSspCnJ3UoiIjFJgf8LAwSDCIMogwMCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsis7PPOq3QdDFcvjV3jOD1boQVTPQrgSkktTgbSf4A4LbmgqISBgTEFyFYuLykAsTuAbJEioKOA7DkgdjqEvQHEToKwj4DVhAQ5A9k3gGyB5IxEoBmML4BsnSQk8XQkNtReEOBxcfXxUQg1Mjc0dyHgXNJBSWpFCYh2zi+oLMpMzyhRcASGUqqCZ16yno6CkYGRAQMDKMwhqj/fAIcloxgHQqxAjIHBEugw5sUIsSQpBobtQPdLciLEVJYzMPBHMDBsayhILEqEO4DxG0txmrERhM29nYGBddr//5/DGRjYNRkY/l7////39v///y4Dmn+LgeHANwDrkl1AuO+pmgAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAwqADAAQAAAABAAAAwwAAAAD9b/HnAAAHlklEQVR4Ae3dP3Ik1RnG4W+FuCCSlkwkGCM7sLOzgUJSFthFdm/ZjaNkdXa3aBwmY+g3rBp7hl51T0+n6s39nmAk1C"
           />
-          <div className="absolute -top-1 -right-1">
-            <CategoryTag category={record.category} />
-          </div>
+          <CategoryTag category={record.category} />
         </div>
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <Title level={5} className="!mb-0 truncate" title={record.name}>

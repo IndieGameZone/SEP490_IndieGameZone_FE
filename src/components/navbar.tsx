@@ -63,6 +63,20 @@ const popOverContent = (
 const Navbar = () => {
   const navigate = useNavigate();
   const { profile } = useProfileStore();
+
+  const handleGoToDashboard = () => {
+    if (profile?.role.name == "Developer") {
+      navigate("/dev/manage-games");
+    } else if (profile?.role.name == "Admin") {
+      navigate("/admin");
+    } else if (profile?.role.name == "Moderator") {
+      navigate("/moderator");
+    }
+  };
+  const showDashboardButton =
+    profile?.role.name == "Developer" ||
+    profile?.role.name == "Admin" ||
+    profile?.role.name == "Moderator";
   return (
     <div className="bg-zinc-900">
       <MaxWidthWrapper className="flex justify-between p-5">
@@ -84,11 +98,9 @@ const Navbar = () => {
           </Popover>
         </div>
         <div className="flex justify-center items-center gap-3">
-          {profile?.role.name == "Developer" && (
+          {showDashboardButton && (
             <Button
-              onClick={() => {
-                navigate("/dev/manage-games");
-              }}
+              onClick={handleGoToDashboard}
               icon={<MdOutlineInsertChart />}
             >
               Dashboard

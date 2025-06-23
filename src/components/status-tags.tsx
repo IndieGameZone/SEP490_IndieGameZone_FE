@@ -7,11 +7,7 @@ type ModerationStatusProps = {
   status: GameCensorStatus;
 };
 
-export const VisibilityStatus = ({
-  status,
-}: {
-  status: GameVisibility;
-}) => {
+export const VisibilityStatus = ({ status }: { status: GameVisibility }) => {
   const badgeStatus =
     status === "Draft"
       ? "default"
@@ -84,7 +80,10 @@ const getCategoryColor = (() => {
 
 export const CategoryTag = ({ category }: { category?: Category }) => {
   return (
-    <Tag color={getCategoryColor(category?.name || "Unknown")}>
+    <Tag
+      color={getCategoryColor(category?.name || "Unknown")}
+      style={{ marginInlineEnd: 0 }}
+    >
       {category?.name || "Unknown"}
     </Tag>
   );
