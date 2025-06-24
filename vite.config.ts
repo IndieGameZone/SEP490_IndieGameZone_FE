@@ -17,13 +17,17 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('antd')) return 'vendor_antd'
-            if (id.includes('@tiptap')) return 'vendor_tiptap'
+            if (id.includes('react')) return 'vendor_react';
+            if (id.includes('antd')) return 'vendor_antd';
+            if (id.includes('tiptap')) return 'vendor_tiptap';
+            if (id.includes('firebase')) return 'vendor_firebase';
+            if (id.includes('tailwind')) return 'vendor_tailwind';
+            if (id.includes('victory')) return 'vendor_charts';
+            if (id.includes('react-slick') || id.includes('react-player') || id.includes('lightbox')) return 'vendor_media';
+            if (id.includes('react-router-dom')) return 'vendor_router';
+            if (id.includes('moment')) return 'vendor_moment';
             if (id.includes('react-icons')) return 'vendor_icons'
-            if (id.includes('react-router-dom')) return 'vendor_router'
-            if (id.includes('firebase')) return 'vendor_firebase'
-            if (id.includes('moment')) return 'vendor_moment'
-            return 'vendor_misc'
+            return 'vendor_misc';
           }
         },
       },

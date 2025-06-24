@@ -1,6 +1,5 @@
 import useManageGameStore from "@/store/use-manage-game-store";
 import { useEffect, useState } from "react";
-import paperPlane from "@/assets/gif/paper-plane.gif";
 import { Button, Progress, UploadFile, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { addGame, addGameFiles, deleteGame } from "@/lib/api/game-api";
@@ -8,7 +7,10 @@ import useAuthStore from "@/store/use-auth-store";
 import cancleIcon from "@/assets/cancel.png";
 import checkedIcon from "@/assets/checked.png";
 import { axiosClient } from "@/lib/api/config/axios-client";
-import skullImage from "@/assets/death.png";
+import uploadingAnimation from "@/assets/lotties/uploading.json";
+import scanningAnimation from "@/assets/lotties/scanning.json";
+import HarmfulFileWarning from "./harmful-file-warning";
+import LottiePlayer from "@/components/lottie-player";
 
 const TASKS = [
   {
@@ -54,6 +56,7 @@ const UploadProcessPage = () => {
   const [gamePlatforms, setGamePlatforms] = useState<any[]>([]);
   const [isHarmful, setIsHarmful] = useState(false);
   const [deleteAttempts, setDeleteAttempts] = useState(0);
+  const [isScanning, setIsScanning] = useState(false);
   const navigate = useNavigate();
 
   const { isSaved, gameFiles, gameMediaAssets, gameInfo } =
@@ -129,6 +132,9 @@ const UploadProcessPage = () => {
             setcurrentTaskMessage2(
               "Scanning for harmful files\n(may take a few second)"
             );
+            setIsScanning(true);
+          } else if (isScanning) {
+            setIsHarmful(false);
           }
           setUploadProgress(percent);
         },
@@ -328,39 +334,35 @@ const UploadProcessPage = () => {
 
   if (!isSaved) return;
   if (isHarmful) {
-    return (
-      <div className="flex flex-col justify-center items-center pb-20">
-        <img src={skullImage} className="size-48 mt-10" alt="" />
-        <h1 className="mt-10 text-3xl font-bold text-red-500">⚠ ATTENTION ⚠</h1>
-        <p className="text-center text-amber-200">
-          We detected possible harmful materials in {errorMessage}.<br /> Please
-          make sure your file does not contain any malicious code!
-        </p>
-        <Button
-          danger
-          className="mt-5"
-          onClick={() => navigate("/dev/manage-games")}
-        >
-          I understand!
-        </Button>
-      </div>
-    );
+    return <HarmfulFileWarning errorMessage={errorMessage} />;
   }
   return (
     <div className="flex flex-col justify-center items-center pb-20">
-      {isUploading ? (
-        <img src={paperPlane} alt="" className="size-52" />
+      {currentTask == 3 && isScanning ? (
+        <LottiePlayer
+          animationData={scanningAnimation}
+          loop={true}
+          className="size-64"
+        />
+      ) : isUploading ? (
+        <LottiePlayer
+          animationData={uploadingAnimation}
+          loop={true}
+          className="size-64"
+        />
       ) : errorMessage ? (
-        <div className="size-52 p-16">
+        <div className="size-64 p-16">
           <img src={cancleIcon} alt="" className="w-full" />
         </div>
-      ) : (
-        <div className="size-52 p-16">
+      ) : isFinished ? (
+        <div className="size-64 p-16">
           <img src={checkedIcon} alt="" className="w-full" />
         </div>
+      ) : (
+        <div className="size-52 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
       )}
-      <div className="w-[300px]">
-        <h1 className="-mt-10">
+      <div className="w-[300px] bg-zinc-800 p-3 rounded -mt-3">
+        <h1 className="text-sm">
           {currentTaskMessage} [{currentTask}/{5}]
         </h1>
         <Progress
@@ -375,7 +377,7 @@ const UploadProcessPage = () => {
               : "normal"
           }
         />
-        <h2 className="mt-2">
+        <h2 className="mt-2 text-sm">
           {currentTaskMessage2} [{currentItem}/{totalItems}]
         </h2>
         <Progress
@@ -390,27 +392,27 @@ const UploadProcessPage = () => {
               : "normal"
           }
         />
-        {errorMessage && (
-          <>
-            <p className="text-red-500">{errorMessage}</p>
-            <div className="text-center">
-              <Button onClick={handleRetry} className="mt-1">
-                Retry
-              </Button>
-            </div>
-          </>
-        )}
-        {isFinished && (
-          <>
-            <p className="text-green-500">Game uploaded successfully</p>
-            <div className="text-center">
-              <Button onClick={handleFinish} type="primary" className="mt-1">
-                Go to Dashboard
-              </Button>
-            </div>
-          </>
-        )}
       </div>
+      {errorMessage && (
+        <>
+          <p className="text-red-500">{errorMessage}</p>
+          <div className="text-center">
+            <Button onClick={handleRetry} className="mt-1">
+              Retry
+            </Button>
+          </div>
+        </>
+      )}
+      {isFinished && (
+        <>
+          <p className="text-green-500">Game uploaded successfully</p>
+          <div className="text-center">
+            <Button onClick={handleFinish} type="primary" className="mt-1">
+              Go to Dashboard
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

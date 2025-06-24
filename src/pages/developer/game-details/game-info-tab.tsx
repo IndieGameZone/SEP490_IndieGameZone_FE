@@ -172,7 +172,7 @@ const GameInfoTab = () => {
       label: "Install Instruction",
       children: installInstruction ? (
         <ExpandableWrapper>
-          <TiptapView value={installInstruction} darkTheme={false} />
+          <TiptapView value={installInstruction} />
         </ExpandableWrapper>
       ) : (
         <span className="text-gray-500">None</span>
@@ -271,7 +271,7 @@ const GameInfoTab = () => {
                 />
               );
             })}
-            {gameFiles && <span className="text-gray-500">None</span>}
+            {!gameFiles && <span className="text-gray-500">None</span>}
           </div>
         </div>
       </div>

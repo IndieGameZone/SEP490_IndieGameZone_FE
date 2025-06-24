@@ -41,13 +41,16 @@ const GameCard = ({ game }: { game: Game }) => {
           </div>
           <p className="py-1 text-sm text-zinc-500">{game.shortDescription}</p>
           <div className="flex items-center mt-1">
-            {game.gameTags?.map((tag, index: number) => (
+            {game.gameTags?.slice(0, 3).map((tag, index: number) => (
               <Link to={`/search?tag=${tag.tag.id}`} key={`game-tag-${index}`}>
                 <Tag key={index} color="orange">
                   {tag.tag.name}
                 </Tag>
               </Link>
             ))}
+            {game.gameTags && game.gameTags.length > 3 && (
+              <Tag color="orange">+{game.gameTags.length - 3} more</Tag>
+            )}
           </div>
         </div>
       </div>
