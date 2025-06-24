@@ -11,7 +11,7 @@ const RequireAuth = ({
   allowedRoles: string[];
   returnUrl?: string;
 }) => {
-  const { loading, profile, error } = useAuthStore();
+  const { loading, profile } = useAuthStore();
   const token = localStorage.getItem("accessToken");
   if (loading)
     return (
@@ -27,7 +27,7 @@ const RequireAuth = ({
         <Loader />
       </ConfigProvider>
     );
-  if ((!profile && error) || !token) {
+  if (!token) {
     return <Navigate to={returnUrl} replace />;
   }
   if (profile) {
