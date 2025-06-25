@@ -9,7 +9,7 @@ const GameNotFound = ({ darkTheme = true }: { darkTheme?: boolean }) => {
       <div
         className={`${
           darkTheme ? "bg-zinc-900" : "bg-white"
-        } shadow-xl rounded-2xl p-8 max-w-md border border-orange-500 flex flex-col items-center`}
+        } shadow-xl rounded p-8 max-w-md border border-orange-500 flex flex-col items-center`}
       >
         <img src={researchImage} alt="" width={200} />
         <h1 className="text-3xl font-bold text-red-600 mb-2">Game Not Found</h1>
