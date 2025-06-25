@@ -12,6 +12,9 @@ import NavLinks from "@/components/nav-links";
 import { searchGames } from "@/lib/api/game-api";
 import { parseNumber, parseStringArray } from "@/types/parsers";
 import { LuRefreshCcw } from "react-icons/lu";
+import { Game } from "@/types/game";
+import InfiniteScroll from "react-infinite-scroll-component";
+import ScrollToTopButton from "@/components/scroll-to-top-button";
 
 const tabs = [
   "Most popular",
@@ -28,7 +31,10 @@ const SearchPage = () => {
   const [games, setGames] = useState<any[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState(searchParams.get("q") || "");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   const onSearch: SearchProps["onSearch"] = (value, _e, _) => {
     const params = new URLSearchParams(searchParams);
@@ -42,20 +48,29 @@ const SearchPage = () => {
   };
 
   useEffect(() => {
-    fetchGames();
+    setPage(1);
+    setHasMore(true);
+    setInitialLoad(true);
   }, [searchParams]);
 
-  const fetchGames = async () => {
+  useEffect(() => {
+    if (initialLoad) {
+      fetchGames(1);
+      setInitialLoad(false);
+    }
+  }, [initialLoad]);
+
+  const fetchGames = async (currentPage: number) => {
     const query = searchParams.get("q") ?? undefined;
     const maxPrice = parseNumber(searchParams.get("maxPrice"));
     const tags = parseStringArray(searchParams.get("tags"));
     const languages = parseStringArray(searchParams.get("languages"));
     const platforms = parseStringArray(searchParams.get("platforms"));
-    const page = parseNumber(searchParams.get("page"), 1);
+
     setIsLoading(true);
     const result = await searchGames({
       Languages: languages,
-      pageNumber: page == 0 ? 1 : page,
+      pageNumber: page,
       pageSize: PAGE_SIZE,
       Platforms: platforms,
       price: maxPrice,
@@ -64,11 +79,24 @@ const SearchPage = () => {
     });
     if (result.error) {
       messageApi.error("Failed to fetch games");
+      setHasMore(false);
     } else {
-      setGames(result.data);
+      const newGames: Game[] = result.data.games;
+      const paginationHeader = result.data.headers["x-pagination"];
+      const pagination = paginationHeader ? JSON.parse(paginationHeader) : null;
+
+      if (currentPage === 1) {
+        setGames(newGames);
+      } else {
+        setGames((prev) => [...prev, ...newGames]);
+      }
+      setHasMore(pagination?.HasNext ?? false);
+      setPage(currentPage + 1);
     }
     setIsLoading(false);
   };
+
+  const fetchMore = () => fetchGames(page);
 
   const handleClearSearchInput = () => {
     const params = new URLSearchParams(searchParams);
@@ -79,6 +107,7 @@ const SearchPage = () => {
   return (
     <div className="pb-10">
       {contextHolder}
+      <ScrollToTopButton />
       <MaxWidthWrapper>
         <NavLinks />
         <div className="flex justify-center">
@@ -130,29 +159,39 @@ const SearchPage = () => {
       <MaxWidthWrapper>
         <hr className="border-b border-zinc-700 mb-5"></hr>
         <div>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {games.length > 0 &&
-              games.map((game) => (
-                <div key={game.id}>
-                  <GameCard game={game} />
-                </div>
-              ))}
-
-            {isLoading && (
+          <InfiniteScroll
+            dataLength={games.length}
+            next={fetchMore}
+            hasMore={hasMore}
+            loader={
               <div className="col-span-full flex justify-center py-10">
                 <LuRefreshCcw className="animate-spin-reverse size-16" />
               </div>
-            )}
+            }
+            endMessage={
+              <p className="text-center my-4 text-sm text-zinc-500">
+                No more games
+              </p>
+            }
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {games.length > 0 &&
+                games.map((game) => (
+                  <div key={game.id}>
+                    <GameCard game={game} />
+                  </div>
+                ))}
 
-            {!isLoading && games.length === 0 && (
-              <div className="col-span-full flex flex-col items-center py-10 gap-5">
-                <img src={notFoundIcon} />
-                <div className="text-zinc-500 font-semibold text-lg">
-                  No games found
+              {!isLoading && games.length === 0 && (
+                <div className="col-span-full flex flex-col items-center py-10 gap-5">
+                  <img src={notFoundIcon} />
+                  <div className="text-zinc-500 font-semibold text-lg">
+                    No games found
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </InfiniteScroll>
         </div>
       </MaxWidthWrapper>
     </div>

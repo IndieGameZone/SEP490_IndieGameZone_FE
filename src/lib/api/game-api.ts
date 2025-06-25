@@ -90,7 +90,7 @@ type GameSearchParams = {
 
 export const searchGames = async (
   params: GameSearchParams = {}
-): Promise<{ error: string | null; data: any; success: boolean }> => {
+) => {
   try {
     const searchParams = new URLSearchParams();
     if (params.searchTerm) searchParams.append("SearchTerm", params.searchTerm);
@@ -106,8 +106,8 @@ export const searchGames = async (
     const queryString = searchParams.toString();
     const url = queryString ? `/api/active-games?${queryString}` : "/api/active-games";
 
-    const { data } = await axiosClient.get(url);
-    return { error: null, data: data, success: true };
+    const { data, headers } = await axiosClient.get(url);
+    return { error: null, data: { games: data, headers: headers }, success: true, headers };
   } catch (error) {
     return handleApiError(error);
   }
@@ -140,7 +140,6 @@ export const getGameFiles = async (gameId: string) => {
   }
 };
 
-
 export const getAllGamesAdmin = async () => {
   try {
     const { data } = await axiosClient.get(`/api/games`);
@@ -149,6 +148,7 @@ export const getAllGamesAdmin = async () => {
     return handleApiError(error);
   }
 }
+
 export const updateGameActivation = async (gameId: string, censorStatus: string) => {
   try {
     const validStatuses = ['Approved', 'Rejected'];

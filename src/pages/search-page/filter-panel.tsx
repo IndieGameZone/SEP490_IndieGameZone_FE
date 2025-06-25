@@ -178,10 +178,7 @@ const FilterPanel = () => {
             <MdFilterAlt size={18} />
             <span className="font-semibold">Filter search results</span>
           </div>
-          <Button
-            icon={<MdFilterAltOff size={18} />}
-            onClick={handleClearFilter}
-          >
+          <Button icon={<MdFilterAltOff />} onClick={handleClearFilter}>
             Clear filter
           </Button>
         </div>
