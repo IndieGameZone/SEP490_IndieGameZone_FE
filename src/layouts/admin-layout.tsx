@@ -59,7 +59,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       },
     },
     {
-      key: "Manage Accounts",
+      key: "/admin/manage-accounts",
       icon: <BiSolidUserAccount />,
       label: "Manage Accounts",
       onClick: () => {
@@ -67,7 +67,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       },
     },
       {
-      key: "Manage Games",
+      key: "/admin/manage-games",
       icon: <CgGames/>,
       label: "Manage Games",
       onClick: () => {

@@ -13,7 +13,6 @@ import {
 import ProfileMenu from "./profile-menu";
 import { MdOutlineInsertChart } from "react-icons/md";
 import useProfileStore from "@/store/use-auth-store";
-import { usePageTransition } from "@/hooks/use-page-transition";
 
 type MenuItem = GetProp<MenuProps, "items">[number];
 
@@ -63,7 +62,6 @@ const popOverContent = (
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const transitionTo = usePageTransition();
   const { profile } = useProfileStore();
 
   const handleGoToDashboard = () => {
@@ -85,7 +83,7 @@ const Navbar = () => {
         <div className="flex justify-center items-center gap-2">
           <div
             onClick={() => {
-              transitionTo("/");
+              navigate("/");
             }}
             className="flex justify-center items-center gap-2 cursor-pointer"
           >

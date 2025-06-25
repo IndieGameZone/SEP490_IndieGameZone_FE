@@ -1,71 +1,32 @@
 @keyframes delay {
-
-  0%,
-  40%,
-  100% {
+  0%, 40%, 100% {
     transform: scaleY(0.05);
-    -webkit-transform: scaleY(0.05);
   }
 
   20% {
     transform: scaleY(1.0);
-    -webkit-transform: scaleY(1.0);
   }
 }
-
-body {
-
-  &:before,
-  &:after {
-    content: '';
-    height: 50vh;
-    width: 100%;
-    position: fixed;
-    left: 0;
-    background: #1c2020;
-    z-index: 1;
-  }
-
-  &:before {
-    top: 0;
-    transform: translateY(-100%);
-  }
-
-  &:after {
-    bottom: 0;
-    transform: translateY(100%);
-  }
-
-  &.is-changing {
-
-    &:before,
-    &:after {
-      transform: translateY(0);
-    }
-  }
-
-}
-
 
 .loader {
-  margin: 0 auto;
-  width: 60px;
-  height: 50px;
-  text-align: center;
-  font-size: 10px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateY(-50%) translateX(-50%);
-  z-index: 500;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #1c2020; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
   opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 
-  >div {
-    height: 100%;
+  > div {
     width: 8px;
-    display: flex;
-    float: left;
-    margin-left: 2px;
+    height: 50px;
+    margin: 0 2px;
     animation: delay 0.8s infinite ease-in-out;
   }
 
@@ -101,14 +62,13 @@ body {
 
 main {
   height: 100vh;
-  /* padding: 10px; */
   text-align: center;
 
   .-content {
     position: relative;
     height: 100vh;
 
-    >div {
+    > div {
       height: 100%;
       overflow: hidden;
       overflow-y: auto;
@@ -119,7 +79,7 @@ main {
       display: table;
       width: 100%;
 
-      >div {
+      > div {
         display: table-cell;
         vertical-align: middle;
       }
