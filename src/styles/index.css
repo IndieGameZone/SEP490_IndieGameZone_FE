@@ -1,5 +1,19 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+@theme {
+  --animate-spin-reverse: spin-reverse 1s linear infinite;
+
+  @keyframes spin-reverse {
+    from {
+      transform: rotate(360deg);
+    }
+    to {
+      transform: rotate(0deg);
+    }
+  }
+}
+
 body.dark {
   background-color: #09090b;
   color: #e0e0e0;
@@ -17,6 +31,7 @@ select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
   transition: all 2147483647s;
 }
+
 .hover-underline {
   position: relative;
   display: inline-block;

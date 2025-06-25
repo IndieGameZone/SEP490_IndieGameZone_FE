@@ -201,7 +201,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
               </div>
             </div>
           </div>
-          <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
+          <Content style={{ margin: "24px 16px 0", overflow: "auto" }}>
             {children}
           </Content>
           <Footer style={{ textAlign: "center" }}>

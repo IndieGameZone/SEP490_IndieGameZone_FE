@@ -4,8 +4,8 @@ import { Suspense, lazy, useEffect } from "react";
 import useAuthStore from "./store/use-auth-store";
 import RequireAuth from "./components/require-auth";
 import SuspenseFallback from "./components/suspense-fallback";
+import HomeContainer from "./containers/home-container";
 
-const HomeContainer = lazy(() => import("./containers/home-container"));
 const LoginPage = lazy(() => import("./pages/log-in-page"));
 const SignUpPage = lazy(() => import("./pages/sign-up-page"));
 const AdminContainer = lazy(() => import("./containers/admin-container"));

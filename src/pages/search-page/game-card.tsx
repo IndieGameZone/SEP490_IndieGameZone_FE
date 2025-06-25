@@ -4,8 +4,11 @@ import { Tag } from "antd";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
+import { usePageTransition } from "@/hooks/use-page-transition";
 
 const GameCard = ({ game }: { game: Game }) => {
+  const transitionTo = usePageTransition();
+
   if (!game || !game.id) {
     return (
       <div className="bg-zinc-900 rounded-lg p-4 text-center text-gray-500">
@@ -15,24 +18,24 @@ const GameCard = ({ game }: { game: Game }) => {
   }
 
   const rating = 4.5;
+  const handleClickCard = () => {
+    transitionTo(`/game/${game.id}`);
+  };
 
   return (
     <div className="bg-zinc-900 rounded-lg shadow-lg border highlight-hover overflow-hidden">
-      <Link to={`/game/${game.id}`}>
-        <FaultTolerantImage
-          src={game.coverImage}
-          alt={`${game.name} cover image`}
-          className="w-full h-48 object-cover"
-        />
-      </Link>
+      <FaultTolerantImage
+        src={game.coverImage}
+        alt={`${game.name} cover image`}
+        className="w-full h-48 object-cover cursor-pointer"
+        onClick={handleClickCard}
+      />
 
       <div className="p-3">
         <div className="flex-1">
           <div className="flex justify-between">
             <div>
-              <Link to={`/game/${game.id}`}>
-                <h3 className="font-bold text-lg truncate">{game.name}</h3>
-              </Link>
+              <h3 className="font-bold text-lg truncate cursor-pointer" onClick={handleClickCard}>{game.name}</h3>
               <Link to={`/search?category=${game.category?.id}`}>
                 <p className="text-xs hover:underline">{game.category?.name}</p>
               </Link>

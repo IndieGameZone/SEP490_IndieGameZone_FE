@@ -11,23 +11,16 @@ import genre2 from "@/assets/genre-2.jpg";
 import genre3 from "@/assets/genre-3.jpg";
 import genre4 from "@/assets/genre-4.jpg";
 import GenreCard from "./genre-card";
-import DisclaimerModal from "../../components/disclaimer-modal";
+import { lazy } from "react";
+import NavLinks from "@/components/nav-links";
+
+const DisclaimerModal = lazy(() => import("../../components/disclaimer-modal"));
 
 const HomePage = () => {
   return (
     <MaxWidthWrapper>
       <DisclaimerModal />
-      <div className="flex justify-center items-center gap-5 p-5 font-bold text-xl">
-        <Link to={"/"} className="hover-underline">
-          Discover
-        </Link>
-        <Link to={"/search"} className="hover-underline text-gray-500">
-          Search
-        </Link>
-        <Link to={"/forum"} className="hover-underline text-gray-500">
-          Forum
-        </Link>
-      </div>
+      <NavLinks />
       <FeaturedGameSection />
       <SpecialOffersSection />
       <section className="pb-9">

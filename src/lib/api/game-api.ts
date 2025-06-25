@@ -1,4 +1,3 @@
-import { Game } from "@/types/game";
 import { axiosClient } from "./config/axios-client";
 
 export const handleApiError = (error: any): { error: string | null; data: any; success: boolean } => {
@@ -89,17 +88,9 @@ type GameSearchParams = {
   Platforms?: string[];
 };
 
-export interface GameSearchResponse {
-  items: Game[];
-  totalCount?: number;
-  pageNumber?: number;
-  pageSize?: number;
-  totalPages?: number;
-}
-
 export const searchGames = async (
   params: GameSearchParams = {}
-): Promise<{ error: string | null; data: GameSearchResponse; success: boolean }> => {
+): Promise<{ error: string | null; data: any; success: boolean }> => {
   try {
     const searchParams = new URLSearchParams();
     if (params.searchTerm) searchParams.append("SearchTerm", params.searchTerm);
@@ -115,7 +106,7 @@ export const searchGames = async (
     const queryString = searchParams.toString();
     const url = queryString ? `/api/active-games?${queryString}` : "/api/active-games";
 
-    const { data } = await axiosClient.get<GameSearchResponse>(url);
+    const { data } = await axiosClient.get(url);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);

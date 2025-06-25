@@ -1,8 +1,12 @@
+import MaxWidthWrapper from "@/components/max-width-wrapper";
+import NavLinks from "@/components/nav-links";
 
 const ForumPage = () => {
   return (
-    <div>ForumPage</div>
-  )
-}
+    <MaxWidthWrapper className="pb-10">
+      <NavLinks />
+    </MaxWidthWrapper>
+  );
+};
 
-export default ForumPage
+export default ForumPage;

@@ -2,29 +2,43 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import mkcert from 'vite-plugin-mkcert'
-
 import path from "path"
+import { visualizer } from 'rollup-plugin-visualizer';
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss(), mkcert()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            const directories = id.split('node_modules/')[1].split('/');
-            const name = directories[0].startsWith('@') ? `${directories[0]}/${directories[1]}` : directories[0];
-            return `vendor-${name}`;
-          }
-        }
+export default defineConfig(() => {
+  // const env = loadEnv(mode, process.cwd());
+
+  return ({
+    plugins: [react(), tailwindcss(), mkcert(), visualizer({ open: true })],
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
       },
     },
-  },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              const directories = id.split('node_modules/')[1].split('/');
+              const name = directories[0].startsWith('@') ? `${directories[0]}/${directories[1]}` : directories[0];
+              return `vendor-${name}`;
+            }
+          }
+        },
+      },
+    },
+    // server: {
+    //   proxy: {
+    //     '/api': {
+    //       target: env.VITE_REACT_APP_API_URL,
+    //       changeOrigin: true, 
+    //       secure: false,
+    //       rewrite: (path) => path.replace(/^\/api/, ''),
+    //     },
+    //   },
+    // },
+  })
 });
 
 // SMARTER CHUNKING

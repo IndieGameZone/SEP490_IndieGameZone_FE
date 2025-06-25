@@ -3,6 +3,7 @@ import HomePage from "@/pages/home-page/home-page";
 import { Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import SuspenseFallback from "@/components/suspense-fallback";
+import PageTransition from "@/components/page-transition";
 
 const NotFoundPage = lazy(() => import("@/pages/errors/not-found-page"));
 const VerifyEmailPage = lazy(() => import("@/pages/verify-email-page"));
@@ -18,6 +19,7 @@ const GameDetailsPage = lazy(
 const HomeContainer = () => {
   return (
     <HomeLayout>
+      <PageTransition />
       <Suspense fallback={<SuspenseFallback />}>
         <Routes>
           <Route path="/" element={<HomePage />} />
