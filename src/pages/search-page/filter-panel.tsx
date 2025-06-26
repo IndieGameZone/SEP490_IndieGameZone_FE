@@ -8,7 +8,8 @@ import { FaApple, FaLinux, FaWindows } from "react-icons/fa";
 import { MdFilterAlt, MdFilterAltOff } from "react-icons/md";
 import { useSearchParams } from "react-router-dom";
 
-const MAX_PRICE = 2_000_000;
+const MAX_PRICE = 1_000_000;
+const PRICE_STEP = 25_000;
 const DEFAULT_TAG_OPTIONS = [
   {
     value: "1c175c84-379e-43dc-a95a-aafd910d6a00",
@@ -188,7 +189,7 @@ const FilterPanel = () => {
             <Slider
               min={0}
               max={MAX_PRICE}
-              step={50000}
+              step={PRICE_STEP}
               value={priceDisplay}
               tooltip={{ formatter: null }}
               onChange={(val) => {
@@ -200,6 +201,8 @@ const FilterPanel = () => {
             />
             {priceDisplay == MAX_PRICE ? (
               <p className="text-sm">Any Price</p>
+            ) : priceDisplay == 0 ? (
+              <p className="text-sm">Free</p>
             ) : (
               <p className="text-sm">Below {formatCurrencyVND(priceDisplay)}</p>
             )}

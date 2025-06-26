@@ -5,6 +5,7 @@ import { Image, Rate, Tag, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import ActionMenu from "./action-menu";
 import { CategoryTag, ModerationStatusTag } from "@/components/status-tags";
+import { Link } from "react-router-dom";
 
 const { Text, Title } = Typography;
 
@@ -28,9 +29,11 @@ const columns: ColumnsType<Game> = [
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <Title level={5} className="!mb-0 truncate" title={record.name}>
-              {record.name}
-            </Title>
+            <Link to={`/admin/game/${record.id}`}>
+              <Title level={5} className="!mb-0 truncate" title={record.name}>
+                {record.name}
+              </Title>
+            </Link>
           </div>
           <div className="flex items-center gap-2 text-gray-600 text-sm mb-2">
             <Text

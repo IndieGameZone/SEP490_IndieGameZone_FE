@@ -10,11 +10,14 @@ import {
 import { useNavigate } from "react-router-dom";
 import useGameStore from "@/store/use-game-store";
 import { updateGameActivation } from "@/lib/api/game-api";
+import { useClipboard } from "@/hooks/use-clipboard";
+import { FaRegClipboard } from "react-icons/fa";
 
 const ActionMenu = ({ record }: { record: Game }) => {
   const navigate = useNavigate();
   const { fetchGameById, rerender } = useGameStore();
   const [messageApi, contextHolder] = message.useMessage();
+  const { copyToClipboard } = useClipboard();
 
   const handleDelete = (game: Game) => {
     Modal.confirm({
@@ -51,7 +54,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
             type: "success",
             content: `Game "${game.name}" approved successfully`,
           });
-          setTimeout(() => fetchGameById(game.id), 1000); 
+          setTimeout(() => fetchGameById(game.id), 1000);
         } else {
           messageApi.open({
             type: "error",
@@ -76,7 +79,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
             type: "success",
             content: `Game "${game.name}" rejected`,
           });
-          setTimeout(() => fetchGameById(game.id), 1000); 
+          setTimeout(() => fetchGameById(game.id), 1000);
         } else {
           messageApi.open({
             type: "error",
@@ -85,6 +88,15 @@ const ActionMenu = ({ record }: { record: Game }) => {
         }
       },
     });
+  };
+
+  const handleCopyToClipboard = async () => {
+    const result = await copyToClipboard(record.id);
+    if (result) {
+      messageApi.success("Copy to clipboard successfully!");
+    } else {
+      messageApi.error("Failed to copy to clipboard!");
+    }
   };
 
   return (
@@ -98,6 +110,12 @@ const ActionMenu = ({ record }: { record: Game }) => {
               label: "View Details",
               icon: <EyeOutlined />,
               onClick: () => handleView(record),
+            },
+            {
+              key: "copy-id",
+              label: "Copy game ID",
+              icon: <FaRegClipboard />,
+              onClick: () => handleCopyToClipboard(),
             },
             ...(record.censorStatus === "PendingManualReview" ||
             record.censorStatus === "PendingAIReview"
