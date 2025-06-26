@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import MaxWidthWrapper from "./max-width-wrapper";
 import logo from "@/assets/igz_ic.svg";
-import { Button, GetProp, Menu, MenuProps, Popover } from "antd";
+import { Button, GetProp, Input, Menu, MenuProps, Popover } from "antd";
 import { IoIosNotifications, IoMdMore } from "react-icons/io";
 import {
   FaBook,
@@ -13,7 +13,7 @@ import {
 import ProfileMenu from "./profile-menu";
 import { MdOutlineInsertChart } from "react-icons/md";
 import useProfileStore from "@/store/use-auth-store";
-import { usePageTransition } from "@/hooks/use-page-transition";
+import { SearchProps } from "antd/es/input";
 
 type MenuItem = GetProp<MenuProps, "items">[number];
 
@@ -63,7 +63,6 @@ const popOverContent = (
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const transitionTo = usePageTransition();
   const { profile } = useProfileStore();
 
   const handleGoToDashboard = () => {
@@ -75,17 +74,23 @@ const Navbar = () => {
       navigate("/moderator");
     }
   };
+
+  const onSearch: SearchProps["onSearch"] = (value, _e, _) => {
+    if (value) {
+      navigate(`/search?q=${value}`);
+    }
+  };
   const showDashboardButton =
     profile?.role.name == "Developer" ||
     profile?.role.name == "Admin" ||
     profile?.role.name == "Moderator";
   return (
     <div className="bg-zinc-900">
-      <MaxWidthWrapper className="flex justify-between p-5">
+      <MaxWidthWrapper className="flex justify-between  p-5">
         <div className="flex justify-center items-center gap-2">
           <div
             onClick={() => {
-              transitionTo("/");
+              navigate("/");
             }}
             className="flex justify-center items-center gap-2 cursor-pointer"
           >
@@ -105,6 +110,13 @@ const Navbar = () => {
           </Popover>
         </div>
         <div className="flex justify-center items-center gap-3">
+          <div>
+            <Input.Search
+              placeholder="Search for game titles,...."
+              allowClear
+              onSearch={onSearch}
+            />
+          </div>
           {showDashboardButton && (
             <Button
               onClick={handleGoToDashboard}

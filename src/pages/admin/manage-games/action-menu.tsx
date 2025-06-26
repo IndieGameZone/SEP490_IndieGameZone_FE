@@ -4,11 +4,14 @@ import { DeleteOutlined, MoreOutlined, EyeOutlined, CheckCircleOutlined, CloseCi
 import { useNavigate } from "react-router-dom";
 import useGameStore from "@/store/use-game-store";
 import { updateGameActivation } from "@/lib/api/game-api";
+import { useClipboard } from "@/hooks/use-clipboard";
+import { FaRegClipboard } from "react-icons/fa";
 
 const ActionMenu = ({ record }: { record: Game }) => {
   const navigate = useNavigate();
   const { fetchGameById, fetchAllGamesAdmin } = useGameStore();
   const [messageApi, contextHolder] = message.useMessage();
+  const { copyToClipboard } = useClipboard();
 
   const handleDelete = (game: Game) => {
     Modal.confirm({
@@ -71,6 +74,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
             content: `Game "${game.name}" rejected`,
           });
           setTimeout(() => fetchGameById(game.id), 1000);
+          setTimeout(() => fetchGameById(game.id), 1000);
         } else {
           messageApi.open({
             type: "error",
@@ -79,6 +83,15 @@ const ActionMenu = ({ record }: { record: Game }) => {
         }
       },
     });
+  };
+
+  const handleCopyToClipboard = async () => {
+    const result = await copyToClipboard(record.id);
+    if (result) {
+      messageApi.success("Copy to clipboard successfully!");
+    } else {
+      messageApi.error("Failed to copy to clipboard!");
+    }
   };
 
   return (
@@ -93,7 +106,14 @@ const ActionMenu = ({ record }: { record: Game }) => {
               icon: <EyeOutlined />,
               onClick: () => handleView(record),
             },
-            ...(record.censorStatus === "PendingManualReview" || record.censorStatus === "PendingAIReview"
+            {
+              key: "copy-id",
+              label: "Copy game ID",
+              icon: <FaRegClipboard />,
+              onClick: () => handleCopyToClipboard(),
+            },
+            ...(record.censorStatus === "PendingManualReview" ||
+            record.censorStatus === "PendingAIReview"
               ? [
                   {
                     type: "divider" as const,

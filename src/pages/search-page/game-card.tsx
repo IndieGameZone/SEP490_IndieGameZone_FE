@@ -2,12 +2,11 @@ import { formatCurrencyVND } from "@/lib/currency";
 import { Game } from "@/types/game";
 import { Tag } from "antd";
 import { FaStar } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
-import { usePageTransition } from "@/hooks/use-page-transition";
 
 const GameCard = ({ game }: { game: Game }) => {
-  const transitionTo = usePageTransition();
+  const navigate = useNavigate();
 
   if (!game || !game.id) {
     return (
@@ -19,7 +18,7 @@ const GameCard = ({ game }: { game: Game }) => {
 
   const rating = 4.5;
   const handleClickCard = () => {
-    transitionTo(`/game/${game.id}`);
+    navigate(`/game/${game.id}`);
   };
 
   return (

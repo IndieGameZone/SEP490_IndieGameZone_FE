@@ -1,42 +1,43 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
-import CSSRulePlugin from "gsap/CSSRulePlugin";
-import "@/styles/loader-transition.scss";
+import "@/styles/loader-transition.scss"; 
 
 const PageTransition: React.FC = () => {
   const loaderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    gsap.registerPlugin(CSSRulePlugin);
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReducedMotion || !loaderRef.current) {
+      return;
+    }
+
     const tl = gsap.timeline();
 
-    const beforeRule = CSSRulePlugin.getRule("body:before");
-    const afterRule = CSSRulePlugin.getRule("body:after");
+    tl.set(loaderRef.current, { opacity: 0, pointerEvents: "auto", zIndex: 9999 })
+      .to(loaderRef.current, {
+        duration: 0.5,
+        opacity: 1,
+        ease: "power2.out",
+      })
+      .to(loaderRef.current, {
+        duration: 0.3,
+        opacity: 0,
+        ease: "power2.out",
+        delay: 0.5,
+        onComplete: () => {
+          if (loaderRef.current) {
+            loaderRef.current.style.pointerEvents = "none";
+            loaderRef.current.style.zIndex = "-1";
+          }
+        },
+      });
 
-    if (beforeRule && afterRule) {
-      tl.to(
-        beforeRule,
-        { duration: 0.2, cssRule: { top: "50%" }, ease: "power2.out" },
-        "close"
-      )
-        .to(
-          afterRule,
-          { duration: 0.2, cssRule: { bottom: "50%" }, ease: "power2.out" },
-          "close"
-        )
-        .to(loaderRef.current, { duration: 0.5, opacity: 1 })
-        .to(
-          beforeRule,
-          { duration: 0.2, cssRule: { top: "0%" }, ease: "power2.out" },
-          "open"
-        )
-        .to(
-          afterRule,
-          { duration: 0.2, cssRule: { bottom: "0%" }, ease: "power2.out" },
-          "open"
-        )
-        .to(loaderRef.current, { duration: 0.2, opacity: 0 }, "-=0.2");
-    }
+    return () => {
+      tl.kill();
+    };
   }, []);
 
   return (

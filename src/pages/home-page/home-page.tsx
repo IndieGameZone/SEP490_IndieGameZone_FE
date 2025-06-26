@@ -13,12 +13,14 @@ import genre4 from "@/assets/genre-4.jpg";
 import GenreCard from "./genre-card";
 import { lazy } from "react";
 import NavLinks from "@/components/nav-links";
+import ScrollToTopButton from "@/components/scroll-to-top-button";
 
 const DisclaimerModal = lazy(() => import("../../components/disclaimer-modal"));
 
 const HomePage = () => {
   return (
     <MaxWidthWrapper>
+      <ScrollToTopButton />
       <DisclaimerModal />
       <NavLinks />
       <FeaturedGameSection />

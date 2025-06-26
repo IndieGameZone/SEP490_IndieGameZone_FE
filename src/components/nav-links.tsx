@@ -1,6 +1,5 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import React from "react";
-import { usePageTransition } from "@/hooks/use-page-transition";
 
 type NavItem = {
   label: string;
@@ -15,11 +14,11 @@ const navItems: NavItem[] = [
 
 const NavLinks: React.FC = () => {
   const location = useLocation();
-  const transitionTo = usePageTransition();
+  const navigate = useNavigate();
 
   const handleRedirect = (path: string) => {
     if (location.pathname !== path) {
-        transitionTo(path);
+      navigate(path);
     }
   };
 

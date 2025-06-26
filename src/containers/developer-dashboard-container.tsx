@@ -1,4 +1,4 @@
-import SuspenseFallback from "@/components/suspense-fallback";
+import PageTransition from "@/components/page-transition";
 import DeveloperDashboardLayout from "@/layouts/developer-dashboard-layout";
 import HomeLayout from "@/layouts/home-layout";
 import { Suspense, lazy } from "react";
@@ -32,7 +32,7 @@ const DeveloperDashboardContainer = () => {
   return (
     <HomeLayout>
       <DeveloperDashboardLayout>
-        <Suspense fallback={<SuspenseFallback />}>
+        <Suspense fallback={<PageTransition />}>
           <Routes>
             <Route path="/" element={<DevDashBoardPage />} />
             <Route path="/dashboard" element={<DevDashBoardPage />} />

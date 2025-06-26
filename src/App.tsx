@@ -3,7 +3,7 @@ import AuthLayout from "./layouts/auth-layout";
 import { Suspense, lazy, useEffect } from "react";
 import useAuthStore from "./store/use-auth-store";
 import RequireAuth from "./components/require-auth";
-import SuspenseFallback from "./components/suspense-fallback";
+import PageTransition from "./components/page-transition";
 import HomeContainer from "./containers/home-container";
 
 const LoginPage = lazy(() => import("./pages/log-in-page"));
@@ -28,7 +28,7 @@ function App() {
   }, [renderKey]);
   console.log("rendered");
   return (
-    <Suspense fallback={<SuspenseFallback />}>
+    <Suspense fallback={<PageTransition />}>
       <Routes>
         <Route
           path="log-in"
