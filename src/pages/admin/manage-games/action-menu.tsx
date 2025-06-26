@@ -1,19 +1,13 @@
 import { Game } from "@/types/game";
 import { Button, Dropdown, Modal, message } from "antd";
-import {
-  DeleteOutlined,
-  MoreOutlined,
-  EyeOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, MoreOutlined, EyeOutlined, CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import useGameStore from "@/store/use-game-store";
 import { updateGameActivation } from "@/lib/api/game-api";
 
 const ActionMenu = ({ record }: { record: Game }) => {
   const navigate = useNavigate();
-  const { fetchGameById, rerender } = useGameStore();
+  const { fetchGameById, fetchAllGamesAdmin } = useGameStore();
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleDelete = (game: Game) => {
@@ -28,7 +22,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
           type: "success",
           content: `Game "${game.name}" deleted successfully`,
         });
-        setTimeout(rerender, 1000);
+        fetchAllGamesAdmin();
       },
     });
   };
@@ -51,7 +45,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
             type: "success",
             content: `Game "${game.name}" approved successfully`,
           });
-          setTimeout(() => fetchGameById(game.id), 1000); 
+          fetchAllGamesAdmin();
         } else {
           messageApi.open({
             type: "error",
@@ -76,7 +70,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
             type: "success",
             content: `Game "${game.name}" rejected`,
           });
-          setTimeout(() => fetchGameById(game.id), 1000); 
+          setTimeout(() => fetchGameById(game.id), 1000);
         } else {
           messageApi.open({
             type: "error",
@@ -99,8 +93,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
               icon: <EyeOutlined />,
               onClick: () => handleView(record),
             },
-            ...(record.censorStatus === "PendingManualReview" ||
-            record.censorStatus === "PendingAIReview"
+            ...(record.censorStatus === "PendingManualReview" || record.censorStatus === "PendingAIReview"
               ? [
                   {
                     type: "divider" as const,
