@@ -207,14 +207,14 @@ const DetailUser: React.FC = () => {
 
             <div className="flex-1 mt-16 md:mt-0">
               <div className="flex flex-col md:flex-row justify-between items-start mb-6">
-                <div className="flex-1">
-                  <Title level={2} className="mb-2 text-gray-800">
+                <div className="mt-4">
+                  <Title level={2} className=" text-gray-800">
                     {user.fullname || user.userName}
                   </Title>
                   <Text type="secondary" className="text-xl font-medium">
                     @{user.userName}
                   </Text>
-                  <div className="mt-3">
+                  <div className="mt-1">
                     <Tag
                       color={getRoleColor(user.role.name)}
                       icon={getRoleIcon(user.role.name)}

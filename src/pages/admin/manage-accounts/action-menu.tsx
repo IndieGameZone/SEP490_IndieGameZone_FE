@@ -1,10 +1,10 @@
 import useUserStore from "@/store/use-user-store";
 import { User } from "@/types/user";
 import { Button, Dropdown, message, Modal, Input, DatePicker } from "antd";
-import { useState } from "react";
-import { FaBan, FaEye, FaTrash, FaEllipsisV } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaBan, FaCheckCircle, FaEye, FaTrash, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { createBanHistory } from "@/lib/api/user-api";
+import { createBanHistory, getAllBanHistories, unbanUserById } from "@/lib/api/user-api";
 import dayjs from "dayjs";
 
 const ActionMenu = ({ record }: { record: User }) => {
@@ -16,53 +16,83 @@ const ActionMenu = ({ record }: { record: User }) => {
   const [reason, setReason] = useState("");
   const [banDate, setBanDate] = useState<dayjs.Dayjs | null>(null);
   const [unbanDate, setUnbanDate] = useState<dayjs.Dayjs | null>(null);
+  const [banHistoryId, setBanHistoryId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBanHistory = async () => {
+      const response = await getAllBanHistories();
+      if (response.success) {
+        const userBanHistory = response.data.find((history: any) => history.userId === record.id);
+        if (userBanHistory) {
+          setBanHistoryId(userBanHistory.id);
+        }
+      }
+    };
+    if (!record.isActive && !banHistoryId) {
+      fetchBanHistory();
+    }
+  }, [record.id, record.isActive, banHistoryId]);
 
   const handleView = (user: User) => {
     navigate(`/admin/detail-user/${user.id}`);
   };
 
   const confirmBan = async () => {
-    if (!reason) {
-      messageApi.error("Reason is required.");
-      return;
-    }
-    if (!banDate) {
-      messageApi.error("Ban date is required.");
-      return;
-    }
-    if (!unbanDate || unbanDate.isBefore(banDate)) {
-      messageApi.error("Unban date must be after ban date.");
-      return;
-    }
-
-    const request = {
-      banDate: banDate.toISOString(),
-      unbanDate: unbanDate.toISOString(),
-      reason,
-      userId: record.id,
-    };
-
     try {
-      const response = await createBanHistory(request);
+      let response;
+      if (record.isActive) {
+        // Ban action
+        if (!reason) {
+          messageApi.error("Reason is required for banning.");
+          return;
+        }
+        if (!banDate) {
+          messageApi.error("Ban date is required.");
+          return;
+        }
+        if (!unbanDate || unbanDate.isBefore(banDate)) {
+          messageApi.error("Unban date must be after ban date.");
+          return;
+        }
+        const request = {
+          banDate: banDate.toISOString(),
+          unbanDate: unbanDate.toISOString(),
+          reason,
+          userId: record.id,
+        };
+        response = await createBanHistory(request);
+      } else {
+        // Unban action
+        if (!banHistoryId) {
+          messageApi.error("No active ban history found for this user.");
+          return;
+        }
+        response = await unbanUserById(banHistoryId);
+      }
+
       if (response.success) {
-        messageApi.success("User has been banned successfully!");
+        messageApi.success(
+          record.isActive
+            ? "User has been banned successfully!"
+            : "User has been unbanned successfully!"
+        );
         await fetchAllAccounts();
         setIsModalOpen(false);
         setReason("");
         setBanDate(null);
         setUnbanDate(null);
+        setBanHistoryId(null); // Reset ban history ID after unban
       } else {
-        messageApi.error(response.error || "Failed to ban user.");
+        messageApi.error(response.error || "Failed to process action.");
       }
     } catch (error) {
-      messageApi.error("An unexpected error occurred while banning the user.");
+      messageApi.error("An unexpected error occurred.");
     }
   };
 
-  // Disable dates before the current date and time (04:12 PM +07, 24/06/2025)
   const disablePastDates = (current: dayjs.Dayjs) => {
-    const now = dayjs().hour(16).minute(12).second(0); // 04:12 PM +07 today
-    return current && current.isBefore(now, 'minute');
+    const now = dayjs().hour(20).minute(33).second(0); // Current time: 08:33 PM +07, June 26, 2025
+    return current && current.isBefore(now, "minute");
   };
 
   return (
@@ -79,14 +109,15 @@ const ActionMenu = ({ record }: { record: User }) => {
             },
             {
               key: "ban",
-              label: "Ban Account",
-              icon: <FaBan />,
+              label: record.isActive ? "Ban Account" : "Unban Account",
+              icon: record.isActive ? <FaBan /> : <FaCheckCircle />,
               onClick: () => {
                 setReason("");
                 setBanDate(null);
                 setUnbanDate(null);
                 setIsModalOpen(true);
               },
+              disabled: !record.isActive && !banHistoryId, 
             },
             {
               type: "divider",
@@ -104,7 +135,7 @@ const ActionMenu = ({ record }: { record: User }) => {
         <Button type="text" icon={<FaEllipsisV />} />
       </Dropdown>
       <Modal
-        title="Ban User"
+        title={record.isActive ? "Ban User" : "Unban User"}
         open={isModalOpen}
         onOk={confirmBan}
         onCancel={() => {
@@ -113,32 +144,38 @@ const ActionMenu = ({ record }: { record: User }) => {
           setBanDate(null);
           setUnbanDate(null);
         }}
-        okText="Ban"
+        okText={record.isActive ? "Ban" : "Unban"}
         cancelText="Cancel"
       >
-        <Input.TextArea
-        rows={4}
-          placeholder="Enter reason for banning"
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          style={{ marginBottom: 16 }}
-        />
-        <DatePicker
-          showTime
-          placeholder="Select ban date and time"
-          value={banDate}
-          onChange={(date) => setBanDate(date)}
-          disabledDate={disablePastDates}
-          style={{ marginBottom: 16, width: "100%" }}
-        />
-        <DatePicker
-          showTime
-          placeholder="Select unban date and time"
-          value={unbanDate}
-          onChange={(date) => setUnbanDate(date)}
-          disabledDate={(current) => !banDate || current.isBefore(banDate)}
-          style={{ width: "100%" }}
-        />
+        {record.isActive ? (
+          <>
+            <Input.TextArea
+              rows={4}
+              placeholder="Enter reason for banning"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              style={{ marginBottom: 16 }}
+            />
+            <DatePicker
+              showTime
+              placeholder="Select ban date and time"
+              value={banDate}
+              onChange={(date) => setBanDate(date)}
+              disabledDate={disablePastDates}
+              style={{ marginBottom: 16, width: "100%" }}
+            />
+            <DatePicker
+              showTime
+              placeholder="Select unban date and time"
+              value={unbanDate}
+              onChange={(date) => setUnbanDate(date)}
+              disabledDate={(current) => !banDate || current.isBefore(banDate)}
+              style={{ width: "100%" }}
+            />
+          </>
+        ) : (
+          <p>No additional input required for unbanning.</p>
+        )}
       </Modal>
     </div>
   );

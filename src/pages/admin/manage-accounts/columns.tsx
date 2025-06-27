@@ -84,15 +84,13 @@ const columns: ColumnsType<User> = [
         color={getRoleColor(role)}
         className="inline-flex items-center gap-2 font-medium text-sm px-3 py-2 rounded-full border-0"
         style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          minHeight: '32px'
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "6px",
+          minHeight: "32px",
         }}
       >
-        <span className="flex items-center justify-center w-4 h-4">
-          {getRoleIcon(role)}
-        </span>
+        <span className="flex items-center justify-center w-4 h-4">{getRoleIcon(role)}</span>
         <span>{role}</span>
       </Tag>
     ),
@@ -113,21 +111,7 @@ const columns: ColumnsType<User> = [
       </div>
     ),
   },
-    {
-    title: "Account Status",
-    dataIndex: "isActive",
-    key: "isActive",
-    render: (isActive: boolean, record: User) => (
-      <div className="space-y-1">
-        <Tag color={isActive ? "green" : "red"}>{isActive ? "Active" : "Inactive"}</Tag>
-        {record.twoFactorEnabled && (
-          <Tag color="purple" className="text-xs">
-            2FA
-          </Tag>
-        )}
-      </div>
-    ),
-  },
+
   {
     title: "Joined Date",
     dataIndex: "joinedDate",

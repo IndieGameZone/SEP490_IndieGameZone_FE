@@ -65,7 +65,7 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
         },
         {
           key: "/account/transction-history",
-          label: "Transction History",
+          label: "Transaction History",
           onClick: () => {
             navigate("/account/transction-history");
           },
