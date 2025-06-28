@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Button, Card, Modal, Input, message, Tag } from "antd";
 import { FaCoins, FaPlus, FaEye, FaDownload, FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { MdAccountBalanceWallet } from "react-icons/md";
+import useAuthStore from "@/store/use-auth-store";
 
 interface Transaction {
   id: string;
@@ -17,51 +18,71 @@ const ManageTransactions = () => {
   const [currentPoints, setCurrentPoints] = useState(15000);
   const [isTopUpModalVisible, setIsTopUpModalVisible] = useState(false);
   const [topUpAmount, setTopUpAmount] = useState("");
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const { profile, rerender, renderKey } = useAuthStore();
 
-  const [transactions] = useState<Transaction[]>([
-    {
-      id: "TXN001",
-      type: "topup",
-      amount: 50000,
-      description: "Bank transfer top-up",
-      status: "completed",
-      date: "2024-06-27 14:30:00",
-      method: "bank_transfer",
-    },
-    {
-      id: "TXN002",
-      type: "purchase",
-      amount: -15000,
-      description: "React Advanced Course Purchase",
-      status: "completed",
-      date: "2024-06-26 09:15:00",
-      method: "points",
-    },
-    {
-      id: "TXN003",
-      type: "topup",
-      amount: 30000,
-      description: "E-wallet top-up",
-      status: "pending",
-      date: "2024-06-25 16:45:00",
-      method: "ewallet",
-    },
-    {
-      id: "TXN004",
-      type: "purchase",
-      amount: -8000,
-      description: "Learning materials purchase",
-      status: "completed",
-      date: "2024-06-24 11:20:00",
-      method: "points",
-    },
-  ]);
+  useEffect(() => {
+    if (profile?.balance !== undefined) {
+      setCurrentPoints(profile.balance);
+    }
+  }, [renderKey, profile]);
 
-  const handleTopUp = (values: { amount: string }) => {
-    const amount = parseInt(values.amount.replace(/,/g, ""));
-    setCurrentPoints((prev) => prev + amount);
-    message.success(`Successfully topped up ${amount.toLocaleString("vi-VN")} points!`);
-    setIsTopUpModalVisible(false);
+  useEffect(() => {
+    setTransactions([
+      {
+        id: "TXN001",
+        type: "topup",
+        amount: 50000,
+        description: "Bank transfer top-up",
+        status: "completed",
+        date: "2024-06-27 14:30:00",
+        method: "bank_transfer",
+      },
+      {
+        id: "TXN002",
+        type: "purchase",
+        amount: -15000,
+        description: "React Advanced Course Purchase",
+        status: "completed",
+        date: "2024-06-26 09:15:00",
+        method: "points",
+      },
+      {
+        id: "TXN003",
+        type: "topup",
+        amount: 30000,
+        description: "E-wallet top-up",
+        status: "pending",
+        date: "2024-06-25 16:45:00",
+        method: "ewallet",
+      },
+      {
+        id: "TXN004",
+        type: "purchase",
+        amount: -8000,
+        description: "Learning materials purchase",
+        status: "completed",
+        date: "2024-06-24 11:20:00",
+        method: "points",
+      },
+    ]);
+  }, []);
+
+  const handleTopUp = () => {
+    const parsedAmount = parseVND(topUpAmount);
+    if (parsedAmount && !isNaN(parseInt(parsedAmount)) && parseInt(parsedAmount) > 0) {
+      const newBalance = currentPoints + parseInt(parsedAmount);
+      setCurrentPoints(newBalance);
+      message.open({
+        type: "success",
+        content: `Successfully topped up ${parsedAmount.toLocaleString("vi-VN")} points!`,
+        duration: 2, // Hiển thị trong 2 giây
+      });
+      setIsTopUpModalVisible(false);
+      setTopUpAmount("");
+    } else {
+      message.error("Please enter a valid amount!");
+    }
   };
 
   const formatVND = (value: string) => {
@@ -120,9 +141,7 @@ const ManageTransactions = () => {
       key: "type",
       width: 80,
       align: "center" as const,
-      render: (type: Transaction["type"]) => (
-        <div className="flex justify-center">{getTypeIcon(type)}</div>
-      ),
+      render: (type: Transaction["type"]) => <div className="flex justify-center">{getTypeIcon(type)}</div>,
     },
     {
       title: "Amount",
@@ -326,15 +345,7 @@ const ManageTransactions = () => {
               type="primary"
               icon={<FaPlus />}
               className="bg-blue-600"
-              onClick={() => {
-                const parsedAmount = parseVND(topUpAmount);
-                if (parsedAmount && !isNaN(parseInt(parsedAmount)) && parseInt(parsedAmount) > 0) {
-                  handleTopUp({ amount: parsedAmount });
-                  setTopUpAmount("");
-                } else {
-                  message.error("Please enter a valid amount!");
-                }
-              }}
+              onClick={handleTopUp}
             >
               Confirm Top Up
             </Button>

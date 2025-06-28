@@ -1,19 +1,10 @@
 import Loader from "@/components/loader";
 import ScrollToTop from "@/components/scroll-to-top";
 import useGameStore from "@/store/use-game-store";
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  MenuProps,
-  Tabs,
-  TabsProps,
-  Tag,
-  Tooltip,
-} from "antd";
+import { Avatar, Button, Dropdown, MenuProps, message, Tabs, TabsProps, Tag, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
-import { FaFlag, FaInfoCircle, FaLink, FaStar } from "react-icons/fa";
+import { FaFlag, FaHeart, FaInfoCircle, FaLink, FaRegHeart, FaStar } from "react-icons/fa";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
@@ -29,14 +20,18 @@ import FaultTolerantImage from "@/components/fault-tolerant-image";
 import useAuthStore from "@/store/use-auth-store";
 import GameNotFound from "@/pages/errors/game-not-found";
 import usePlatformStore from "@/store/use-platform-store";
+import useWishlistStore from "@/store/use-wish-list-store";
 
 const GameDetailsPage = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
+  const { wishlists, fetchWishlists, addToWishlist, removeFromWishlist } = useWishlistStore();
+  const [messageApi, contextHolder] = message.useMessage();
   const { fetchGameById, loading, error, game } = useGameStore();
   const { fetchPlatforms } = usePlatformStore();
-  const { profile } = useAuthStore();
+  const { profile, fetchProfile } = useAuthStore();
   const [index, setIndex] = useState(-1);
+  const isWishlisted = game?.id ? wishlists.includes(game.id) : false;
 
   const tabItems: TabsProps["items"] = [
     {
@@ -81,9 +76,16 @@ const GameDetailsPage = () => {
       label: <div>Report user</div>,
       key: "1",
       icon: <FaFlag />,
-      disabled: profile?.id == game?.developer.id,
+      disabled: profile?.id === game?.developer.id,
     },
   ];
+
+  useEffect(() => {
+    if (profile?.id && game?.id) {
+      fetchProfile();
+      fetchWishlists(profile.id);
+    }
+  }, [profile?.id, game?.id, fetchProfile, fetchWishlists]);
 
   useEffect(() => {
     if (gameId) {
@@ -92,7 +94,45 @@ const GameDetailsPage = () => {
     } else {
       navigate("/");
     }
-  }, [gameId]);
+  }, [gameId, fetchGameById, fetchPlatforms, navigate]);
+
+  const handleWishlistToggle = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!profile?.id) {
+      messageApi.open({
+        type: 'error',
+        content: 'Please log in to manage your wishlist',
+      });
+      return;
+    }
+    if (!game?.id || !game?.name) {
+      messageApi.open({
+        type: 'error',
+        content: 'Game data is unavailable',
+      });
+      return;
+    }
+    try {
+      if (!isWishlisted) {
+        await addToWishlist(profile.id, game.id);
+        messageApi.open({
+          type: 'success',
+          content: `"${game.name}" added to wishlist`,
+        });
+      } else {
+        await removeFromWishlist(profile.id, game.id);
+        messageApi.open({
+          type: 'success',
+          content: `"${game.name}" removed from wishlist`,
+        });
+      }
+    } catch (error) {
+      messageApi.open({
+        type: 'error',
+        content: `Failed to update wishlist for "${game.name}"`,
+      });
+    }
+  };
 
   if (!gameId) {
     return <Navigate to={`/`} />;
@@ -103,18 +143,17 @@ const GameDetailsPage = () => {
   if (error) {
     return <GameNotFound />;
   }
-  if (!game) return;
-  const slides = [
-    { src: game.coverImage },
-    ...game.gameImages.map((image) => ({ src: image.image })),
-  ];
+  if (!game) return null;
+
+  const slides = [{ src: game.coverImage }, ...game.gameImages.map((image) => ({ src: image.image }))];
 
   return (
     <MaxWidthWrapper className="py-5">
+      {contextHolder}
       <ScrollToTop />
       <div className="grid grid-cols-3 gap-3 bg-zinc-900">
         {/* GAME COVER IMAGE */}
-        {game?.coverImage ? (
+        {game.coverImage ? (
           <FaultTolerantImage
             src={game.coverImage}
             alt="game cover image"
@@ -128,7 +167,7 @@ const GameDetailsPage = () => {
         <div className="col-span-2 flex flex-col gap-2 bg-zinc-800 rounded p-3">
           <div>
             <div className="flex">
-              <h2 className="text-3xl font-bold flex-1">{game?.name}</h2>
+              <h2 className="text-3xl font-bold flex-1">{game.name}</h2>
               <div className="flex gap-2">
                 <Tooltip title="Copy link to game">
                   <Button shape="circle" icon={<FaLink />}></Button>
@@ -136,32 +175,27 @@ const GameDetailsPage = () => {
                 <Tooltip title="Report game">
                   <Button shape="circle" icon={<FaFlag />}></Button>
                 </Tooltip>
+                <Tooltip title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}>
+                  <Button
+                    shape="circle"
+                    onClick={handleWishlistToggle}
+                    icon={isWishlisted ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
+                    className="bg-zinc-700 border-zinc-600 text-white hover:bg-zinc-600"
+                  />
+                </Tooltip>
               </div>
             </div>
-            <p className="text-zinc-500">{game?.shortDescription}</p>
-            <span className="font-semibold text-orange-200">
-              {game?.category?.name}
-            </span>
+            <p className="text-zinc-500">{game.shortDescription}</p>
+            <span className="font-semibold text-orange-200">{game.category?.name}</span>
           </div>
-          {/* DEVELOPER INFOMATION */}
+          {/* DEVELOPER INFORMATION */}
           <div className="my-2 flex gap-3 items-center justify-between bg-zinc-900 drop-shadow rounded-lg p-2">
-            <Link
-              to={`/profile/${game.developer.id}`}
-              className="flex items-center gap-3"
-            >
-              {game.developer.avatar ? (
-                <Avatar src={game.developer.avatar} />
-              ) : (
-                <Avatar icon={<CiUser />} />
-              )}
+            <Link to={`/profile/${game.developer.id}`} className="flex items-center gap-3">
+              {game.developer.avatar ? <Avatar src={game.developer.avatar} /> : <Avatar icon={<CiUser />} />}
               <p className="font-semibold">{game.developer.userName}</p>
             </Link>
-
             <div>
-              <Button
-                style={{ width: 150 }}
-                disabled={profile?.id == game.developer.id}
-              >
+              <Button style={{ width: 150 }} disabled={profile?.id === game.developer.id}>
                 Follow
               </Button>
               <Dropdown menu={{ items: devProfileItems }}>
@@ -171,7 +205,7 @@ const GameDetailsPage = () => {
           </div>
           <div className="flex gap-1 text-sm items-end">
             <span className="uppercase text-zinc-400 text-xs">Tags:</span>
-            {game?.gameTags.map((tag, index: number) => (
+            {game.gameTags.map((tag, index: number) => (
               <Link key={`game-tag-${index}`} to={`/search?tag=${tag.tag.id}`}>
                 <Tag color="orange">{tag.tag.name}</Tag>
               </Link>
@@ -179,18 +213,15 @@ const GameDetailsPage = () => {
           </div>
           <div className="flex gap-2 text-sm items-end">
             <span className="uppercase text-zinc-400 text-xs">Languages:</span>
-            {game?.gameLanguages.map((language, index: number) => (
+            {game.gameLanguages.map((language, index: number) => (
               <span className="text-orange-200" key={`game-language-${index}`}>
-                {language.language.name}{" "}
-                {index != game.gameLanguages.length - 1 && ", "}
+                {language.language.name} {index !== game.gameLanguages.length - 1 && ", "}
               </span>
             ))}
           </div>
           <div className="flex gap-2 text-sm items-end">
-            <span className="uppercase text-zinc-400 text-xs">
-              Average time:
-            </span>
-            <span>{game?.averageSession} Minutes</span>
+            <span className="uppercase text-zinc-400 text-xs">Average time:</span>
+            <span>{game.averageSession} Minutes</span>
           </div>
         </div>
       </div>
