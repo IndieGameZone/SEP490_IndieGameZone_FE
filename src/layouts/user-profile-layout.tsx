@@ -64,10 +64,10 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
           },
         },
         {
-          key: "/account/transction-history",
-          label: "Transaction History",
+          key: "/account/wallet-and-transactions",
+          label: "Wallet & Transactions",
           onClick: () => {
-            navigate("/account/transction-history");
+            navigate("/account/wallet-and-transactions");
           },
         },
       ],

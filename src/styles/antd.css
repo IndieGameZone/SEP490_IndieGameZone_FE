@@ -1,18 +1,3 @@
-.ant-table .ant-table-container .ant-table-content table tr.ant-table-row .ant-table-cell {
-  padding-block: 10px;
-  border-bottom: 1px solid rgb(217, 217, 217);
-}
-
-.ant-table .ant-table-container .ant-table-content table thead.ant-table-thead .ant-table-cell {
-  border-bottom: 1px solid rgb(199, 199, 199);
-}
-
-.ant-table .ant-table-container {
-  border-radius: 5px;
-  border: 1px solid rgb(199, 199, 199);
-  box-shadow: 0 0 10px rgba(96, 84, 84, 0.1);
-  overflow: hidden;
-}
 .ant-message {
   z-index: 9999 !important;
 }
