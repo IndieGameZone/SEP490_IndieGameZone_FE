@@ -6,7 +6,6 @@ import usePlatformStore from "@/store/use-platform-store";
 import { Button } from "antd";
 import {
   FaApple,
-  FaDownload,
   FaFileArchive,
   FaLinux,
   FaShoppingCart,
@@ -14,6 +13,7 @@ import {
 } from "react-icons/fa";
 import ReactPlayer from "react-player";
 import { GAME_REALEASE_STATUS } from "@/constants/game";
+import DownloadGameButton from "./download-game-button";
 
 const GameOverView = () => {
   const { game } = useGameStore();
@@ -22,6 +22,7 @@ const GameOverView = () => {
   if (!game) return;
   const defaultPlatforms = getDefaultPlatforms();
 
+  // This is bad practice, may change in the future to map value - label
   const releaseStatus = GAME_REALEASE_STATUS.find(
     (x) => x.value == game.status
   )?.label;
@@ -60,7 +61,9 @@ const GameOverView = () => {
                   </tr>
                   <tr>
                     <td className="pe-5">Released on</td>
-                    <td className="font-semibold">{formatDate(new Date(game.createdAt))}</td>
+                    <td className="font-semibold">
+                      {formatDate(new Date(game.createdAt))}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -77,6 +80,7 @@ const GameOverView = () => {
           </div>
         </div>
       </div>
+      {/* DISLAY DOWNLOAD/PURCHASE BUTTON */}
       <div className="col-span-4">
         <div className="bg-zinc-800 rounded">
           <h1 className="px-5 pt-5 font-semibold text-xl">Download Game</h1>
@@ -84,9 +88,7 @@ const GameOverView = () => {
             <div className="flex gap-3 items-center">
               {game.price == 0 ? (
                 <>
-                  <Button size="large" type="primary" icon={<FaDownload />}>
-                    Download Now
-                  </Button>
+                  <DownloadGameButton />
                   <p className="mt-1 text-gray-500 text-sm">For Free</p>
                 </>
               ) : (
@@ -100,6 +102,7 @@ const GameOverView = () => {
                 </>
               )}
             </div>
+            {/* DISPLAYED INCLUDED FILES */}
             {game.price > 0 && (
               <>
                 <p className="my-2">

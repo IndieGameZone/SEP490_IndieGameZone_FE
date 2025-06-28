@@ -3,6 +3,7 @@ import HomePage from "@/pages/home-page/home-page";
 import { Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import PageTransition from "@/components/page-transition";
+import DownloadGamePage from "@/pages/download-game/download-game-page";
 
 const NotFoundPage = lazy(() => import("@/pages/errors/not-found-page"));
 const VerifyEmailPage = lazy(() => import("@/pages/verify-email-page"));
@@ -25,6 +26,7 @@ const HomeContainer = () => {
           <Route path="/profile/:userId" element={<ViewProfilePage />} />
           <Route path="/search/*" element={<SearchPage />} />
           <Route path="/game/:gameId" element={<GameDetailsPage />} />
+          <Route path="/download/:gameId" element={<DownloadGamePage />} />
           <Route path="/forum/*" element={<ForumPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

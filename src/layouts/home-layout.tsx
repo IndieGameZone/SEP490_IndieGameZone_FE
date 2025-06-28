@@ -23,7 +23,7 @@ const HomeLayout = ({ children }: { children: ReactNode }) => {
       <div className="min-h-screen flex flex-col bg-gradient-to-b from-zinc-900 to-zinc-950">
         <Navbar />
         <div
-          className="flex-1 flex-col flex"
+          className="flex-1"
           style={{ backgroundImage: `url(${background})` }}
         >
           {children}

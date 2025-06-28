@@ -28,11 +28,13 @@ import GameForum from "./game-forum";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 import useAuthStore from "@/store/use-auth-store";
 import GameNotFound from "@/pages/errors/game-not-found";
+import usePlatformStore from "@/store/use-platform-store";
 
 const GameDetailsPage = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
   const { fetchGameById, loading, error, game } = useGameStore();
+  const { fetchPlatforms } = usePlatformStore();
   const { profile } = useAuthStore();
   const [index, setIndex] = useState(-1);
 
@@ -85,6 +87,7 @@ const GameDetailsPage = () => {
 
   useEffect(() => {
     if (gameId) {
+      fetchPlatforms();
       fetchGameById(gameId);
     } else {
       navigate("/");
@@ -105,11 +108,12 @@ const GameDetailsPage = () => {
     { src: game.coverImage },
     ...game.gameImages.map((image) => ({ src: image.image })),
   ];
-  
+
   return (
     <MaxWidthWrapper className="py-5">
       <ScrollToTop />
       <div className="grid grid-cols-3 gap-3 bg-zinc-900">
+        {/* GAME COVER IMAGE */}
         {game?.coverImage ? (
           <FaultTolerantImage
             src={game.coverImage}
@@ -120,6 +124,7 @@ const GameDetailsPage = () => {
         ) : (
           <div></div>
         )}
+        {/* GAME METADATA */}
         <div className="col-span-2 flex flex-col gap-2 bg-zinc-800 rounded p-3">
           <div>
             <div className="flex">
@@ -128,7 +133,7 @@ const GameDetailsPage = () => {
                 <Tooltip title="Copy link to game">
                   <Button shape="circle" icon={<FaLink />}></Button>
                 </Tooltip>
-                <Tooltip title="Report user">
+                <Tooltip title="Report game">
                   <Button shape="circle" icon={<FaFlag />}></Button>
                 </Tooltip>
               </div>
@@ -138,7 +143,7 @@ const GameDetailsPage = () => {
               {game?.category?.name}
             </span>
           </div>
-
+          {/* DEVELOPER INFOMATION */}
           <div className="my-2 flex gap-3 items-center justify-between bg-zinc-900 drop-shadow rounded-lg p-2">
             <Link
               to={`/profile/${game.developer.id}`}
@@ -196,6 +201,7 @@ const GameDetailsPage = () => {
         close={() => setIndex(-1)}
         plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
       />
+      {/* GAME IMAGES/SCREENSHOT */}
       <div className="flex overflow-auto gap-3 p-3 bg-zinc-900">
         {game.gameImages.map((image, index: number) => (
           <img
@@ -206,6 +212,7 @@ const GameDetailsPage = () => {
           />
         ))}
       </div>
+      {/* TABS */}
       <div className="px-5 bg-zinc-900 rounded mt-2 pb-5">
         <Tabs defaultActiveKey="overview-tab" items={tabItems} />
       </div>

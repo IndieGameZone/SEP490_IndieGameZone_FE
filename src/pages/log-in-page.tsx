@@ -1,15 +1,30 @@
-import { Form, Input, Button, Modal, Select, DatePicker, FormProps } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Modal,
+  Select,
+  DatePicker,
+  FormProps,
+} from "antd";
 import logo from "@/assets/indiegamezone-logo.svg";
 import background from "@/assets/wow-bg.jpg";
 import googleIcon from "@/assets/google_icon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { login, googleLogin, checkFirstLogin, prepareGoogleLoginData, prepareCheckFirstData } from "@/lib/api/auth-api";
+import {
+  login,
+  googleLogin,
+  checkFirstLogin,
+  prepareGoogleLoginData,
+  prepareCheckFirstData,
+} from "@/lib/api/auth-api";
 import toast from "react-hot-toast";
 import useAuthStore from "@/store/use-auth-store";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/api/config/firebase";
 import dayjs from "dayjs";
+import Cookies from "js-cookie";
 
 type RoleEnum = "Player" | "Developer";
 
@@ -42,7 +57,6 @@ const LogInPage = () => {
       localStorage.setItem("accessToken", result.data);
       toast.success("Login successfully");
       fetchProfile();
-      setTimeout(() => navigate("/"), 1000);
     }
   };
 
@@ -60,13 +74,22 @@ const LogInPage = () => {
 
       const checkResult = await checkFirstLogin(prepareCheckFirstData(idToken));
 
-      if (checkResult.success && checkResult.data && typeof checkResult.data.isFirstTime === "boolean") {
+      if (
+        checkResult.success &&
+        checkResult.data &&
+        typeof checkResult.data.isFirstTime === "boolean"
+      ) {
         if (checkResult.data.isFirstTime) {
           setIsGoogleModalOpen(true);
         } else {
-          const loginResult = await googleLogin(prepareGoogleLoginData(idToken, {}));
+          const loginResult = await googleLogin(
+            prepareGoogleLoginData(idToken, {})
+          );
           if (loginResult.success) {
-            localStorage.setItem("accessToken", checkResult.data.accessToken || loginResult.data);
+            localStorage.setItem(
+              "accessToken",
+              checkResult.data.accessToken || loginResult.data
+            );
             toast.success("Login successfully");
             fetchProfile();
             setTimeout(() => navigate("/"), 1000);
@@ -108,6 +131,14 @@ const LogInPage = () => {
 
   useEffect(() => {
     if (profile) {
+      const waitingUrl = Cookies.get("waiting-url");
+      if (waitingUrl) {
+        Cookies.remove("waiting-url");
+        setTimeout(() => {
+          navigate(waitingUrl);
+        }, 1000);
+        return;
+      }
       if (profile.role.name == "Admin") {
         setTimeout(() => {
           navigate("/admin");
@@ -137,8 +168,8 @@ const LogInPage = () => {
         <div className="absolute top-52 w-2/3 left-7">
           <p className="font-extrabold text-5xl">Play Bold. Publish Free.</p>
           <p className="">
-            Empowering developers to publish their vision, and players to find the next big thing before it goes
-            mainstream.
+            Empowering developers to publish their vision, and players to find
+            the next big thing before it goes mainstream.
           </p>
         </div>
       </div>
@@ -146,7 +177,12 @@ const LogInPage = () => {
       <div className="flex items-center justify-center flex-col">
         <div className="w-full max-w-md p-4 rounded-xl">
           <img src={logo} alt="" className="mb-10" />
-          <Form layout="vertical" autoComplete="off" onFinish={onFinish} form={form}>
+          <Form
+            layout="vertical"
+            autoComplete="off"
+            onFinish={onFinish}
+            form={form}
+          >
             <Form.Item
               label={<span className="font-bold">Email or username</span>}
               name="userNameOrEmail"
@@ -157,15 +193,23 @@ const LogInPage = () => {
                 },
               ]}
             >
-              <Input placeholder="Enter your email" style={{ paddingBlock: 10 }} />
+              <Input
+                placeholder="Enter your email"
+                style={{ paddingBlock: 10 }}
+              />
             </Form.Item>
 
             <Form.Item
               label={<span className="font-bold">Password</span>}
               name="password"
-              rules={[{ required: true, message: "Please enter your password" }]}
+              rules={[
+                { required: true, message: "Please enter your password" },
+              ]}
             >
-              <Input.Password placeholder="Enter your password" style={{ paddingBlock: 10 }} />
+              <Input.Password
+                placeholder="Enter your password"
+                style={{ paddingBlock: 10 }}
+              />
             </Form.Item>
             <div className="flex justify-end">
               <Link to="/recover-password" className="text-xs text-zinc-700">
@@ -223,8 +267,14 @@ const LogInPage = () => {
         footer={null}
         destroyOnHidden={true}
       >
-        <p className="mb-4 text-gray-600">Please provide additional information to complete your registration.</p>
-        <Form form={googleForm} layout="vertical" onFinish={handleGoogleFormSubmit}>
+        <p className="mb-4 text-gray-600">
+          Please provide additional information to complete your registration.
+        </p>
+        <Form
+          form={googleForm}
+          layout="vertical"
+          onFinish={handleGoogleFormSubmit}
+        >
           <Form.Item
             label={<span className="font-bold">Birthday</span>}
             name="birthday"
@@ -233,7 +283,9 @@ const LogInPage = () => {
             <DatePicker
               style={{ width: "100%", paddingBlock: 10 }}
               placeholder="Select your birthday"
-              disabledDate={(current) => current && current > dayjs().endOf("day")}
+              disabledDate={(current) =>
+                current && current > dayjs().endOf("day")
+              }
             />
           </Form.Item>
 
