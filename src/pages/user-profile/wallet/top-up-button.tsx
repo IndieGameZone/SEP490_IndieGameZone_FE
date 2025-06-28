@@ -1,7 +1,7 @@
 import { Button, InputNumber, Modal, message } from "antd";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import coinImage from "@/assets/igz_coin.png";
+import CoinIcon from "@/components/coin-icon";
 
 const DEFAULT_TOP_UP_AMOUNT = 10_000;
 const MAX_TOP_UP_AMOUNT = 1_000_000;
@@ -52,7 +52,7 @@ const TopUpButton = () => {
             <p className="text-sm text-zinc-200 mb-2">Points Amount</p>
             <InputNumber
               placeholder="Enter points amount (e.g. 50,000)"
-              prefix={<img src={coinImage} className="size-4" />}
+              suffix={<CoinIcon />}
               step={10_000}
               min={10_000}
               max={MAX_TOP_UP_AMOUNT}
@@ -60,7 +60,7 @@ const TopUpButton = () => {
               value={topUpAmount}
               onChange={handleInputChange}
               formatter={(value) =>
-                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
               }
               style={{
                 width: "100%",
@@ -68,27 +68,30 @@ const TopUpButton = () => {
             />
             <p className="text-zinc-400 text-xs mt-1">
               Current balance:{" "}
-              <img src={coinImage} className="size-3 inline mx-1 mb-0.5" />
-              {(25_000).toLocaleString()}
+              {(25_000).toLocaleString("vi-VN")}
+              <CoinIcon size="size-3" className="inline mx-1 mb-0.5" />
             </p>
             <div className="flex gap-2 mt-2">
               <Button
-                icon={<img src={coinImage} className="size-4 inline mb-0.5" />}
+                icon={<CoinIcon size="size-4" className="inline mb-0.5" />}
                 onClick={() => setTopUpAmount(100_000)}
+                iconPosition="end"
               >
-                100,000
+                100.000
               </Button>
               <Button
-                icon={<img src={coinImage} className="size-4 inline mb-0.5" />}
+                icon={<CoinIcon size="size-4" className="inline mb-0.5" />}
                 onClick={() => setTopUpAmount(200_000)}
+                iconPosition="end"
               >
-                200,000
+                200.000
               </Button>
               <Button
-                icon={<img src={coinImage} className="size-4 inline mb-0.5" />}
+                icon={<CoinIcon size="size-4" className="inline mb-0.5" />}
                 onClick={() => setTopUpAmount(500_000)}
+                iconPosition="end"
               >
-                500,000
+                500.000
               </Button>
             </div>
           </div>
