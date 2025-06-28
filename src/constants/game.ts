@@ -1,3 +1,6 @@
+export const MAX_DONATION = 500_000;
+export const MAX_GAME_PRICE = 1_000_000;
+
 export const GAME_REALEASE_STATUS = [
     {
         label: "Released",

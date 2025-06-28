@@ -3,17 +3,16 @@ import { formatCurrencyVND } from "@/lib/currency";
 import { formatDate } from "@/lib/date";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
-import { Button } from "antd";
 import {
   FaApple,
   FaFileArchive,
   FaLinux,
-  FaShoppingCart,
   FaWindows,
 } from "react-icons/fa";
 import ReactPlayer from "react-player";
 import { GAME_REALEASE_STATUS } from "@/constants/game";
 import DownloadGameButton from "./download-game-button";
+import BuyGameButton from "./buy-game-button";
 
 const GameOverView = () => {
   const { game } = useGameStore();
@@ -93,9 +92,7 @@ const GameOverView = () => {
                 </>
               ) : (
                 <>
-                  <Button size="large" type="primary" icon={<FaShoppingCart />}>
-                    Buy Now
-                  </Button>
+                  <BuyGameButton />
                   <p className="mt-1 text-xl">
                     {formatCurrencyVND(game.price)}
                   </p>

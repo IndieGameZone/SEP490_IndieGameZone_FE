@@ -1,4 +1,5 @@
 import { MAX_DONATION } from "@/constants/game";
+import { formatCurrencyVND } from "@/lib/currency";
 import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
@@ -6,12 +7,11 @@ import { Button, InputNumber, Modal, Tooltip } from "antd";
 import Cookies from "js-cookie";
 import { CSSProperties, useState } from "react";
 import {
-  FaAngleRight,
   FaApple,
-  FaDownload,
   FaFileArchive,
   FaLinux,
   FaRegHeart,
+  FaShoppingCart,
   FaWallet,
   FaWindows,
 } from "react-icons/fa";
@@ -21,17 +21,13 @@ const addPriceButtonStyle: CSSProperties = {
   background: "oklch(71.2% 0.194 13.428)",
   fontWeight: "bold",
 };
-const DownloadGameButton = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [price, setPrice] = useState(10_000);
+const BuyGameButton = () => {
   const { game } = useGameStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [price, setPrice] = useState(game?.price ?? 10_000);
   const { getDefaultPlatforms } = usePlatformStore();
   const navigate = useNavigate();
   const { profile } = useAuthStore();
-
-  const handleGoToDownloadPage = () => {
-    if (game) navigate(`/download/${game.id}`);
-  };
 
   const showModal = () => {
     // Developer will download their own game in dev page instead
@@ -41,11 +37,7 @@ const DownloadGameButton = () => {
       return;
     }
 
-    if (game?.allowDonation) {
-      setIsModalOpen(true);
-    } else {
-      handleGoToDownloadPage();
-    }
+    setIsModalOpen(true);
   };
 
   const handleOk = () => {
@@ -60,8 +52,8 @@ const DownloadGameButton = () => {
   const defaultPlatforms = getDefaultPlatforms();
   const handleAddPrice = (value: number) => {
     setPrice((prev) => {
-      if (prev + value > MAX_DONATION) {
-        return MAX_DONATION;
+      if (prev + value > game.price + MAX_DONATION) {
+        return game.price + MAX_DONATION;
       } else {
         return prev + value;
       }
@@ -82,13 +74,13 @@ const DownloadGameButton = () => {
       <Button
         size="large"
         type="primary"
-        icon={<FaDownload />}
+        icon={<FaShoppingCart />}
         onClick={showModal}
       >
-        Download Now
+        Buy Now
       </Button>
       <Modal
-        title={<h3 className="text-xl">Download '{game.name}'</h3>}
+        title={<h3 className="text-xl">Buy '{game.name}'</h3>}
         closable={{ "aria-label": "Custom Close Button" }}
         open={isModalOpen}
         onOk={handleOk}
@@ -96,16 +88,31 @@ const DownloadGameButton = () => {
         footer={<div></div>}
       >
         <p>
-          This game is free but the developer accepts your support by letting
-          you pay what you think is fair for the game.
+          Download this game by purchasing it for{" "}
+          <span className="font-semibold">{formatCurrencyVND(game.price)}</span>{" "}
+          or more.
         </p>
-        <Button
-          className="mt-2"
-          icon={<FaAngleRight className="inline" />}
-          onClick={handleGoToDownloadPage}
-        >
-          No thanks, just take me to the downloads
-        </Button>
+        <InputNumber
+          size="large"
+          min={game.price}
+          max={MAX_DONATION + game.price}
+          step={1_000}
+          onChange={(value) => setPrice(value ?? 0)}
+          value={price}
+          formatter={(value) =>
+            `${value}  ₫`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          }
+          style={{ width: "100%", marginTop: "0.5rem" }}
+        />
+        {price > game.price && (
+          <p className="text-sm mt-1">
+            You will donate{" "}
+            <span className="font-semibold text-rose-400">
+              {formatCurrencyVND(price - game.price)}
+            </span>{" "}
+            to <span className="font-semibold">{game.developer.userName}</span>
+          </p>
+        )}
         <hr className="my-3 border-zinc-700" />
         <p className="text-center italic">included files</p>
         <div className="flex flex-col gap-2">
@@ -140,18 +147,6 @@ const DownloadGameButton = () => {
           additional contribution
         </div>
         <div className="mt-3">
-          <InputNumber
-            size="large"
-            min={1000}
-            max={MAX_DONATION}
-            step={1_000}
-            onChange={(value) => setPrice(value ?? 0)}
-            value={price}
-            formatter={(value) =>
-              `${value}  ₫`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            }
-            style={{ width: "100%" }}
-          />
           <div className="mt-3">
             <Button
               type="primary"
@@ -265,4 +260,4 @@ const DownloadGameButton = () => {
   );
 };
 
-export default DownloadGameButton;
+export default BuyGameButton;
