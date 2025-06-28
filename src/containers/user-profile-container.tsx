@@ -7,6 +7,9 @@ import { Route, Routes } from "react-router-dom";
 const UserProfilePage = lazy(
   () => import("@/pages/user-profile/user-profile-page")
 );
+const TransactionsHistoryPage = lazy(
+  () => import("@/pages/user-profile/manage-transactions")
+);
 
 const UserProfileContainer = () => {
   return (
@@ -15,6 +18,7 @@ const UserProfileContainer = () => {
         <Suspense fallback={<SuspenseFallback />}>
           <Routes>
             <Route path="/profile" element={<UserProfilePage />} />
+            <Route path="/transction-history" element={<TransactionsHistoryPage />} />
           </Routes>
         </Suspense>
       </UserProfileLayout>

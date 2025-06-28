@@ -116,3 +116,11 @@ export const unbanUserById = async (id: string) => {
     return handleApiError(error);
   }
 };
+export const followDeveloper = async (playerId: string, developerId: string) => {
+  try {
+    const { data } = await axiosClient.post(`/api/players/${playerId}/developers/${developerId}/user-follows`);
+    return { error: null, data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
