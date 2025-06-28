@@ -5,7 +5,6 @@ import CoinIcon from "@/components/coin-icon";
 import useAuthStore from "@/store/use-auth-store";
 import { depositTransaction } from "@/lib/api/payment-api";
 
-
 interface TopUpButtonProps {
   userId: string;
   balance: number;
@@ -22,6 +21,7 @@ const TopUpButton = ({ userId, balance }: TopUpButtonProps) => {
 
   const handleTopUp = async () => {
     try {
+      console.log("Sending topUpAmount:", topUpAmount); 
       const response = await depositTransaction(userId, topUpAmount, "Top up points via PayOS");
       console.log("API Response:", response);
       if (response.success && typeof response.data === "string") {
@@ -40,7 +40,9 @@ const TopUpButton = ({ userId, balance }: TopUpButtonProps) => {
 
   const handleInputChange = (value: number | null) => {
     if (value) {
-      setTopUpAmount(value);
+      setTopUpAmount(value); 
+    } else {
+      setTopUpAmount(DEFAULT_TOP_UP_AMOUNT); 
     }
   };
 
@@ -83,6 +85,7 @@ const TopUpButton = ({ userId, balance }: TopUpButtonProps) => {
               value={topUpAmount}
               onChange={handleInputChange}
               formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+              parser={(value) => (value ? parseInt(value.replace(/\./g, "")) : 0)} 
               style={{ width: "100%" }}
             />
             <p className="text-zinc-400 text-xs mt-1">
@@ -113,9 +116,7 @@ const TopUpButton = ({ userId, balance }: TopUpButtonProps) => {
               </Button>
             </div>
           </div>
-          <p className="mb-2">
-            Points are the digital currency of our platform. You can use them to:
-          </p>
+          <p className="mb-2">Points are the digital currency of our platform. You can use them to:</p>
           <ul className="list-disc list-inside mb-5">
             <li>Purchase and unlock indie games.</li>
             <li>Support your favorite game developers directly.</li>
@@ -138,12 +139,7 @@ const TopUpButton = ({ userId, balance }: TopUpButtonProps) => {
             >
               Cancel
             </Button>
-            <Button
-              type="primary"
-              icon={<FaPlus />}
-              className="bg-blue-600"
-              onClick={handleTopUp}
-            >
+            <Button type="primary" icon={<FaPlus />} className="bg-blue-600" onClick={handleTopUp}>
               Confirm Top Up
             </Button>
           </div>
