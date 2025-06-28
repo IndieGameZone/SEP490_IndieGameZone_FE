@@ -2,7 +2,13 @@ import useProfileStore from "@/store/use-auth-store";
 import { Avatar, Divider, Dropdown, MenuProps, theme } from "antd";
 import React from "react";
 import { CiUser } from "react-icons/ci";
-import { FaDoorOpen, FaLightbulb, FaStar, FaUserAlt } from "react-icons/fa";
+import {
+  FaDoorOpen,
+  FaLightbulb,
+  FaStar,
+  FaUserAlt,
+  FaWallet,
+} from "react-icons/fa";
 import { RiBookShelfLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
@@ -37,6 +43,12 @@ const ProfileMenu = () => {
       label: "Ratings & Reviews",
       icon: <FaStar />,
       onClick: () => navigate("/account/ratings-and-reviews"),
+    },
+    {
+      key: "wallet-and-transactions",
+      label: "Wallet & Transactions",
+      icon: <FaWallet />,
+      onClick: () => navigate("/account/wallet-and-transactions"),
     },
     {
       key: "4",

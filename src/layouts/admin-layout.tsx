@@ -13,6 +13,7 @@ import { CiDiscount1, CiUser } from "react-icons/ci";
 import { TbCancel } from "react-icons/tb";
 import useProfileStore from "@/store/use-auth-store";
 import { CgGames } from "react-icons/cg";
+import styles from "@/styles/admin-layout.module.css";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -159,7 +160,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         },
       }}
     >
-      <Layout hasSider>
+      <Layout hasSider className={styles.lightTable}>
         <Sider
           trigger={null}
           collapsible

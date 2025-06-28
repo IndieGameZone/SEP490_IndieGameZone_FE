@@ -148,7 +148,7 @@ const DownloadGameButton = () => {
             onChange={(value) => setPrice(value ?? 0)}
             value={price}
             formatter={(value) =>
-              `${value}  ₫`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              `${value}  ₫`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             }
             style={{ width: "100%" }}
           />
@@ -162,7 +162,7 @@ const DownloadGameButton = () => {
               }}
               style={addPriceButtonStyle}
             >
-              +10,000₫
+              +10.000₫
             </Button>
             <Button
               type="primary"
@@ -173,7 +173,7 @@ const DownloadGameButton = () => {
               }}
               style={addPriceButtonStyle}
             >
-              +25,000₫
+              +25.000₫
             </Button>
             <Button
               type="primary"
@@ -184,7 +184,7 @@ const DownloadGameButton = () => {
               }}
               style={addPriceButtonStyle}
             >
-              +50,000₫
+              +50.000₫
             </Button>
             <Button
               type="primary"
@@ -194,7 +194,7 @@ const DownloadGameButton = () => {
               }}
               style={addPriceButtonStyle}
             >
-              +100,000₫
+              +100.000₫
             </Button>
           </div>
         </div>
