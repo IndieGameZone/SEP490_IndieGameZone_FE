@@ -2,17 +2,40 @@ import { Button, InputNumber, Modal, message } from "antd";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import CoinIcon from "@/components/coin-icon";
+import useAuthStore from "@/store/use-auth-store";
+import { depositTransaction } from "@/lib/api/payment-api";
+
+
+interface TopUpButtonProps {
+  userId: string;
+  balance: number;
+}
 
 const DEFAULT_TOP_UP_AMOUNT = 10_000;
 const MAX_TOP_UP_AMOUNT = 1_000_000;
 
-const TopUpButton = () => {
+const TopUpButton = ({ userId, balance }: TopUpButtonProps) => {
   const [isTopUpModalVisible, setIsTopUpModalVisible] = useState(false);
   const [topUpAmount, setTopUpAmount] = useState(DEFAULT_TOP_UP_AMOUNT);
   const [messageApi, contextHolder] = message.useMessage();
-  const handleTopUp = () => {
-    messageApi.success(`Successfully topped up ${topUpAmount} points!`);
-    setIsTopUpModalVisible(false);
+  const { fetchProfile } = useAuthStore();
+
+  const handleTopUp = async () => {
+    try {
+      const response = await depositTransaction(userId, topUpAmount, "Top up points via PayOS");
+      console.log("API Response:", response);
+      if (response.success && typeof response.data === "string") {
+        messageApi.success("Redirecting to payment...");
+        window.location.href = response.data;
+        setTimeout(() => fetchProfile(), 1000);
+      } else {
+        messageApi.error(response.error || "Failed to initiate top-up. Please try again.");
+        setIsTopUpModalVisible(false);
+      }
+    } catch (error) {
+      messageApi.error("An unexpected error occurred. Please try again.");
+      setIsTopUpModalVisible(false);
+    }
   };
 
   const handleInputChange = (value: number | null) => {
@@ -59,16 +82,11 @@ const TopUpButton = () => {
               size="large"
               value={topUpAmount}
               onChange={handleInputChange}
-              formatter={(value) =>
-                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-              }
-              style={{
-                width: "100%",
-              }}
+              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+              style={{ width: "100%" }}
             />
             <p className="text-zinc-400 text-xs mt-1">
-              Current balance:{" "}
-              {(25_000).toLocaleString("vi-VN")}
+              Current balance: {balance.toLocaleString("vi-VN")}
               <CoinIcon size="size-3" className="inline mx-1 mb-0.5" />
             </p>
             <div className="flex gap-2 mt-2">
@@ -96,8 +114,7 @@ const TopUpButton = () => {
             </div>
           </div>
           <p className="mb-2">
-            Points are the digital currency of our platform. You can use them
-            to:
+            Points are the digital currency of our platform. You can use them to:
           </p>
           <ul className="list-disc list-inside mb-5">
             <li>Purchase and unlock indie games.</li>
@@ -112,7 +129,6 @@ const TopUpButton = () => {
               <br />• Exchange rate: 1 point = 1 VND
             </p>
           </div>
-
           <div className="flex gap-3 justify-end">
             <Button
               onClick={() => {
