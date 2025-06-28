@@ -1,7 +1,7 @@
 import { Transaction } from "@/types/transaction";
 import { Card, Table } from "antd";
 import { useState } from "react";
-import { FaCoins } from "react-icons/fa";
+import { FaHistory } from "react-icons/fa";
 import { columns } from "./columns";
 
 const transactionsData: Transaction[] = [
@@ -49,10 +49,10 @@ const TransactionHistory = () => {
   return (
     <Card
       title={
-        <div className="flex items-center gap-2">
-          <FaCoins className="text-blue-400" />
+        <h2 className="font-bold flex items-center">
+          <FaHistory className="inline me-2" />
           <span>Transaction History</span>
-        </div>
+        </h2>
       }
     >
       <Table<Transaction>

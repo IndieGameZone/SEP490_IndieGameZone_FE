@@ -1,30 +1,34 @@
-import { Card } from "antd";
-import { FaCoins } from "react-icons/fa";
-import { MdAccountBalanceWallet } from "react-icons/md";
+import { FaRegQuestionCircle, FaWallet } from "react-icons/fa";
 import TopUpButton from "./top-up-button";
-import { formatCurrencyVND } from "@/lib/currency";
+import coinImage from "@/assets/igz_coin.png";
+import { Link } from "react-router-dom";
 
 const BALANCE = 25_000;
 const UserWallet = () => {
   return (
     <>
-      <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0">
+      <div className="py-4 px-5 bg-orange-900 border border-orange-500">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <div className="bg-white bg-opacity-20 p-3 rounded-full">
-              <MdAccountBalanceWallet className="text-2xl" />
+            <div className="bg-zinc-800 bg-opacity-20 p-4 rounded-full border border-zinc-500">
+              <FaWallet className="text-3xl" />
             </div>
             <div>
-              <h2 className="text-lg font-medium mb-1">Current Balance</h2>
-              <p className="text-3xl font-bold flex items-center gap-2">
-                <FaCoins className="text-yellow-300" />
-                {formatCurrencyVND(BALANCE)}
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm">Current Balance</h2>
+                <Link to="/policy/igz-points">
+                  <FaRegQuestionCircle />
+                </Link>
+              </div>
+              <p className="text-3xl flex items-center gap-2">
+                <img src={coinImage} alt="" className="size-5" />
+                {BALANCE.toLocaleString()}
               </p>
             </div>
           </div>
           <TopUpButton />
         </div>
-      </Card>
+      </div>
     </>
   );
 };
