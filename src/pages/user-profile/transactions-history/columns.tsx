@@ -22,7 +22,7 @@ export const columns = [
     dataIndex: "orderCode",
     key: "orderCode",
     width: 120,
-    render: (orderCode: string) => <span className="font-mono text-blue-400">TSI{orderCode}</span>,
+    render: (orderCode: string) => <span className="font-mono text-blue-400">TS-{orderCode}</span>,
   },
   {
     title: "Type",

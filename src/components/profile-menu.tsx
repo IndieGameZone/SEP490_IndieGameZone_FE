@@ -9,6 +9,7 @@ import {
   FaUserAlt,
   FaWallet,
 } from "react-icons/fa";
+import { PiListHeartDuotone } from "react-icons/pi";
 import { RiBookShelfLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
@@ -38,8 +39,14 @@ const ProfileMenu = () => {
       icon: <RiBookShelfLine />,
       onClick: () => navigate("/account/library"),
     },
-    {
+      {
       key: "3",
+      label: "My wishlist",
+      icon: <PiListHeartDuotone />,
+      onClick: () => navigate("/account/wishlist"),
+    },
+    {
+      key: "4",
       label: "Ratings & Reviews",
       icon: <FaStar />,
       onClick: () => navigate("/account/ratings-and-reviews"),
@@ -51,7 +58,7 @@ const ProfileMenu = () => {
       onClick: () => navigate("/account/wallet-and-transactions"),
     },
     {
-      key: "4",
+      key: "5",
       label: "Recommendations ",
       icon: <FaLightbulb />,
       onClick: () => navigate("/recommendations"),
@@ -60,7 +67,7 @@ const ProfileMenu = () => {
       type: "divider",
     },
     {
-      key: "5",
+      key: "6",
       label: "Log Out",
       icon: <FaDoorOpen />,
       danger: true,

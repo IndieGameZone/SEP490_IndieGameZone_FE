@@ -4,13 +4,9 @@ import UserProfileLayout from "@/layouts/user-profile-layout";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
-const UserProfilePage = lazy(
-  () => import("@/pages/user-profile/user-profile-page")
-);
-const WalletAndTransactionsPage = lazy(
-  () => import("@/pages/user-profile/wallet-and-transactions-page")
-);
-
+const UserProfilePage = lazy(() => import("@/pages/user-profile/user-profile-page"));
+const WalletAndTransactionsPage = lazy(() => import("@/pages/user-profile/wallet-and-transactions-page"));
+const UserWishlistPage = lazy(() => import("@/pages/user-profile/wish-list/view-user-wishlist"));
 const UserProfileContainer = () => {
   return (
     <HomeLayout>
@@ -18,10 +14,8 @@ const UserProfileContainer = () => {
         <Suspense fallback={<SuspenseFallback />}>
           <Routes>
             <Route path="/profile" element={<UserProfilePage />} />
-            <Route
-              path="/wallet-and-transactions"
-              element={<WalletAndTransactionsPage />}
-            />
+            <Route path="/wallet-and-transactions" element={<WalletAndTransactionsPage />} />
+            <Route path="/wishlist" element={<UserWishlistPage />} />
           </Routes>
         </Suspense>
       </UserProfileLayout>

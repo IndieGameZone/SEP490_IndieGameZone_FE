@@ -22,6 +22,13 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
           },
         },
         {
+          key: "/account/wishlist",
+          label: "My Wishlist",
+          onClick: () => {
+            navigate("/account/wishlist");
+          },
+        },
+        {
           key: "/account/ratings-and-reviews",
           label: "Ratings & Reviews",
           onClick: () => {

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { addWishList, getAllUserWishlists, removeWishlist } from '@/lib/api/wish-list-api';
 
 interface WishlistState {
-  gamedIds: string[]; 
+  gamedIds: string[];
   loading: boolean;
   error: string | null;
   renderKey: number;
@@ -48,7 +48,7 @@ const useWishlistStore = create<WishlistState>((set) => ({
       const response = await addWishList({ userId, gameId });
       if (response.success) {
         set((state) => ({
-          wishlists: [...state.gamedIds, gameId],
+          gamedIds: [...state.gamedIds, gameId], // Sửa từ wishlists thành gamedIds
           loading: false,
         }));
       } else {
@@ -64,7 +64,7 @@ const useWishlistStore = create<WishlistState>((set) => ({
       const response = await removeWishlist(userId, gameId);
       if (response.success) {
         set((state) => ({
-          wishlists: state.gamedIds.filter((id) => id !== gameId),
+          gamedIds: state.gamedIds.filter((id) => id !== gameId),
           loading: false,
         }));
       } else {
