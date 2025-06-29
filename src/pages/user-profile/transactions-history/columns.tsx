@@ -1,9 +1,14 @@
-import { formatDateTime } from "@/lib/date";
+import CoinIcon from "@/components/coin-icon";
+import { formatCurrencyVND } from "@/lib/currency";
+import { formatDateTime } from "@/lib/date-n-time";
 import { Transaction } from "@/types/transaction";
 import { Tag } from "antd";
 
 const getStatusTag = (status: Transaction["status"]) => {
-  const statusConfig: Record<Transaction["status"], { color: string; text: string }> = {
+  const statusConfig: Record<
+    Transaction["status"],
+    { color: string; text: string }
+  > = {
     Success: { color: "green", text: "Success" },
     Pending: { color: "orange", text: "Pending" },
     Failed: { color: "red", text: "Failed" },
@@ -29,7 +34,9 @@ export const columns = [
     dataIndex: "type",
     key: "type",
     width: 80,
-    render: (type: string) => <span className="font-mono text-blue-400">{type}</span>,
+    render: (type: string) => (
+      <span className="font-mono text-blue-400">{type}</span>
+    ),
   },
   {
     title: "Amount",
@@ -37,10 +44,17 @@ export const columns = [
     key: "amount",
     width: 120,
     align: "right" as const,
-    render: (amount: number) => (
+    render: (amount: number, record: Transaction) => (
       <span className={`font-semibold ${getAmountColor(amount)}`}>
-        {amount > 0 ? "+" : ""}
-        {amount.toLocaleString("vi-VN")}
+        {amount > 0 ? "+" : amount < 0 ? "-" : ""}
+        {record.type == "deposit" ? (
+          <>
+            {amount.toLocaleString("vi-VN")}
+            <CoinIcon className="inline" size="size-3 ms-1 mb-1"/>
+          </>
+        ) : (
+          formatCurrencyVND(amount)
+        )}
       </span>
     ),
   },

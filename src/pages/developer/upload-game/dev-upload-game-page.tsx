@@ -1,5 +1,4 @@
 import { Button, Form, message } from "antd";
-import PaymentConfigWarning from "./payment-config-warning";
 import UploadGuideLine from "./upload-guideline";
 import GameInfoForm from "./game-info-form";
 import StepLayout from "./step-layout";
@@ -9,7 +8,7 @@ import useManageGameStore from "@/store/use-manage-game-store";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { GameFiles, GameInfo, GameMediaAssets } from "@/types/game";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaUpload } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 
 const DevUploadGamePage = () => {
@@ -87,8 +86,11 @@ const DevUploadGamePage = () => {
   return (
     <div className="bg-zinc-900">
       {contextHolder}
-      <h1 className="font-bold text-2xl p-5">Upload a new game</h1>
-      <PaymentConfigWarning />
+      <div className="p-5 bg-orange-900 border-orange-500 border text-2xl flex gap-3">
+        <FaUpload className="mt-0.5"/>
+        <h1 className="font-bold text-2xl">Upload a new game</h1>
+      </div>
+      {/* <PaymentConfigWarning /> */}
       <div className="p-5">
         <UploadGuideLine />
         <StepLayout title="Game Information" current={0}>

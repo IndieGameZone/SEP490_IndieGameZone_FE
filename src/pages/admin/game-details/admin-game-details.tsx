@@ -9,12 +9,19 @@ import {
 import TiptapView from "@/components/tiptap/tiptap-view";
 import { updateGameActivation } from "@/lib/api/game-api";
 import { formatCurrencyVND } from "@/lib/currency";
-import { formatDate, formatDateTime } from "@/lib/date";
+import { formatDate, formatDateTime } from "@/lib/date-n-time";
 import DeleteGameButton from "@/pages/developer/game-details/delete-game-button";
 import GameNotFound from "@/pages/errors/game-not-found";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
-import { Button, Descriptions, DescriptionsProps, Tag, message, Modal } from "antd";
+import {
+  Button,
+  Descriptions,
+  DescriptionsProps,
+  Tag,
+  message,
+  Modal,
+} from "antd";
 import { useEffect, useState } from "react";
 import { FaCheck, FaEye } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
@@ -185,10 +192,12 @@ const AdminGameDetail = () => {
   const installInstructionItems: DescriptionsProps["items"] = [
     {
       key: "install-instruction",
-      label: "Install Instruction",
+      label: "Install Instructions",
       children: installInstruction ? (
         <ExpandableWrapper>
-          <TiptapView value={installInstruction} darkTheme={false} />
+          <div className="font-mono">
+            <TiptapView value={installInstruction} darkTheme={false} />
+          </div>
         </ExpandableWrapper>
       ) : (
         <span className="text-gray-500">None</span>
@@ -286,7 +295,9 @@ const AdminGameDetail = () => {
     });
   };
 
-  const isPending = game.censorStatus === "PendingAIReview" || game.censorStatus === "PendingManualReview";
+  const isPending =
+    game.censorStatus === "PendingAIReview" ||
+    game.censorStatus === "PendingManualReview";
 
   return (
     <div className="bg-zinc-100 p-3 flex flex-col gap-5">
@@ -328,12 +339,6 @@ const AdminGameDetail = () => {
       </div>
 
       <div className="bg-white p-3 rounded ">
-        <Descriptions
-          title="Game Infomation"
-          column={2}
-          bordered
-          items={infoItems}
-        />
         <h3 className="font-bold my-2">Cover Image</h3>
         <img
           src={game?.coverImage}
@@ -343,6 +348,15 @@ const AdminGameDetail = () => {
             setIndex(0);
           }}
         />
+
+        <Descriptions
+          title="Game Infomation"
+          column={2}
+          bordered
+          items={infoItems}
+          className="mt-2"
+        />
+
         <h3 className="font-bold mt-4">Game screenshots/images</h3>
         <div className="grid grid-cols-2 mt-2 gap-3">
           {game?.gameImages.map((image, index: number) => {

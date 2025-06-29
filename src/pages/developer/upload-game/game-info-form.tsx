@@ -1,5 +1,6 @@
 import TiptapEditor from "@/components/tiptap/tiptap-editor";
 import { GAME_REALEASE_STATUS, GAME_VISIBILITY_STATUS } from "@/constants/game";
+import { formatDuration } from "@/lib/date-n-time";
 import useAgeRestrictionStore from "@/store/use-age-restriction-store";
 import useCategoryStore from "@/store/use-category-store";
 import useLanguageStore from "@/store/use-language-store";
@@ -16,6 +17,7 @@ import {
   Radio,
   Select,
   Space,
+  Tooltip,
 } from "antd";
 import { CheckboxGroupProps } from "antd/es/checkbox";
 import TextArea from "antd/es/input/TextArea";
@@ -31,7 +33,8 @@ const pricingOptions: CheckboxGroupProps<string>["options"] = [
 const releaseStatusOptions = GAME_REALEASE_STATUS;
 const visibilityStatusOptions = GAME_VISIBILITY_STATUS;
 const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
-  const [allowDonate, setAllowDonate] = useState(false);
+  const [allowDonate, setAllowDonate] = useState(true);
+  const [averageSession, setAverageSession] = useState(1);
   const [isFree, setIsFree] = useState(true);
   const { isLoaded, gameInfo } = useManageGameStore();
   const {
@@ -68,7 +71,7 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
       onFinish={onFinish}
       autoComplete="off"
       layout="vertical"
-      initialValues={{ price: 1000, pricingOption: "Free" }}
+      initialValues={{ price: 1000, pricingOption: "Free", allowDonate: true }}
     >
       <Form.Item<FieldType>
         name="name"
@@ -104,12 +107,27 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
         style={{ width: 500, marginBottom: 20 }}
         extra="Estimated average play session length in minutes"
       >
-        <InputNumber
-          min={1}
-          max={2000}
-          placeholder="60 (minutes)"
-          style={{ width: 500 }}
-        />
+        <Tooltip
+          title={averageSession >= 60 ? formatDuration(averageSession) : null}
+        >
+          <InputNumber<number>
+            min={1}
+            max={1440}
+            placeholder="60 (minutes)"
+            style={{ width: 500 }}
+            formatter={(value) =>
+              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+            parser={(value) => (value ? parseInt(value.replace(/\,/g, "")) : 0)}
+            suffix="minute(s)"
+            onChange={(value) => {
+              if (value) {
+                form.setFieldValue("averageSession", value);
+                setAverageSession(value);
+              }
+            }}
+          />
+        </Tooltip>
       </Form.Item>
       <Form.Item<FieldType>
         label={<span className="font-bold">Category</span>}
@@ -243,12 +261,12 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
       </Form.Item>
       <Form.Item<FieldType>
         name="price"
-        label="Price"
+        label="Minimum price"
         rules={[{ required: true, message: "Please a price" }]}
         hidden={isFree}
-        extra="Price to pay to get download access to game"
+        extra="Minimum price to pay to get download access to game"
       >
-        <InputNumber
+        <InputNumber<number>
           min={1000}
           max={10000000}
           step={1000}
@@ -256,7 +274,6 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
           formatter={(value) =>
             `${value}  ₫`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
           }
-          // @ts-ignore
           parser={(value) => value?.replace(/₫|\s|,/g, "") as unknown as number}
         />
       </Form.Item>
@@ -269,6 +286,7 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
             ? "Someone downloading your project will be asked for a donation before getting access."
             : "No donations can be made"
         }
+        hidden={!isFree}
       >
         <Checkbox
           onChange={(e) => {
@@ -281,7 +299,9 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
       <h2 className="text-2xl mb-3">Visibility & Access</h2>
       <Form.Item<FieldType>
         name={"visibility"}
-        rules={[{ required: true, message: "Please select a visibility status" }]}
+        rules={[
+          { required: true, message: "Please select a visibility status" },
+        ]}
         style={{ width: 500, marginBottom: 20 }}
       >
         <Radio.Group>

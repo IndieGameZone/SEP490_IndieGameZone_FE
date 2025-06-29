@@ -13,12 +13,7 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
-import {
-  FaFlag,
-  FaInfoCircle,
-  FaLink,
-  FaStar,
-} from "react-icons/fa";
+import { FaFlag, FaInfoCircle, FaLink, FaStar } from "react-icons/fa";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
@@ -36,6 +31,7 @@ import GameNotFound from "@/pages/errors/game-not-found";
 import usePlatformStore from "@/store/use-platform-store";
 import useWishlistStore from "@/store/use-wish-list-store";
 import AddToWishlistButton from "@/components/add-to-wishlist-button";
+import { formatDuration } from "@/lib/date-n-time";
 
 const GameDetailsPage = () => {
   const { gameId } = useParams();
@@ -151,7 +147,7 @@ const GameDetailsPage = () => {
                 <Tooltip title="Report game">
                   <Button shape="circle" icon={<FaFlag />}></Button>
                 </Tooltip>
-                <AddToWishlistButton game={game}/>
+                <AddToWishlistButton game={game} />
               </div>
             </div>
             <p className="text-zinc-500">{game.shortDescription}</p>
@@ -205,7 +201,7 @@ const GameDetailsPage = () => {
             <span className="uppercase text-zinc-400 text-xs">
               Average time:
             </span>
-            <span>{game.averageSession} Minutes</span>
+            <span>{formatDuration(game.averageSession)}</span>
           </div>
         </div>
       </div>

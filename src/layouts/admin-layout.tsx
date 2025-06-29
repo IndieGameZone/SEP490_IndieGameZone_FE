@@ -9,7 +9,7 @@ import { MdCategory, MdSpaceDashboard } from "react-icons/md";
 import { BiSolidUserAccount } from "react-icons/bi";
 import { LiaLanguageSolid } from "react-icons/lia";
 import { FaDoorOpen, FaTags, FaWindows } from "react-icons/fa";
-import { CiDiscount1, CiUser } from "react-icons/ci";
+import { CiUser } from "react-icons/ci";
 import { TbCancel } from "react-icons/tb";
 import useProfileStore from "@/store/use-auth-store";
 import { CgGames } from "react-icons/cg";
@@ -67,9 +67,9 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         navigate("/admin/manage-accounts");
       },
     },
-      {
+    {
       key: "/admin/manage-games",
-      icon: <CgGames/>,
+      icon: <CgGames />,
       label: "Manage Games",
       onClick: () => {
         navigate("/admin/manage-games");
@@ -99,14 +99,14 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         navigate("/admin/manage-categories");
       },
     },
-    {
-      key: "/admin/manage-dicounts",
-      icon: <CiDiscount1 />,
-      label: "Manage Dicounts",
-      onClick: () => {
-        navigate("/admin/manage-dicounts");
-      },
-    },
+    // {
+    //   key: "/admin/manage-dicounts",
+    //   icon: <CiDiscount1 />,
+    //   label: "Manage Dicounts",
+    //   onClick: () => {
+    //     navigate("/admin/manage-dicounts");
+    //   },
+    // },
     // {
     //   key: "/admin/manage-achivements",
     //   icon: <GrAchievement />,

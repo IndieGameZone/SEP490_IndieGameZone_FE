@@ -7,8 +7,8 @@ interface WishlistState {
   error: string | null;
   renderKey: number;
   fetchWishlistGameIds: (userId: string) => Promise<void>;
-  addToWishlist: (userId: string, gameId: string) => Promise<void>;
-  removeFromWishlist: (userId: string, gameId: string) => Promise<void>;
+  addToWishlist: (userId: string, gameId: string) => Promise<boolean>;
+  removeFromWishlist: (userId: string, gameId: string) => Promise<boolean>;
   rerender: () => void;
 }
 
@@ -51,12 +51,14 @@ const useWishlistStore = create<WishlistState>((set) => ({
           gamedIds: [...state.gamedIds, gameId], // Sửa từ wishlists thành gamedIds
           loading: false,
         }));
+        return true;
       } else {
         set({ loading: false, error: response.error || 'Failed to add to wishlist' });
       }
     } catch (error: any) {
       set({ loading: false, error: error.message || 'An unexpected error occurred' });
     }
+    return false;
   },
   removeFromWishlist: async (userId: string, gameId: string) => {
     set({ loading: true, error: null });
@@ -67,12 +69,14 @@ const useWishlistStore = create<WishlistState>((set) => ({
           gamedIds: state.gamedIds.filter((id) => id !== gameId),
           loading: false,
         }));
+        return true;
       } else {
         set({ loading: false, error: response.error || 'Failed to remove from wishlist' });
       }
     } catch (error: any) {
       set({ loading: false, error: error.message || 'An unexpected error occurred' });
     }
+    return false;
   },
 }));
 

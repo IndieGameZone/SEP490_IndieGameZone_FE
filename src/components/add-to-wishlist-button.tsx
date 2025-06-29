@@ -2,7 +2,7 @@ import useAuthStore from "@/store/use-auth-store";
 import useWishlistStore from "@/store/use-wish-list-store";
 import { Game } from "@/types/game";
 import { Button, Tooltip, message } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 const AddToWishlistButton = ({ game }: { game: Game }) => {
@@ -10,12 +10,6 @@ const AddToWishlistButton = ({ game }: { game: Game }) => {
   const [isWishlisted, setIsWishlisted] = useState(gamedIds.includes(game.id));
   const { profile } = useAuthStore();
   const [messageApi, contextHolder] = message.useMessage();
-  useEffect(() => {
-    const newVal = gamedIds.includes(game.id);
-    if (newVal != isWishlisted) {
-      setIsWishlisted(newVal);
-    }
-  }, [gamedIds]);
 
   const handleWishlistToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -28,23 +22,24 @@ const AddToWishlistButton = ({ game }: { game: Game }) => {
     }
     try {
       if (!isWishlisted) {
-        await addToWishlist(profile.id, game.id);
-        messageApi.open({
-          type: "success",
-          content: `"${game.name}" added to wishlist`,
-        });
+        const result = await addToWishlist(profile.id, game.id);
+        if (result) {
+          messageApi.success(`"${game.name}" added to wishlist`);
+          setIsWishlisted(true);
+        } else {
+          throw new Error();
+        }
       } else {
-        await removeFromWishlist(profile.id, game.id);
-        messageApi.open({
-          type: "success",
-          content: `"${game.name}" removed from wishlist`,
-        });
+        const result = await removeFromWishlist(profile.id, game.id);
+        if (result) {
+          messageApi.success(`"${game.name}" removed from wishlist`);
+          setIsWishlisted(false);
+        } else {
+          throw new Error();
+        }
       }
     } catch (error) {
-      messageApi.open({
-        type: "error",
-        content: `Failed to update wishlist for "${game.name}"`,
-      });
+      messageApi.error(`Failed to update wishlist for "${game.name}"`);
     }
   };
 

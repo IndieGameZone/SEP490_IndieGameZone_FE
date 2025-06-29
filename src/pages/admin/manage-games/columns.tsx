@@ -76,20 +76,22 @@ const columns: ColumnsType<Game> = [
     title: "Price",
     key: "price",
     render: (_, record: Game) => (
-      <div className="text-right">
-        {(record.discount || 0) > 0 ? (
+      <div className="">
+        {record.price == 0 ? (
+          <div className="text-lg font-bold text-green-600">Free</div>
+        ) : (record.discount || 0) > 0 ? (
           <div>
             <div className="text-lg font-bold text-green-600">
-              {formatCurrencyVND(record.priceAfterDiscount || 0)}
+              {formatCurrencyVND(record.priceAfterDiscount ?? 0)}
             </div>
             <div className="text-sm text-gray-500 line-through">
-              {formatCurrencyVND(record.price || 0)}
+              {formatCurrencyVND(record.price ?? 0)}
             </div>
             <Tag color="red">{record.discount}% OFF</Tag>
           </div>
         ) : (
           <div className="text-lg font-bold text-gray-900">
-            {formatCurrencyVND(record.price || 0)}
+            {formatCurrencyVND(record.price ?? 0)}
           </div>
         )}
       </div>

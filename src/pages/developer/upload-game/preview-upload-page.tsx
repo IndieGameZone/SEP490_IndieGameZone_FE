@@ -30,7 +30,7 @@ import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import ReactPlayer from "react-player/youtube";
-import { formatDate } from "@/lib/date";
+import { formatDate, formatDuration } from "@/lib/date-n-time";
 import ScrollToTop from "@/components/scroll-to-top";
 import { formatCurrencyVND } from "@/lib/currency";
 import usePlatformStore from "@/store/use-platform-store";
@@ -184,7 +184,7 @@ const PreviewUploadPage = () => {
             <span className="uppercase text-zinc-400 text-xs">
               Average time:
             </span>
-            <span>{gameInfo.averageSession} Minutes</span>
+            <span>{formatDuration(gameInfo.averageSession)}</span>
           </div>
         </div>
       </div>
@@ -342,7 +342,7 @@ const PreviewUploadPage = () => {
           })}
           <hr className="border-zinc-700" />
           <h3>Download and install instructions from {profile?.userName}:</h3>
-          <div className="bg-zinc-800 p-3">
+          <div className="bg-zinc-800 p-3 font-mono">
             <TiptapView value={gameFiles.installInstruction} />
           </div>
         </div>
