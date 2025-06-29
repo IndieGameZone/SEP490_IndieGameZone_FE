@@ -40,3 +40,16 @@ export function timeAgo(dateInput: Date | string): string {
 
     return 'a moment ago';
 }
+
+export function formatDuration(minutes: number) {
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    const parts: string[] = [];
+    if (hours > 0) {
+        parts.push(`${hours} hour${hours == 1 ? "" : "s"}`)
+    }
+    if (remainingMinutes > 0 || parts.length == 0) {
+        parts.push(`${remainingMinutes} minute${remainingMinutes == 1 ? "" : "s"}`)
+    }
+    return parts.join(" ");
+}

@@ -1,6 +1,6 @@
 import CoinIcon from "@/components/coin-icon";
 import { formatCurrencyVND } from "@/lib/currency";
-import { formatDateTime } from "@/lib/date";
+import { formatDateTime } from "@/lib/date-n-time";
 import { Transaction } from "@/types/transaction";
 import { Tag } from "antd";
 

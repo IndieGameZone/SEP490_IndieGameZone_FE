@@ -287,7 +287,8 @@ const UploadProcessPage = () => {
     setcurrentTaskMessage2(`Uploading game information.`);
     const uploadResult = await addGame(profile.id, {
       ageRestrictionId: gameInfo.ageRestrictionId,
-      allowDonation: gameInfo.allowDonate,
+      allowDonation:
+        gameInfo.pricingOption == "Free" ? gameInfo.allowDonate : true,
       averageSession: gameInfo.averageSession,
       categoryId: gameInfo.categoryId,
       coverImage: coverImageUrl,

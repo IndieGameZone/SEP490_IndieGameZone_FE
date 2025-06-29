@@ -82,7 +82,6 @@ const TopUpButton = ({ userId, balance }: TopUpButtonProps) => {
         }}
         footer={null}
         width={480}
-        loading={isSubmitting}
       >
         <div className="mt-4">
           <div className="mb-4">
@@ -163,6 +162,7 @@ const TopUpButton = ({ userId, balance }: TopUpButtonProps) => {
               icon={<FaPlus />}
               className="bg-blue-600"
               onClick={handleTopUp}
+              loading={isSubmitting}
             >
               Confirm Top Up
             </Button>

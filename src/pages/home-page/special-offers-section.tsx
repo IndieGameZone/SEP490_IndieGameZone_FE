@@ -5,7 +5,7 @@ import game6CoverImage from "@/assets/mock/game-6-cover-image.jpg";
 import game7CoverImage from "@/assets/mock/game-7-cover-image.jpg";
 import { formatCurrencyVND } from "@/lib/currency";
 import { Link } from "react-router-dom";
-import { formatDate } from "@/lib/date";
+import { formatDate } from "@/lib/date-n-time";
 
 const today = new Date();
 const salesDate1 = new Date(

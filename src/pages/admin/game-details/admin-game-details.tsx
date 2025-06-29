@@ -9,7 +9,7 @@ import {
 import TiptapView from "@/components/tiptap/tiptap-view";
 import { updateGameActivation } from "@/lib/api/game-api";
 import { formatCurrencyVND } from "@/lib/currency";
-import { formatDate, formatDateTime } from "@/lib/date";
+import { formatDate, formatDateTime } from "@/lib/date-n-time";
 import DeleteGameButton from "@/pages/developer/game-details/delete-game-button";
 import GameNotFound from "@/pages/errors/game-not-found";
 import useGameStore from "@/store/use-game-store";

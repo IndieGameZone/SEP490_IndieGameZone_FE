@@ -1,4 +1,4 @@
-import { timeAgo } from "@/lib/date";
+import { timeAgo } from "@/lib/date-n-time";
 import { Avatar, Button, Rate, Tooltip } from "antd";
 import { CiUser } from "react-icons/ci";
 import { FaFlag } from "react-icons/fa";

@@ -1,6 +1,6 @@
 import TiptapView from "@/components/tiptap/tiptap-view";
 import { formatCurrencyVND } from "@/lib/currency";
-import { formatDate } from "@/lib/date";
+import { formatDate } from "@/lib/date-n-time";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
 import {
