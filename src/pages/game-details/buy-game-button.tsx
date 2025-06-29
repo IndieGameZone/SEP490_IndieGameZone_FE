@@ -6,15 +6,7 @@ import usePlatformStore from "@/store/use-platform-store";
 import { Button, InputNumber, Modal, Tooltip } from "antd";
 import Cookies from "js-cookie";
 import { CSSProperties, useEffect, useState } from "react";
-import {
-  FaApple,
-  FaFileArchive,
-  FaLinux,
-  FaRegHeart,
-  FaShoppingCart,
-  FaWallet,
-  FaWindows,
-} from "react-icons/fa";
+import { FaApple, FaFileArchive, FaLinux, FaRegHeart, FaShoppingCart, FaWallet, FaWindows } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import PayWithWalletButton from "./pay-with-wallet-button";
 import useLibraryStore from "@/store/use-library-store";
@@ -71,6 +63,7 @@ const BuyGameButton = () => {
   const userId = profile?.id || "";
   const gameId = game.id || "";
   const isGameOwned = ownedGameIds.includes(gameId);
+  const text = <span >The game you have purchased. Please check your download library. hẹ hẹ</span>;
 
   return (
     <>
@@ -79,9 +72,11 @@ const BuyGameButton = () => {
           Buy Now
         </Button>
       ) : (
-        <Button size="large" type="default" disabled>
-          Bought
-        </Button>
+        <Tooltip placement="top" title={text}>
+          <Button size="large" type="default" disabled>
+            Bought
+          </Button>
+        </Tooltip>
       )}
       {!isGameOwned && (
         <Modal
@@ -167,23 +162,14 @@ const BuyGameButton = () => {
               >
                 +50.000₫
               </Button>
-              <Button
-                type="primary"
-                size="small"
-                onClick={() => handleAddPrice(100_000)}
-                style={addPriceButtonStyle}
-              >
+              <Button type="primary" size="small" onClick={() => handleAddPrice(100_000)} style={addPriceButtonStyle}>
                 +100.000₫
               </Button>
             </div>
           </div>
           {accessToken ? (
             <>
-              <Button
-                size="large"
-                style={{ marginTop: "1.5rem", marginRight: "0.5rem" }}
-                type="primary"
-              >
+              <Button size="large" style={{ marginTop: "1.5rem", marginRight: "0.5rem" }} type="primary">
                 Pay with <span className="font-bold">PayOS</span>
               </Button>
               <PayWithWalletButton amount={price} userId={userId} gameId={gameId} />
@@ -192,24 +178,14 @@ const BuyGameButton = () => {
             <>
               <div onClick={handleGoToLogin} className="inline">
                 <Tooltip title="Log in to continue">
-                  <Button
-                    size="large"
-                    style={{ marginTop: "1.5rem", marginRight: "0.5rem" }}
-                    type="primary"
-                    disabled
-                  >
+                  <Button size="large" style={{ marginTop: "1.5rem", marginRight: "0.5rem" }} type="primary" disabled>
                     Pay with <span className="font-bold">PayOS</span>
                   </Button>
                 </Tooltip>
               </div>
               <div onClick={handleGoToLogin} className="inline">
                 <Tooltip title="Log in to continue">
-                  <Button
-                    size="large"
-                    style={{ marginTop: "1.5rem" }}
-                    icon={<FaWallet />}
-                    disabled
-                  >
+                  <Button size="large" style={{ marginTop: "1.5rem" }} icon={<FaWallet />} disabled>
                     Pay with wallet
                   </Button>
                 </Tooltip>
