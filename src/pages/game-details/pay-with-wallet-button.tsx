@@ -18,6 +18,7 @@ const PayWithWalletButton = ({ amount, userId, gameId }: PayWithWalletButtonProp
   const { game, rerender } = useGameStore();
   const { profile, fetchProfile } = useAuthStore();
   const { ownedGameIds, fetchLibraries } = useLibraryStore();
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     if (!profile && userId) {
@@ -34,19 +35,19 @@ const PayWithWalletButton = ({ amount, userId, gameId }: PayWithWalletButtonProp
 
   const handleOk = async () => {
     if (!game || !profile?.balance || profile.balance < amount) {
-      message.error("Insufficient balance or invalid game data");
+      messageApi.error("Insufficient balance or invalid game data");
       return;
     }
 
     const result = await purchaseGame(userId, gameId, undefined, "Wallet");
     if (result.success) {
-      message.success("Purchase successful! Please check your game library.");
+      messageApi.success("Purchase successful! Please check your game library.");
       await fetchLibraries(userId);
-      fetchProfile(); 
-      rerender(); 
+      fetchProfile();
+      rerender();
       setIsModalOpen(false);
     } else {
-      message.error(result.error || "Purchase failed");
+      messageApi.error(result.error || "Purchase failed");
     }
   };
 
@@ -58,6 +59,7 @@ const PayWithWalletButton = ({ amount, userId, gameId }: PayWithWalletButtonProp
 
   return (
     <>
+      {contextHolder}
       <Button size="large" style={{ marginTop: "1.5rem" }} icon={<FaWallet />} onClick={showModal}>
         Pay with wallet
       </Button>
