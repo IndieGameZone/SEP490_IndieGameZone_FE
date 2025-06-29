@@ -14,6 +14,7 @@ import GenreCard from "./genre-card";
 import { lazy } from "react";
 import NavLinks from "@/components/nav-links";
 import ScrollToTopButton from "@/components/scroll-to-top-button";
+import HandleTransactionResult from "@/components/handle-transaction-result";
 
 const DisclaimerModal = lazy(() => import("../../components/disclaimer-modal"));
 
@@ -22,6 +23,7 @@ const HomePage = () => {
     <MaxWidthWrapper>
       <ScrollToTopButton />
       <DisclaimerModal />
+      <HandleTransactionResult />
       <NavLinks />
       <FeaturedGameSection />
       <SpecialOffersSection />
