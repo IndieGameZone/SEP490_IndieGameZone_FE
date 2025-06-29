@@ -11,21 +11,27 @@ interface DeleteLanguageModalProps {
   language: Language | null;
 }
 
-const DeleteLanguageModal = ({ open, onClose, onSuccess, language }: DeleteLanguageModalProps) => {
+const DeleteLanguageModal = ({
+  open,
+  onClose,
+  onSuccess,
+  language,
+}: DeleteLanguageModalProps) => {
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleDelete = async () => {
     if (!language) return;
-    
+
     try {
       setLoading(true);
       await axiosClient.delete(`/languages/${language.id}`);
-      
-      message.success("Language deleted successfully!");
+
+      messageApi.success("Language deleted successfully!");
       onClose();
-      onSuccess(); 
+      onSuccess();
     } catch (error) {
-      message.error("Failed to delete language");
+      messageApi.error("Failed to delete language");
     } finally {
       setLoading(false);
     }
@@ -46,10 +52,9 @@ const DeleteLanguageModal = ({ open, onClose, onSuccess, language }: DeleteLangu
       cancelText="Cancel"
       okButtonProps={{ danger: true }}
     >
-      <p>
-        Are you sure you want to delete the language "{language?.name}"?
-      </p>
-      <p style={{ color: '#ff4d4f', fontSize: '14px' }}>
+      {contextHolder}
+      <p>Are you sure you want to delete the language "{language?.name}"?</p>
+      <p style={{ color: "#ff4d4f", fontSize: "14px" }}>
         This action cannot be undone.
       </p>
     </Modal>

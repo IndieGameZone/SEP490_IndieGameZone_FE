@@ -57,6 +57,7 @@ const UploadProcessPage = () => {
   const [isHarmful, setIsHarmful] = useState(false);
   const [deleteAttempts, setDeleteAttempts] = useState(0);
   const [isScanning, setIsScanning] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
 
   const { isSaved, gameFiles, gameMediaAssets, gameInfo } =
@@ -321,7 +322,7 @@ const UploadProcessPage = () => {
   };
 
   const handleUnexpectedError = () => {
-    message.error("Something went wrong Please try again.");
+    messageApi.error("Something went wrong Please try again.");
     navigate("/dev/upload-game");
     setIsUploading(false);
   };
@@ -338,6 +339,7 @@ const UploadProcessPage = () => {
   }
   return (
     <div className="flex flex-col justify-center items-center pb-20">
+      {contextHolder}
       {currentTask == 3 && isScanning ? (
         <LottiePlayer
           animationData={scanningAnimation}

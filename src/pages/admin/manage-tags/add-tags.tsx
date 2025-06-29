@@ -15,22 +15,23 @@ interface AddTagForm {
 const AddTags = ({ open, onClose, onSuccess }: AddTagModalProps) => {
   const [form] = Form.useForm<AddTagForm>();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmit = async (values: AddTagForm) => {
     try {
       setLoading(true);
       const result = await createTag({ name: values.name });
-      
+
       if (result.success) {
-        message.success("Tag added successfully!");
+        messageApi.success("Tag added successfully!");
         form.resetFields();
         onClose();
         onSuccess();
       } else {
-        message.error(result.error || "Failed to add tag");
+        messageApi.error(result.error || "Failed to add tag");
       }
     } catch (error) {
-      message.error("Failed to add tag");
+      messageApi.error("Failed to add tag");
     } finally {
       setLoading(false);
     }
@@ -53,7 +54,13 @@ const AddTags = ({ open, onClose, onSuccess }: AddTagModalProps) => {
         destroyOnHidden
         forceRender
       >
-        <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
+        {contextHolder}
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          autoComplete="off"
+        >
           <Form.Item
             label="Tag Name"
             name="name"

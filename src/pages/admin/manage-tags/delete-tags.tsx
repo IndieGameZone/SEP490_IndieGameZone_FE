@@ -12,23 +12,24 @@ interface DeleteTagModalProps {
 
 const DeleteTag = ({ open, onClose, onSuccess, tag }: DeleteTagModalProps) => {
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleDelete = async () => {
     if (!tag) return;
-    
+
     try {
       setLoading(true);
       const result = await deleteTag(tag.id);
-      
+
       if (result.success) {
-        message.success("Tag deleted successfully!");
+        messageApi.success("Tag deleted successfully!");
         onClose();
         onSuccess();
       } else {
-        message.error(result.error || "Failed to delete tag");
+        messageApi.error(result.error || "Failed to delete tag");
       }
     } catch (error) {
-      message.error("Failed to delete tag");
+      messageApi.error("Failed to delete tag");
     } finally {
       setLoading(false);
     }
@@ -49,10 +50,9 @@ const DeleteTag = ({ open, onClose, onSuccess, tag }: DeleteTagModalProps) => {
       cancelText="Cancel"
       okButtonProps={{ danger: true }}
     >
-      <p>
-        Are you sure you want to delete the tag "{tag?.name}"?
-      </p>
-      <p style={{ color: '#ff4d4f', fontSize: '14px' }}>
+      {contextHolder}
+      <p>Are you sure you want to delete the tag "{tag?.name}"?</p>
+      <p style={{ color: "#ff4d4f", fontSize: "14px" }}>
         This action cannot be undone.
       </p>
     </Modal>

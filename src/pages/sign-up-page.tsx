@@ -46,6 +46,7 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const onChange: CheckboxProps["onChange"] = (e) => {
     setAcceptTerms(e.target.checked);
@@ -53,7 +54,7 @@ const SignUpPage = () => {
 
   const onFinish = async (values: any) => {
     if (!acceptTerms) {
-      message.error("Please accept terms of service!");
+      messageApi.error("Please accept terms of service!");
       return;
     }
 
@@ -72,14 +73,14 @@ const SignUpPage = () => {
       const result = await register(registerData);
 
       if (result.success) {
-        message.success("Registration successful!");
+        messageApi.success("Registration successful!");
         form.resetFields();
         navigate("/log-in");
       } else {
-        message.error(result.error || "Registration failed!");
+        messageApi.error(result.error || "Registration failed!");
       }
     } catch (error) {
-      message.error("An error occurred, please try again!");
+      messageApi.error("An error occurred, please try again!");
     } finally {
       setLoading(false);
     }
@@ -108,6 +109,7 @@ const SignUpPage = () => {
         backgroundImage: `url(${background})`,
       }}
     >
+      {contextHolder}
       <div className="fixed h-full w-full bg-zinc-950/50"></div>
       <Link to={"/"} className="right-7 fixed bottom-5 z-50">
         <img src={logo} alt="" className="w-40" />

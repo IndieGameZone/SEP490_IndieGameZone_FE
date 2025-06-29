@@ -15,24 +15,30 @@ interface EditLanguageForm {
   name: string;
 }
 
-const EditLanguageModal = ({ open, onClose, onSuccess, language }: EditLanguageModalProps) => {
+const EditLanguageModal = ({
+  open,
+  onClose,
+  onSuccess,
+  language,
+}: EditLanguageModalProps) => {
   const [form] = Form.useForm<EditLanguageForm>();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmit = async (values: EditLanguageForm) => {
     if (!language) return;
-    
+
     try {
       setLoading(true);
       await axiosClient.put(`/languages/${language.id}`, {
         name: values.name,
       });
-      
-      message.success("Language updated successfully!");
+
+      messageApi.success("Language updated successfully!");
       onClose();
-      onSuccess(); 
+      onSuccess();
     } catch (error) {
-      message.error("Failed to update language");
+      messageApi.error("Failed to update language");
     } finally {
       setLoading(false);
     }
@@ -60,6 +66,7 @@ const EditLanguageModal = ({ open, onClose, onSuccess, language }: EditLanguageM
       confirmLoading={loading}
       destroyOnHidden
     >
+      {contextHolder}
       <Form
         form={form}
         layout="vertical"

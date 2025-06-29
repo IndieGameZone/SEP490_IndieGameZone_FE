@@ -16,6 +16,7 @@ const DevUploadGamePage = () => {
   const [infoForm] = Form.useForm<GameInfo>();
   const [mediaForm] = Form.useForm<GameMediaAssets>();
   const [fileForm] = Form.useForm<GameFiles>();
+  const [messageApi, contextHolder] = message.useMessage();
   const {
     setGameInfo,
     setGameFiles,
@@ -43,7 +44,7 @@ const DevUploadGamePage = () => {
       saveState();
       navigate("/dev/upload-game/preview");
     } catch (error) {
-      message.error("Make sure all fields are filled correctly!");
+      messageApi.error("Make sure all fields are filled correctly!");
     }
   };
 
@@ -85,6 +86,7 @@ const DevUploadGamePage = () => {
 
   return (
     <div className="bg-zinc-900">
+      {contextHolder}
       <h1 className="font-bold text-2xl p-5">Upload a new game</h1>
       <PaymentConfigWarning />
       <div className="p-5">

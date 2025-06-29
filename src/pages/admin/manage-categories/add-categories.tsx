@@ -15,22 +15,23 @@ interface AddCategoryForm {
 const AddCategories = ({ open, onClose, onSuccess }: AddCategoryModalProps) => {
   const [form] = Form.useForm<AddCategoryForm>();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmit = async (values: AddCategoryForm) => {
     try {
       setLoading(true);
       const result = await createCategory({ name: values.name });
-      
+
       if (result.success) {
-        message.success("Category added successfully!");
+        messageApi.success("Category added successfully!");
         form.resetFields();
         onClose();
         onSuccess();
       } else {
-        message.error(result.error || "Failed to add Category");
+        messageApi.error(result.error || "Failed to add Category");
       }
     } catch (error) {
-      message.error("Failed to add Category");
+      messageApi.error("Failed to add Category");
     } finally {
       setLoading(false);
     }
@@ -50,7 +51,13 @@ const AddCategories = ({ open, onClose, onSuccess }: AddCategoryModalProps) => {
       confirmLoading={loading}
       destroyOnHidden
     >
-      <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
+      {contextHolder}
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        autoComplete="off"
+      >
         <Form.Item
           label="Category Name"
           name="name"
@@ -66,4 +73,4 @@ const AddCategories = ({ open, onClose, onSuccess }: AddCategoryModalProps) => {
   );
 };
 
-export default AddCategories
+export default AddCategories;

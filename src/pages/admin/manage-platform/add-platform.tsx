@@ -15,6 +15,7 @@ interface AddPlatformForm {
 const AddPlatform = ({ open, onClose, onSuccess }: AddPlatformModalProps) => {
   const [form] = Form.useForm<AddPlatformForm>();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmit = async (values: AddPlatformForm) => {
     try {
@@ -22,15 +23,15 @@ const AddPlatform = ({ open, onClose, onSuccess }: AddPlatformModalProps) => {
       const result = await createPlatform({ name: values.name });
       
       if (result.success) {
-        message.success("Platform added successfully!");
+        messageApi.success("Platform added successfully!");
         form.resetFields();
         onClose();
         onSuccess();
       } else {
-        message.error(result.error || "Failed to add platform");
+        messageApi.error(result.error || "Failed to add platform");
       }
     } catch (error) {
-      message.error("Failed to add platform");
+      messageApi.error("Failed to add platform");
     } finally {
       setLoading(false);
     }
@@ -43,7 +44,7 @@ const AddPlatform = ({ open, onClose, onSuccess }: AddPlatformModalProps) => {
 
   return (
     <div>
-      {" "}
+      {contextHolder}
       <Modal
         title="Add New Platform"
         open={open}

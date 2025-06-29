@@ -18,11 +18,9 @@ const DeleteGameButton = () => {
     });
     const result = await deleteGame(game.developer.id, game.id);
     if (result.error) {
-      messageApi.destroy();
-      message.error("Failed to delete game! Please try again.");
+      messageApi.error("Failed to delete game! Please try again.");
     } else {
-      messageApi.destroy();
-      message.success("Delete game successfully!");
+      messageApi.success("Delete game successfully!");
       clearGameStore();
 
       setTimeout(() => {

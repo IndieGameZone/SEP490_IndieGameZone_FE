@@ -11,6 +11,8 @@ const VerifyEmailPage = () => {
   const [status, setStatus] = useState("loading");
   const [isResending, setIsResending] = useState(false);
   const [searchParams] = useSearchParams();
+  const [messageApi, contextHolder] = message.useMessage();
+
   const navigate = useNavigate();
   useEffect(() => {
     handleVerifyEmail();
@@ -36,14 +38,17 @@ const VerifyEmailPage = () => {
     const result = await resendVerificationemail(values.email);
     setIsResending(false);
     if (result.error) {
-      message.error("Failed to resend. Please try again later.");
+      messageApi.error("Failed to resend. Please try again later.");
     } else {
-      message.success("Verification email resent.");
+      messageApi.success("Verification email resent.");
     }
   };
 
   return (
     <div className="min-h-[70vh] flex justify-center items-center">
+      {
+        contextHolder
+      }
       {status == "loading" && (
         <Spin tip="Verifying email" size="large">
           <div className="p-16 rounded bg-zinc-800 border-orange-500 border-2"></div>

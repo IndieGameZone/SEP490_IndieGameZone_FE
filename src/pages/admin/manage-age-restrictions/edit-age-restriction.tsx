@@ -24,6 +24,7 @@ const EditAgeRestrictionModal = ({
 }: EditAgeRestrictionModalProps) => {
   const [form] = Form.useForm<EditLanguageForm>();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmit = async (values: EditLanguageForm) => {
     if (!record) return;
@@ -35,9 +36,9 @@ const EditAgeRestrictionModal = ({
     });
     setLoading(false);
     if (result.error) {
-      message.error("Failed to update age restriction");
+      messageApi.error("Failed to update age restriction");
     } else {
-      message.success("Age Restriction updated successfully!");
+      messageApi.success("Age Restriction updated successfully!");
       form.resetFields();
       onClose();
       onSuccess();
@@ -67,6 +68,7 @@ const EditAgeRestrictionModal = ({
       confirmLoading={loading}
       destroyOnHidden
     >
+      {contextHolder}
       <Form
         form={form}
         layout="vertical"

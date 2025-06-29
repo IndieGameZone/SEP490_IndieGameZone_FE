@@ -12,9 +12,14 @@ interface AddLanguageForm {
   name: string;
 }
 
-const AddLanguageModal = ({ open, onClose, onSuccess }: AddLanguageModalProps) => {
+const AddLanguageModal = ({
+  open,
+  onClose,
+  onSuccess,
+}: AddLanguageModalProps) => {
   const [form] = Form.useForm<AddLanguageForm>();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmit = async (values: AddLanguageForm) => {
     try {
@@ -22,13 +27,13 @@ const AddLanguageModal = ({ open, onClose, onSuccess }: AddLanguageModalProps) =
       await axiosClient.post("/languages", {
         name: values.name,
       });
-      
-      message.success("Language added successfully!");
+
+      messageApi.success("Language added successfully!");
       form.resetFields();
       onClose();
-      onSuccess(); 
+      onSuccess();
     } catch (error) {
-      message.error("Failed to add language");
+      messageApi.error("Failed to add language");
     } finally {
       setLoading(false);
     }
@@ -48,6 +53,7 @@ const AddLanguageModal = ({ open, onClose, onSuccess }: AddLanguageModalProps) =
       confirmLoading={loading}
       destroyOnHidden
     >
+      {contextHolder}
       <Form
         form={form}
         layout="vertical"

@@ -18,12 +18,21 @@ import { FaMinus, FaPlus, FaUpload } from "react-icons/fa";
 type FieldType = GameFiles;
 
 const allowedTypes = [
-  '.exe', '.msi', '.sh', '.bat', '.apk',
-  '.zip', '.rar', '.7z', '.tar', '.gz',
+  ".exe",
+  ".msi",
+  ".sh",
+  ".bat",
+  ".apk",
+  ".zip",
+  ".rar",
+  ".7z",
+  ".tar",
+  ".gz",
 ];
 
 const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
   const { fetchPlatforms, platforms, loading } = usePlatformStore();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const normFile = (e: any) => {
     if (Array.isArray(e)) return e;
@@ -37,12 +46,14 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
   }, []);
 
   const handleBeforeUpload = (file: UploadFile, index: number) => {
-    const isAllowed = allowedTypes.some(type =>
+    const isAllowed = allowedTypes.some((type) =>
       file.name.toLowerCase().endsWith(type)
     );
 
     if (!isAllowed) {
-      message.error(`${file.name} is not a valid executable or compressed file`);
+      messageApi.error(
+        `${file.name} is not a valid executable or compressed file`
+      );
       return false;
     }
 
@@ -61,6 +72,7 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical" autoComplete="off">
+      {contextHolder}
       <Form.List
         name="files"
         rules={[
@@ -103,7 +115,7 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
                       showRemoveIcon: true,
                     }}
                     beforeUpload={(file) => handleBeforeUpload(file, index)}
-                    accept={allowedTypes.join(',')}
+                    accept={allowedTypes.join(",")}
                   >
                     <Button icon={<FaUpload />}>Select File</Button>
                   </Upload>

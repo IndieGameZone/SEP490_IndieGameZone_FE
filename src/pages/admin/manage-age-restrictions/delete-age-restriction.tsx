@@ -17,6 +17,7 @@ const DeleteAgeRestrictionModal = ({
   record,
 }: DeleteAgeRestrictionModalProps) => {
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleDelete = async () => {
     if (!record) return;
@@ -25,9 +26,9 @@ const DeleteAgeRestrictionModal = ({
     const result = await deleteAgeRestriction(record.id);
     setLoading(false);
     if (result.error) {
-      message.error("Failed to delete age restriction");
+      messageApi.error("Failed to delete age restriction");
     } else {
-      message.success("Age Restriction deleted successfully!");
+      messageApi.success("Age Restriction deleted successfully!");
       onClose();
       onSuccess();
     }
@@ -48,7 +49,10 @@ const DeleteAgeRestrictionModal = ({
       cancelText="Cancel"
       okButtonProps={{ danger: true }}
     >
-      <p>Are you sure you want to delete the age restriction "{record?.code}"?</p>
+      {contextHolder}
+      <p>
+        Are you sure you want to delete the age restriction "{record?.code}"?
+      </p>
       <p style={{ color: "#ff4d4f", fontSize: "14px" }}>
         This action cannot be undone.
       </p>

@@ -77,6 +77,8 @@ const UserProfilePage = () => {
   const { profile, rerender, renderKey } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [form] = useForm<FieldType>();
+  const [messageApi, contextHolder] = message.useMessage();
+
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!profile) return;
     setLoading(true);
@@ -91,9 +93,9 @@ const UserProfilePage = () => {
       bankName: profile.bankName,
     });
     if (result.error) {
-      message.error("Failed to update profile. Please try again.");
+      messageApi.error("Failed to update profile. Please try again.");
     } else {
-      message.success("Update profile successfully.");
+      messageApi.success("Update profile successfully.");
       setTimeout(() => {
         rerender();
       }, 1000);
@@ -124,6 +126,7 @@ const UserProfilePage = () => {
 
   return (
     <div className="p-5">
+      {contextHolder}
       <h1 className="font-bold text-2xl">Profile</h1>
       <div className="mb-3">
         <Link
@@ -251,7 +254,8 @@ const UserProfilePage = () => {
           <Form.Item<FieldType>
             label={
               <div className="flex gap-2 items-center font-bold">
-                <FaYoutube />Youtube Channel Link
+                <FaYoutube />
+                Youtube Channel Link
               </div>
             }
             name="youtubeChannelLink"

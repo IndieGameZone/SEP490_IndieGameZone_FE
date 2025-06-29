@@ -14,9 +14,15 @@ interface EditPlatformForm {
   name: string;
 }
 
-const EditPlatform = ({ open, onClose, onSuccess, platform }: EditPlatformModalProps) => {
+const EditPlatform = ({
+  open,
+  onClose,
+  onSuccess,
+  platform,
+}: EditPlatformModalProps) => {
   const [form] = Form.useForm<EditPlatformForm>();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmit = async (values: EditPlatformForm) => {
     if (!platform) return;
@@ -24,16 +30,16 @@ const EditPlatform = ({ open, onClose, onSuccess, platform }: EditPlatformModalP
     try {
       setLoading(true);
       const result = await updatePlatform(platform.id, { name: values.name });
-      
+
       if (result.success) {
-        message.success("Platform updated successfully!");
+        messageApi.success("Platform updated successfully!");
         onClose();
         onSuccess();
       } else {
-        message.error(result.error || "Failed to update platform");
+        messageApi.error(result.error || "Failed to update platform");
       }
     } catch (error) {
-      message.error("Failed to update platform");
+      messageApi.error("Failed to update platform");
     } finally {
       setLoading(false);
     }
@@ -65,7 +71,13 @@ const EditPlatform = ({ open, onClose, onSuccess, platform }: EditPlatformModalP
       destroyOnHidden
       forceRender
     >
-      <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
+      {contextHolder}
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        autoComplete="off"
+      >
         <Form.Item
           label="Platform Name"
           name="name"

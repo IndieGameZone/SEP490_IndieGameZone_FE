@@ -33,6 +33,7 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const { gameMediaAssets } = useManageGameStore();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleChange = ({
     fileList: newFileList,
@@ -42,14 +43,14 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
     if (newFileList.length <= 10) {
       setFileList(newFileList);
     } else {
-      message.warning("You can only upload up to 10 images.");
+      messageApi.warning("You can only upload up to 10 images.");
     }
   };
 
   const beforeUpload = (file: File) => {
     const isImage = file.type.startsWith("image/");
     if (!isImage) {
-      message.error("You can only upload image files!");
+      messageApi.error("You can only upload image files!");
     }
     return false;
   };
@@ -73,7 +74,7 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
     beforeUpload: (file: File) => {
       const isImage = file.type.startsWith("image/");
       if (!isImage) {
-        message.error("You can only upload image files!");
+        messageApi.error("You can only upload image files!");
         return Upload.LIST_IGNORE;
       }
 
@@ -121,6 +122,7 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinish}>
+      {contextHolder}
       <Form.Item<FieldType>
         label={<span className="font-bold">Cover Image</span>}
         name="coverImage"

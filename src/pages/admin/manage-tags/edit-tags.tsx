@@ -17,6 +17,7 @@ interface EditTagForm {
 const EditTag = ({ open, onClose, onSuccess, tag }: EditTagModalProps) => {
   const [form] = Form.useForm<EditTagForm>();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmit = async (values: EditTagForm) => {
     if (!tag) return;
@@ -24,16 +25,16 @@ const EditTag = ({ open, onClose, onSuccess, tag }: EditTagModalProps) => {
     try {
       setLoading(true);
       const result = await updateTag(tag.id, { name: values.name });
-      
+
       if (result.success) {
-        message.success("Tag updated successfully!");
+        messageApi.success("Tag updated successfully!");
         onClose();
         onSuccess();
       } else {
-        message.error(result.error || "Failed to update tag");
+        messageApi.error(result.error || "Failed to update tag");
       }
     } catch (error) {
-      message.error("Failed to update tag");
+      messageApi.error("Failed to update tag");
     } finally {
       setLoading(false);
     }
@@ -65,7 +66,13 @@ const EditTag = ({ open, onClose, onSuccess, tag }: EditTagModalProps) => {
       destroyOnHidden
       forceRender
     >
-      <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
+      {contextHolder}
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        autoComplete="off"
+      >
         <Form.Item
           label="Tag Name"
           name="name"

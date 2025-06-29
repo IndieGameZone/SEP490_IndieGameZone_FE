@@ -21,15 +21,16 @@ const AddAgeRestrictionModal = ({
 }: AddAgeRestrictionModalProps) => {
   const [form] = Form.useForm<AddAgeRestrictionForm>();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmit = async (values: AddAgeRestrictionForm) => {
     setLoading(true);
     const result = await addAgeRestriction(values);
     setLoading(false);
     if (result.error) {
-      message.error("Failed to add age restriction");
+      messageApi.error("Failed to add age restriction");
     } else {
-      message.success("Age Restriction added successfully!");
+      messageApi.success("Age Restriction added successfully!");
       form.resetFields();
       onClose();
       onSuccess();
@@ -50,6 +51,7 @@ const AddAgeRestrictionModal = ({
       confirmLoading={loading}
       destroyOnHidden
     >
+      {contextHolder}
       <Form
         form={form}
         layout="vertical"

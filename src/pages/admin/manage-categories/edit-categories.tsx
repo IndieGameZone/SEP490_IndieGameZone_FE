@@ -14,9 +14,15 @@ interface EditCategoryForm {
   name: string;
 }
 
-const EditCategory = ({ open, onClose, onSuccess, category }: EditCategoryModalProps) => {
+const EditCategory = ({
+  open,
+  onClose,
+  onSuccess,
+  category,
+}: EditCategoryModalProps) => {
   const [form] = Form.useForm<EditCategoryForm>();
   const [loading, setLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleSubmit = async (values: EditCategoryForm) => {
     if (!category) return;
@@ -24,16 +30,16 @@ const EditCategory = ({ open, onClose, onSuccess, category }: EditCategoryModalP
     try {
       setLoading(true);
       const result = await updateCategory(category.id, { name: values.name });
-      
+
       if (result.success) {
-        message.success("Category updated successfully!");
+        messageApi.success("Category updated successfully!");
         onClose();
         onSuccess();
       } else {
-        message.error(result.error || "Failed to update category");
+        messageApi.error(result.error || "Failed to update category");
       }
     } catch (error) {
-      message.error("Failed to update category");
+      messageApi.error("Failed to update category");
     } finally {
       setLoading(false);
     }
@@ -64,7 +70,13 @@ const EditCategory = ({ open, onClose, onSuccess, category }: EditCategoryModalP
       confirmLoading={loading}
       destroyOnHidden
     >
-      <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
+      {contextHolder}
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        autoComplete="off"
+      >
         <Form.Item
           label="Category Name"
           name="name"
