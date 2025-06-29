@@ -93,7 +93,7 @@ type GameImage = {
 export type GameFile = {
     id: string;
     displayName: string;
-    size: number;
+    size: number; // MB
     platform: Platform;
     file: string;
 }

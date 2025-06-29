@@ -19,9 +19,20 @@ export const addWishList = async (wishlistData: { userId: string; gameId: string
     return handleApiError(error);
   }
 };
+
 export const getUserWishlists = async (userId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/users/${userId}/wishlists`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+
+export const getAllUserWishlists = async (userId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/users/${userId}/wishlists?PageSize=999`);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);

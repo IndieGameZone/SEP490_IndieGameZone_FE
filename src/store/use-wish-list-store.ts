@@ -1,34 +1,34 @@
 import { create } from 'zustand';
-import { addWishList, getUserWishlists, removeWishlist } from '@/lib/api/wish-list-api';
+import { addWishList, getAllUserWishlists, removeWishlist } from '@/lib/api/wish-list-api';
 
 interface WishlistState {
-  wishlists: string[]; 
+  gamedIds: string[]; 
   loading: boolean;
   error: string | null;
   renderKey: number;
-  fetchWishlists: (userId: string) => Promise<void>;
+  fetchWishlistGameIds: (userId: string) => Promise<void>;
   addToWishlist: (userId: string, gameId: string) => Promise<void>;
   removeFromWishlist: (userId: string, gameId: string) => Promise<void>;
   rerender: () => void;
 }
 
 const useWishlistStore = create<WishlistState>((set) => ({
-  wishlists: [],
+  gamedIds: [],
   loading: false,
   error: null,
   renderKey: 0,
   rerender: () => {
     set((prev) => ({ renderKey: prev.renderKey + 1 }));
   },
-  fetchWishlists: async (userId: string) => {
+  fetchWishlistGameIds: async (userId: string) => {
     set({ loading: true, error: null });
     try {
-      const response = await getUserWishlists(userId);
+      const response = await getAllUserWishlists(userId);
       if (response.success && Array.isArray(response.data)) {
         const gameIds = response.data
           .filter((item: any) => item.gameId)
           .map((item: { gameId: string }) => item.gameId);
-        set({ wishlists: gameIds, loading: false });
+        set({ gamedIds: gameIds, loading: false });
       } else {
         set({
           loading: false,
@@ -48,7 +48,7 @@ const useWishlistStore = create<WishlistState>((set) => ({
       const response = await addWishList({ userId, gameId });
       if (response.success) {
         set((state) => ({
-          wishlists: [...state.wishlists, gameId],
+          wishlists: [...state.gamedIds, gameId],
           loading: false,
         }));
       } else {
@@ -64,7 +64,7 @@ const useWishlistStore = create<WishlistState>((set) => ({
       const response = await removeWishlist(userId, gameId);
       if (response.success) {
         set((state) => ({
-          wishlists: state.wishlists.filter((id) => id !== gameId),
+          wishlists: state.gamedIds.filter((id) => id !== gameId),
           loading: false,
         }));
       } else {

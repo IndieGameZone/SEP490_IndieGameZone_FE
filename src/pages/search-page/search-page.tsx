@@ -15,6 +15,8 @@ import { LuRefreshCcw } from "react-icons/lu";
 import { Game } from "@/types/game";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ScrollToTopButton from "@/components/scroll-to-top-button";
+import useWishlistStore from "@/store/use-wish-list-store";
+import useAuthStore from "@/store/use-auth-store";
 
 const tabs = [
   "Most popular",
@@ -35,6 +37,8 @@ const SearchPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
+  const { fetchWishlistGameIds } = useWishlistStore();
+  const { profile } = useAuthStore();
 
   const onSearch: SearchProps["onSearch"] = (value, _e, _) => {
     const params = new URLSearchParams(searchParams);
@@ -46,6 +50,12 @@ const SearchPage = () => {
     setSearchParams(params);
     setSearchValue(value);
   };
+
+  useEffect(() => {
+    if (profile) {
+      fetchWishlistGameIds(profile.id);
+    }
+  }, [profile]);
 
   useEffect(() => {
     setPage(1);

@@ -46,7 +46,7 @@ const FileCard = ({
           {file.displayName ? file.displayName : "unnamed file"}
         </span>
         <span className="text-sm text-zinc-400">
-          ({(file.size / 1024 / 1024).toFixed(1)} MB)
+          ({(file.size).toFixed(1)} MB)
         </span>
       </div>
       <Tooltip
