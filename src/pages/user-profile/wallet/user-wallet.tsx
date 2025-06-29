@@ -6,13 +6,14 @@ import { useEffect } from "react";
 import useAuthStore from "@/store/use-auth-store";
 
 const UserWallet = () => {
-  const { profile, fetchProfile, loading, error } = useAuthStore();
+  const { profile, fetchProfile, loading, error,rerender } = useAuthStore();
 
   useEffect(() => {
     if (!profile) {
       fetchProfile();
     }
   }, [fetchProfile, profile]);
+
 
   if (loading) {
     return <div>Loading...</div>;
