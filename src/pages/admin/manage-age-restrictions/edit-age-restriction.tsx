@@ -60,50 +60,52 @@ const EditAgeRestrictionModal = ({
   }, [record, open, form]);
 
   return (
-    <Modal
-      title="Edit Age Restriction"
-      open={open}
-      onCancel={handleCancel}
-      onOk={() => form.submit()}
-      confirmLoading={loading}
-      destroyOnHidden
-    >
+    <>
       {contextHolder}
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSubmit}
-        autoComplete="off"
+      <Modal
+        title="Edit Age Restriction"
+        open={open}
+        onCancel={handleCancel}
+        onOk={() => form.submit()}
+        confirmLoading={loading}
+        destroyOnHidden
       >
-        <Form.Item
-          label="Code"
-          name="code"
-          rules={[
-            { required: true, message: "Please input code!" },
-            { min: 2, message: "Code must be at least 2 characters!" },
-          ]}
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          autoComplete="off"
         >
-          <Input placeholder="Enter code" />
-        </Form.Item>
-      </Form>
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSubmit}
-        autoComplete="off"
-      >
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={[
-            { required: true, message: "Please enter description!" },
-            { min: 2, message: "Description must be at least 2 characters!" },
-          ]}
+          <Form.Item
+            label="Code"
+            name="code"
+            rules={[
+              { required: true, message: "Please input code!" },
+              { min: 2, message: "Code must be at least 2 characters!" },
+            ]}
+          >
+            <Input placeholder="Enter code" />
+          </Form.Item>
+        </Form>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          autoComplete="off"
         >
-          <TextArea placeholder="Enter Description" />
-        </Form.Item>
-      </Form>
-    </Modal>
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[
+              { required: true, message: "Please enter description!" },
+              { min: 2, message: "Description must be at least 2 characters!" },
+            ]}
+          >
+            <TextArea placeholder="Enter Description" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   );
 };
 

@@ -44,7 +44,7 @@ const AddTags = ({ open, onClose, onSuccess }: AddTagModalProps) => {
 
   return (
     <div>
-      {" "}
+      {contextHolder}
       <Modal
         title="Add New Tags"
         open={open}
@@ -54,7 +54,6 @@ const AddTags = ({ open, onClose, onSuccess }: AddTagModalProps) => {
         destroyOnHidden
         forceRender
       >
-        {contextHolder}
         <Form
           form={form}
           layout="vertical"

@@ -45,33 +45,38 @@ const AddLanguageModal = ({
   };
 
   return (
-    <Modal
-      title="Add New Language"
-      open={open}
-      onCancel={handleCancel}
-      onOk={() => form.submit()}
-      confirmLoading={loading}
-      destroyOnHidden
-    >
+    <>
       {contextHolder}
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSubmit}
-        autoComplete="off"
+      <Modal
+        title="Add New Language"
+        open={open}
+        onCancel={handleCancel}
+        onOk={() => form.submit()}
+        confirmLoading={loading}
+        destroyOnHidden
       >
-        <Form.Item
-          label="Language Name"
-          name="name"
-          rules={[
-            { required: true, message: "Please input language name!" },
-            { min: 2, message: "Language name must be at least 2 characters!" },
-          ]}
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          autoComplete="off"
         >
-          <Input placeholder="Enter language name" />
-        </Form.Item>
-      </Form>
-    </Modal>
+          <Form.Item
+            label="Language Name"
+            name="name"
+            rules={[
+              { required: true, message: "Please input language name!" },
+              {
+                min: 2,
+                message: "Language name must be at least 2 characters!",
+              },
+            ]}
+          >
+            <Input placeholder="Enter language name" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   );
 };
 

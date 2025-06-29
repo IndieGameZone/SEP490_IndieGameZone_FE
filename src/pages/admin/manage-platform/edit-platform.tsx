@@ -62,34 +62,39 @@ const EditPlatform = ({
   }, [platform, open, form]);
 
   return (
-    <Modal
-      title="Edit Platform"
-      open={open}
-      onCancel={handleCancel}
-      onOk={() => form.submit()}
-      confirmLoading={loading}
-      destroyOnHidden
-      forceRender
-    >
+    <>
       {contextHolder}
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSubmit}
-        autoComplete="off"
+      <Modal
+        title="Edit Platform"
+        open={open}
+        onCancel={handleCancel}
+        onOk={() => form.submit()}
+        confirmLoading={loading}
+        destroyOnHidden
+        forceRender
       >
-        <Form.Item
-          label="Platform Name"
-          name="name"
-          rules={[
-            { required: true, message: "Please input platform name!" },
-            { min: 2, message: "Platform name must be at least 2 characters!" },
-          ]}
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          autoComplete="off"
         >
-          <Input placeholder="Enter platform name" />
-        </Form.Item>
-      </Form>
-    </Modal>
+          <Form.Item
+            label="Platform Name"
+            name="name"
+            rules={[
+              { required: true, message: "Please input platform name!" },
+              {
+                min: 2,
+                message: "Platform name must be at least 2 characters!",
+              },
+            ]}
+          >
+            <Input placeholder="Enter platform name" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   );
 };
 

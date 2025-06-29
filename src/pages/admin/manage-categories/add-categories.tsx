@@ -43,33 +43,38 @@ const AddCategories = ({ open, onClose, onSuccess }: AddCategoryModalProps) => {
   };
 
   return (
-    <Modal
-      title="Add New Category"
-      open={open}
-      onCancel={handleCancel}
-      onOk={() => form.submit()}
-      confirmLoading={loading}
-      destroyOnHidden
-    >
+    <>
       {contextHolder}
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSubmit}
-        autoComplete="off"
+      <Modal
+        title="Add New Category"
+        open={open}
+        onCancel={handleCancel}
+        onOk={() => form.submit()}
+        confirmLoading={loading}
+        destroyOnHidden
       >
-        <Form.Item
-          label="Category Name"
-          name="name"
-          rules={[
-            { required: true, message: "Please input category name!" },
-            { min: 2, message: "Category name must be at least 2 characters!" },
-          ]}
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          autoComplete="off"
         >
-          <Input placeholder="Enter  Category" />
-        </Form.Item>
-      </Form>
-    </Modal>
+          <Form.Item
+            label="Category Name"
+            name="name"
+            rules={[
+              { required: true, message: "Please input category name!" },
+              {
+                min: 2,
+                message: "Category name must be at least 2 characters!",
+              },
+            ]}
+          >
+            <Input placeholder="Enter  Category" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   );
 };
 

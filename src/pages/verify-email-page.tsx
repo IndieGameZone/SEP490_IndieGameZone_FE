@@ -46,9 +46,7 @@ const VerifyEmailPage = () => {
 
   return (
     <div className="min-h-[70vh] flex justify-center items-center">
-      {
-        contextHolder
-      }
+      {contextHolder}
       {status == "loading" && (
         <Spin tip="Verifying email" size="large">
           <div className="p-16 rounded bg-zinc-800 border-orange-500 border-2"></div>

@@ -57,34 +57,36 @@ const EditTag = ({ open, onClose, onSuccess, tag }: EditTagModalProps) => {
   }, [tag, open, form]);
 
   return (
-    <Modal
-      title="Edit Tag"
-      open={open}
-      onCancel={handleCancel}
-      onOk={() => form.submit()}
-      confirmLoading={loading}
-      destroyOnHidden
-      forceRender
-    >
+    <>
       {contextHolder}
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSubmit}
-        autoComplete="off"
+      <Modal
+        title="Edit Tag"
+        open={open}
+        onCancel={handleCancel}
+        onOk={() => form.submit()}
+        confirmLoading={loading}
+        destroyOnHidden
+        forceRender
       >
-        <Form.Item
-          label="Tag Name"
-          name="name"
-          rules={[
-            { required: true, message: "Please input tag name!" },
-            { min: 2, message: "Tag name must be at least 2 characters!" },
-          ]}
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          autoComplete="off"
         >
-          <Input placeholder="Enter tag name" />
-        </Form.Item>
-      </Form>
-    </Modal>
+          <Form.Item
+            label="Tag Name"
+            name="name"
+            rules={[
+              { required: true, message: "Please input tag name!" },
+              { min: 2, message: "Tag name must be at least 2 characters!" },
+            ]}
+          >
+            <Input placeholder="Enter tag name" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   );
 };
 

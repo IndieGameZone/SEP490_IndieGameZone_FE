@@ -10,11 +10,13 @@ const UploadAvatar = () => {
   const [imageUrl, setImageUrl] = useState("");
   const { profile, rerender } = useAuthStore();
   const [isUploading, setIsUploading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+
   const handleBeforeUpload = async (file: File) => {
     if (!profile) return;
     const isImage = file.type.startsWith("image/");
     if (!isImage) {
-      message.error("You can only upload image files!");
+      messageApi.error("You can only upload image files!");
       return false;
     }
     const isJpgOrPng =
@@ -22,7 +24,7 @@ const UploadAvatar = () => {
       file.type === "image/png" ||
       file.type === "image/jpg";
     if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
+      messageApi.error("You can only upload JPG/PNG file!");
       return Upload.LIST_IGNORE;
     }
     var url = imageUrl;
@@ -30,7 +32,7 @@ const UploadAvatar = () => {
     if (!url) {
       const result = await uploadFile(file);
       if (result.error) {
-        message.error("Failed to upload image. Please try again.");
+        messageApi.error("Failed to upload image. Please try again.");
         setIsUploading(false);
         return false;
       } else {
@@ -50,9 +52,9 @@ const UploadAvatar = () => {
       youtubeChannelLink: profile.youtubeChannelLink,
     });
     if (updateAvatarResult.error) {
-      message.error("Failed to upload image. Please try again.");
+      messageApi.error("Failed to upload image. Please try again.");
     } else {
-      message.success("Update avatar successfully!");
+      messageApi.success("Update avatar successfully!");
       setTimeout(() => {
         rerender();
       }, 1000);
@@ -62,6 +64,7 @@ const UploadAvatar = () => {
   };
   return (
     <div>
+      {contextHolder}
       <div className="flex gap-3">
         {profile?.avatar ? (
           <Avatar size={100} src={profile.avatar} />
@@ -73,7 +76,10 @@ const UploadAvatar = () => {
           showUploadList={false}
           accept=".png,.jpeg,.jpg"
         >
-          <button className="size-[100px] flex justify-center items-center border border-zinc-500 hover:border-orange-500 cursor-pointer rounded-full duration-300 hover:text-orange-500" disabled={isUploading}>
+          <button
+            className="size-[100px] flex justify-center items-center border border-zinc-500 hover:border-orange-500 cursor-pointer rounded-full duration-300 hover:text-orange-500"
+            disabled={isUploading}
+          >
             <FaUpload className="size-8" />
           </button>{" "}
         </Upload>
@@ -83,7 +89,9 @@ const UploadAvatar = () => {
         showUploadList={false}
         accept="image/*"
       >
-        <Button className="mt-3" loading={isUploading}>Upload Image</Button>
+        <Button className="mt-3" loading={isUploading}>
+          Upload Image
+        </Button>
       </Upload>
       <p className="py-1 text-zinc-500 text-sm">Supported format: JPG, PNG</p>
     </div>

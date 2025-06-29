@@ -40,22 +40,24 @@ const DeleteTag = ({ open, onClose, onSuccess, tag }: DeleteTagModalProps) => {
   };
 
   return (
-    <Modal
-      title="Delete Tag"
-      open={open}
-      onCancel={handleCancel}
-      onOk={handleDelete}
-      confirmLoading={loading}
-      okText="Delete"
-      cancelText="Cancel"
-      okButtonProps={{ danger: true }}
-    >
+    <>
       {contextHolder}
-      <p>Are you sure you want to delete the tag "{tag?.name}"?</p>
-      <p style={{ color: "#ff4d4f", fontSize: "14px" }}>
-        This action cannot be undone.
-      </p>
-    </Modal>
+      <Modal
+        title="Delete Tag"
+        open={open}
+        onCancel={handleCancel}
+        onOk={handleDelete}
+        confirmLoading={loading}
+        okText="Delete"
+        cancelText="Cancel"
+        okButtonProps={{ danger: true }}
+      >
+        <p>Are you sure you want to delete the tag "{tag?.name}"?</p>
+        <p style={{ color: "#ff4d4f", fontSize: "14px" }}>
+          This action cannot be undone.
+        </p>
+      </Modal>
+    </>
   );
 };
 
