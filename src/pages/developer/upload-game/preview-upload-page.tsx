@@ -342,7 +342,7 @@ const PreviewUploadPage = () => {
           })}
           <hr className="border-zinc-700" />
           <h3>Download and install instructions from {profile?.userName}:</h3>
-          <div className="bg-zinc-800 p-3">
+          <div className="bg-zinc-800 p-3 font-mono">
             <TiptapView value={gameFiles.installInstruction} />
           </div>
         </div>

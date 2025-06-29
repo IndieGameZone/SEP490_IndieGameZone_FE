@@ -192,10 +192,12 @@ const AdminGameDetail = () => {
   const installInstructionItems: DescriptionsProps["items"] = [
     {
       key: "install-instruction",
-      label: "Install Instruction",
+      label: "Install Instructions",
       children: installInstruction ? (
         <ExpandableWrapper>
-          <TiptapView value={installInstruction} darkTheme={false} />
+          <div className="font-mono">
+            <TiptapView value={installInstruction} darkTheme={false} />
+          </div>
         </ExpandableWrapper>
       ) : (
         <span className="text-gray-500">None</span>
