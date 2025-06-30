@@ -18,18 +18,18 @@ const TopUpButton = ({ userId, balance }: TopUpButtonProps) => {
   const [isTopUpModalVisible, setIsTopUpModalVisible] = useState(false);
   const [topUpAmount, setTopUpAmount] = useState(DEFAULT_TOP_UP_AMOUNT);
   const [messageApi, contextHolder] = message.useMessage();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { fetchProfile } = useAuthStore();
 
   const handleTopUp = async () => {
     try {
-      setIsSubmitting(true);
+      setIsLoading(true);
       const response = await depositTransaction(
         userId,
         topUpAmount,
         "Top up points via PayOS"
       );
-      setIsSubmitting(false);
+      setIsLoading(false);
       if (response.success && typeof response.data === "string") {
         messageApi.success("Redirecting to payment...");
         Cookies.set("pendingTransaction", "deposit", {
@@ -154,15 +154,15 @@ const TopUpButton = ({ userId, balance }: TopUpButtonProps) => {
                 setIsTopUpModalVisible(false);
                 setTopUpAmount(DEFAULT_TOP_UP_AMOUNT);
               }}
+              disabled={isLoading}
             >
               Cancel
             </Button>
             <Button
               type="primary"
               icon={<FaPlus />}
-              className="bg-blue-600"
               onClick={handleTopUp}
-              loading={isSubmitting}
+              loading={isLoading}
             >
               Confirm Top Up
             </Button>

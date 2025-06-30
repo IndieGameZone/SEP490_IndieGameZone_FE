@@ -63,7 +63,7 @@ const BuyGameButton = () => {
   const userId = profile?.id || "";
   const gameId = game.id || "";
   const isGameOwned = ownedGameIds.includes(gameId);
-  const text = <span >The game you have purchased. Please check your download library. hẹ hẹ</span>;
+  const text = <span >The game you have purchased. Please check your download library.</span>;
 
   return (
     <>

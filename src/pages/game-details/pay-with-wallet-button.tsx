@@ -13,11 +13,16 @@ interface PayWithWalletButtonProps {
   gameId: string;
 }
 
-const PayWithWalletButton = ({ amount, userId, gameId }: PayWithWalletButtonProps) => {
+const PayWithWalletButton = ({
+  amount,
+  userId,
+  gameId,
+}: PayWithWalletButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { game, rerender } = useGameStore();
   const { profile, fetchProfile } = useAuthStore();
   const { ownedGameIds, fetchLibraries } = useLibraryStore();
+  const [isLoading, setIsLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
@@ -38,10 +43,13 @@ const PayWithWalletButton = ({ amount, userId, gameId }: PayWithWalletButtonProp
       messageApi.error("Insufficient balance or invalid game data");
       return;
     }
-
+    setIsLoading(true);
     const result = await purchaseGame(userId, gameId, undefined, "Wallet");
+    setIsLoading(false);
     if (result.success) {
-      messageApi.success("Purchase successful! Please check your game library.");
+      messageApi.success(
+        "Purchase successful! Please check your game library."
+      );
       await fetchLibraries(userId);
       fetchProfile();
       rerender();
@@ -60,30 +68,42 @@ const PayWithWalletButton = ({ amount, userId, gameId }: PayWithWalletButtonProp
   return (
     <>
       {contextHolder}
-      <Button size="large" style={{ marginTop: "1.5rem" }} icon={<FaWallet />} onClick={showModal}>
+      <Button
+        size="large"
+        style={{ marginTop: "1.5rem" }}
+        icon={<FaWallet />}
+        onClick={showModal}
+      >
         Pay with wallet
       </Button>
       <Modal
         title={<h2 className="text-xl font-bold">Confirm Purchase</h2>}
-        closable={{ "aria-label": "Custom Close Button" }}
+        closable
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
+        footer={null}
       >
         <div>
           <p className="text-lg">
-            You're about to use <strong>{amount.toLocaleString("vi-VN")}</strong>
-            <CoinIcon className="inline mb-1" /> to buy <strong>'{game?.name}'</strong>.
+            You're about to use{" "}
+            <strong>{amount.toLocaleString("vi-VN")}</strong>
+            <CoinIcon className="inline mb-1" /> to buy{" "}
+            <strong>'{game?.name}'</strong>.
             {amount > game.price && (
               <>
                 <br />
-                <span className="text-sm text-zinc-400"> (including your donation)</span>
+                <span className="text-sm text-zinc-400">
+                  {" "}
+                  (including your donation)
+                </span>
               </>
             )}
           </p>
           <div className="mt-5 flex justify-center items-center bg-zinc-900 border border-zinc-700 gap-5 py-3 px-5 rounded">
             <div className="text-2xl">
-              {profile?.balance?.toLocaleString("vi-VN") ?? "0"} <CoinIcon className="inline mb-1" size="size-6" />
+              {profile?.balance?.toLocaleString("vi-VN") ?? "0"}{" "}
+              <CoinIcon className="inline mb-1" size="size-6" />
             </div>
             <FaArrowRight className="size-6" />
             <div className="text-2xl text-red-500">
@@ -97,24 +117,35 @@ const PayWithWalletButton = ({ amount, userId, gameId }: PayWithWalletButtonProp
               )}
             </div>
           </div>
-          <p className="text-center text-sm text-zinc-400 italic mb-5">Exchange rate: 1 point = 1 VND</p>
+          <p className="text-center text-sm text-zinc-400 italic mb-5">
+            Exchange rate: 1 point = 1 VND
+          </p>
           <div className="mb-4 text-sm">
             <p>
-              <span className="font-semibold">Current Balance: {profile?.balance?.toLocaleString("vi-VN") ?? "0"}</span>{" "}
+              <span className="font-semibold">
+                Current Balance:{" "}
+                {profile?.balance?.toLocaleString("vi-VN") ?? "0"}
+              </span>{" "}
               <CoinIcon className="inline mb-1" />
             </p>
             <p className="mt-1">
               <span className="font-semibold">Remaining After Payment:</span>{" "}
               {profile?.balance != null && profile.balance >= amount ? (
                 <>
-                  {(profile.balance - amount).toLocaleString("vi-VN")} <CoinIcon className="inline mb-1" />
+                  {(profile.balance - amount).toLocaleString("vi-VN")}{" "}
+                  <CoinIcon className="inline mb-1" />
                 </>
               ) : (
                 "Insufficient"
               )}{" "}
             </p>
-            <p></p>
           </div>
+        </div>
+        <div className="flex gap-3 justify-end">
+          <Button onClick={handleCancel} disabled={isLoading}>Cancel</Button>
+          <Button type="primary" onClick={handleOk} loading={isLoading}>
+            Confirm Top Up
+          </Button>
         </div>
       </Modal>
     </>

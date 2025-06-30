@@ -1,5 +1,4 @@
 import CoinIcon from "@/components/coin-icon";
-import { formatCurrencyVND } from "@/lib/currency";
 import { formatDateTime } from "@/lib/date-n-time";
 import { Transaction } from "@/types/transaction";
 import { Tag } from "antd";
@@ -12,10 +11,6 @@ const getStatusTag = (status: Transaction["status"]) => {
   };
   const config = statusConfig[status] || statusConfig.Pending;
   return <Tag color={config.color}>{config.text}</Tag>;
-};
-
-const getAmountColor = (amount: number) => {
-  return amount > 0 ? "text-green-600" : "text-red-600";
 };
 
 export const columns = [
