@@ -33,3 +33,30 @@ export const getTransactions = async (userId: string) => {
     return handleApiError(error);
   }
 };
+
+export const purchaseGame = async (
+  userId: string,
+  gameId: string,
+  couponCode?: string,
+  paymentMethod: string = "Wallet"
+): Promise<ApiResponse> => {
+  try {
+    const requestBody = {
+      CouponCode: couponCode || "",
+      PaymentMethod: paymentMethod,
+    };
+
+    const response = await axiosClient.post(
+      `/api/users/${userId}/games/${gameId}/transactions/game-purchasing`,
+      requestBody,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return { error: null, data: response.data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

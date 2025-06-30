@@ -48,7 +48,7 @@ const useWishlistStore = create<WishlistState>((set) => ({
       const response = await addWishList({ userId, gameId });
       if (response.success) {
         set((state) => ({
-          wishlists: [...state.gamedIds, gameId],
+          gamedIds: [...state.gamedIds, gameId], // Sửa từ wishlists thành gamedIds
           loading: false,
         }));
         return true;
@@ -66,7 +66,7 @@ const useWishlistStore = create<WishlistState>((set) => ({
       const response = await removeWishlist(userId, gameId);
       if (response.success) {
         set((state) => ({
-          wishlists: state.gamedIds.filter((id) => id !== gameId),
+          gamedIds: state.gamedIds.filter((id) => id !== gameId),
           loading: false,
         }));
         return true;
