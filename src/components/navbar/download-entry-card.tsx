@@ -3,6 +3,7 @@ import FileIcon from "../file-icon";
 import { Button, Progress } from "antd";
 import { formatBytes, formatTimeLeft } from "@/lib/file";
 import { IoClose, IoPause, IoPlay } from "react-icons/io5";
+import useDownloadStore from "@/store/use-download-store";
 
 const processStatusMap: Record<
   string,
@@ -20,8 +21,13 @@ const DownloadEntryCard = ({
 }: {
   downloadEntry: DownloadEntry;
 }) => {
+  const { cancelDownload } = useDownloadStore();
   const nameParts = downloadEntry.filename.split(".");
   const fileExtension = nameParts[nameParts.length - 1];
+
+  const handleCancelDownload = () => {
+    cancelDownload(downloadEntry.id);
+  };
 
   return (
     <div className="p-2 bg-transparent hover:bg-zinc-800 rounded duration-300">
@@ -31,13 +37,17 @@ const DownloadEntryCard = ({
         </div>
         <div className="flex-1">
           <h5 className="font-semibold">{downloadEntry.filename}</h5>
-          <p className="text-xs text-zinc-400">
-            {formatBytes(downloadEntry.receivedBytes ?? 0)}/
-            {formatBytes(downloadEntry.totalBytes ?? 0)}
-            {downloadEntry.status == "downloading" &&
-              downloadEntry.estimatedTimeLeft &&
-              " • " + formatTimeLeft(downloadEntry.estimatedTimeLeft)}
-          </p>
+          {downloadEntry.status == "cancelled" ? (
+            <p className="text-xs text-zinc-400">Cancelled</p>
+          ) : (
+            <p className="text-xs text-zinc-400">
+              {formatBytes(downloadEntry.receivedBytes ?? 0)}/
+              {formatBytes(downloadEntry.totalBytes ?? 0)}
+              {downloadEntry.status == "downloading" &&
+                downloadEntry.estimatedTimeLeft &&
+                " • " + formatTimeLeft(downloadEntry.estimatedTimeLeft)}
+            </p>
+          )}
         </div>
         {downloadEntry.status == "downloading" ? (
           <Button type="text" size="small" shape="circle" icon={<IoPause />} />
@@ -46,15 +56,26 @@ const DownloadEntryCard = ({
             <Button type="text" size="small" shape="circle" icon={<IoPlay />} />
           )
         )}
-        <Button type="text" size="small" shape="circle" icon={<IoClose />} />
+        {downloadEntry.status != "cancelled" &&
+          downloadEntry.status != "error" && (
+            <Button
+              type="text"
+              size="small"
+              shape="circle"
+              icon={<IoClose />}
+              onClick={handleCancelDownload}
+            />
+          )}
       </div>
-      <Progress
-        percent={downloadEntry.progress * 100}
-        format={(percent) => percent?.toFixed(2) + "%"}
-        className="mt-1"
-        size={"small"}
-        status={processStatusMap[downloadEntry.status]}
-      />
+      {downloadEntry.status != "cancelled" && (
+        <Progress
+          percent={downloadEntry.progress * 100}
+          format={(percent) => percent?.toFixed(2) + "%"}
+          className="mt-1"
+          size={"small"}
+          status={processStatusMap[downloadEntry.status]}
+        />
+      )}
     </div>
   );
 };

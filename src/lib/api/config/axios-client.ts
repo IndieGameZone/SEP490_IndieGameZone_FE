@@ -83,7 +83,6 @@ axiosClient.interceptors.response.use(
 
                 return axiosClient(originalRequest);
             } catch (err) {
-                console.error(err);
                 processQueue(err, null);
                 localStorage.removeItem('accessToken');
                 // Optional: redirect to login
