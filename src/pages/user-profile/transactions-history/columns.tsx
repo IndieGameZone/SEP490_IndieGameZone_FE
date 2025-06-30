@@ -40,7 +40,15 @@ export const columns = [
     width: 120,
     align: "right" as const,
     render: (amount: number, record: Transaction) => (
-      <span className={`font-semibold ${record.type === "deposit" ? "text-green-500" : "text-red-500"}`}>
+      <span
+        className={`font-semibold ${
+          record.status === "Pending"
+            ? "text-orange-500"
+            : record.type === "deposit"
+            ? "text-green-500"
+            : "text-red-500"
+        }`}
+      >
         {record.type === "deposit" ? "+" : "-"}
         {record.type === "deposit" ? (
           <>
