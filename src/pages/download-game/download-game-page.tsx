@@ -28,7 +28,11 @@ const DownloadGamePage = () => {
   }, []);
 
   useEffect(() => {
-    if (game && game.price == 0) {
+    // if (game && game.price == 0) {
+    //   fetchGameFiles(game.id);
+    //   fetchPlatforms();
+    // }
+     if (game) {
       fetchGameFiles(game.id);
       fetchPlatforms();
     }
@@ -38,9 +42,9 @@ const DownloadGamePage = () => {
     return <Navigate to={"/"} />;
   }
   if (!game) return;
-  if (game.price > 0) {
-    return <Navigate to={`/game/${game.id}`} />;
-  }
+  // if (game.price > 0) {
+  //   return <Navigate to={`/game/${game.id}`} />;
+  // }
   if (loading || loadingFiles) return <Loader />;
   const defaultPlatforms = getDefaultPlatforms();
   return (

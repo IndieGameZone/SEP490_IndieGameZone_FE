@@ -1,5 +1,5 @@
 import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/navbar/navbar";
 import { ReactNode, useEffect } from "react";
 import background from "@/assets/video_game_background.svg";
 import { ConfigProvider, theme } from "antd";

@@ -7,4 +7,8 @@ export type DownloadEntry = {
     status: DownloadStatus;
     error?: string;
     progress: number;
+    totalBytes?: number;
+    receivedBytes?: number;
+    startedAt?: number;       // timestamp in ms
+    estimatedTimeLeft?: number; 
 };

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import MaxWidthWrapper from "./max-width-wrapper";
+import MaxWidthWrapper from "../max-width-wrapper";
 import logo from "@/assets/igz_ic.svg";
 import { Button, GetProp, Input, Menu, MenuProps, Popover } from "antd";
 import { IoIosNotifications, IoMdMore } from "react-icons/io";
@@ -14,6 +14,7 @@ import ProfileMenu from "./profile-menu";
 import { MdOutlineInsertChart } from "react-icons/md";
 import useProfileStore from "@/store/use-auth-store";
 import { SearchProps } from "antd/es/input";
+import DownloadProcessesButton from "./download-processes-button";
 
 type MenuItem = GetProp<MenuProps, "items">[number];
 
@@ -117,6 +118,7 @@ const Navbar = () => {
               onSearch={onSearch}
             />
           </div>
+          <DownloadProcessesButton />
           {showDashboardButton && (
             <Button
               onClick={handleGoToDashboard}

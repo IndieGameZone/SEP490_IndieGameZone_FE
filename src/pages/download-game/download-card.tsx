@@ -1,14 +1,14 @@
 import { timeAgo } from "@/lib/date-n-time";
 import { GameFile } from "@/types/game";
-import { Button, Tooltip } from "antd";
+import { Button } from "antd";
 import {
   FaApple,
-  FaDownload,
   FaFileArchive,
   FaLinux,
   FaRegClock,
   FaWindows,
 } from "react-icons/fa";
+import useDownloadStore from "../../store/use-download-store";
 
 const DownloadCard = ({
   file,
@@ -17,13 +17,9 @@ const DownloadCard = ({
   file: GameFile;
   defaultPlatforms: any;
 }) => {
+  const { startDownload } = useDownloadStore();
   const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = file.file;
-    link.download = file.displayName || "";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    startDownload(file.file, file.displayName);
   };
 
   return (
