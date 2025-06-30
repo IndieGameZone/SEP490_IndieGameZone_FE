@@ -2,12 +2,13 @@ import { Badge, Button, Popover } from "antd";
 import { FaDownload } from "react-icons/fa";
 import DownloadProcessList from "./download-processes-list";
 import useDownloadStore from "@/store/use-download-store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const DownloadProcessesButton = () => {
   const { downloads } = useDownloadStore();
   const [numOfActiveEntries, setNumOfActiveEntries] = useState(0);
   const [open, setOpen] = useState(false);
+  const prevCountRef = useRef(numOfActiveEntries);
 
   useEffect(() => {
     const keys = Object.keys(downloads);
@@ -20,7 +21,19 @@ const DownloadProcessesButton = () => {
     setNumOfActiveEntries(count);
   }, [downloads]);
   
-  console.log("first");
+  /*
+  Possible improvement: 
+  + Throttle or debounce update
+  + Avoid auto-opening the popover if the user just manually closed it
+  */
+
+  useEffect(() => {
+    if (numOfActiveEntries > prevCountRef.current) {
+      setOpen(true);
+    }
+    prevCountRef.current = numOfActiveEntries;
+  }, [numOfActiveEntries]);
+
   return (
     <div>
       <Popover

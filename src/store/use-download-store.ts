@@ -10,6 +10,12 @@ type DownloadState = {
 
 const abortControllers: Record<string, AbortController> = {};
 
+/*
+    Possible improvement:
+        + Pause & resume download.
+        + Resume download even after tab is closed
+ */
+
 const useDownloadStore = create<DownloadState>((set, get) => ({
     downloads: {
         // "1": {
