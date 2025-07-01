@@ -29,6 +29,15 @@ export const columns = [
     render: (type: string) => <span className="font-mono text-blue-400">{type}</span>,
   },
   {
+    title: "Payment Method",
+    dataIndex: "paymentMethod",
+    key: "paymentMethod",
+    width: 150,
+    render: (paymentMethod: string) => (
+      <span className="font-mono text-blue-400">{paymentMethod}</span>
+    ),
+  },
+  {
     title: "Amount",
     dataIndex: "amount",
     key: "amount",

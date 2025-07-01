@@ -20,6 +20,7 @@ const TransactionHistory = () => {
             orderCode: item.orderCode,
             type: item.type.toLowerCase(),
             amount: item.amount,
+            paymentMethod: item.paymentMethod,
             description: item.description,
             date: item.createdAt,
             status: item.status as Transaction["status"],
