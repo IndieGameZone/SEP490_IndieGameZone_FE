@@ -21,12 +21,20 @@ const DownloadEntryCard = ({
 }: {
   downloadEntry: DownloadEntry;
 }) => {
-  const { cancelDownload } = useDownloadStore();
+  const { cancelDownload, pauseDownload, resumeDownload } = useDownloadStore();
   const nameParts = downloadEntry.filename.split(".");
   const fileExtension = nameParts[nameParts.length - 1];
 
   const handleCancelDownload = () => {
     cancelDownload(downloadEntry.id);
+  };
+
+  const handlePauseDownload = () => {
+    pauseDownload(downloadEntry.id);
+  };
+
+  const handleResumeDownload = () => {
+    resumeDownload(downloadEntry.id);
   };
 
   return (
@@ -46,14 +54,27 @@ const DownloadEntryCard = ({
               {downloadEntry.status == "downloading" &&
                 downloadEntry.estimatedTimeLeft &&
                 " • " + formatTimeLeft(downloadEntry.estimatedTimeLeft)}
+              {downloadEntry.status == "paused" && " • Paused"}
             </p>
           )}
         </div>
         {downloadEntry.status == "downloading" ? (
-          <Button type="text" size="small" shape="circle" icon={<IoPause />} />
+          <Button
+            type="text"
+            size="small"
+            shape="circle"
+            icon={<IoPause />}
+            onClick={handlePauseDownload}
+          />
         ) : (
-          downloadEntry.status == "idle" && (
-            <Button type="text" size="small" shape="circle" icon={<IoPlay />} />
+          downloadEntry.status == "paused" && (
+            <Button
+              type="text"
+              size="small"
+              shape="circle"
+              icon={<IoPlay />}
+              onClick={handleResumeDownload}
+            />
           )
         )}
         {downloadEntry.status != "cancelled" &&

@@ -1,7 +1,6 @@
 import { DownloadEntry } from "@/types/download-entry";
 import { create } from "zustand";
 
-
 type DownloadState = {
     downloads: Record<string, DownloadEntry>;
     startDownload: (url: string, filename: string) => void;
@@ -183,7 +182,10 @@ const useDownloadStore = create<DownloadState>((set, get) => ({
                     received += value.length;
                     const now = Date.now();
 
-                    // Throttle updates to once per second
+                    // Always update chunks in memory (no state update)
+                    currentDownload.chunks = newChunks;
+
+                    // Throttle UI updates to once per second
                     if (now - lastUpdate > 1000) {
                         const elapsedSec = (now - startTime) / 1000;
                         const speed = received / elapsedSec; // bytes/sec
@@ -203,18 +205,6 @@ const useDownloadStore = create<DownloadState>((set, get) => ({
                             },
                         }));
                         lastUpdate = now;
-                    } else {
-                        // Update chunks without triggering full re-render
-                        set(state => ({
-                            downloads: {
-                                ...state.downloads,
-                                [id]: {
-                                    ...state.downloads[id],
-                                    chunks: newChunks,
-                                    receivedBytes: received,
-                                },
-                            },
-                        }));
                     }
                 }
             }
