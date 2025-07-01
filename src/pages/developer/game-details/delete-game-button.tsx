@@ -1,15 +1,16 @@
+import { useGlobalMessage } from "@/components/message-provider";
 import { deleteGame } from "@/lib/api/game-api";
 import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
-import { Button, Popconfirm, message } from "antd";
+import { Button, Popconfirm } from "antd";
 import { FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const DeleteGameButton = () => {
-  const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
   const { profile } = useAuthStore();
   const { game, clearGameStore } = useGameStore();
+  const messageApi = useGlobalMessage();
 
   const confirmDelete = async () => {
     if (!profile || !game) return;
@@ -32,20 +33,17 @@ const DeleteGameButton = () => {
   };
 
   return (
-    <>
-      {contextHolder}
-      <Popconfirm
-        title="Are you sure you want to delete this game?"
-        description="This action cannot be undone."
-        onConfirm={confirmDelete}
-        okText="Yes, delete"
-        cancelText="Cancel"
-      >
-        <Button type="default" danger icon={<FaTrash />}>
-          Delete Game
-        </Button>
-      </Popconfirm>
-    </>
+    <Popconfirm
+      title="Are you sure you want to delete this game?"
+      description="This action cannot be undone."
+      onConfirm={confirmDelete}
+      okText="Yes, delete"
+      cancelText="Cancel"
+    >
+      <Button type="default" danger icon={<FaTrash />}>
+        Delete Game
+      </Button>
+    </Popconfirm>
   );
 };
 

@@ -85,6 +85,18 @@ export type GameStatus = "Released" | "InDevelopment" | "OnHold" | "Canceled" | 
 export type GameCensorStatus = "Approved" | "Rejected" | "PendingAIReview" | "PendingManualReview";
 export type GameVisibility = "Draft" | "Restricted" | "Public";
 
+export type LibraryItem = {
+    game: {
+        id: string;
+        category: string;
+        coverImage: string;
+        name: string;
+        price: number;
+        shortDescription: string;
+        tags: string[]
+    }
+    purchasedAt: string;
+}
 type GameImage = {
     id: string;
     image: string;

@@ -1,11 +1,13 @@
 import CoinIcon from "@/components/coin-icon";
 import useGameStore from "@/store/use-game-store";
-import { Button, Modal, message } from "antd";
+import { Button, Modal } from "antd";
 import { useEffect, useState } from "react";
 import { FaArrowRight, FaWallet } from "react-icons/fa";
 import useAuthStore from "@/store/use-auth-store";
 import useLibraryStore from "@/store/use-library-store";
 import { purchaseGame } from "@/lib/api/payment-api";
+import { useGlobalMessage } from "@/components/message-provider";
+import { useNavigate } from "react-router-dom";
 
 interface PayWithWalletButtonProps {
   amount: number;
@@ -19,20 +21,20 @@ const PayWithWalletButton = ({
   gameId,
 }: PayWithWalletButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { game, rerender } = useGameStore();
-  const { profile, fetchProfile } = useAuthStore();
-  const { ownedGameIds, fetchLibraries } = useLibraryStore();
+  const { game } = useGameStore();
+  const { profile } = useAuthStore();
+  const { ownedGameIds, fetchOwnedGameIds } = useLibraryStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
+  const messageApi = useGlobalMessage();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!profile && userId) {
-      fetchProfile();
     }
     if (userId && ownedGameIds.length === 0) {
-      fetchLibraries(userId);
+      fetchOwnedGameIds(userId);
     }
-  }, [fetchProfile, profile, userId, ownedGameIds.length]);
+  }, [profile, userId, ownedGameIds.length]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -47,12 +49,10 @@ const PayWithWalletButton = ({
     const result = await purchaseGame(userId, gameId, undefined, "Wallet");
     setIsLoading(false);
     if (result.success) {
-      messageApi.success(
-        "Purchase successful! Please check your game library."
-      );
-      await fetchLibraries(userId);
-      fetchProfile();
-      rerender();
+      messageApi.success("Purchase successful! Proceeding to download.");
+      setTimeout(() => {
+        navigate(`/download/${game.id}`);
+      }, 1000);
       setIsModalOpen(false);
     } else {
       messageApi.error(result.error || "Purchase failed");
@@ -67,7 +67,6 @@ const PayWithWalletButton = ({
 
   return (
     <>
-      {contextHolder}
       <Button
         size="large"
         style={{ marginTop: "1.5rem" }}
@@ -142,7 +141,9 @@ const PayWithWalletButton = ({
           </div>
         </div>
         <div className="flex gap-3 justify-end">
-          <Button onClick={handleCancel} disabled={isLoading}>Cancel</Button>
+          <Button onClick={handleCancel} disabled={isLoading}>
+            Cancel
+          </Button>
           <Button type="primary" onClick={handleOk} loading={isLoading}>
             Confirm Top Up
           </Button>

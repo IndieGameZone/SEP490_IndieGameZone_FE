@@ -3,20 +3,43 @@ import { formatCurrencyVND } from "@/lib/currency";
 import { formatDate } from "@/lib/date-n-time";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
-import {
-  FaApple,
-  FaFileArchive,
-  FaLinux,
-  FaWindows,
-} from "react-icons/fa";
+import { FaApple, FaFileArchive, FaLinux, FaWindows } from "react-icons/fa";
 import ReactPlayer from "react-player";
 import { GAME_REALEASE_STATUS } from "@/constants/game";
 import DownloadGameButton from "./download-game-button";
 import BuyGameButton from "./buy-game-button";
+import { useEffect, useState } from "react";
+import useLibraryStore from "@/store/use-library-store";
+import useAuthStore from "@/store/use-auth-store";
+import { Tooltip } from "antd";
 
 const GameOverView = () => {
   const { game } = useGameStore();
   const { getDefaultPlatforms } = usePlatformStore();
+  const { ownedGameIds, fetchOwnedGameIds } = useLibraryStore();
+  const [isGameOwned, setIsGameOwned] = useState(false);
+  const [developerTooltip, setDeveloperTooltip] = useState<string | undefined>(
+    undefined
+  );
+  const { profile } = useAuthStore();
+
+  useEffect(() => {
+    if (profile) {
+      fetchOwnedGameIds(profile.id);
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    if (profile && game && profile.id == game.developer.id) {
+      setDeveloperTooltip("You are developer of this game!");
+    }
+  }, [profile, game]);
+
+  useEffect(() => {
+    if (ownedGameIds.length && game) {
+      setIsGameOwned(ownedGameIds.includes(game.id));
+    }
+  }, [ownedGameIds, game]);
 
   if (!game) return;
   const defaultPlatforms = getDefaultPlatforms();
@@ -25,6 +48,7 @@ const GameOverView = () => {
   const releaseStatus = GAME_REALEASE_STATUS.find(
     (x) => x.value == game.status
   )?.label;
+
   return (
     <div className="grid grid-cols-12 gap-2">
       <div className="col-span-8 bg-zinc-900">
@@ -84,23 +108,27 @@ const GameOverView = () => {
         <div className="bg-zinc-800 rounded">
           <h1 className="px-5 pt-5 font-semibold text-xl">Download Game</h1>
           <div className="px-5 pt-2 pb-5 border-b border-zinc-800 ">
-            <div className="flex gap-3 items-center">
-              {game.price == 0 ? (
-                <>
-                  <DownloadGameButton />
-                  <p className="mt-1 text-gray-500 text-sm">For Free</p>
-                </>
-              ) : (
-                <>
-                  <BuyGameButton />
-                  <p className="mt-1 text-xl">
-                    {formatCurrencyVND(game.price)}
-                  </p>
-                </>
-              )}
-            </div>
+            <Tooltip title={developerTooltip}>
+              <div className="flex gap-3 items-center">
+                {game.price == 0 || isGameOwned ? (
+                  <>
+                    <DownloadGameButton isGameOwned={isGameOwned} />
+                    <p className="mt-1 text-gray-500 text-sm">
+                      {isGameOwned ? "Purchased" : "For free"}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <BuyGameButton />
+                    <p className="mt-1 text-xl">
+                      {formatCurrencyVND(game.price)}
+                    </p>
+                  </>
+                )}
+              </div>
+            </Tooltip>
             {/* DISPLAYED INCLUDED FILES */}
-            {game.price > 0 && (
+            {game.price > 0 && !isGameOwned && (
               <>
                 <p className="my-2">
                   You will get access to the following files:
@@ -128,7 +156,7 @@ const GameOverView = () => {
                           {file.displayName ? file.displayName : "unnamed file"}
                         </span>
                         <span className="text-sm text-zinc-400">
-                          ({(file.size).toFixed(1)} MB)
+                          ({file.size.toFixed(1)} MB)
                         </span>
                       </div>
                     );

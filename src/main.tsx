@@ -9,10 +9,13 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import "@ant-design/v5-patch-for-react-19";
 import { Toaster } from "react-hot-toast";
+import { MessageProvider } from "./components/message-provider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
-    <App />
-    <Toaster />
+    <MessageProvider>
+      <App />
+      <Toaster />
+    </MessageProvider>
   </BrowserRouter>
 );

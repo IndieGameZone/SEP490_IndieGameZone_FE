@@ -21,7 +21,7 @@ const addPriceButtonStyle: CSSProperties = {
   background: "oklch(71.2% 0.194 13.428)",
   fontWeight: "bold",
 };
-const DownloadGameButton = () => {
+const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [price, setPrice] = useState(10_000);
   const { game } = useGameStore();
@@ -96,8 +96,9 @@ const DownloadGameButton = () => {
         footer={<div></div>}
       >
         <p>
-          This game is free but the developer accepts your support by letting
-          you pay what you think is fair for the game.
+          {isGameOwned ? "You already bought this game" : "This game is free"}{" "}
+          but the developer accepts your support by letting you pay what you
+          think is fair for the game.
         </p>
         <Button
           className="mt-2"
