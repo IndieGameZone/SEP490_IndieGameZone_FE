@@ -160,10 +160,11 @@ const UploadProcessPage = () => {
       if (file.originFileObj) {
         // console.log("Uploading ", file.name);
         const uploadResult = await uploadFile(file);
+        console.log(uploadResult)
         if (uploadResult.error) {
           if (
-            uploadResult.error ==
-            "File analysis failed. Please ensure the file is safe and appropriate."
+            uploadResult.error.detail ==
+            "File scan failed. Please ensure the file is safe and appropriate."
           ) {
             setErrorMessage(`${file.name}`);
             setIsHarmful(true);
