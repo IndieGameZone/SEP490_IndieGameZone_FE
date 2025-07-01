@@ -5,7 +5,7 @@ import useDownloadStore from "@/store/use-download-store";
 import { useEffect, useRef, useState } from "react";
 
 const DownloadProcessesButton = () => {
-  const { downloads } = useDownloadStore();
+  const { downloads, rehydrateDownloads } = useDownloadStore();
   const [numOfActiveEntries, setNumOfActiveEntries] = useState(0);
   const [open, setOpen] = useState(false);
   const prevCountRef = useRef(numOfActiveEntries);
@@ -20,7 +20,11 @@ const DownloadProcessesButton = () => {
     });
     setNumOfActiveEntries(count);
   }, [downloads]);
-  
+
+  useEffect(() => {
+    rehydrateDownloads();
+  }, []);
+
   /*
   Possible improvement: 
   + Throttle or debounce update

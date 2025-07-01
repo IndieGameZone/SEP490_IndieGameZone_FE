@@ -2,99 +2,135 @@ import { DownloadEntry } from "@/types/download-entry";
 import FileIcon from "../file-icon";
 import { Button, Progress } from "antd";
 import { formatBytes, formatTimeLeft } from "@/lib/file";
-import { IoClose, IoPause, IoPlay } from "react-icons/io5";
+import { IoClose, IoPause, IoPlay, IoRefresh } from "react-icons/io5";
 import useDownloadStore from "@/store/use-download-store";
 
 const processStatusMap: Record<
-  string,
+  DownloadEntry["status"],
   "active" | "success" | "exception" | "normal" | undefined
 > = {
   idle: "normal",
   downloading: "active",
+  paused: "normal",
   success: "success",
   error: "exception",
   cancelled: "normal",
 };
 
-const DownloadEntryCard = ({
-  downloadEntry,
-}: {
+type Props = {
   downloadEntry: DownloadEntry;
-}) => {
+};
+
+const DownloadEntryCard = ({ downloadEntry }: Props) => {
   const { cancelDownload, pauseDownload, resumeDownload } = useDownloadStore();
-  const nameParts = downloadEntry.filename.split(".");
-  const fileExtension = nameParts[nameParts.length - 1];
 
-  const handleCancelDownload = () => {
-    cancelDownload(downloadEntry.id);
+  const {
+    id,
+    filename,
+    status,
+    totalBytes,
+    receivedBytes,
+    progress,
+    estimatedTimeLeft,
+    retryable,
+  } = downloadEntry;
+
+  const fileExtension = filename.split(".").pop() ?? "";
+
+  const handleCancel = () => cancelDownload(id);
+  const handlePause = () => pauseDownload(id);
+  const handleResume = () => resumeDownload(id);
+  const handleRetry = () => resumeDownload(id);
+
+  const renderStatusText = () => {
+    if (status === "cancelled") return "Cancelled";
+
+    const sizeText = `${formatBytes(receivedBytes ?? 0)}/${formatBytes(
+      totalBytes ?? 0
+    )}`;
+    if (status === "paused") return `${sizeText} • Paused`;
+    if (status === "downloading" && estimatedTimeLeft)
+      return `${sizeText} • ${formatTimeLeft(estimatedTimeLeft)}`;
+    return sizeText;
   };
 
-  const handlePauseDownload = () => {
-    pauseDownload(downloadEntry.id);
-  };
-
-  const handleResumeDownload = () => {
-    resumeDownload(downloadEntry.id);
-  };
-
-  return (
-    <div className="p-2 bg-transparent hover:bg-zinc-800 rounded duration-300">
-      <div className="flex gap-2 items-center ">
-        <div className="text-2xl">
-          {<FileIcon fileExtension={fileExtension} />}
-        </div>
-        <div className="flex-1">
-          <h5 className="font-semibold">{downloadEntry.filename}</h5>
-          {downloadEntry.status == "cancelled" ? (
-            <p className="text-xs text-zinc-400">Cancelled</p>
-          ) : (
-            <p className="text-xs text-zinc-400">
-              {formatBytes(downloadEntry.receivedBytes ?? 0)}/
-              {formatBytes(downloadEntry.totalBytes ?? 0)}
-              {downloadEntry.status == "downloading" &&
-                downloadEntry.estimatedTimeLeft &&
-                " • " + formatTimeLeft(downloadEntry.estimatedTimeLeft)}
-              {downloadEntry.status == "paused" && " • Paused"}
-            </p>
-          )}
-        </div>
-        {downloadEntry.status == "downloading" ? (
+  const renderActionButtons = () => {
+    switch (status) {
+      case "downloading":
+        return (
           <Button
             type="text"
             size="small"
             shape="circle"
             icon={<IoPause />}
-            onClick={handlePauseDownload}
+            onClick={handlePause}
           />
-        ) : (
-          downloadEntry.status == "paused" && (
-            <Button
-              type="text"
-              size="small"
-              shape="circle"
-              icon={<IoPlay />}
-              onClick={handleResumeDownload}
-            />
-          )
+        );
+      case "paused":
+        return (
+          <Button
+            type="text"
+            size="small"
+            shape="circle"
+            icon={<IoPlay />}
+            onClick={handleResume}
+          />
+        );
+      case "error":
+        return retryable ? (
+          <Button
+            type="text"
+            size="small"
+            shape="circle"
+            icon={<IoRefresh />}
+            onClick={handleRetry}
+          />
+        ) : null;
+      default:
+        return null;
+    }
+  };
+
+  const getFriendlyErrorMessage = (error?: string): string | null => {
+    if (!error) return null;
+    if (error.includes("The specified blob does not exist")) {
+      return "This file is no longer available for download.";
+    }
+    return "An error occurred during download.";
+  };
+
+  return (
+    <div className="p-2 bg-transparent hover:bg-zinc-800 rounded duration-300">
+      <div className="flex gap-2 items-center">
+        <div className="text-2xl">
+          <FileIcon fileExtension={fileExtension} />
+        </div>
+        <div className="flex-1">
+          <h5 className="font-semibold">{filename}</h5>
+          <p className="text-xs text-zinc-400">
+            {status === "error"
+              ? getFriendlyErrorMessage(downloadEntry.error)
+              : renderStatusText()}
+          </p>
+        </div>
+        {renderActionButtons()}
+        {status !== "cancelled" && status !== "error" && (
+          <Button
+            type="text"
+            size="small"
+            shape="circle"
+            icon={<IoClose />}
+            onClick={handleCancel}
+          />
         )}
-        {downloadEntry.status != "cancelled" &&
-          downloadEntry.status != "error" && (
-            <Button
-              type="text"
-              size="small"
-              shape="circle"
-              icon={<IoClose />}
-              onClick={handleCancelDownload}
-            />
-          )}
       </div>
-      {downloadEntry.status != "cancelled" && (
+      {status !== "cancelled" && retryable && (
         <Progress
-          percent={downloadEntry.progress * 100}
-          format={(percent) => percent?.toFixed(2) + "%"}
+          percent={progress * 100}
+          format={(p) => p?.toFixed(2) + "%"}
           className="mt-1"
-          size={"small"}
-          status={processStatusMap[downloadEntry.status]}
+          size="small"
+          status={processStatusMap[status]}
         />
       )}
     </div>

@@ -1,4 +1,4 @@
-type DownloadStatus = 'idle' | 'downloading' | 'paused' | 'success' | 'error' | 'cancelled';
+export type DownloadStatus = 'idle' | 'downloading' | 'paused' | 'success' | 'error' | 'cancelled';
 
 export type DownloadEntry = {
     id: string;
@@ -13,5 +13,5 @@ export type DownloadEntry = {
     pausedAt?: number;        // timestamp when paused
     estimatedTimeLeft?: number; 
     supportsResume?: boolean;
-    chunks: Uint8Array[];
+    retryable?: boolean;
 };
