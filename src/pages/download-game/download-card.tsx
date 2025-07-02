@@ -1,6 +1,6 @@
 import { timeAgo } from "@/lib/date-n-time";
 import { GameFile } from "@/types/game";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import {
   FaApple,
   FaFileArchive,
@@ -17,8 +17,24 @@ const DownloadCard = ({
   file: GameFile;
   defaultPlatforms: any;
 }) => {
-  const { startDownload } = useDownloadStore();
+  const { downloads, startDownload } = useDownloadStore();
+  const [messageApi, contextHolder] = message.useMessage();
+
   const handleDownload = () => {
+    const existings = Object.values(downloads);
+    if (existings.length > 2) {
+      messageApi.error("Cannot download more than 2 files at the same time!");
+      return;
+    } else if (
+      existings.find(
+        (entry) =>
+          entry.url === file.file &&
+          (entry.status === "downloading" || entry.status === "paused")
+      )
+    ) {
+      messageApi.error("Download is already in process!");
+      return;
+    }
     startDownload(file.file, file.displayName);
   };
 
@@ -26,6 +42,7 @@ const DownloadCard = ({
     <div
       className={`flex p-2 bg-zinc-900 border-zinc-700 rounded border gap-3 mb-2 items-center`}
     >
+      {contextHolder}
       <Button
         type="primary"
         icon={

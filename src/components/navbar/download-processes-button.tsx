@@ -41,7 +41,7 @@ const DownloadProcessesButton = () => {
   return (
     <div>
       <Popover
-        content={<DownloadProcessList downloads={downloads} />}
+        content={<DownloadProcessList />}
         title={<h2 className="font-bold">Download Proccesses</h2>}
         trigger="click"
         open={open}

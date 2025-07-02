@@ -10,7 +10,7 @@ export type DownloadEntry = {
     totalBytes?: number;
     receivedBytes?: number;
     startedAt?: number;       // timestamp in ms
-    pausedAt?: number;        // timestamp when paused
+    pausedAt?: number;
     estimatedTimeLeft?: number; 
     supportsResume?: boolean;
     retryable?: boolean;

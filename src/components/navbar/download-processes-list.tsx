@@ -1,13 +1,29 @@
 import { Empty } from "antd";
 import DownloadEntryCard from "./download-entry-card";
-import { DownloadEntry } from "@/types/download-entry";
+import useDownloadStore from "@/store/use-download-store";
 
-const DownloadProcessList = ({
-  downloads,
-}: {
-  downloads: Record<string, DownloadEntry>;
-}) => {
+const DownloadProcessList = () => {
+  const { downloads } = useDownloadStore();
+  // const [availableBytes, setAvailableBytes] = useState<number | undefined>(
+  //   undefined
+  // );
+
+  // useEffect(() => {
+  //   getEstimatedAvailableBytes();
+  // }, [navigator.storage]);
+
+  // const getEstimatedAvailableBytes = async () => {
+  //   if ("storage" in navigator && "estimate" in navigator.storage) {
+  //     const { quota, usage } = await navigator.storage.estimate();
+  //     if (quota && usage) {
+  //       const available = quota - usage;
+  //       setAvailableBytes(available);
+  //     }
+  //   }
+  // };
+
   const proccessKeys = Object.keys(downloads);
+
   return (
     <div className="w-[350px] max-h-[500px] overflow-auto">
       {proccessKeys.length == 0 && (
@@ -23,6 +39,9 @@ const DownloadProcessList = ({
           />
         );
       })}
+      {/* {availableBytes && (
+        <p className="text-center text-xs text-zinc-500">Available storage (estimated): {formatBytes(availableBytes)}</p>
+      )} */}
     </div>
   );
 };
