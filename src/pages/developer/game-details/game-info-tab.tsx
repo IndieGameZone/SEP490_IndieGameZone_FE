@@ -35,6 +35,10 @@ const GameInfoTab = () => {
     navigate(`/game/${game?.id}`);
   };
 
+  const handleGoToUpdate = () => {
+    navigate(`/dev/update-game/${game?.id}`);
+  }
+
   useEffect(() => {
     if (game) {
       fetchPlatforms();
@@ -216,7 +220,7 @@ const GameInfoTab = () => {
         <Button icon={<FaEye />} onClick={handleViewGamePage}>
           View game's page
         </Button>
-        <Button icon={<FaPencilAlt />} type="primary">
+        <Button icon={<FaPencilAlt />} type="primary" onClick={handleGoToUpdate}>
           Update game
         </Button>
       </div>

@@ -1,6 +1,7 @@
 import PageTransition from "@/components/page-transition";
 import DeveloperDashboardLayout from "@/layouts/developer-dashboard-layout";
 import HomeLayout from "@/layouts/home-layout";
+import DevUpdateGamePage from "@/pages/developer/update-game/dev-update-game-page";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
@@ -48,6 +49,7 @@ const DeveloperDashboardContainer = () => {
             />
             <Route path="/upload-game/upload" element={<UploadProcessPage />} />
             <Route path="/manage-games" element={<DevManageGamesPage />} />
+            <Route path="/update-game/:gameId" element={<DevUpdateGamePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
