@@ -50,7 +50,7 @@ const useGameStore = create<GameState>((set) => ({
         try {
             const response = await getGamesByDeveloperId(developerId);
             if (!response.error) {
-                set({ games: response.data, loading: false });
+                set({ games: response.data.games, loading: false });
             } else {
                 set({ loading: false, error: response.error });
             }

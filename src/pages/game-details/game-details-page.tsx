@@ -123,20 +123,20 @@ const GameDetailsPage = () => {
   return (
     <MaxWidthWrapper className="py-5">
       <ScrollToTop />
-      <div className="grid grid-cols-3 gap-3 bg-zinc-900">
+      <div className="grid grid-cols-2 gap-3 bg-zinc-900 h-[300px]">
         {/* GAME COVER IMAGE */}
         {game.coverImage ? (
           <FaultTolerantImage
             src={game.coverImage}
             alt="game cover image"
-            className="aspect-4/3 object-cover rounded w-full highlight-hover cursor-pointer"
+            className="aspect-video object-cover rounded h-full highlight-hover cursor-pointer"
             onClick={() => setIndex(0)}
           />
         ) : (
-          <div></div>
+          <div className="aspect-video"></div>
         )}
         {/* GAME METADATA */}
-        <div className="col-span-2 flex flex-col gap-2 bg-zinc-800 rounded p-3">
+        <div className="flex flex-col gap-2 bg-zinc-800 rounded p-3">
           <div>
             <div className="flex">
               <h2 className="text-3xl font-bold flex-1">{game.name}</h2>

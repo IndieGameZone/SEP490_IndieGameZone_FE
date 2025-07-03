@@ -41,8 +41,12 @@ const PayWithWalletButton = ({
   };
 
   const handleOk = async () => {
-    if (!game || !profile?.balance || profile.balance < amount) {
-      messageApi.error("Insufficient balance or invalid game data");
+    if (!profile?.balance || profile.balance < amount) {
+      messageApi.error("Insufficient balance");
+      return;
+    }
+    if (!game) {
+      messageApi.error("or invalid game data");
       return;
     }
     setIsLoading(true);
@@ -144,8 +148,13 @@ const PayWithWalletButton = ({
           <Button onClick={handleCancel} disabled={isLoading}>
             Cancel
           </Button>
-          <Button type="primary" onClick={handleOk} loading={isLoading}>
-            Confirm Top Up
+          <Button
+            type="primary"
+            onClick={handleOk}
+            loading={isLoading}
+            disabled={profile && profile.balance < amount}
+          >
+            Confirm Purchase
           </Button>
         </div>
       </Modal>

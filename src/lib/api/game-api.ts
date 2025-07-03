@@ -1,3 +1,4 @@
+import { GameCensorStatus } from "@/types/game";
 import { axiosClient } from "./config/axios-client";
 
 export const handleApiError = (error: any): { error: string | null; data: any; success: boolean } => {
@@ -69,10 +70,24 @@ export const addGame = async (developerId: string, request: AddGameRequest) => {
   }
 };
 
-export const getGamesByDeveloperId = async (developerId: string) => {
+type GamesByDeveloperParams = {
+  searchTerm?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  censorStatus?: GameCensorStatus
+};
+
+export const getGamesByDeveloperId = async (developerId: string, params?: GamesByDeveloperParams) => {
   try {
-    const { data } = await axiosClient.get(`/api/users/${developerId}/games`);
-    return { error: null, data: data, success: true };
+    const searchParams = new URLSearchParams();
+    if (params?.searchTerm) searchParams.append("SearchTerm", params.searchTerm);
+    if (params?.pageNumber !== undefined) searchParams.append("PageNumber", params.pageNumber.toString());
+    if (params?.pageSize !== undefined) searchParams.append("PageSize", params.pageSize.toString());
+    if (params?.censorStatus !== undefined) searchParams.append("CensorStatus", params.censorStatus);
+    const queryString = searchParams.toString();
+    const url = queryString ? `/api/users/${developerId}/games?${queryString}` : `/api/users/${developerId}/games`;
+    const { data, headers } = await axiosClient.get(url);
+    return { error: null, data: { games: data, headers }, success: true };
   } catch (error) {
     return handleApiError(error);
   }

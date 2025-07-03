@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { Button } from "antd";
 import { FaArrowLeft } from "react-icons/fa";
@@ -16,6 +16,7 @@ import { Game, GameFile } from "@/types/game";
 
 const DownloadGamePage = () => {
   const { gameId } = useParams<{ gameId: string }>();
+  const [isReady, setIsReady] = useState(false);
   const navigate = useNavigate();
 
   // Store hooks
@@ -55,9 +56,9 @@ const DownloadGamePage = () => {
 
   const fetchGameData = useCallback(() => {
     if (!game?.id) return;
-
     fetchGameFiles(game.id);
     fetchPlatforms();
+    setIsReady(true);
   }, [game?.id, fetchGameFiles, fetchPlatforms]);
 
   // Effects
@@ -104,25 +105,26 @@ const DownloadGamePage = () => {
     return <Loader />;
   }
 
-  return (
-    <MaxWidthWrapper className="py-10">
-      <div className="bg-zinc-900 border border-zinc-700 rounded">
-        <GameHeader gameName={game.name} />
-        <BackButton onBack={handleBackToGamePage} />
-        <GameContent
-          game={game}
-          gameFiles={gameFiles}
-          defaultPlatforms={defaultPlatforms as any}
-        />
-        {installInstruction && (
-          <InstallInstructions
-            instruction={installInstruction}
-            developerName={game.developer.userName}
+  if (isReady)
+    return (
+      <MaxWidthWrapper className="py-10">
+        <div className="bg-zinc-900 border border-zinc-700 rounded">
+          <GameHeader gameName={game.name} />
+          <BackButton onBack={handleBackToGamePage} />
+          <GameContent
+            game={game}
+            gameFiles={gameFiles}
+            defaultPlatforms={defaultPlatforms as any}
           />
-        )}
-      </div>
-    </MaxWidthWrapper>
-  );
+          {installInstruction && (
+            <InstallInstructions
+              instruction={installInstruction}
+              developerName={game.developer.userName}
+            />
+          )}
+        </div>
+      </MaxWidthWrapper>
+    );
 };
 
 const GameHeader = ({ gameName }: { gameName: string }) => (
