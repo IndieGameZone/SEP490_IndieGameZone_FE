@@ -22,8 +22,6 @@ const LibraryGameCard: React.FC<LibraryGameCardProps> = ({ item }) => {
     );
   }
 
-  const rating = 4.5;
-
   return (
     <div className="bg-zinc-900 rounded-lg shadow-lg border highlight-hover overflow-hidden">
       <div className="relative">
@@ -51,10 +49,14 @@ const LibraryGameCard: React.FC<LibraryGameCardProps> = ({ item }) => {
                 ? "Free"
                 : formatCurrencyVND(item.game.price)}
             </p>
-            <div className="flex items-center gap-2">
-              <span>{rating}</span>
-              <FaStar />
-            </div>
+            {item.game.numberOfReviews > 0 ? (
+              <div className="flex items-center justify-end gap-2">
+                <span>{item.game.averageRating}</span>
+                <FaStar />
+              </div>
+            ) : (
+              <p className="text-zinc-400 text-xs text-end">No rating</p>
+            )}
           </div>
         </div>
         <div className="flex items-center mt-1">

@@ -4,10 +4,10 @@ import { Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import PageTransition from "@/components/page-transition";
 import DownloadGamePage from "@/pages/download-game/download-game-page";
+import SearchPage from "@/pages/search-page/search-page";
 
 const NotFoundPage = lazy(() => import("@/pages/errors/not-found-page"));
 const VerifyEmailPage = lazy(() => import("@/pages/verify-email-page"));
-const SearchPage = lazy(() => import("@/pages/search-page/search-page"));
 const ForumPage = lazy(() => import("@/pages/forum-page/forum-page"));
 const ViewProfilePage = lazy(
   () => import("@/pages/user-profile/view-profile-page")

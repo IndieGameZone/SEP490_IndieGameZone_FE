@@ -1,13 +1,20 @@
 import { Category } from "@/types/category";
 import { GameCensorStatus, GameVisibility } from "@/types/game";
-import { Badge, Tag } from "antd";
+import { Badge, Tag, TagProps } from "antd";
 import { LuBrainCircuit } from "react-icons/lu";
 
 type ModerationStatusProps = {
   status: GameCensorStatus;
+  variant?: "full" | "short";
 };
 
-export const VisibilityStatus = ({ status }: { status: GameVisibility }) => {
+export const VisibilityStatus = ({
+  status,
+  variant = "Badge",
+}: {
+  status: GameVisibility;
+  variant?: "Badge" | "Tag";
+}) => {
   const badgeStatus =
     status === "Draft"
       ? "default"
@@ -16,7 +23,11 @@ export const VisibilityStatus = ({ status }: { status: GameVisibility }) => {
       : status === "Restricted"
       ? "warning"
       : "error";
-  return <Badge status={badgeStatus} text={status} />;
+  if (variant == "Badge") {
+    return <Badge status={badgeStatus} text={status ?? "null"} />;
+  } else {
+    return <Tag color={badgeStatus}>{status ?? "null"}</Tag>;
+  }
 };
 
 export const AITag = () => {
@@ -90,20 +101,24 @@ export const CategoryTag = ({ category }: { category?: Category }) => {
 };
 
 const moderationStatusTagConfig = {
-  Approved: { color: "green", text: "Approved" },
-  PendingManualReview: { color: "orange", text: "Pending Review" },
-  PendingAiReview: { color: "blue", text: "Pending AI Review" },
-  Rejected: { color: "red", text: "Rejected" },
+  Approved: { color: "green", text: "Approved", icon: "✓" },
+  PendingManualReview: { color: "orange", text: "Pending Review", icon: "⧗" },
+  PendingAiReview: { color: "blue", text: "Pending AI Review", icon: "⧗" },
+  Rejected: { color: "red", text: "Rejected", icon: "x" },
 };
 
-export const ModerationStatusTag = ({ status }: ModerationStatusProps) => {
+export const ModerationStatusTag = ({
+  status,
+  variant = "full",
+  ...rest
+}: ModerationStatusProps & TagProps) => {
   const config =
     moderationStatusTagConfig[
       status as keyof typeof moderationStatusTagConfig
     ] || moderationStatusTagConfig.PendingManualReview;
   return (
-    <Tag color={config.color} className="font-medium">
-      {config.text}
+    <Tag color={config.color} className="font-medium" {...rest}>
+      {variant == "full" ? config.text : config.icon}
     </Tag>
   );
 };

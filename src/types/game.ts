@@ -93,7 +93,9 @@ export type LibraryItem = {
         name: string;
         price: number;
         shortDescription: string;
-        tags: string[]
+        tags: string[];
+        numberOfReviews: number;
+        averageRating: number;
     }
     purchasedAt: string;
 }

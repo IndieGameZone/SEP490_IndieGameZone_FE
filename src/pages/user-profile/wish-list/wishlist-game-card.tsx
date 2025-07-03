@@ -18,12 +18,10 @@ const WishlistGameCard: React.FC<WishlistGameCardProps> = ({ game }) => {
   if (!game || !game.id) {
     return (
       <div className="bg-zinc-900 rounded-lg p-4 text-center text-gray-500">
-        Game data unavailable 
+        Game data unavailable
       </div>
     );
   }
-
-  const rating = 4.5;
 
   return (
     <div className="bg-zinc-900 rounded-lg shadow-lg border highlight-hover overflow-hidden">
@@ -41,7 +39,10 @@ const WishlistGameCard: React.FC<WishlistGameCardProps> = ({ game }) => {
       <div className="p-3">
         <div className="flex justify-between">
           <div>
-            <h3 className="font-bold text-lg truncate cursor-pointer" onClick={handleClickCard}>
+            <h3
+              className="font-bold text-lg truncate cursor-pointer"
+              onClick={handleClickCard}
+            >
               {game.name}
             </h3>
             <a href={`/search?category=${game.category?.id}`}>
@@ -52,10 +53,14 @@ const WishlistGameCard: React.FC<WishlistGameCardProps> = ({ game }) => {
             <p className="text-sm font-semibold text-green-500">
               {game.price === 0 ? "Free" : formatCurrencyVND(game.price)}
             </p>
-            <div className="flex items-center gap-2">
-              <span>{rating}</span>
-              <FaStar />
-            </div>
+            {game.numberOfReviews > 0 ? (
+              <div className="flex items-center justify-end gap-2">
+                <span>{game.averageRating}</span>
+                <FaStar />
+              </div>
+            ) : (
+              <p className="text-zinc-400 text-xs text-end">No rating</p>
+            )}
           </div>
         </div>
         <p className="py-1 text-sm text-zinc-500">{game.shortDescription}</p>

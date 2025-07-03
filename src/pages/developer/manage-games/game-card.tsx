@@ -1,12 +1,13 @@
 import FaultTolerantImage from "@/components/fault-tolerant-image";
+import {
+  ModerationStatusTag,
+  VisibilityStatus,
+} from "@/components/status-tags";
 import { formatCurrencyVND } from "@/lib/currency";
 import { Game } from "@/types/game";
-import { Tag } from "antd";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
-
 const GameCard = ({ game }: { game: Game }) => {
-  const rating = 4.5;
 
   return (
     <div className="bg-zinc-900 rounded-lg shadow-lg border highlight-hover overflow-hidden">
@@ -33,24 +34,25 @@ const GameCard = ({ game }: { game: Game }) => {
               <p className="text-sm font-semibold text-green-500">
                 {game.price == 0 ? "Free" : formatCurrencyVND(game.price)}
               </p>
-              <div className="flex items-center gap-2">
-                <span>{rating}</span>
-                <FaStar />
-              </div>
+
+              {game.numberOfReviews > 0 ? (
+                <div className="flex items-center justify-end gap-2">
+                  <span>{game.averageRating}</span>
+                  <FaStar />
+                </div>
+              ) : (
+                <p className="text-zinc-400 text-xs text-end">
+                  No rating
+                </p>
+              )}
             </div>
           </div>
-          <p className="py-1 text-sm text-zinc-500">{game.shortDescription}</p>
-          <div className="flex items-center mt-1">
-            {game.gameTags?.slice(0, 3).map((tag, index: number) => (
-              <Link to={`/search?tag=${tag.tag.id}`} key={`game-tag-${index}`}>
-                <Tag key={index} color="orange">
-                  {tag.tag.name}
-                </Tag>
-              </Link>
-            ))}
-            {game.gameTags && game.gameTags.length > 3 && (
-              <Tag color="orange">+{game.gameTags.length - 3} more</Tag>
-            )}
+          <div className="flex justify-between mt-1">
+            <VisibilityStatus variant={"Tag"} status={game.visibility} />
+            <ModerationStatusTag
+              status={game.censorStatus}
+              style={{ marginRight: 0 }}
+            />
           </div>
         </div>
       </div>
