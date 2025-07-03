@@ -15,6 +15,7 @@ import { MdOutlineInsertChart } from "react-icons/md";
 import useProfileStore from "@/store/use-auth-store";
 import { SearchProps } from "antd/es/input";
 import DownloadProcessesButton from "./download-processes-button";
+import { useMemo } from "react";
 
 type MenuItem = GetProp<MenuProps, "items">[number];
 
@@ -64,7 +65,8 @@ const popOverContent = (
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { profile } = useProfileStore();
+  const { getDisplayProfile, profile: profileData } = useProfileStore();
+  const profile = useMemo(() => getDisplayProfile(), [profileData]);
 
   const handleGoToDashboard = () => {
     if (profile?.role.name == "Developer") {

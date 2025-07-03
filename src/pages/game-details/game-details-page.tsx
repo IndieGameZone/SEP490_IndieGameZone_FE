@@ -203,6 +203,21 @@ const GameDetailsPage = () => {
             </span>
             <span>{formatDuration(game.averageSession)}</span>
           </div>
+          <div className="flex gap-2 text-sm items-end">
+            <span className="uppercase text-zinc-400 text-xs">
+              Average rating:
+            </span>
+            {game.numberOfReviews > 0 ? (
+              <div className="flex items-center gap-2">
+                <span>
+                  {game.averageRating} ({game.numberOfReviews})
+                </span>
+                <FaStar />
+              </div>
+            ) : (
+              <p className="text-zinc-400">No rating</p>
+            )}
+          </div>
         </div>
       </div>
       <Lightbox

@@ -3,10 +3,13 @@ import TransactionHistory from "./transactions-history/transactions-history";
 import UserWallet from "./wallet/user-wallet";
 import Cookies from "js-cookie";
 import { message } from "antd";
+import useAuthStore from "@/store/use-auth-store";
 
 const WalletAndTransactionsPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
+  const { fetchProfile } = useAuthStore();
   useEffect(() => {
+    fetchProfile();
     const transactionType = Cookies.get("pendingTransaction");
     if (transactionType) {
       const transactionResult = Cookies.get("transactionResult");

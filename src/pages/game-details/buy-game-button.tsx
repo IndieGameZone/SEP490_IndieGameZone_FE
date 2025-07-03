@@ -5,7 +5,7 @@ import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
 import { Button, InputNumber, Modal, Tooltip } from "antd";
 import Cookies from "js-cookie";
-import { CSSProperties, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import {
   FaApple,
   FaFileArchive,
@@ -29,7 +29,11 @@ const BuyGameButton = () => {
   const [price, setPrice] = useState(game?.price ?? 10_000);
   const { getDefaultPlatforms } = usePlatformStore();
   const navigate = useNavigate();
-  const { profile } = useAuthStore();
+  const { profile, fetchProfile } = useAuthStore();
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   const showModal = () => {
     if (game && profile?.id === game.developer.id) {
@@ -132,7 +136,7 @@ const BuyGameButton = () => {
                 {file.displayName || "unnamed file"}
               </span>
               <span className="text-sm text-zinc-400">
-                ({(file.size / 1024 / 1024).toFixed(1)} MB)
+                ({(file.size).toFixed(1)} MB)
               </span>
             </div>
           ))}

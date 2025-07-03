@@ -8,6 +8,7 @@ interface AuthState {
     error: string | null;
     fetchProfile: () => Promise<void>;
     setProfile: (user?: User) => void;
+    getDisplayProfile: () => User | undefined;
     logout: () => void;
     renderKey: number;
     rerender: () => void;
@@ -26,6 +27,7 @@ const useAuthStore = create<AuthState>((set) => ({
         try {
             var response = await getUserInfo();
             if (!response.error) {
+                localStorage.setItem("profile", JSON.stringify(response.data))
                 set({ profile: response.data, loading: false });
             } else {
                 set({ loading: false, error: response.error });
@@ -33,6 +35,13 @@ const useAuthStore = create<AuthState>((set) => ({
         } catch (error: any) {
             set({ loading: false, error: error.message });
         }
+    },
+    getDisplayProfile() {
+        const saved = localStorage.getItem("profile");
+        if (saved) {
+            return JSON.parse(saved);
+        }
+        return undefined;
     },
     setProfile(user) {
         set({ profile: user })
