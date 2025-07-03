@@ -61,7 +61,7 @@ const DevUpdateGamePage = () => {
       </div>
       <div className="grid grid-cols-12">
         <div
-          className="col-span-2 pb-50 border-r border-r-zinc-700"
+          className="col-span-3 pb-50 border-r border-r-zinc-700"
           style={{ background: token.colorBgContainer }}
         >
           <Menu
@@ -71,7 +71,7 @@ const DevUpdateGamePage = () => {
             onClick={(e) => setSelectedKey(e.key)}
           />
         </div>
-        <div className="col-span-10">
+        <div className="col-span-9">
           {selectedKey === "info" && <UpdateGameInfo />}
           {selectedKey === "media" && <UpdateGameMediaAssets />}
           {selectedKey === "file" && <UpdateGameFiles />}

@@ -17,7 +17,6 @@ import {
   Radio,
   Select,
   Space,
-  Tooltip,
 } from "antd";
 import { CheckboxGroupProps } from "antd/es/checkbox";
 import TextArea from "antd/es/input/TextArea";
@@ -34,7 +33,6 @@ const releaseStatusOptions = GAME_REALEASE_STATUS;
 const visibilityStatusOptions = GAME_VISIBILITY_STATUS;
 const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
   const [allowDonate, setAllowDonate] = useState(true);
-  const [averageSession, setAverageSession] = useState(1);
   const [isFree, setIsFree] = useState(true);
   const { isLoaded, gameInfo } = useManageGameStore();
   const {
@@ -64,6 +62,8 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
       setIsFree(gameInfo.pricingOption == "Free");
     }
   }, []);
+
+  const averageSession = Form.useWatch("averageSession", form);
   return (
     <Form
       form={form}
@@ -106,28 +106,25 @@ const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
         ]}
         style={{ width: 500, marginBottom: 20 }}
         extra="Estimated average play session length in minutes"
-      >
-        <Tooltip
-          title={averageSession >= 60 ? formatDuration(averageSession) : null}
-        >
-          <InputNumber<number>
-            min={1}
-            max={1440}
-            placeholder="60 (minutes)"
-            style={{ width: 500 }}
-            formatter={(value) =>
-              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            }
-            parser={(value) => (value ? parseInt(value.replace(/\,/g, "")) : 0)}
-            suffix="minute(s)"
-            onChange={(value) => {
-              if (value) {
-                form.setFieldValue("averageSession", value);
-                setAverageSession(value);
+        tooltip={
+          averageSession >= 60
+            ? {
+                title: formatDuration(averageSession),
               }
-            }}
-          />
-        </Tooltip>
+            : undefined
+        }
+      >
+        <InputNumber<number>
+          min={1}
+          max={1440}
+          placeholder="60 (minutes)"
+          style={{ width: 500 }}
+          formatter={(value) =>
+            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          }
+          parser={(value) => (value ? parseInt(value.replace(/\,/g, "")) : 0)}
+          suffix="minute(s)"
+        />
       </Form.Item>
       <Form.Item<FieldType>
         label={<span className="font-bold">Category</span>}

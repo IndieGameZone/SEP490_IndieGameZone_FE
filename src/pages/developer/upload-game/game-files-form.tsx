@@ -31,7 +31,8 @@ const allowedTypes = [
 ];
 
 const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
-  const { fetchPlatforms, platforms, loading } = usePlatformStore();
+  const { fetchPlatforms, platforms, loading, getDefaultPlatforms } =
+    usePlatformStore();
   const [messageApi, contextHolder] = message.useMessage();
 
   const normFile = (e: any) => {
@@ -57,6 +58,13 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
       return false;
     }
 
+    const fileExtension = file.name.split(".").pop();
+    const defaultPlatforms = getDefaultPlatforms();
+    var platform = "";
+    if (fileExtension == "exe") {
+      platform = defaultPlatforms.windowsPlatformId ?? "";
+    }
+
     const currentList = form.getFieldValue("files") || [];
     const currentItem = currentList[index] || {};
     const updatedList = [...currentList];
@@ -65,6 +73,7 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
       displayName: file.name,
       fileSize: file.size ?? 0,
       file: [file], // store the file in antd Upload-compatible format
+      platformId: platform.length ? platform : undefined,
     };
     form.setFieldsValue({ files: updatedList });
     return false; // Prevent automatic upload
