@@ -99,6 +99,21 @@ export type LibraryItem = {
     }
     purchasedAt: string;
 }
+
+export type WishlistItem = {
+    game: {
+        id: string;
+        category: string;
+        coverImage: string;
+        name: string;
+        price: number;
+        shortDescription: string;
+        tags: string[];
+        numberOfReviews: number;
+        averageRating: number;
+    }
+    addAt: string;
+}
 type GameImage = {
     id: string;
     image: string;

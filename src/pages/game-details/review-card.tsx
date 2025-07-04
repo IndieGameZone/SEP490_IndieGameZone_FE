@@ -1,57 +1,57 @@
 import { timeAgo } from "@/lib/date-n-time";
-import { Avatar, Button, Rate, Tooltip } from "antd";
+import { Avatar, Button, message, Rate, Tooltip } from "antd";
 import { CiUser } from "react-icons/ci";
 import { FaFlag } from "react-icons/fa";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
+import { Review } from "@/types/review";
 
-const ReviewCard = () => {
+
+const ReviewCard = ({ review }: { review: Review }) => {
   return (
     <div className="p-3 rounded bg-zinc-800 mb-3">
       <div className="flex gap-3">
-        <div>
-          <Avatar icon={<CiUser />} />
-        </div>
-        <div>
-          <div className="flex">
+        <Avatar
+          src={review.user?.avatar || "/default-avatar.png"}
+          icon={<CiUser />}
+          size={40}
+          alt={`${review.user?.userName || "Unknown"}'s avatar`}
+        />
+        <div className="flex-1">
+          <div className="flex items-center">
             <div className="flex-1">
-              <p className="font-bold">Player</p>
+              <p className="font-bold text-white">{review.user?.userName || "Unknown"}</p>
               <p className="text-xs text-zinc-500">
-                {timeAgo(new Date("11/11/2024"))}
+                {review.createdAt ? timeAgo(new Date(review.createdAt)) : "Unknown date"}
               </p>
             </div>
-            <Tooltip title="Report review">
-              <Button shape="circle" icon={<FaFlag />}></Button>
+            <Tooltip title="Report this review">
+              <Button shape="circle" icon={<FaFlag />} onClick={() => message.info(`Reported review ${review.id}`)} />
             </Tooltip>
           </div>
           <div className="my-1">
-            <Rate disabled defaultValue={4} />
+            <Rate disabled value={review.rating || 0} />
           </div>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas, odit
-            aut! Aspernatur, harum, qui sed similique possimus rem asperiores
-            consequatur quibusdam in doloremque suscipit vitae voluptate aliquid
-            quo, illum tempora.
-          </p>
+          <p className="text-white">{review.comment || "No comment provided"}</p>
           <div className="mt-1">
             <p className="text-xs text-zinc-500">Was this review helpful?</p>
             <div className="flex gap-3 mt-1 items-center">
               <div className="flex gap-1 items-center">
-                0
-                <Button
-                  type="text"
-                  icon={<AiFillDislike />}
-                  iconPosition="end"
-                  shape="circle"
-                ></Button>
-              </div>
-              <div className="flex gap-1 items-center">
-                0
+                <span>{review.likes || 0}</span>
                 <Button
                   type="text"
                   icon={<AiFillLike />}
-                  iconPosition="end"
                   shape="circle"
-                ></Button>
+                  onClick={() => message.info(`Liked review ${review.id}`)}
+                />
+              </div>
+              <div className="flex gap-1 items-center">
+                <span>{review.dislikes || 0}</span>
+                <Button
+                  type="text"
+                  icon={<AiFillDislike />}
+                  shape="circle"
+                  onClick={() => message.info(`Disliked review ${review.id}`)}
+                />
               </div>
             </div>
           </div>

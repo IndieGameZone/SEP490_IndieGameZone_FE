@@ -46,18 +46,10 @@ const AddToWishlistButton = ({ game }: { game: Game }) => {
   return (
     <>
       {contextHolder}
-      <Tooltip
-        title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-      >
+      <Tooltip title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}>
         <Button
           onClick={handleWishlistToggle}
-          icon={
-            isWishlisted ? (
-              <FaHeart style={{ color: "oklch(64.5% 0.246 16.439)" }} />
-            ) : (
-              <FaRegHeart />
-            )
-          }
+          icon={isWishlisted ? <FaHeart style={{ color: "oklch(64.5% 0.246 16.439)" }} /> : <FaRegHeart />}
           shape="circle"
         />
       </Tooltip>

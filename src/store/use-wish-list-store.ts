@@ -1,12 +1,15 @@
-import { create } from 'zustand';
-import { addWishList, getAllUserWishlists, removeWishlist } from '@/lib/api/wish-list-api';
+import { create } from "zustand";
+import { addWishList, getAllUserWishlists, removeWishlist } from "@/lib/api/wish-list-api";
+import { WishlistItem } from "@/types/game";
 
 interface WishlistState {
   gamedIds: string[];
+  games: WishlistItem[];
   loading: boolean;
   error: string | null;
   renderKey: number;
   fetchWishlistGameIds: (userId: string) => Promise<void>;
+  fetchWishlistGames: (userId: string) => Promise<void>;
   addToWishlist: (userId: string, gameId: string) => Promise<boolean>;
   removeFromWishlist: (userId: string, gameId: string) => Promise<boolean>;
   rerender: () => void;
@@ -14,6 +17,7 @@ interface WishlistState {
 
 const useWishlistStore = create<WishlistState>((set) => ({
   gamedIds: [],
+  games: [],
   loading: false,
   error: null,
   renderKey: 0,
@@ -25,20 +29,37 @@ const useWishlistStore = create<WishlistState>((set) => ({
     try {
       const response = await getAllUserWishlists(userId);
       if (response.success && Array.isArray(response.data)) {
-        const gameIds = response.data
-          .filter((item: any) => item.gameId)
-          .map((item: { gameId: string }) => item.gameId);
+        const gameIds = response.data.map((item) => item.game.id);
         set({ gamedIds: gameIds, loading: false });
       } else {
         set({
           loading: false,
-          error: response.error || 'Failed to fetch wishlists. Invalid response data.',
+          error: response.error || "Failed to fetch wishlists. Invalid response data.",
         });
       }
     } catch (error: any) {
       set({
         loading: false,
-        error: error.message || 'An unexpected error occurred while fetching wishlists.',
+        error: error.message || "An unexpected error occurred while fetching wishlists.",
+      });
+    }
+  },
+  fetchWishlistGames: async (userId: string) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await getAllUserWishlists(userId);
+      if (response.success && Array.isArray(response.data)) {
+        set({ games: response.data, loading: false });
+      } else {
+        set({
+          loading: false,
+          error: response.error || "Failed to fetch wishlists. Invalid response data.",
+        });
+      }
+    } catch (error: any) {
+      set({
+        loading: false,
+        error: error.message || "An unexpected error occurred while fetching wishlists.",
       });
     }
   },
@@ -53,10 +74,10 @@ const useWishlistStore = create<WishlistState>((set) => ({
         }));
         return true;
       } else {
-        set({ loading: false, error: response.error || 'Failed to add to wishlist' });
+        set({ loading: false, error: response.error || "Failed to add to wishlist" });
       }
     } catch (error: any) {
-      set({ loading: false, error: error.message || 'An unexpected error occurred' });
+      set({ loading: false, error: error.message || "An unexpected error occurred" });
     }
     return false;
   },
@@ -71,10 +92,10 @@ const useWishlistStore = create<WishlistState>((set) => ({
         }));
         return true;
       } else {
-        set({ loading: false, error: response.error || 'Failed to remove from wishlist' });
+        set({ loading: false, error: response.error || "Failed to remove from wishlist" });
       }
     } catch (error: any) {
-      set({ loading: false, error: error.message || 'An unexpected error occurred' });
+      set({ loading: false, error: error.message || "An unexpected error occurred" });
     }
     return false;
   },

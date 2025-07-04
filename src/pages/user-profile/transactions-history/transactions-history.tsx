@@ -8,7 +8,7 @@ import { getTransactions } from "@/lib/api/payment-api";
 
 const TransactionHistory = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const { profile, fetchProfile } = useAuthStore();
+  const { profile } = useAuthStore();
 
   useEffect(() => {
     const loadTransactions = async () => {
@@ -30,7 +30,7 @@ const TransactionHistory = () => {
       }
     };
     loadTransactions();
-  }, [profile?.id, fetchProfile]);
+  }, [profile]);
 
   return (
     <Card

@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
-import { Spin, Empty, message, Button } from "antd";
-import { Game } from "@/types/game";
-import { getGameById } from "@/lib/api/game-api";
+import { Spin, Empty, Button } from "antd";
 import useAuthStore from "@/store/use-auth-store";
 import useWishlistStore from "@/store/use-wish-list-store";
 import WishlistGameCard from "./wishlist-game-card";
@@ -11,45 +9,16 @@ import WishlistGameCard from "./wishlist-game-card";
 const UserWishlistPage = () => {
   const navigate = useNavigate();
   const { profile } = useAuthStore();
-  const { gamedIds, loading, error, fetchWishlistGameIds } = useWishlistStore();
-  const [games, setGames] = useState<Game[]>([]);
-  const [gamesLoading, setGamesLoading] = useState(false);
+  const { games, loading, error, fetchWishlistGames, fetchWishlistGameIds } = useWishlistStore();
 
   useEffect(() => {
     if (profile?.id) {
+      fetchWishlistGames(profile.id);
       fetchWishlistGameIds(profile.id);
     }
-  }, [profile?.id, fetchWishlistGameIds]);
+  }, [profile]);
 
-  useEffect(() => {
-    const fetchGamesDetails = async () => {
-      if (gamedIds.length === 0) {
-        setGames([]);
-        return;
-      }
-
-      setGamesLoading(true);
-      try {
-        const gamePromises = gamedIds.map(async (gameId) => {
-          const response = await getGameById(gameId);
-          return response.error ? null : response.data;
-        });
-
-        const gameResults = await Promise.all(gamePromises);
-        const validGames = gameResults.filter((game): game is Game => game !== null);
-        setGames(validGames);
-      } catch (error) {
-        console.error("Error fetching game details:", error);
-        message.error("Failed to load game details");
-      } finally {
-        setGamesLoading(false);
-      }
-    };
-
-    fetchGamesDetails();
-  }, [gamedIds]);
-
-  if (loading || gamesLoading) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <Spin size="large" />
@@ -62,8 +31,8 @@ const UserWishlistPage = () => {
       <div className="text-center text-red-500 min-h-[400px] flex items-center justify-center">
         <div>
           <p>Error loading wishlist: {error}</p>
-          <button 
-            onClick={() => profile?.id && fetchWishlistGameIds(profile.id)}
+          <button
+            onClick={() => profile?.id && fetchWishlistGames(profile.id)}
             className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
             Retry
@@ -105,9 +74,9 @@ const UserWishlistPage = () => {
         </p>
       </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {games.map((game) => (
-          <WishlistGameCard key={game.id} game={game} />
+          <WishlistGameCard key={game.game.id} game={game} />
         ))}
       </div>
     </div>
