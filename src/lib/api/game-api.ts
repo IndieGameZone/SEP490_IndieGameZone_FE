@@ -178,17 +178,32 @@ export const getGamesAsAdmin = async (params?: GamesAsAdminParams) => {
   }
 };
 
-export const updateGameActivation = async (gameId: string, censorStatus: string, moderatorId: string) => {
+export const updateGameActivation = async (
+  gameId: string,
+  censorStatus: string,
+  moderatorId: string,
+  censorReason: string 
+) => {
   try {
     const validStatuses = ["Approved", "Rejected"];
     if (!validStatuses.includes(censorStatus)) {
-      return { error: "censorStatus must be either 'Approved' or 'Rejected'", data: null, success: false };
+      return {
+        error: "censorStatus must be either 'Approved' or 'Rejected'",
+        data: null,
+        success: false,
+      };
     }
+
     const formData = new FormData();
     formData.append("CensorStatus", censorStatus);
+    formData.append("CensorReason", censorReason); 
 
-    const { data } = await axiosClient.put(`/api/users/${moderatorId}/games/${gameId}/activation`, formData);
-    return { error: null, data: data, success: true };
+    const { data } = await axiosClient.put(
+      `/api/users/${moderatorId}/games/${gameId}/activation`,
+      formData
+    );
+
+    return { error: null, data, success: true };
   } catch (error) {
     return handleApiError(error);
   }

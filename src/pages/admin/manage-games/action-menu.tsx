@@ -1,5 +1,5 @@
 import { Game } from "@/types/game";
-import { Button, Dropdown, Modal, message } from "antd";
+import { Button, Dropdown, Input, Modal, message } from "antd";
 import { DeleteOutlined, MoreOutlined, EyeOutlined, CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import useGameStore from "@/store/use-game-store";
@@ -45,7 +45,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
       okType: "primary",
       cancelText: "Cancel",
       async onOk() {
-        const result = await updateGameActivation(game.id, "Approved", profile.id);
+        const result = await updateGameActivation(game.id, "Approved", profile.id, "");
         if (result.success) {
           messageApi.open({
             type: "success",
@@ -64,26 +64,37 @@ const ActionMenu = ({ record }: { record: Game }) => {
 
   const handleReject = (game: Game) => {
     if (!profile) return;
+
+    let reason = "";
+
     Modal.confirm({
-      title: "Reject Game",
-      content: `Do you want to reject game "${game.name}"?`,
+      title: `Reject Game "${game.name}"`,
+      content: (
+        <Input.TextArea
+          rows={4}
+          placeholder="Enter reason for rejection"
+          onChange={(e) => {
+            reason = e.target.value;
+          }}
+        />
+      ),
       okText: "Reject",
       okType: "danger",
       cancelText: "Cancel",
       async onOk() {
-        const result = await updateGameActivation(game.id, "Rejected", profile.id);
+        if (!reason.trim()) {
+          messageApi.error("Please enter a reason for rejection");
+          throw new Error("No reason provided");
+        }
+
+        const result = await updateGameActivation(game.id, "Rejected", profile.id, reason);
         if (result.success) {
-          messageApi.open({
-            type: "success",
-            content: `Game "${game.name}" rejected`,
-          });
-          setTimeout(() => fetchGameById(game.id), 1000);
+          messageApi.success(`Game "${game.name}" rejected`);
+          fetchAllGamesAdmin();
+
           setTimeout(() => fetchGameById(game.id), 1000);
         } else {
-          messageApi.open({
-            type: "error",
-            content: result.error || "Failed to reject game",
-          });
+          messageApi.error(result.error || "Failed to reject game");
         }
       },
     });
@@ -116,23 +127,31 @@ const ActionMenu = ({ record }: { record: Game }) => {
               icon: <FaRegClipboard />,
               onClick: () => handleCopyToClipboard(),
             },
-            ...(record.censorStatus === "PendingManualReview" || record.censorStatus === "PendingAIReview"
+            ...(["PendingManualReview", "PendingAIReview", "Approved", "Rejected"].includes(record.censorStatus)
               ? [
                   {
                     type: "divider" as const,
                   },
-                  {
-                    key: "approve",
-                    label: "Approve",
-                    icon: <CheckCircleOutlined className="text-green-500" />,
-                    onClick: () => handleApprove(record),
-                  },
-                  {
-                    key: "reject",
-                    label: "Reject",
-                    icon: <CloseCircleOutlined className="text-red-500" />,
-                    onClick: () => handleReject(record),
-                  },
+                  ...(record.censorStatus !== "Approved"
+                    ? [
+                        {
+                          key: "approve",
+                          label: "Approve",
+                          icon: <CheckCircleOutlined className="text-green-500" />,
+                          onClick: () => handleApprove(record),
+                        },
+                      ]
+                    : []),
+                  ...(record.censorStatus !== "Rejected"
+                    ? [
+                        {
+                          key: "reject",
+                          label: "Reject",
+                          icon: <CloseCircleOutlined className="text-red-500" />,
+                          onClick: () => handleReject(record),
+                        },
+                      ]
+                    : []),
                 ]
               : []),
             {
