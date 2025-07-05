@@ -23,13 +23,15 @@ import {
 } from "@/components/status-tags";
 import GameNotFound from "@/pages/errors/game-not-found";
 import { CiWarning } from "react-icons/ci";
+import ViewCensorLogButton from "../../../components/view-censor-log-button";
 
 const GameInfoTab = () => {
   const { game, error } = useGameStore();
   const navigate = useNavigate();
   const [index, setIndex] = useState(-1);
   const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
-  const { fetchGameFiles, gameFiles, installInstruction } = useGameStore();
+  const { fetchGameFiles, gameFiles, installInstruction, fetchGameCensorLog } =
+    useGameStore();
 
   const handleViewGamePage = () => {
     navigate(`/game/${game?.id}`);
@@ -37,12 +39,13 @@ const GameInfoTab = () => {
 
   const handleGoToUpdate = () => {
     navigate(`/dev/update-game/${game?.id}`);
-  }
+  };
 
   useEffect(() => {
     if (game) {
       fetchPlatforms();
       fetchGameFiles(game.id);
+      fetchGameCensorLog(game.id);
     }
   }, []);
 
@@ -130,7 +133,11 @@ const GameInfoTab = () => {
     },
     {
       key: "censor-status",
-      label: "Censor status",
+      label: (
+        <div>
+          Censor status <ViewCensorLogButton />
+        </div>
+      ),
       children: <ModerationStatusBadge status={game.censorStatus} />,
       span: 1,
     },
@@ -220,7 +227,11 @@ const GameInfoTab = () => {
         <Button icon={<FaEye />} onClick={handleViewGamePage}>
           View game's page
         </Button>
-        <Button icon={<FaPencilAlt />} type="primary" onClick={handleGoToUpdate}>
+        <Button
+          icon={<FaPencilAlt />}
+          type="primary"
+          onClick={handleGoToUpdate}
+        >
           Update game
         </Button>
       </div>

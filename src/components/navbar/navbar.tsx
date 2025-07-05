@@ -65,14 +65,14 @@ const popOverContent = (
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { getDisplayProfile, displayProfile: profile } = useProfileStore();
+  const { getDisplayProfile, displayProfile, profile } = useProfileStore();
 
   const handleGoToDashboard = () => {
-    if (profile?.role.name == "Developer") {
+    if (displayProfile?.role.name == "Developer") {
       navigate("/dev/manage-games");
-    } else if (profile?.role.name == "Admin") {
+    } else if (displayProfile?.role.name == "Admin") {
       navigate("/admin");
-    } else if (profile?.role.name == "Moderator") {
+    } else if (displayProfile?.role.name == "Moderator") {
       navigate("/moderator");
     }
   };
@@ -83,13 +83,13 @@ const Navbar = () => {
     }
   };
   const showDashboardButton =
-    profile?.role.name == "Developer" ||
-    profile?.role.name == "Admin" ||
-    profile?.role.name == "Moderator";
+    displayProfile?.role.name == "Developer" ||
+    displayProfile?.role.name == "Admin" ||
+    displayProfile?.role.name == "Moderator";
 
   useEffect(() => {
     getDisplayProfile();
-  }, []);
+  }, [profile]);
 
   return (
     <div className="bg-zinc-900">
@@ -134,14 +134,14 @@ const Navbar = () => {
             </Button>
           )}
 
-          {profile && (
+          {displayProfile && (
             <>
               <Button shape="circle" icon={<IoIosNotifications />}></Button>
               <ProfileMenu />
             </>
           )}
 
-          {!profile && (
+          {!displayProfile && (
             <>
               <Button type="primary" onClick={() => navigate("/log-in")}>
                 Sign In

@@ -126,3 +126,12 @@ export type GameFile = {
     platform: Platform;
     file: string;
 }
+
+export type GameCensorLog = {
+    id: string;
+    createdAt: string;
+    censoredAt?: string;
+    censorReason?: string;
+    censorStatus: GameCensorStatus;
+    moderator?: User;
+}

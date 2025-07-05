@@ -7,6 +7,7 @@ import {
   VisibilityStatus,
 } from "@/components/status-tags";
 import TiptapView from "@/components/tiptap/tiptap-view";
+import ViewCensorLogButton from "@/components/view-censor-log-button";
 import { updateGameActivation } from "@/lib/api/game-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { formatDate, formatDateTime, formatDuration } from "@/lib/date-n-time";
@@ -36,7 +37,8 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 const AdminGameDetail = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
-  const { fetchGameById, loading, error, game } = useGameStore();
+  const { fetchGameById, loading, error, game, fetchGameCensorLog } =
+    useGameStore();
   const [index, setIndex] = useState(-1);
   const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
   const { fetchGameFiles, gameFiles, installInstruction } = useGameStore();
@@ -48,6 +50,7 @@ const AdminGameDetail = () => {
     if (game) {
       fetchPlatforms();
       fetchGameFiles(game.id);
+      fetchGameCensorLog(game.id);
     }
   }, [game]);
 
@@ -149,7 +152,11 @@ const AdminGameDetail = () => {
     },
     {
       key: "censor-status",
-      label: "Censor status",
+      label: (
+        <div>
+          Censor status <ViewCensorLogButton />
+        </div>
+      ),
       children: <ModerationStatusBadge status={game.censorStatus} />,
       span: 1,
     },
@@ -282,7 +289,13 @@ const AdminGameDetail = () => {
         plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
       />
       <h1 className="text-2xl font-bold">
-        "{game.name}" <span className="font-normal text-sm">by <Link to={`/profile/${game.developer.id}`}>{game.developer.userName}</Link></span>
+        "{game.name}"{" "}
+        <span className="font-normal text-sm">
+          by{" "}
+          <Link to={`/profile/${game.developer.id}`}>
+            {game.developer.userName}
+          </Link>
+        </span>
       </h1>
       <div className="flex gap-3 justify-end mb-3">
         <DeleteGameButton />

@@ -54,7 +54,7 @@ const DevGameDetailPages = () => {
       children: <GameReviewTab />,
     },
   ];
-  
+
   if (!gameId) {
     return <Navigate to={`/`} />;
   }

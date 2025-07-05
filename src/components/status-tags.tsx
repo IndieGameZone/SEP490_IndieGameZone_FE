@@ -106,7 +106,7 @@ export const CategoryTag = ({ category }: { category?: Category }) => {
 const moderationStatusTagConfig = {
   Approved: { color: "green", text: "Approved", icon: "✓" },
   PendingManualReview: { color: "orange", text: "Pending Review", icon: "⧗" },
-  PendingAiReview: { color: "blue", text: "Pending AI Review", icon: "⧗" },
+  PendingAIReview: { color: "blue", text: "Pending AI Review", icon: "⧗" },
   Rejected: { color: "red", text: "Rejected", icon: "x" },
 };
 

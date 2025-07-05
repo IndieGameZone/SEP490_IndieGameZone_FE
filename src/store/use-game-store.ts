@@ -1,11 +1,12 @@
-import { getAllGamesAdmin, getGameById, getGameFiles, getGamesByDeveloperId } from '@/lib/api/game-api';
-import { Game, GameFile } from '@/types/game';
+import { getAllGamesAdmin, getGameById, getGameCensorLog, getGameFiles, getGamesByDeveloperId } from '@/lib/api/game-api';
+import { Game, GameCensorLog, GameFile } from '@/types/game';
 import { create } from 'zustand';
 
 interface GameState {
     games: Game[];
     gameFiles: GameFile[],
     game?: Game;
+    gameCensorLogs: GameCensorLog[];
     installInstruction?: string;
     loading: boolean;
     loadingFiles: boolean;
@@ -13,6 +14,7 @@ interface GameState {
     fetchGameByDeveloperId: (developerId: string) => void;
     fetchGameById: (gameId: string) => void;
     fetchGameFiles: (gameId: string) => void;
+    fetchGameCensorLog: (gameId: string) => void;
     fetchAllGamesAdmin: () => void;
     clearGameStore: () => void;
     renderKey: number;
@@ -22,6 +24,7 @@ interface GameState {
 const useGameStore = create<GameState>((set) => ({
     games: [],
     gameFiles: [],
+    gameCensorLogs: [],
     game: undefined,
     loading: false,
     loadingFiles: false,
@@ -86,7 +89,19 @@ const useGameStore = create<GameState>((set) => ({
             set({ loadingFiles: false, error: error.message });
         }
     },
-    
+    fetchGameCensorLog: async (gameId) => {
+        set({ loadingFiles: true, error: null });
+        try {
+            const response = await getGameCensorLog(gameId);
+            if (!response.error) {
+                set({ gameCensorLogs: response.data });
+            } else {
+                set({ loadingFiles: false, error: response.error });
+            }
+        } catch (error: any) {
+            set({ loadingFiles: false, error: error.message });
+        }
+    },
     clearGameStore: () => {
         set({ loading: false, gameFiles: [], game: undefined, games: [] });
     }
