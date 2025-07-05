@@ -153,10 +153,26 @@ export const getGameFiles = async (gameId: string) => {
   }
 };
 
-export const getAllGamesAdmin = async () => {
+type GamesAsAdminParams = {
+  searchTerm?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  censorStatus?: GameCensorStatus;
+};
+
+export const getGamesAsAdmin = async (params?: GamesAsAdminParams) => {
   try {
-    const { data } = await axiosClient.get(`/api/games`);
-    return { error: null, data: data, success: true };
+    const searchParams = new URLSearchParams();
+    if (params?.searchTerm) searchParams.append("SearchTerm", params.searchTerm);
+    if (params?.pageNumber !== undefined) searchParams.append("PageNumber", params.pageNumber.toString());
+    if (params?.pageSize !== undefined) searchParams.append("PageSize", params.pageSize.toString());
+    if (params?.censorStatus !== undefined) searchParams.append("CensorStatus", params.censorStatus);
+
+    const queryString = searchParams.toString();
+    const url = queryString ? `/api/games?${queryString}` : "/api/games";
+
+    const { data, headers } = await axiosClient.get(url);
+    return { error: null, data: { games: data, headers: headers }, success: true };
   } catch (error) {
     return handleApiError(error);
   }

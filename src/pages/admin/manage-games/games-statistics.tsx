@@ -62,7 +62,7 @@ const GamesStatistics = () => {
         </div>
         <div className="rounded shadow-md bg-gradient-to-br from-orange-500 to-orange-600 p-5">
           <Statistic
-            title={<span className="text-white">Pending Manual Review</span>}
+            title={<span className="text-white">Pending Review</span>}
             value={totalPending}
             valueStyle={{ color: "white" }}
           />

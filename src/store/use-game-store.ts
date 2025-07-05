@@ -1,4 +1,4 @@
-import { getAllGamesAdmin, getGameById, getGameCensorLog, getGameFiles, getGamesByDeveloperId } from '@/lib/api/game-api';
+import { getGamesAsAdmin, getGameById, getGameCensorLog, getGameFiles, getGamesByDeveloperId } from '@/lib/api/game-api';
 import { Game, GameCensorLog, GameFile } from '@/types/game';
 import { create } from 'zustand';
 
@@ -37,9 +37,9 @@ const useGameStore = create<GameState>((set) => ({
     fetchAllGamesAdmin: async () => {
         set({ loading: true, error: null });
         try {
-            const response = await getAllGamesAdmin();
+            const response = await getGamesAsAdmin();
             if (!response.error) {
-                set({ games: response.data, loading: false });
+                set({ games: response.data.games, loading: false });
             } else {
                 set({ loading: false, error: response.error });
             }

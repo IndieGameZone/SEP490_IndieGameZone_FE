@@ -23,7 +23,7 @@ const PageTransition: React.FC = () => {
         ease: "power2.out",
       })
       .to(loaderRef.current, {
-        duration: 0.3,
+        duration: 5,
         opacity: 0,
         ease: "power2.out",
         delay: 0.5,
