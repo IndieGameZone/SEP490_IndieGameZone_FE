@@ -202,3 +202,11 @@ export const getGameCensorLog = async (gameId: string) => {
     return handleApiError(error);
   }
 }
+export const getNumberOfGame= async () => {
+    try {
+        const { data } = await axiosClient.get(`/api/games/number-of-games`);
+        return { error: null, data: data, success: true };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
