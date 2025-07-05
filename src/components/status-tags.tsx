@@ -1,6 +1,6 @@
 import { Category } from "@/types/category";
 import { GameCensorStatus, GameVisibility } from "@/types/game";
-import { Badge, Tag, TagProps } from "antd";
+import { Badge, Tag, TagProps, Tooltip } from "antd";
 import { LuBrainCircuit } from "react-icons/lu";
 
 type ModerationStatusProps = {
@@ -91,12 +91,15 @@ const getCategoryColor = (() => {
 
 export const CategoryTag = ({ category }: { category?: Category }) => {
   return (
-    <Tag
-      color={getCategoryColor(category?.name || "Unknown")}
-      style={{ marginInlineEnd: 0 }}
-    >
-      {category?.name || "Unknown"}
-    </Tag>
+    <Tooltip title={category?.name}>
+      <Tag
+        color={getCategoryColor(category?.name || "Unknown")}
+        style={{ marginInlineEnd: 0 }}
+        className="overflow-hidden max-w-24 text-ellipsis"
+      >
+        {category?.name || "Unknown"}
+      </Tag>
+    </Tooltip>
   );
 };
 

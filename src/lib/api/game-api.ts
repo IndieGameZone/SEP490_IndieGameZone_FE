@@ -179,3 +179,12 @@ export const updateGameActivation = async (gameId: string, censorStatus: string)
     return handleApiError(error);
   }
 };
+
+export const getGameCensorLog = async (gameId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/games/${gameId}/game-censor-logs`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

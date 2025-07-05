@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 const { useToken } = theme;
 const ProfileMenu = () => {
-  const { logout, profile } = useProfileStore();
+  const { logout, displayProfile: profile } = useProfileStore();
   const { token } = useToken();
   const navigate = useNavigate();
   const handleLogout = () => {
