@@ -4,6 +4,7 @@ import { create } from 'zustand';
 
 interface AuthState {
     profile?: User;
+    displayProfile?: User;
     loading: boolean;
     error: string | null;
     fetchProfile: () => Promise<void>;
@@ -16,6 +17,7 @@ interface AuthState {
 
 const useAuthStore = create<AuthState>((set) => ({
     profile: undefined,
+    displayProfile: undefined,
     loading: false,
     error: null,
     renderKey: 0,
@@ -39,7 +41,9 @@ const useAuthStore = create<AuthState>((set) => ({
     getDisplayProfile() {
         const saved = localStorage.getItem("profile");
         if (saved) {
-            return JSON.parse(saved);
+            const parsedValue = JSON.parse(saved);
+            set({ displayProfile: parsedValue })
+            return parsedValue;
         }
         return undefined;
     },

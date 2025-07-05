@@ -5,7 +5,7 @@ import { AITag, ModerationStatusBadge, VisibilityStatus } from "@/components/sta
 import TiptapView from "@/components/tiptap/tiptap-view";
 import { updateGameActivation } from "@/lib/api/game-api";
 import { formatCurrencyVND } from "@/lib/currency";
-import { formatDate, formatDateTime } from "@/lib/date-n-time";
+import { formatDate, formatDateTime, formatDuration } from "@/lib/date-n-time";
 import DeleteGameButton from "@/pages/developer/game-details/delete-game-button";
 import GameNotFound from "@/pages/errors/game-not-found";
 import useAuthStore from "@/store/use-auth-store";
@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { FaCheck, FaEye } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import ReactPlayer from "react-player";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
@@ -77,7 +77,7 @@ const AdminGameDetail = () => {
     {
       key: "average-time",
       label: "Average time",
-      children: game?.averageSession + " minute(s)",
+      children: formatDuration(game.averageSession),
       span: 1,
     },
     {
@@ -156,35 +156,12 @@ const AdminGameDetail = () => {
     },
   ];
 
-  const descriptionItems: DescriptionsProps["items"] = [
-    {
-      key: "description",
-      label: "Description",
-      children: (
-        <ExpandableWrapper>
-          <TiptapView value={game?.description} darkTheme={false} />
-        </ExpandableWrapper>
-      ),
-    },
-  ];
-
-  const installInstructionItems: DescriptionsProps["items"] = [
-    {
-      key: "install-instruction",
-      label: "Install Instructions",
-      children: installInstruction ? (
-        <ExpandableWrapper>
-          <div className="font-mono">
-            <TiptapView value={installInstruction} darkTheme={false} />
-          </div>
-        </ExpandableWrapper>
-      ) : (
-        <span className="text-gray-500">None</span>
-      ),
-    },
-  ];
-
-  const slides = game ? [{ src: game.coverImage }, ...game.gameImages.map((image) => ({ src: image.image }))] : [];
+  const slides = game
+    ? [
+        { src: game.coverImage },
+        ...game.gameImages.map((image) => ({ src: image.image })),
+      ]
+    : [];
 
   if (game.censorReason) {
     infoItems.push({
@@ -274,7 +251,7 @@ const AdminGameDetail = () => {
   const isPending = game.censorStatus === "PendingAIReview" || game.censorStatus === "PendingManualReview";
 
   return (
-    <div className="bg-zinc-100 p-3 flex flex-col gap-5">
+    <div>
       {contextHolder}
       <Lightbox
         index={index}
@@ -283,7 +260,10 @@ const AdminGameDetail = () => {
         close={() => setIndex(-1)}
         plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
       />
-      <div className="flex gap-3 justify-end">
+      <h1 className="text-2xl font-bold">
+        "{game.name}" <span className="font-normal text-sm">by <Link to={`/profile/${game.developer.id}`}>{game.developer.userName}</Link></span>
+      </h1>
+      <div className="flex gap-3 justify-end mb-3">
         <DeleteGameButton />
         <Button icon={<FaEye />} onClick={handleViewGamePage}>
           View game's page
@@ -305,52 +285,97 @@ const AdminGameDetail = () => {
           </>
         )}
       </div>
-
-      <div className="bg-white p-3 rounded ">
-        <h3 className="font-bold my-2">Cover Image</h3>
-        <img
-          src={game?.coverImage}
-          alt="game's cover image"
-          className="aspect-video object-contain bg-zinc-100 rounded highlight-hover cursor-pointer w-full"
-          onClick={() => {
-            setIndex(0);
-          }}
-        />
-
-        <Descriptions title="Game Infomation" column={2} bordered items={infoItems} className="mt-2" />
-
-        <h3 className="font-bold mt-4">Game screenshots/images</h3>
-        <div className="grid grid-cols-2 mt-2 gap-3">
-          {game?.gameImages.map((image, index: number) => {
-            return (
-              <img
-                src={image.image}
-                key={`game-image-${image.id}`}
-                alt=""
-                className="aspect-video object-contain bg-zinc-200 rounded highlight-hover cursor-pointer w-full"
-                onClick={() => {
-                  setIndex(index + 1);
-                }}
+      <div className="bg-white rounded shadow text-left">
+        <div className="grid-cols-2 grid gap-3 p-3">
+          <div>
+            <h3 className="font-bold mb-2 text-lg">Cover Image</h3>
+            <img
+              src={game?.coverImage}
+              alt="game's cover image"
+              className="aspect-video object-contain bg-zinc-100 rounded highlight-hover cursor-pointer w-full"
+              onClick={() => {
+                setIndex(0);
+              }}
+            />
+          </div>
+          <div>
+            <h3 className="font-bold mb-2 text-lg">Game screenshots/images</h3>
+            <div className="grid grid-cols-2 mt-2 gap-3">
+              {game?.gameImages.map((image, index: number) => {
+                return (
+                  <img
+                    src={image.image}
+                    key={`game-image-${image.id}`}
+                    alt=""
+                    className="aspect-video object-contain bg-zinc-200 rounded highlight-hover cursor-pointer w-full"
+                    onClick={() => {
+                      setIndex(index + 1);
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </div>
+          <div className="col-span-2">
+            <h3 className="font-bold mb-2 text-lg">Game information</h3>
+            <Descriptions
+              column={2}
+              bordered
+              items={infoItems}
+              contentStyle={{ border: "1px solid #a1a1aa" }}
+              labelStyle={{ border: "1px solid #a1a1aa", fontWeight: "bold" }}
+            />
+          </div>
+          <div className="col-span-2">
+            <h3 className="font-bold mb-2 text-lg">Gameplay/trailer</h3>
+            {game?.videoLink ? (
+              <ReactPlayer
+                className="react-player"
+                url={game?.videoLink}
+                controls
               />
-            );
-          })}
-        </div>
-        <h3 className="font-bold mt-4">Gameplay/trailer</h3>
-        {game?.videoLink ? (
-          <ReactPlayer className="react-player aspect-video" url={game?.videoLink} controls />
-        ) : (
-          <div className="text-gray-500">None</div>
-        )}
-        <Descriptions column={2} layout="vertical" bordered items={descriptionItems} style={{ marginTop: 15 }} />
-        <Descriptions column={2} layout="vertical" bordered items={installInstructionItems} style={{ marginTop: 15 }} />
-        <h3 className="font-bold mb-2 mt-5">Game files</h3>
-        <div className="grid grid-cols-2 gap-3">
-          {gameFiles.map((file, index) => {
-            return (
-              <FileCard file={file} key={`game-file-${index}`} defaultPlatforms={defaultPlatforms} darkTheme={false} />
-            );
-          })}
-          {!gameFiles && <span className="text-gray-500">None</span>}
+            ) : (
+              <div className="text-gray-500">None</div>
+            )}
+          </div>
+          <div className="col-span-2">
+            <h3 className="font-bold mb-2 text-lg">Description</h3>
+            <div className="p-3 border border-zinc-400 rounded">
+              <ExpandableWrapper>
+                <TiptapView value={game?.description} darkTheme={false} />
+              </ExpandableWrapper>
+            </div>
+          </div>
+          <div>
+            <h3 className="font-bold mb-2 text-lg">Install Instructions</h3>
+            <div className="p-3 border border-zinc-400 rounded">
+              {installInstruction ? (
+                <ExpandableWrapper>
+                  <div className="font-mono">
+                    <TiptapView value={installInstruction} darkTheme={false} />
+                  </div>
+                </ExpandableWrapper>
+              ) : (
+                <span className="text-gray-500">None</span>
+              )}
+            </div>
+          </div>
+          <div className="">
+            <h3 className="font-bold mb-2 text-lg">Game files</h3>
+            <div className="flex flex-col gap-3">
+              {gameFiles.map((file, index) => {
+                return (
+                  <FileCard
+                    file={file}
+                    key={`game-file-${index}`}
+                    defaultPlatforms={defaultPlatforms}
+                    darkTheme={false}
+                  />
+                );
+              })}
+              {!gameFiles && <span className="text-gray-500">None</span>}
+            </div>
+          </div>
         </div>
       </div>
     </div>

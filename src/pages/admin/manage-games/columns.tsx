@@ -14,7 +14,7 @@ const columns: ColumnsType<Game> = [
     title: "Game Info",
     key: "gameInfo",
     render: (_, record: Game) => (
-      <div className="flex items-center gap-4">
+      <div className="grid grid-cols-4 gap-4">
         <div className="flex flex-col gap-1 items-center">
           <Image
             src={record.coverImage}
@@ -27,7 +27,7 @@ const columns: ColumnsType<Game> = [
           <CategoryTag category={record.category} />
         </div>
 
-        <div className="flex-1 min-w-0">
+        <div className="col-span-3 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <Link to={`/admin/game/${record.id}`}>
               <Title level={5} className="!mb-0 truncate" title={record.name}>

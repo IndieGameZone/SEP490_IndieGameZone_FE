@@ -15,7 +15,7 @@ import useProfileStore from "@/store/use-auth-store";
 import { CgGames } from "react-icons/cg";
 import styles from "@/styles/admin-layout.module.css";
 
-const { Content, Footer, Sider } = Layout;
+const { Footer, Sider } = Layout;
 
 const siderStyle: React.CSSProperties = {
   overflow: "auto",
@@ -202,9 +202,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
               </div>
             </div>
           </div>
-          <Content style={{ margin: "24px 16px 0", overflow: "auto" }}>
-            {children}
-          </Content>
+          <div style={{ margin: "24px 16px 0" }}>{children}</div>
           <Footer style={{ textAlign: "center" }}>
             Ant Design ©{new Date().getFullYear()} Created by Ant UED
           </Footer>
