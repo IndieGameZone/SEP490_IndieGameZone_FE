@@ -5,9 +5,15 @@ import useUserStore from "@/store/use-user-store";
 import { Button, Dropdown, MenuProps, Tabs, TabsProps } from "antd";
 import { useEffect } from "react";
 import { CiUser } from "react-icons/ci";
-import { FaFlag, FaGamepad, FaLink } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaFlag,
+  FaGamepad,
+  FaLink,
+  FaYoutube,
+} from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import ViewUserPosts from "./view-user-posts";
 import ViewUserGames from "./view-user-games";
 import { BsFileEarmarkPost } from "react-icons/bs";
@@ -97,7 +103,11 @@ const ViewProfilePage = () => {
                 <CiUser className="size-16" />
               </div>
             )}
-            {user?.role.name == "Developer" && <div className="absolute right-1/2 translate-x-1/2 bottom-2 bg-orange-600 text-sm px-2 rounded drop-shadow">Dev</div>}
+            {user?.role.name == "Developer" && (
+              <div className="absolute right-1/2 translate-x-1/2 bottom-2 bg-orange-600 text-sm px-2 rounded drop-shadow">
+                Dev
+              </div>
+            )}
           </div>
           <div className="text-xl font-semibold mt-2">{user?.userName}</div>
           <div className="text-sm text-zinc-500">{user?.email}</div>
@@ -117,7 +127,38 @@ const ViewProfilePage = () => {
               <p className="text-sm text-zinc-500">Posts</p>
             </div>
           </div>
-          {user?.bio && <TiptapView value={user?.bio} />}
+
+          {user?.bio && (
+            <>
+              <hr className="border-zinc-600 my-3 w-full" />
+              <TiptapView value={user?.bio} />
+            </>
+          )}
+          {(user?.facebookLink || user?.youtubeChannelLink) && (
+            <hr className="border-zinc-600 my-3 w-full" />
+          )}
+          {user?.facebookLink && (
+            <Link
+              to={user.facebookLink}
+              className="flex items-center w-full gap-2"
+            >
+              <FaFacebook />
+              <p className="hover:underline">
+                {user.facebookLink.split("/").pop()}
+              </p>
+            </Link>
+          )}
+          {user?.youtubeChannelLink && (
+            <Link
+              to={user.youtubeChannelLink}
+              className="flex items-center w-full gap-2"
+            >
+              <FaYoutube />
+              <p className="hover:underline">
+                {user.youtubeChannelLink.split("/").pop()}
+              </p>
+            </Link>
+          )}
           {profile?.id == userId ? (
             <div className="flex w-full mt-3">
               <Button

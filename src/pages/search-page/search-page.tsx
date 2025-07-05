@@ -61,6 +61,7 @@ const SearchPage = () => {
     setPage(1);
     setHasMore(true);
     setInitialLoad(true);
+    setGames([]);
   }, [searchParams]);
 
   useEffect(() => {
