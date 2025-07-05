@@ -74,7 +74,7 @@ type GamesByDeveloperParams = {
   searchTerm?: string;
   pageNumber?: number;
   pageSize?: number;
-  censorStatus?: GameCensorStatus
+  censorStatus?: GameCensorStatus;
 };
 
 export const getGamesByDeveloperId = async (developerId: string, params?: GamesByDeveloperParams) => {
@@ -103,9 +103,7 @@ type GameSearchParams = {
   Platforms?: string[];
 };
 
-export const searchGames = async (
-  params: GameSearchParams = {}
-) => {
+export const searchGames = async (params: GameSearchParams = {}) => {
   try {
     const searchParams = new URLSearchParams();
     if (params.searchTerm) searchParams.append("SearchTerm", params.searchTerm);
@@ -162,18 +160,18 @@ export const getAllGamesAdmin = async () => {
   } catch (error) {
     return handleApiError(error);
   }
-}
+};
 
-export const updateGameActivation = async (gameId: string, censorStatus: string) => {
+export const updateGameActivation = async (gameId: string, censorStatus: string, moderatorId: string) => {
   try {
-    const validStatuses = ['Approved', 'Rejected'];
+    const validStatuses = ["Approved", "Rejected"];
     if (!validStatuses.includes(censorStatus)) {
       return { error: "censorStatus must be either 'Approved' or 'Rejected'", data: null, success: false };
     }
+    const formData = new FormData();
+    formData.append("CensorStatus", censorStatus);
 
-    const { data } = await axiosClient.put(`/api/games/${gameId}/activation`, null, {
-      params: { censorStatus },
-    });
+    const { data } = await axiosClient.put(`/api/users/${moderatorId}/games/${gameId}/activation`, formData);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
