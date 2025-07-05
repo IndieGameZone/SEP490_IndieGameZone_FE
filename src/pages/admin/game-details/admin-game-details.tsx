@@ -1,27 +1,17 @@
 import ExpandableWrapper from "@/components/expandable-wrapper";
 import FileCard from "@/components/file-card";
 import Loader from "@/components/loader";
-import {
-  AITag,
-  ModerationStatusBadge,
-  VisibilityStatus,
-} from "@/components/status-tags";
+import { AITag, ModerationStatusBadge, VisibilityStatus } from "@/components/status-tags";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import { updateGameActivation } from "@/lib/api/game-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { formatDate, formatDateTime } from "@/lib/date-n-time";
 import DeleteGameButton from "@/pages/developer/game-details/delete-game-button";
 import GameNotFound from "@/pages/errors/game-not-found";
+import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
-import {
-  Button,
-  Descriptions,
-  DescriptionsProps,
-  Tag,
-  message,
-  Modal,
-} from "antd";
+import { Button, Descriptions, DescriptionsProps, Tag, message, Modal } from "antd";
 import { useEffect, useState } from "react";
 import { FaCheck, FaEye } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
@@ -43,6 +33,7 @@ const AdminGameDetail = () => {
   const [isApproving, setIsApproving] = useState(false);
   const [isDeclining, setIsDeclining] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const { profile } = useAuthStore();
 
   useEffect(() => {
     if (game) {
@@ -112,21 +103,13 @@ const AdminGameDetail = () => {
     {
       key: "created-date",
       label: "Created date",
-      children: game ? (
-        formatDate(new Date(game.createdAt))
-      ) : (
-        <span className="text-gray-500">None</span>
-      ),
+      children: game ? formatDate(new Date(game.createdAt)) : <span className="text-gray-500">None</span>,
       span: 1,
     },
     {
       key: "updated-date",
       label: "Updated date",
-      children: game.updatedAt ? (
-        formatDate(new Date(game.updatedAt))
-      ) : (
-        <span className="text-gray-500">None</span>
-      ),
+      children: game.updatedAt ? formatDate(new Date(game.updatedAt)) : <span className="text-gray-500">None</span>,
       span: 1,
     },
     {
@@ -168,11 +151,7 @@ const AdminGameDetail = () => {
     {
       key: "censored-at",
       label: "Censored at",
-      children: game.censorAt ? (
-        formatDateTime(new Date(game.censorAt))
-      ) : (
-        <span className="text-gray-500">None</span>
-      ),
+      children: game.censorAt ? formatDateTime(new Date(game.censorAt)) : <span className="text-gray-500">None</span>,
       span: 1,
     },
   ];
@@ -205,12 +184,7 @@ const AdminGameDetail = () => {
     },
   ];
 
-  const slides = game
-    ? [
-        { src: game.coverImage },
-        ...game.gameImages.map((image) => ({ src: image.image })),
-      ]
-    : [];
+  const slides = game ? [{ src: game.coverImage }, ...game.gameImages.map((image) => ({ src: image.image }))] : [];
 
   if (game.censorReason) {
     infoItems.push({
@@ -230,6 +204,7 @@ const AdminGameDetail = () => {
   };
 
   const handleApprove = () => {
+    if (!profile) return;
     Modal.confirm({
       title: "Approve Game",
       content: `Are you sure you want to approve game "${game.name}"?`,
@@ -240,7 +215,7 @@ const AdminGameDetail = () => {
       onOk: async () => {
         setIsApproving(true);
         if (gameId) {
-          const result = await updateGameActivation(gameId, "Approved");
+          const result = await updateGameActivation(gameId, "Approved", profile.id);
           if (result.success) {
             messageApi.open({
               type: "success",
@@ -263,6 +238,7 @@ const AdminGameDetail = () => {
   };
 
   const handleDecline = () => {
+    if (!profile) return;
     Modal.confirm({
       title: "Decline Game",
       content: `Are you sure you want to decline game "${game.name}"?`,
@@ -273,7 +249,7 @@ const AdminGameDetail = () => {
       onOk: async () => {
         setIsDeclining(true);
         if (gameId) {
-          const result = await updateGameActivation(gameId, "Rejected");
+          const result = await updateGameActivation(gameId, "Rejected", profile.id);
           if (result.success) {
             messageApi.open({
               type: "success",
@@ -295,9 +271,7 @@ const AdminGameDetail = () => {
     });
   };
 
-  const isPending =
-    game.censorStatus === "PendingAIReview" ||
-    game.censorStatus === "PendingManualReview";
+  const isPending = game.censorStatus === "PendingAIReview" || game.censorStatus === "PendingManualReview";
 
   return (
     <div className="bg-zinc-100 p-3 flex flex-col gap-5">
@@ -316,13 +290,7 @@ const AdminGameDetail = () => {
         </Button>
         {isPending && (
           <>
-            <Button
-              icon={<IoMdClose />}
-              type="primary"
-              danger
-              onClick={handleDecline}
-              loading={isDeclining}
-            >
+            <Button icon={<IoMdClose />} type="primary" danger onClick={handleDecline} loading={isDeclining}>
               Decline game
             </Button>
             <Button
@@ -349,13 +317,7 @@ const AdminGameDetail = () => {
           }}
         />
 
-        <Descriptions
-          title="Game Infomation"
-          column={2}
-          bordered
-          items={infoItems}
-          className="mt-2"
-        />
+        <Descriptions title="Game Infomation" column={2} bordered items={infoItems} className="mt-2" />
 
         <h3 className="font-bold mt-4">Game screenshots/images</h3>
         <div className="grid grid-cols-2 mt-2 gap-3">
@@ -375,38 +337,17 @@ const AdminGameDetail = () => {
         </div>
         <h3 className="font-bold mt-4">Gameplay/trailer</h3>
         {game?.videoLink ? (
-          <ReactPlayer
-            className="react-player aspect-video"
-            url={game?.videoLink}
-            controls
-          />
+          <ReactPlayer className="react-player aspect-video" url={game?.videoLink} controls />
         ) : (
           <div className="text-gray-500">None</div>
         )}
-        <Descriptions
-          column={2}
-          layout="vertical"
-          bordered
-          items={descriptionItems}
-          style={{ marginTop: 15 }}
-        />
-        <Descriptions
-          column={2}
-          layout="vertical"
-          bordered
-          items={installInstructionItems}
-          style={{ marginTop: 15 }}
-        />
+        <Descriptions column={2} layout="vertical" bordered items={descriptionItems} style={{ marginTop: 15 }} />
+        <Descriptions column={2} layout="vertical" bordered items={installInstructionItems} style={{ marginTop: 15 }} />
         <h3 className="font-bold mb-2 mt-5">Game files</h3>
         <div className="grid grid-cols-2 gap-3">
           {gameFiles.map((file, index) => {
             return (
-              <FileCard
-                file={file}
-                key={`game-file-${index}`}
-                defaultPlatforms={defaultPlatforms}
-                darkTheme={false}
-              />
+              <FileCard file={file} key={`game-file-${index}`} defaultPlatforms={defaultPlatforms} darkTheme={false} />
             );
           })}
           {!gameFiles && <span className="text-gray-500">None</span>}

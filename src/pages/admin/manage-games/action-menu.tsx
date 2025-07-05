@@ -6,10 +6,12 @@ import useGameStore from "@/store/use-game-store";
 import { updateGameActivation } from "@/lib/api/game-api";
 import { useClipboard } from "@/hooks/use-clipboard";
 import { FaRegClipboard } from "react-icons/fa";
+import useAuthStore from "@/store/use-auth-store";
 
 const ActionMenu = ({ record }: { record: Game }) => {
   const navigate = useNavigate();
   const { fetchGameById, fetchAllGamesAdmin } = useGameStore();
+  const { profile } = useAuthStore();
   const [messageApi, contextHolder] = message.useMessage();
   const { copyToClipboard } = useClipboard();
 
@@ -35,6 +37,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
   };
 
   const handleApprove = (game: Game) => {
+    if (!profile) return;
     Modal.confirm({
       title: "Approve Game",
       content: `Do you want to approve game "${game.name}"?`,
@@ -42,7 +45,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
       okType: "primary",
       cancelText: "Cancel",
       async onOk() {
-        const result = await updateGameActivation(game.id, "Approved");
+        const result = await updateGameActivation(game.id, "Approved", profile.id);
         if (result.success) {
           messageApi.open({
             type: "success",
@@ -60,6 +63,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
   };
 
   const handleReject = (game: Game) => {
+    if (!profile) return;
     Modal.confirm({
       title: "Reject Game",
       content: `Do you want to reject game "${game.name}"?`,
@@ -67,7 +71,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
       okType: "danger",
       cancelText: "Cancel",
       async onOk() {
-        const result = await updateGameActivation(game.id, "Rejected");
+        const result = await updateGameActivation(game.id, "Rejected", profile.id);
         if (result.success) {
           messageApi.open({
             type: "success",
@@ -112,8 +116,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
               icon: <FaRegClipboard />,
               onClick: () => handleCopyToClipboard(),
             },
-            ...(record.censorStatus === "PendingManualReview" ||
-            record.censorStatus === "PendingAIReview"
+            ...(record.censorStatus === "PendingManualReview" || record.censorStatus === "PendingAIReview"
               ? [
                   {
                     type: "divider" as const,

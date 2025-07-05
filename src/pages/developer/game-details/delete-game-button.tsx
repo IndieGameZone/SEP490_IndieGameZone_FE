@@ -14,11 +14,6 @@ const DeleteGameButton = () => {
 
   const confirmDelete = async () => {
     if (!profile || !game) return;
-    messageApi.open({
-      type: "loading",
-      content: "Deleting game..",
-      duration: 0,
-    });
     const result = await deleteGame(profile.id, game.id);
     if (result.error) {
       messageApi.error("Failed to delete game! Please try again.");
