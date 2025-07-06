@@ -54,30 +54,15 @@ const UpdateGameInfo = () => {
   const [isFree, setIsFree] = useState(true);
   const [allowDonate, setAllowDonate] = useState(true);
 
-  const {
-    categories,
-    fetchCategories,
-    loading: loadingCategories,
-  } = useCategoryStore();
-  const { tags, fetchTags, loading: loadingTags } = useTagStore();
-  const {
-    ageRestrictions,
-    fetchAgeRestrictions,
-    loading: loadingAgeRestrictions,
-  } = useAgeRestrictionStore();
-  const {
-    languages,
-    fetchLanguages,
-    loading: loadingLanguages,
-  } = useLanguageStore();
+  const { categories, loading: loadingCategories } = useCategoryStore();
+  const { tags, loading: loadingTags } = useTagStore();
+  const { ageRestrictions, loading: loadingAgeRestrictions } =
+    useAgeRestrictionStore();
+  const { languages, loading: loadingLanguages } = useLanguageStore();
   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
     console.log(values);
   };
   useEffect(() => {
-    fetchCategories();
-    fetchTags();
-    fetchAgeRestrictions();
-    fetchLanguages();
     if (game) {
       setIsFree(game.price == 0);
       setAllowDonate(game.allowDonation);

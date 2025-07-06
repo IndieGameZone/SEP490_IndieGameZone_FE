@@ -182,7 +182,7 @@ export const updateGameActivation = async (
   gameId: string,
   censorStatus: string,
   moderatorId: string,
-  censorReason: string 
+  censorReason: string
 ) => {
   try {
     const validStatuses = ["Approved", "Rejected"];
@@ -196,7 +196,7 @@ export const updateGameActivation = async (
 
     const formData = new FormData();
     formData.append("CensorStatus", censorStatus);
-    formData.append("CensorReason", censorReason); 
+    formData.append("CensorReason", censorReason);
 
     const { data } = await axiosClient.put(
       `/api/users/${moderatorId}/games/${gameId}/activation`,
@@ -217,11 +217,56 @@ export const getGameCensorLog = async (gameId: string) => {
     return handleApiError(error);
   }
 }
-export const getNumberOfGame= async () => {
-    try {
-        const { data } = await axiosClient.get(`/api/games/number-of-games`);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+export const getNumberOfGame = async () => {
+  try {
+    const { data } = await axiosClient.get(`/api/games/number-of-games`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+type UpdateGameRequest = {
+  name: string;
+  coverImage: string;
+  videoLink: string;
+  shortDescription: string;
+  installInstruction: string;
+  description: string;
+  allowDonation: boolean;
+  status: string;
+  visibility: string;
+  price: number;
+  averageSession: number;
+  ageRestrictionId: string;
+  categoryId: string;
+  languageIds: string[];
+  tagIds: string[];
+};
+
+
+export const updateGame = async (developerId: string, gameId: string, request: UpdateGameRequest) => {
+  const formData = new FormData();
+  formData.append("Name", request.name);
+  formData.append("CoverImage", request.coverImage);
+  formData.append("VideoLink", request.videoLink);
+  formData.append("ShortDescription", request.shortDescription);
+  formData.append("InstallInstruction", request.installInstruction);
+  formData.append("Description", request.description);
+  formData.append("AllowDonation", request.allowDonation ? "true" : "false");
+  formData.append("Status", request.status);
+  formData.append("Visibility", request.visibility);
+  formData.append("categoryId", request.categoryId);
+  formData.append("Price", request.price + "");
+  formData.append("AverageSession", request.averageSession + "");
+  formData.append("AgeRestrictionId", request.ageRestrictionId);
+  request.languageIds.forEach((x) => formData.append("LanguageIds", x));
+  request.tagIds.forEach((x) => formData.append("TagIds", x));
+
+  try {
+    const { data } = await axiosClient.put(`/api/users/${developerId}/games/${gameId}`, formData);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 };

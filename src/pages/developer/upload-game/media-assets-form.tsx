@@ -48,10 +48,16 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
   };
 
   const beforeUpload = (file: File) => {
-    const isImage = file.type.startsWith("image/");
-    if (!isImage) {
-      messageApi.error("You can only upload image files!");
+    const isAllowedType =
+      file.type === "image/png" ||
+      file.type === "image/jpeg" ||
+      file.type === "image/webp";
+
+    if (!isAllowedType) {
+      messageApi.error("Only PNG, JPG, JPEG, and WEBP files are allowed!");
+      return Upload.LIST_IGNORE;
     }
+
     return false;
   };
 
@@ -69,12 +75,16 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
   const props = {
     name: "file",
     multiple: false,
-    accept: "image/*",
+    accept: ".png,.jpg,.jpeg,.webp",
     maxCount: 1,
     beforeUpload: (file: File) => {
-      const isImage = file.type.startsWith("image/");
-      if (!isImage) {
-        messageApi.error("You can only upload image files!");
+      const isAllowedType =
+        file.type === "image/png" ||
+        file.type === "image/jpeg" ||
+        file.type === "image/webp";
+
+      if (!isAllowedType) {
+        messageApi.error("Only PNG, JPG, JPEG, and WEBP files are allowed!");
         return Upload.LIST_IGNORE;
       }
 
@@ -138,7 +148,9 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
           <p className="ant-upload-text">
             Click or drag image to this area to upload
           </p>
-          <p className="ant-upload-hint">Supports only image files.</p>
+          <p className="ant-upload-hint">
+            Support PNG, JPG, JPEG, and WEBP formats.
+          </p>
         </Dragger>
       </Form.Item>
 
@@ -175,7 +187,7 @@ const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
           onChange={handleChange}
           beforeUpload={beforeUpload}
           onPreview={handlePreview}
-          accept="image/*"
+          accept=".png,.jpg,.jpeg,.webp"
           maxCount={10}
           multiple
           showUploadList={{

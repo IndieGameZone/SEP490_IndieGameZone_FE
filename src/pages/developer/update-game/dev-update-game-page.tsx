@@ -13,6 +13,10 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import UpdateGameFiles from "./update-game-files";
 import UpdateGameInfo from "./update-game-info";
 import UpdateGameMediaAssets from "./update-game-media-assets";
+import useCategoryStore from "@/store/use-category-store";
+import useTagStore from "@/store/use-tag-store";
+import useAgeRestrictionStore from "@/store/use-age-restriction-store";
+import useLanguageStore from "@/store/use-language-store";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -29,11 +33,18 @@ const DevUpdateGamePage = () => {
   const navigate = useNavigate();
   const messageApi = useGlobalMessage();
   const { token } = useToken();
-  if (!gameId) return <Navigate to={"/dev/manage-games"} />;
+  const { fetchCategories } = useCategoryStore();
+  const { fetchTags } = useTagStore();
+  const { fetchAgeRestrictions } = useAgeRestrictionStore();
+  const { fetchLanguages } = useLanguageStore();
 
   useEffect(() => {
     if (gameId) {
       fetchGameById(gameId);
+      fetchCategories();
+      fetchTags();
+      fetchAgeRestrictions();
+      fetchLanguages();
     }
   }, [renderKey]);
 
@@ -51,6 +62,8 @@ const DevUpdateGamePage = () => {
     return <Navigate to={"/dev/manage-games"} />;
   }
   if (!game) return;
+  if (!gameId) return <Navigate to={"/dev/manage-games"} />;
+
   return (
     <div>
       <div className="p-5 bg-zinc-800 border border-zinc-700 text-2xl flex gap-3 justify-between">
@@ -65,7 +78,7 @@ const DevUpdateGamePage = () => {
           style={{ background: token.colorBgContainer }}
         >
           <Menu
-            defaultSelectedKeys={["info"]}
+            defaultSelectedKeys={[selectedKey]}
             mode="inline"
             items={items}
             onClick={(e) => setSelectedKey(e.key)}
