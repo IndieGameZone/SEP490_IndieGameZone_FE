@@ -12,6 +12,7 @@ import GameNotFound from "@/pages/errors/game-not-found";
 import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
+import { GameCensorLog } from "@/types/game";
 import { Button, Descriptions, DescriptionsProps, Tag, message, Modal, Input } from "antd";
 import { useEffect, useState } from "react";
 import { FaCheck, FaEye } from "react-icons/fa";
@@ -27,7 +28,7 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 const AdminGameDetail = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
-  const { fetchGameById, loading, error, game, fetchGameCensorLog } = useGameStore();
+  const { fetchGameById, loading, error, game, fetchGameCensorLog ,gameCensorLogs} = useGameStore();
   const [index, setIndex] = useState(-1);
   const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
   const { fetchGameFiles, gameFiles, installInstruction } = useGameStore();
@@ -142,16 +143,22 @@ const AdminGameDetail = () => {
       children: <ModerationStatusBadge status={game.censorStatus} />,
       span: 1,
     },
-    {
+  {
       key: "moderated-by",
       label: "Moderated by",
-      children: game.moderator ? (
-        game.moderator.fullname
-      ) : game.censorStatus == "Approved" ? (
-        <AITag />
-      ) : (
-        <span className="text-gray-500">None</span>
-      ),
+      children: (() => {
+        const latestLog = gameCensorLogs
+          .filter((log: GameCensorLog) => log.censorStatus === "Approved" || log.censorStatus === "Rejected")
+          .sort((a: GameCensorLog, b: GameCensorLog) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+
+        if (latestLog?.moderator) {
+          return latestLog.moderator.fullname;
+        }
+        if (game.censorStatus === "Approved" && !latestLog?.moderator) {
+          return <AITag />;
+        }
+        return <span className="text-gray-500">None</span>;
+      })(),
       span: 1,
     },
     {
@@ -260,7 +267,6 @@ const AdminGameDetail = () => {
       },
     });
   };
-
 
   return (
     <div>
