@@ -1,3 +1,4 @@
+import { SortableImage } from "@/types/game";
 import {
   DndContext,
   closestCenter,
@@ -5,7 +6,6 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useState } from "react";
 
 import {
   arrayMove,
@@ -16,41 +16,49 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 
 interface DragDropStringSorterProps {
-  items: string[];
-  onSorted?: (sorted: string[]) => void;
+  items: SortableImage[];
+  onSorted?: (sorted: SortableImage[]) => void;
+  onRemove?: (id: string) => void;
 }
 
 function DragDropStringSorter({
-  items: initialItems,
+  items,
   onSorted,
+  onRemove,
 }: DragDropStringSorterProps) {
-  const [items, setItems] = useState(initialItems);
   const sensors = useSensors(useSensor(PointerSensor));
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      const oldIndex = items.indexOf(active.id);
-      const newIndex = items.indexOf(over.id);
+      const oldIndex = items.findIndex((item) => item.id === active.id);
+      const newIndex = items.findIndex((item) => item.id === over.id);
 
       const newItems = arrayMove(items, oldIndex, newIndex);
-      setItems(newItems);
       onSorted?.(newItems);
     }
   };
 
   return (
-    <div className="mx-auto mt-6">
+    <div className="mx-auto">
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext items={items} strategy={rectSortingStrategy}>
+        <SortableContext
+          items={items.map((item) => item.id)}
+          strategy={rectSortingStrategy}
+        >
           <ul className="grid grid-cols-4 gap-3">
             {items.map((item) => (
-              <SortableItem key={item} id={item} />
+              <SortableItem
+                key={item.id}
+                id={item.id}
+                url={item.url}
+                onRemove={onRemove}
+              />
             ))}
           </ul>
         </SortableContext>
@@ -59,7 +67,15 @@ function DragDropStringSorter({
   );
 }
 
-function SortableItem({ id }: { id: string }) {
+function SortableItem({
+  id,
+  url,
+  onRemove,
+}: {
+  id: string;
+  url: string;
+  onRemove?: (id: string) => void;
+}) {
   const {
     attributes,
     listeners,
@@ -76,10 +92,20 @@ function SortableItem({ id }: { id: string }) {
   };
 
   return (
-    <li ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <div className="bg-zinc-800 border shadow rounded cursor-grab active:cursor-grabbing select-none overflow-hidden">
-        <img src={id} alt="" className="aspect-video" />
+    <li ref={setNodeRef} style={style} className="relative">
+      <div
+        className="bg-zinc-800 border shadow rounded cursor-grab active:cursor-grabbing select-none overflow-hidden"
+        {...attributes}
+        {...listeners}
+      >
+        <img src={url} alt="" className="aspect-video" />
       </div>
+      <button
+        onClick={() => onRemove?.(id)}
+        className="absolute top-1 right-1 bg-red-600 text-white text-xs px-1 rounded hover:bg-red-700 cursor-pointer "
+      >
+        ✕
+      </button>
     </li>
   );
 }

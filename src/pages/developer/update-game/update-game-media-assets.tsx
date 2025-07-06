@@ -137,7 +137,7 @@ const UpdateGameMediaAssets = () => {
         handleUpdateCoverImage(response.data);
       } catch (error) {
         onError?.(error as any);
-        message.error("Upload failed!");
+        messageApi.error("Upload failed!");
       }
     },
   };
@@ -180,13 +180,8 @@ const UpdateGameMediaAssets = () => {
           </Dragger>
         </Form>
       </div>
-      <div>
-        <h2 className="font-bold mb-2">Game Screenshorts</h2>
-        <UpdateScreenshotsButton
-          screenshots={game.gameImages.map((x) => x.image)}
-        />
-      </div>
-      <div className="grid grid-cols-4 gap-3 bg-zinc-900">
+      <h2 className="font-bold mb-2">Game Screenshorts</h2>
+      <div className="grid grid-cols-4 gap-3 bg-zinc-900 mb-2">
         {game.gameImages.map((image, index: number) => (
           <img
             key={`game-image-${index}`}
@@ -196,6 +191,9 @@ const UpdateGameMediaAssets = () => {
           />
         ))}
       </div>
+      <UpdateScreenshotsButton
+        screenshots={game.gameImages.map((x) => x.image)}
+      />
     </div>
   );
 };

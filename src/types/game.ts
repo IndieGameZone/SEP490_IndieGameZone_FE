@@ -135,3 +135,5 @@ export type GameCensorLog = {
     censorStatus: GameCensorStatus;
     moderator?: User;
 }
+
+export type SortableImage = { id: string; url: string };

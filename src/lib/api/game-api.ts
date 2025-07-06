@@ -1,5 +1,6 @@
 import { GameCensorStatus } from "@/types/game";
 import { axiosClient } from "./config/axios-client";
+import { toFormData } from "../object";
 
 export const handleApiError = (error: any): { error: string | null; data: any; success: boolean } => {
   try {
@@ -265,6 +266,20 @@ export const updateGame = async (developerId: string, gameId: string, request: U
 
   try {
     const { data } = await axiosClient.put(`/api/users/${developerId}/games/${gameId}`, formData);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+type UpdateGameImagesRequest = {
+  images: string[];
+};
+
+export const updateGameImages = async (gameId: string, request: UpdateGameImagesRequest) => {
+  try {
+    const formData = toFormData(request);
+    const { data } = await axiosClient.put(`/api/games/${gameId}/game-images`, formData);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);

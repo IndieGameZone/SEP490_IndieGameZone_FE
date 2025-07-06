@@ -44,6 +44,7 @@
     "slick-carousel": "^1.8.1",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.4",
+    "uuid": "^11.1.0",
     "victory": "^37.3.6",
     "yet-another-react-lightbox": "^3.23.1",
     "zustand": "^5.0.5"
