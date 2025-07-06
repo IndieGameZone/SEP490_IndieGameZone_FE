@@ -146,6 +146,7 @@ const useDownloadStore = create<DownloadState>((set, get) => ({
                     await downloadStorage.deleteChunks(downloadId);
                 }
             }
+            console.log(rehydratedDownloads);
 
             set(state => ({
                 ...state,

@@ -1,3 +1,4 @@
+import useAuthStore from '@/store/use-auth-store';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 export const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
@@ -5,6 +6,11 @@ export const axiosClient = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
 });
+
+const setRefreshingToken = (refreshing: boolean) => {
+    const authStore = useAuthStore.getState();
+    authStore.setIsRefreshingToken(refreshing);
+};
 
 let isRefreshing = false;
 let failedQueue: {
@@ -58,6 +64,7 @@ axiosClient.interceptors.response.use(
 
             originalRequest._retry = true;
             isRefreshing = true;
+            setRefreshingToken(true);
 
             try {
                 const response = await axios.post<string>(
@@ -91,6 +98,7 @@ axiosClient.interceptors.response.use(
                 return Promise.reject(err);
             } finally {
                 isRefreshing = false;
+                setRefreshingToken(false);
             }
         }
 

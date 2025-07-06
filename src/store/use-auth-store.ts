@@ -4,12 +4,12 @@ import { create } from 'zustand';
 
 interface AuthState {
     profile?: User;
-    displayProfile?: User;
     loading: boolean;
     error: string | null;
+    isRefreshingToken: boolean;
+    setIsRefreshingToken: (refreshing: boolean) => void;
     fetchProfile: () => Promise<void>;
     setProfile: (user?: User) => void;
-    getDisplayProfile: () => User | undefined;
     logout: () => void;
     renderKey: number;
     rerender: () => void;
@@ -17,10 +17,11 @@ interface AuthState {
 
 const useAuthStore = create<AuthState>((set) => ({
     profile: undefined,
-    displayProfile: undefined,
     loading: false,
     error: null,
     renderKey: 0,
+    isRefreshingToken: false,
+    setIsRefreshingToken: (refreshing) => set({ isRefreshingToken: refreshing }),
     rerender: () => {
         set(prev => ({ renderKey: prev.renderKey + 1 }))
     },
@@ -37,15 +38,6 @@ const useAuthStore = create<AuthState>((set) => ({
         } catch (error: any) {
             set({ loading: false, error: error.message });
         }
-    },
-    getDisplayProfile() {
-        const saved = localStorage.getItem("profile");
-        if (saved) {
-            const parsedValue = JSON.parse(saved);
-            set({ displayProfile: parsedValue })
-            return parsedValue;
-        }
-        return undefined;
     },
     setProfile(user) {
         set({ profile: user })

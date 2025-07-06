@@ -25,7 +25,7 @@ const { useToken } = theme;
 const DevUpdateGamePage = () => {
   const { gameId } = useParams();
   const [selectedKey, setSelectedKey] = useState("info");
-  const { fetchGameById, game, loading, error } = useGameStore();
+  const { fetchGameById, game, loading, error, renderKey } = useGameStore();
   const navigate = useNavigate();
   const messageApi = useGlobalMessage();
   const { token } = useToken();
@@ -35,7 +35,7 @@ const DevUpdateGamePage = () => {
     if (gameId) {
       fetchGameById(gameId);
     }
-  }, []);
+  }, [renderKey]);
 
   const handleGoBack = () => {
     if (game) navigate(`/dev/game/${game.id}`);

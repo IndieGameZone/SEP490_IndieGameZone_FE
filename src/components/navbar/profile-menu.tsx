@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 const { useToken } = theme;
 const ProfileMenu = () => {
-  const { logout, displayProfile: profile } = useProfileStore();
+  const { logout, profile } = useProfileStore();
   const { token } = useToken();
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -39,7 +39,7 @@ const ProfileMenu = () => {
       icon: <RiBookShelfLine />,
       onClick: () => navigate("/account/library"),
     },
-      {
+    {
       key: "3",
       label: "My wishlist",
       icon: <PiListHeartDuotone />,

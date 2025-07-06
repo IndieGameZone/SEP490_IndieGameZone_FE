@@ -1,7 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import MaxWidthWrapper from "../max-width-wrapper";
 import logo from "@/assets/igz_ic.svg";
-import { Button, GetProp, Input, Menu, MenuProps, Popover } from "antd";
+import {
+  Button,
+  GetProp,
+  Input,
+  Menu,
+  MenuProps,
+  Popover,
+  Skeleton,
+} from "antd";
 import { IoIosNotifications, IoMdMore } from "react-icons/io";
 import {
   FaBook,
@@ -15,7 +23,6 @@ import { MdOutlineInsertChart } from "react-icons/md";
 import useProfileStore from "@/store/use-auth-store";
 import { SearchProps } from "antd/es/input";
 import DownloadProcessesButton from "./download-processes-button";
-import { useEffect } from "react";
 
 type MenuItem = GetProp<MenuProps, "items">[number];
 
@@ -65,14 +72,14 @@ const popOverContent = (
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { getDisplayProfile, displayProfile, profile } = useProfileStore();
+  const { profile, isRefreshingToken, loading } = useProfileStore();
 
   const handleGoToDashboard = () => {
-    if (displayProfile?.role.name == "Developer") {
+    if (profile?.role.name == "Developer") {
       navigate("/dev/manage-games");
-    } else if (displayProfile?.role.name == "Admin") {
+    } else if (profile?.role.name == "Admin") {
       navigate("/admin");
-    } else if (displayProfile?.role.name == "Moderator") {
+    } else if (profile?.role.name == "Moderator") {
       navigate("/moderator");
     }
   };
@@ -82,15 +89,13 @@ const Navbar = () => {
       navigate(`/search?q=${value}`);
     }
   };
+
   const showDashboardButton =
-    displayProfile?.role.name == "Developer" ||
-    displayProfile?.role.name == "Admin" ||
-    displayProfile?.role.name == "Moderator";
+    profile?.role.name == "Developer" ||
+    profile?.role.name == "Admin" ||
+    profile?.role.name == "Moderator";
 
-  useEffect(() => {
-    getDisplayProfile();
-  }, [profile]);
-
+  const isLoadingProfile = isRefreshingToken || loading;
   return (
     <div className="bg-zinc-900">
       <MaxWidthWrapper className="flex justify-between  p-5">
@@ -134,14 +139,16 @@ const Navbar = () => {
             </Button>
           )}
 
-          {displayProfile && (
+          {isLoadingProfile && <Skeleton.Avatar active={true} />}
+
+          {!isLoadingProfile && profile && (
             <>
               <Button shape="circle" icon={<IoIosNotifications />}></Button>
               <ProfileMenu />
             </>
           )}
 
-          {!displayProfile && (
+          {!isLoadingProfile && !profile && (
             <>
               <Button type="primary" onClick={() => navigate("/log-in")}>
                 Sign In
