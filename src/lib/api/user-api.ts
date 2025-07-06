@@ -108,9 +108,9 @@ export const createBanHistory = async (request: CreateBanHistoryRequest) => {
   }
 };
 
-export const unbanUserById = async (id: string) => {
+export const unBanUserById = async (userid: string) => {
   try {
-    const { data } = await axiosClient.patch(`/api/ban-histories/${id}/unban`);
+    const { data } = await axiosClient.patch(`/api/ban-histories/${userid}/unban`);
     return { error: null, data, success: true };
   } catch (error) {
     return handleApiError(error);
