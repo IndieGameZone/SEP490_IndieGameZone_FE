@@ -48,6 +48,13 @@ const ViewCensorLogButton = () => {
                 <>
                   <br />
                   by <span className="font-semibold">{x.moderator?.userName}</span>
+                  <br />
+                  {x.censorReason && (
+                    <>
+                      <span className="text-sm text-zinc-500">Reason: </span>
+                      <span className="text-sm">{x.censorReason}</span>
+                    </>
+                  )}
                 </>
               )}
             </div>

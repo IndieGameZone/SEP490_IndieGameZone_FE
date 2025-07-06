@@ -74,7 +74,7 @@ export type Game = {
     updatedAt: string;
     numberOfReviews: number;
     averageRating: number;
-    censorAt?: string;
+    censoredAt?: string;
     createdAt: string;
     installInstruction: string;
     moderator?: User;
