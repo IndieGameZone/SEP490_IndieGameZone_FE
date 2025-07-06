@@ -12,7 +12,7 @@ import GameNotFound from "@/pages/errors/game-not-found";
 import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
-import { Button, Descriptions, DescriptionsProps, Tag, message, Modal } from "antd";
+import { Button, Descriptions, DescriptionsProps, Tag, message, Modal, Input } from "antd";
 import { useEffect, useState } from "react";
 import { FaCheck, FaEye } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
@@ -27,8 +27,7 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 const AdminGameDetail = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
-  const { fetchGameById, loading, error, game, fetchGameCensorLog } =
-    useGameStore();
+  const { fetchGameById, loading, error, game, fetchGameCensorLog } = useGameStore();
   const [index, setIndex] = useState(-1);
   const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
   const { fetchGameFiles, gameFiles, installInstruction } = useGameStore();
@@ -163,12 +162,7 @@ const AdminGameDetail = () => {
     },
   ];
 
-  const slides = game
-    ? [
-        { src: game.coverImage },
-        ...game.gameImages.map((image) => ({ src: image.image })),
-      ]
-    : [];
+  const slides = game ? [{ src: game.coverImage }, ...game.gameImages.map((image) => ({ src: image.image }))] : [];
 
   if (game.censorReason) {
     infoItems.push({
@@ -199,7 +193,7 @@ const AdminGameDetail = () => {
       onOk: async () => {
         setIsApproving(true);
         if (gameId) {
-          const result = await updateGameActivation(gameId, "Approved", profile.id);
+          const result = await updateGameActivation(gameId, "Approved", profile.id, "");
           if (result.success) {
             messageApi.open({
               type: "success",
@@ -223,30 +217,42 @@ const AdminGameDetail = () => {
 
   const handleDecline = () => {
     if (!profile) return;
+
+    let reason = "";
+
     Modal.confirm({
       title: "Decline Game",
-      content: `Are you sure you want to decline game "${game.name}"?`,
+      content: (
+        <Input.TextArea
+          rows={4}
+          placeholder="Enter reason for rejection"
+          onChange={(e) => {
+            reason = e.target.value;
+          }}
+        />
+      ),
       okText: "Decline",
       okType: "danger",
       okButtonProps: { icon: <IoMdClose /> },
       cancelText: "Cancel",
-      onOk: async () => {
+      async onOk() {
+        if (!reason.trim()) {
+          messageApi.error("Please enter a reason before declining.");
+          throw new Error("No reason provided");
+        }
+
         setIsDeclining(true);
+
         if (gameId) {
-          const result = await updateGameActivation(gameId, "Rejected", profile.id);
+          const result = await updateGameActivation(gameId, "Rejected", profile.id, reason);
           if (result.success) {
-            messageApi.open({
-              type: "success",
-              content: `Game "${game.name}" rejected`,
-            });
+            messageApi.success(`Game "${game.name}" rejected`);
             fetchGameById(gameId);
           } else {
-            messageApi.open({
-              type: "error",
-              content: result.error || "Failed to reject game",
-            });
+            messageApi.error(result.error || "Failed to reject game");
           }
         }
+
         setIsDeclining(false);
       },
       onCancel() {
@@ -255,7 +261,6 @@ const AdminGameDetail = () => {
     });
   };
 
-  const isPending = game.censorStatus === "PendingAIReview" || game.censorStatus === "PendingManualReview";
 
   return (
     <div>
@@ -270,10 +275,7 @@ const AdminGameDetail = () => {
       <h1 className="text-2xl font-bold">
         "{game.name}"{" "}
         <span className="font-normal text-sm">
-          by{" "}
-          <Link to={`/profile/${game.developer.id}`}>
-            {game.developer.userName}
-          </Link>
+          by <Link to={`/profile/${game.developer.id}`}>{game.developer.userName}</Link>
         </span>
       </h1>
       <div className="flex gap-3 justify-end mb-3">
@@ -281,7 +283,8 @@ const AdminGameDetail = () => {
         <Button icon={<FaEye />} onClick={handleViewGamePage}>
           View game's page
         </Button>
-        {isPending && (
+
+        {(game.censorStatus === "PendingAIReview" || game.censorStatus === "PendingManualReview") && (
           <>
             <Button icon={<IoMdClose />} type="primary" danger onClick={handleDecline} loading={isDeclining}>
               Decline game
@@ -296,6 +299,24 @@ const AdminGameDetail = () => {
               Approve game
             </Button>
           </>
+        )}
+
+        {game.censorStatus === "Approved" && (
+          <Button icon={<IoMdClose />} type="primary" danger onClick={handleDecline} loading={isDeclining}>
+            Decline game
+          </Button>
+        )}
+
+        {game.censorStatus === "Rejected" && (
+          <Button
+            icon={<FaCheck />}
+            type="primary"
+            style={{ backgroundColor: "green" }}
+            onClick={handleApprove}
+            loading={isApproving}
+          >
+            Approve game
+          </Button>
         )}
       </div>
       <div className="bg-white rounded shadow text-left">
@@ -342,11 +363,7 @@ const AdminGameDetail = () => {
           <div className="col-span-2">
             <h3 className="font-bold mb-2 text-lg">Gameplay/trailer</h3>
             {game?.videoLink ? (
-              <ReactPlayer
-                className="react-player"
-                url={game?.videoLink}
-                controls
-              />
+              <ReactPlayer className="react-player" url={game?.videoLink} controls />
             ) : (
               <div className="text-gray-500">None</div>
             )}
