@@ -3,7 +3,6 @@ import DragDropStringSorter from "./drag-drop-string-sorter";
 import { useMemo, useState } from "react";
 import { FaPen, FaSave } from "react-icons/fa";
 import { HiMiniInboxArrowDown } from "react-icons/hi2";
-import { axiosClient } from "@/lib/api/config/axios-client";
 import type { UploadRequestOption } from "rc-upload/lib/interface";
 import { v4 as uuidv4 } from "uuid";
 import { SortableImage } from "@/types/game";
@@ -11,6 +10,9 @@ import { UploadChangeParam } from "antd/es/upload";
 import { updateGameImages } from "@/lib/api/game-api";
 import useGameStore from "@/store/use-game-store";
 import { areArraysEqual } from "@/lib/object";
+import axios from "axios";
+const CLOUD_NAME = import.meta.env.VITE_REACT_APP_CLOUD_NAME;
+const PRESET_NAME = import.meta.env.VITE_REACT_APP_PRESET_NAME;
 const { Dragger } = Upload;
 
 const MAX_IMAGES = 10;
@@ -90,19 +92,23 @@ const UpdateScreenshotsButton = ({
     }: UploadRequestOption) => {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("upload_preset", PRESET_NAME);
 
       try {
-        const response = await axiosClient.post("/api/files", formData, {
-          onUploadProgress: (event) => {
-            if (event.total) {
-              const percent = Math.round((event.loaded / event.total) * 100);
-              onProgress?.({ percent });
-            }
-          },
-        });
-
-        setImageUrls((prev) => [...prev, { id: uuidv4(), url: response.data }]);
-        onSuccess?.(response.data);
+        const response = await axios.post(
+          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+          formData,
+          {
+            onUploadProgress: (event) => {
+              if (event.total) {
+                const percent = Math.round((event.loaded / event.total) * 100);
+                onProgress?.({ percent });
+              }
+            },
+          }
+        );
+        setImageUrls((prev) => [...prev, { id: uuidv4(), url: response.data.secure_url }]);
+        onSuccess?.(response.data.secure_url);
       } catch (error) {
         onError?.(error as any);
         messageApi.error("Upload failed!");
@@ -111,7 +117,6 @@ const UpdateScreenshotsButton = ({
   };
 
   const handleRemove = (idToRemove: string) => {
-    console.log("Attempt to remove ", idToRemove);
     setImageUrls((prev) => prev.filter((item) => item.id !== idToRemove));
   };
 
