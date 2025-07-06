@@ -1,5 +1,5 @@
 import { useState } from "react";
-import imagePlaceholder from "@/assets/image-placeholder.webp"
+import imagePlaceholder from "@/assets/image_placeholder.svg"
 
 const FaultTolerantImage = ({
   src,
