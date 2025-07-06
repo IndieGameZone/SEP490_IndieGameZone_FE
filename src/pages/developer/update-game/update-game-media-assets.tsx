@@ -83,9 +83,12 @@ const UpdateGameMediaAssets = () => {
       visibility: form.getFieldValue("visibility"),
     });
     if (result.error) {
-      messageApi.error("Failed to update coverImage");
+      messageApi.error("Failed to update cover image");
     } else {
-      rerender();
+      messageApi.success("Update cover image successfully!");
+      setTimeout(() => {
+        rerender();
+      }, 1000);
     }
   };
 

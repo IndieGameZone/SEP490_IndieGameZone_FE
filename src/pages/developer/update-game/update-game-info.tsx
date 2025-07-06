@@ -1,7 +1,9 @@
 import TiptapEditor from "@/components/tiptap/tiptap-editor";
 import { GAME_REALEASE_STATUS, GAME_VISIBILITY_STATUS } from "@/constants/game";
+import { updateGame } from "@/lib/api/game-api";
 import { formatDuration } from "@/lib/date-n-time";
 import useAgeRestrictionStore from "@/store/use-age-restriction-store";
+import useAuthStore from "@/store/use-auth-store";
 import useCategoryStore from "@/store/use-category-store";
 import useGameStore from "@/store/use-game-store";
 import useLanguageStore from "@/store/use-language-store";
@@ -16,6 +18,7 @@ import {
   Radio,
   Select,
   Space,
+  message,
 } from "antd";
 import Checkbox, { CheckboxGroupProps } from "antd/es/checkbox";
 import TextArea from "antd/es/input/TextArea";
@@ -50,17 +53,43 @@ const pricingOptions: CheckboxGroupProps<string>["options"] = [
 ];
 const UpdateGameInfo = () => {
   const [form] = Form.useForm<FieldType>();
-  const { game } = useGameStore();
+  const { game, rerender } = useGameStore();
   const [isFree, setIsFree] = useState(true);
   const [allowDonate, setAllowDonate] = useState(true);
-
+  const { profile } = useAuthStore();
   const { categories, loading: loadingCategories } = useCategoryStore();
   const { tags, loading: loadingTags } = useTagStore();
+  const [messageApi, contextHolder] = message.useMessage();
   const { ageRestrictions, loading: loadingAgeRestrictions } =
     useAgeRestrictionStore();
   const { languages, loading: loadingLanguages } = useLanguageStore();
-  const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
-    console.log(values);
+  const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+    if (!profile || !game) return;
+    const result = await updateGame(profile.id, game.id, {
+      ageRestrictionId: values.ageRestrictionId,
+      allowDonation: values.allowDonation,
+      averageSession: values.averageSession,
+      categoryId: values.categoryId,
+      coverImage: values.coverImage,
+      description: values.description,
+      installInstruction: values.installInstruction,
+      languageIds: values.languageIds,
+      name: values.name,
+      price: values.price,
+      shortDescription: values.shortDescription,
+      status: values.releaseStatus,
+      tagIds: values.tagIds,
+      videoLink: values.videoLink,
+      visibility: values.visibility,
+    });
+    if (result.error) {
+      messageApi.error("Failed to update coverImage");
+    } else {
+      messageApi.success("Update game successfully!");
+      setTimeout(() => {
+        rerender();
+      }, 1000);
+    }
   };
   useEffect(() => {
     if (game) {
@@ -91,6 +120,7 @@ const UpdateGameInfo = () => {
 
   return (
     <div className="p-5 bg-zinc-900">
+      {contextHolder}
       <h2 className="text-2xl mb-3">Game Information</h2>
       <Form
         form={form}
@@ -344,7 +374,7 @@ const UpdateGameInfo = () => {
             <Space direction="vertical">
               {visibilityStatusOptions.map((opt) => (
                 <div key={opt.value} style={{ padding: "4px 0" }}>
-                  <Radio value={opt.value}>{opt.label}</Radio>
+                  <Radio value={opt.value} disabled={opt.value == "Draft"}>{opt.label}</Radio>
                   <Paragraph
                     type="secondary"
                     style={{ margin: 0, paddingLeft: 24 }}

@@ -245,7 +245,7 @@ const GameInfoTab = () => {
                   src={image.image}
                   key={`game-image-${image.id}`}
                   alt=""
-                  className="aspect-video object-contain bg-zinc-800 rounded highlight-hover cursor-pointer"
+                  className="aspect-video object-contain bg-zinc-900 rounded highlight-hover cursor-pointer"
                   onClick={() => {
                     setIndex(index + 1);
                   }}
