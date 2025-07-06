@@ -27,8 +27,9 @@ const GameSummaryReview = () => {
     try {
       const result = await getSummaryReview(game.id);
       
+      
       if (result.success && result.data) {
-        setSummary(result.data.summary || "No summary available heheheheehheheheh");
+        setSummary(result.data || "No summary available ");
         setHasSummary(true);
         message.success("Review summary generated successfully!");
       } else {
