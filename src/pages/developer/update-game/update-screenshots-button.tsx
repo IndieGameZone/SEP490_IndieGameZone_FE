@@ -10,9 +10,8 @@ import { UploadChangeParam } from "antd/es/upload";
 import { updateGameImages } from "@/lib/api/game-api";
 import useGameStore from "@/store/use-game-store";
 import { areArraysEqual } from "@/lib/object";
-import axios from "axios";
-const CLOUD_NAME = import.meta.env.VITE_REACT_APP_CLOUD_NAME;
-const PRESET_NAME = import.meta.env.VITE_REACT_APP_PRESET_NAME;
+import { axiosClient } from "@/lib/api/config/axios-client";
+
 const { Dragger } = Upload;
 
 const MAX_IMAGES = 10;
@@ -92,23 +91,19 @@ const UpdateScreenshotsButton = ({
     }: UploadRequestOption) => {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", PRESET_NAME);
 
       try {
-        const response = await axios.post(
-          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-          formData,
-          {
-            onUploadProgress: (event) => {
-              if (event.total) {
-                const percent = Math.round((event.loaded / event.total) * 100);
-                onProgress?.({ percent });
-              }
-            },
-          }
-        );
-        setImageUrls((prev) => [...prev, { id: uuidv4(), url: response.data.secure_url }]);
-        onSuccess?.(response.data.secure_url);
+        const response = await axiosClient.post("/api/files", formData, {
+          onUploadProgress: (event) => {
+            if (event.total) {
+              const percent = Math.round((event.loaded / event.total) * 100);
+              onProgress?.({ percent });
+            }
+          },
+        });
+
+        setImageUrls((prev) => [...prev, { id: uuidv4(), url: response.data }]);
+        onSuccess?.(response.data);
       } catch (error) {
         onError?.(error as any);
         messageApi.error("Upload failed!");
@@ -184,7 +179,9 @@ const UpdateScreenshotsButton = ({
           onSorted={(newOrder) => setImageUrls(newOrder)}
           onRemove={handleRemove}
         />
-        <p className="mt-2 mb-1 italic text-center text-zinc-400">Drag image to rearrange</p>
+        <p className="mt-2 mb-1 italic text-center text-zinc-400">
+          Drag image to rearrange
+        </p>
       </Modal>
     </>
   );

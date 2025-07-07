@@ -3,14 +3,15 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import mkcert from 'vite-plugin-mkcert'
 import path from "path"
-import { visualizer } from 'rollup-plugin-visualizer';
+// import { visualizer } from 'rollup-plugin-visualizer';
 import svgr from 'vite-plugin-svgr';
+import Inspect from 'vite-plugin-inspect';
 // https://vite.dev/config/
 export default defineConfig(() => {
   // const env = loadEnv(mode, process.cwd());
-
+  //  visualizer({ open: true })
   return ({
-    plugins: [react(), tailwindcss(), mkcert(), visualizer({ open: true }), svgr()],
+    plugins: [react(), tailwindcss(), mkcert(), Inspect(), svgr()],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

@@ -15,7 +15,7 @@ const FloatingContainer: React.FC<FloatingContainerProps> = ({ items, className 
           className={`absolute animate-floating duration-1000`}
           style={{
             left: `${Math.random() * 50}%`,
-            top: `${Math.random() * 70}%`,
+            top: `${Math.random() * 60}%`,
             animationDelay: `${Math.random() * 5}s`,
             animationDuration: `${6 + Math.random() * 4}s`,
           }}

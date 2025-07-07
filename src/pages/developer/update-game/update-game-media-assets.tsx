@@ -12,9 +12,9 @@ import type { UploadRequestOption } from "rc-upload/lib/interface";
 import { updateGame } from "@/lib/api/game-api";
 import useAuthStore from "@/store/use-auth-store";
 import UpdateScreenshotsButton from "./update-screenshots-button";
-import axios from "axios";
-const CLOUD_NAME = import.meta.env.VITE_REACT_APP_CLOUD_NAME;
-const PRESET_NAME = import.meta.env.VITE_REACT_APP_PRESET_NAME;
+import ReactPlayer from "react-player";
+import UpdateVideoButton from "./update-video-button";
+import { axiosClient } from "@/lib/api/config/axios-client";
 
 type FieldType = {
   name: string;
@@ -127,24 +127,18 @@ const UpdateGameMediaAssets = () => {
     }: UploadRequestOption) => {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", PRESET_NAME);
 
       try {
-        const response = await axios.post(
-          `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-          formData,
-          {
-            onUploadProgress: (event) => {
-              if (event.total) {
-                const percent = Math.round((event.loaded / event.total) * 100);
-                onProgress?.({ percent });
-              }
-            },
-          }
-        );
-
-        onSuccess?.(response.data.secure_url);
-        handleUpdateCoverImage(response.data.secure_url);
+        const response = await axiosClient.post("/api/files", formData, {
+          onUploadProgress: (event) => {
+            if (event.total) {
+              const percent = Math.round((event.loaded / event.total) * 100);
+              onProgress?.({ percent });
+            }
+          },
+        });
+        onSuccess?.(response.data);
+        handleUpdateCoverImage(response.data);
       } catch (error) {
         onError?.(error as any);
         messageApi.error("Upload failed!");
@@ -204,6 +198,13 @@ const UpdateGameMediaAssets = () => {
       <UpdateScreenshotsButton
         screenshots={game.gameImages.map((x) => x.image)}
       />
+      <h2 className="font-bold mb-2 mt-4">Gameplay/trailer</h2>
+      {game?.videoLink ? (
+        <ReactPlayer className="react-player" url={game?.videoLink} controls />
+      ) : (
+        <div className="text-gray-500">None</div>
+      )}
+      <UpdateVideoButton url={game.videoLink} />
     </div>
   );
 };

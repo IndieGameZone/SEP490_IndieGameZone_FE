@@ -30,7 +30,6 @@ const useAuthStore = create<AuthState>((set) => ({
         try {
             var response = await getUserInfo();
             if (!response.error) {
-                localStorage.setItem("profile", JSON.stringify(response.data))
                 set({ profile: response.data, loading: false });
             } else {
                 set({ loading: false, error: response.error });
