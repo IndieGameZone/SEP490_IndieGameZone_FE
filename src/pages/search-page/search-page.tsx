@@ -58,6 +58,12 @@ const SearchPage = () => {
   }, [profile]);
 
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
+  }, []);
+
+  useEffect(() => {
     setPage(1);
     setHasMore(true);
     setInitialLoad(true);

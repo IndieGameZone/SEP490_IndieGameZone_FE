@@ -6,10 +6,10 @@ import { IoTimer } from "react-icons/io5";
 import { MdAttachMoney, MdMoneyOff } from "react-icons/md";
 import { FaTags } from "react-icons/fa";
 import PersonalizedSection from "./personalized-section";
-import genre1 from "@/assets/genre-1.jpg";
-import genre2 from "@/assets/genre-2.jpg";
-import genre3 from "@/assets/genre-3.jpg";
-import genre4 from "@/assets/genre-4.jpg";
+import genre1 from "@/assets/category-action.webp";
+import genre2 from "@/assets/category-adventure.webp";
+import genre3 from "@/assets/category-puzzle.webp";
+import genre4 from "@/assets/category-role-playing.webp";
 import GenreCard from "./genre-card";
 import { lazy } from "react";
 import NavLinks from "@/components/nav-links";
@@ -67,21 +67,25 @@ const HomePage = () => {
         </h2>
         <div className="grid grid-cols-4 gap-3">
           <GenreCard
-            title="Open world"
-            to="/search?genre=1"
+            title="Action"
+            to="/search?category=7a03afa3-2635-43bd-a58c-daeb80d3cef7"
             background={genre1}
           />
           <GenreCard
             title="Adventure"
-            to="/search?genre=2"
+            to="/search?category=dfeeb47a-7e69-4927-a65b-b803a8befe9f"
             background={genre2}
           />
           <GenreCard
-            title="Action RPG"
-            to="/search?genre=3"
+            title="Puzzle"
+            to="/search?category=bca8721b-c323-44a1-afcf-876e206ab035"
             background={genre3}
           />
-          <GenreCard title="FPS" to="/search?genre=4" background={genre4} />
+          <GenreCard
+            title="Role-Playing"
+            to="/search?category=89a4e6d2-2cfe-4474-9b96-6d3595ad4705"
+            background={genre4}
+          />
         </div>
       </section>
     </MaxWidthWrapper>
