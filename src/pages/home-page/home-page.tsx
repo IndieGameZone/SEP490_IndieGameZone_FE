@@ -15,9 +15,11 @@ import { lazy } from "react";
 import NavLinks from "@/components/nav-links";
 import ScrollToTopButton from "@/components/scroll-to-top-button";
 import HandleTransactionResult from "@/components/handle-transaction-result";
+import HeroBanner from "./hero-banner";
 
 const DisclaimerModal = lazy(() => import("../../components/disclaimer-modal"));
 
+const NUMBER_OF_CAROUSEL = 0;
 const HomePage = () => {
   return (
     <MaxWidthWrapper>
@@ -25,7 +27,7 @@ const HomePage = () => {
       <DisclaimerModal />
       <HandleTransactionResult />
       <NavLinks />
-      <FeaturedGameSection />
+      {NUMBER_OF_CAROUSEL == 0 ? <HeroBanner /> : <FeaturedGameSection />}
       <SpecialOffersSection />
       <section className="pb-9">
         <h2 className="text-2xl font-bold text-center my-5">Games Search</h2>

@@ -6,6 +6,7 @@ import RequireAuth from "./components/require-auth";
 import PageTransition from "./components/page-transition";
 import HomeContainer from "./containers/home-container";
 import { MdOutlineWifiOff } from "react-icons/md";
+import TransformDebugPage from "./pages/debug/transform-debug-page";
 
 const LoginPage = lazy(() => import("./pages/log-in-page"));
 const SignUpPage = lazy(() => import("./pages/sign-up-page"));
@@ -100,6 +101,7 @@ function App() {
           <Route element={<RequireAuth allowedRoles={["Developer"]} />}>
             <Route path="/dev/*" element={<DeveloperDashboardContainer />} />
           </Route>
+          <Route path="/debug" element={<TransformDebugPage />} />
           <Route path="/*" element={<HomeContainer />} />
         </Routes>
       </Suspense>

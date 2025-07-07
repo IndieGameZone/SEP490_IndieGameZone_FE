@@ -3,13 +3,27 @@
 
 @theme {
   --animate-spin-reverse: spin-reverse 1s linear infinite;
+  --animate-floating: floating 3s ease-in-out infinite;
 
   @keyframes spin-reverse {
     from {
       transform: rotate(360deg);
     }
+
     to {
       transform: rotate(0deg);
+    }
+  }
+
+  @keyframes floating {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-20px);
     }
   }
 }
