@@ -31,7 +31,7 @@ const GameCard = ({ game }: { game: Game }) => {
               </Link>
             </div>
             <div>
-              <p className="text-sm font-semibold text-green-500">
+              <p className="text-sm font-semibold text-green-500 text-right">
                 {game.price == 0 ? "Free" : formatCurrencyVND(game.price)}
               </p>
 

@@ -45,6 +45,9 @@ const DevUpdateGamePage = () => {
       fetchTags();
       fetchAgeRestrictions();
       fetchLanguages();
+      window.scrollTo({
+        top: 0,
+      });
     }
   }, [renderKey]);
 

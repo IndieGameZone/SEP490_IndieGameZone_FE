@@ -2,6 +2,7 @@ import TiptapEditor from "@/components/tiptap/tiptap-editor";
 import { GAME_REALEASE_STATUS, GAME_VISIBILITY_STATUS } from "@/constants/game";
 import { updateGame } from "@/lib/api/game-api";
 import { formatDuration } from "@/lib/date-n-time";
+import { deepEqual } from "@/lib/object";
 import useAgeRestrictionStore from "@/store/use-age-restriction-store";
 import useAuthStore from "@/store/use-auth-store";
 import useCategoryStore from "@/store/use-category-store";
@@ -18,12 +19,13 @@ import {
   Radio,
   Select,
   Space,
+  Tooltip,
   message,
 } from "antd";
 import Checkbox, { CheckboxGroupProps } from "antd/es/checkbox";
 import TextArea from "antd/es/input/TextArea";
 import Paragraph from "antd/es/typography/Paragraph";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaSave } from "react-icons/fa";
 
 type FieldType = {
@@ -62,15 +64,20 @@ const UpdateGameInfo = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { ageRestrictions, loading: loadingAgeRestrictions } =
     useAgeRestrictionStore();
+  const initalValues = useRef<FieldType>(null);
   const { languages, loading: loadingLanguages } = useLanguageStore();
+  const [loading, setLoading] = useState(false);
+  const [hasChanged, setHasChanged] = useState(false);
+
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!profile || !game) return;
+    setLoading(true);
     const result = await updateGame(profile.id, game.id, {
       ageRestrictionId: values.ageRestrictionId,
       allowDonation: values.allowDonation,
       averageSession: values.averageSession,
       categoryId: values.categoryId,
-      coverImage: values.coverImage,
+      coverImage: form.getFieldValue("coverImage"),
       description: values.description,
       installInstruction: values.installInstruction,
       languageIds: values.languageIds,
@@ -82,6 +89,7 @@ const UpdateGameInfo = () => {
       videoLink: values.videoLink,
       visibility: values.visibility,
     });
+    setLoading(false);
     if (result.error) {
       messageApi.error("Failed to update coverImage");
     } else {
@@ -113,8 +121,14 @@ const UpdateGameInfo = () => {
         videoLink: game.videoLink,
         visibility: game.visibility,
       });
+      initalValues.current = form.getFieldsValue();
     }
   }, []);
+
+  const handleValuesChange = (_: any, allValues: FieldType) => {
+    const changed = !deepEqual(initalValues.current, allValues);
+    setHasChanged(changed);
+  };
 
   const averageSession = Form.useWatch("averageSession", form);
 
@@ -127,6 +141,7 @@ const UpdateGameInfo = () => {
         name="upload-game-form"
         onFinish={onFinish}
         autoComplete="off"
+        onValuesChange={handleValuesChange}
         layout="vertical"
         initialValues={{
           price: 1000,
@@ -374,7 +389,9 @@ const UpdateGameInfo = () => {
             <Space direction="vertical">
               {visibilityStatusOptions.map((opt) => (
                 <div key={opt.value} style={{ padding: "4px 0" }}>
-                  <Radio value={opt.value} disabled={opt.value == "Draft"}>{opt.label}</Radio>
+                  <Radio value={opt.value} disabled={opt.value == "Draft"}>
+                    {opt.label}
+                  </Radio>
                   <Paragraph
                     type="secondary"
                     style={{ margin: 0, paddingLeft: 24 }}
@@ -387,9 +404,17 @@ const UpdateGameInfo = () => {
           </Radio.Group>
         </Form.Item>
         <Form.Item label={null}>
-          <Button type="primary" htmlType="submit" icon={<FaSave />}>
-            Save changes
-          </Button>
+          <Tooltip title={hasChanged ? null : "You didn't change anything!"}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              icon={<FaSave />}
+              loading={loading}
+              disabled={!hasChanged}
+            >
+              Save changes
+            </Button>
+          </Tooltip>
         </Form.Item>
       </Form>
     </div>
