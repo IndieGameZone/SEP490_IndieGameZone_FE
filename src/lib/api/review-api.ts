@@ -31,3 +31,11 @@ export const getReviewByGameId = async (gameId: string) => {
     return handleApiError(error);
   }
 };
+export const getSummaryReview = async (gameId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/games/${gameId}/reviews-summary`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

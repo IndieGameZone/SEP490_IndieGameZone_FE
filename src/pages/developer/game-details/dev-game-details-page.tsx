@@ -8,7 +8,7 @@ import { FaChartBar, FaInfoCircle } from "react-icons/fa";
 import GameInfoTab from "./game-info-tab";
 import GameStatisticsTab from "./game-statistics-tab";
 import { IoIosChatboxes } from "react-icons/io";
-import GameReviewTab from "./game-reviews-tab";
+import GameReviewTab from "./game-review-tab/game-reviews-tab";
 
 const DevGameDetailPages = () => {
   const { gameId } = useParams();
