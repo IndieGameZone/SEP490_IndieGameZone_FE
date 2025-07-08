@@ -6,6 +6,7 @@ import "@/styles/twinkling-stars.scss";
 import logo from "@/assets/indiegamezone-logo.svg";
 import satellite from "@/assets/satellite_dish_PNG39.png";
 import gameController from "@/assets/game-controller.png";
+import tvStatic from "@/assets/tv-static.png";
 
 export default function HeroBanner() {
   return (
@@ -28,6 +29,7 @@ export default function HeroBanner() {
             width={350}
           />
           <FloatingContainer items={["🍙", <IndieCat />, "🧶"]} />
+          <img src={tvStatic} alt="" className="pointer-events-none z-10 absolute top-0 left-0 h-full select-none"/>
         </div>
         <div className="">
           <h1 className="text-4xl md:text-4xl font-bold mb-6">

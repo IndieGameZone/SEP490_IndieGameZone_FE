@@ -34,10 +34,10 @@ const ViewCensorLogButton = () => {
   const stepItem: StepProps[] = useMemo(
     () =>
       gameCensorLogs
-        .map((x) => ({
+        .map((x, index: number) => ({
           title: censorStatusMap[x.censorStatus].label,
           icon: (
-            <div className="bg-orange-900 rounded-full aspect-square flex justify-center items-center">
+            <div className={` rounded-full aspect-square flex justify-center items-center ${index == 0 ? "bg-orange-900" : "bg-zinc-800"}`}>
               {censorStatusMap[x.censorStatus].icon}
             </div>
           ),
@@ -59,8 +59,7 @@ const ViewCensorLogButton = () => {
               )}
             </div>
           ),
-        }))
-        .reverse(),
+        })),
     [gameCensorLogs]
   );
 
@@ -94,7 +93,7 @@ const ViewCensorLogButton = () => {
         footer={null}
       >
         <Steps
-          current={stepItem.length - 1}
+          current={0}
           items={stepItem}
           direction="vertical"
         />
