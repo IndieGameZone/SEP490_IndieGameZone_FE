@@ -5,15 +5,14 @@ import blackhole from "@/assets/blackhole.webp";
 import "@/styles/twinkling-stars.scss";
 import logo from "@/assets/indiegamezone-logo.svg";
 import satellite from "@/assets/satellite_dish_PNG39.png";
-import gameController from "@/assets/game-controller.png";
 import tvStatic from "@/assets/tv-static.png";
+import rocket from "@/assets/rocket.png";
 
 export default function HeroBanner() {
   return (
-    <section className="relative">
-      <img src={satellite} alt="" className="absolute w-32 -top-20 left-12"/>
+    <section className="relative my-10">
+      <img src={satellite} alt="" className="absolute w-32 -top-20 left-12" />
       <div className="py-6 px-6 grid grid-cols-2 bg-zinc-900 border border-zinc-700 gap-5 relative overflow-hidden">
-        <img src={gameController} alt="" className="absolute -bottom-44 -right-14 rotate-[-30deg]"/>
         <div className="bg-zinc-800 rounded relative overflow-hidden ">
           <div className="twinkling-stars"></div>
           <div className="twinkling"></div>
@@ -29,13 +28,23 @@ export default function HeroBanner() {
             width={350}
           />
           <FloatingContainer items={["🍙", <IndieCat />, "🧶"]} />
-          <img src={tvStatic} alt="" className="pointer-events-none z-10 absolute top-0 left-0 h-full select-none"/>
+          <img
+            src={tvStatic}
+            alt=""
+            className="pointer-events-none z-10 absolute top-0 left-0 h-full select-none"
+          />
         </div>
-        <div className="">
-          <h1 className="text-4xl md:text-4xl font-bold mb-6">
+        <div className="relative">
+          <img
+            src={rocket}
+            alt=""
+            className="absolute -bottom-14 -right-12 -z-0 select-none pointer-events-none"
+            width={250}
+          />
+          <h1 className="text-4xl md:text-4xl font-bold mb-2">
             Share Your Indie Game with the World
           </h1>
-          <p className="text-lg mb-8 font-mono">
+          <p className="mb-8 font-mono pe-32">
             Join our platform, upload your game, and apply to be featured on the
             front page. Get discovered by thousands of players looking for the
             next hidden gem.

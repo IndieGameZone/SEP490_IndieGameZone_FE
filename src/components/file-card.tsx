@@ -1,3 +1,4 @@
+import { formatMegabytes } from "@/lib/file";
 import { GameFile } from "@/types/game";
 import { Button, Tooltip } from "antd";
 import {
@@ -29,7 +30,9 @@ const FileCard = ({
   return (
     <div
       className={`flex justify-between p-2 ${
-        darkTheme ? "bg-zinc-900 border-zinc-700" : "bg-zinc-100 border-zinc-300"
+        darkTheme
+          ? "bg-zinc-900 border-zinc-700"
+          : "bg-zinc-100 border-zinc-300"
       } rounded border `}
     >
       <div className="flex gap-2 items-center flex-1">
@@ -46,7 +49,7 @@ const FileCard = ({
           {file.displayName ? file.displayName : "unnamed file"}
         </span>
         <span className="text-sm text-zinc-400">
-          ({(file.size).toFixed(1)} MB)
+          ({formatMegabytes(file.size)})
         </span>
       </div>
       <Tooltip

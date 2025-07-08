@@ -184,6 +184,7 @@ const GameContent = ({
         />
       ))}
     </div>
+    <p>(View all versions)</p>
   </div>
 );
 

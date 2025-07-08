@@ -1,6 +1,6 @@
 import { timeAgo } from "@/lib/date-n-time";
 import { GameFile } from "@/types/game";
-import { Button, message } from "antd";
+import { Button } from "antd";
 import {
   FaApple,
   FaFileArchive,
@@ -8,7 +8,6 @@ import {
   FaRegClock,
   FaWindows,
 } from "react-icons/fa";
-import useDownloadStore from "../../store/use-download-store";
 
 const DownloadCard = ({
   file,
@@ -17,32 +16,38 @@ const DownloadCard = ({
   file: GameFile;
   defaultPlatforms: any;
 }) => {
-  const { downloads, startDownload } = useDownloadStore();
-  const [messageApi, contextHolder] = message.useMessage();
+  // const { downloads, startDownload } = useDownloadStore();
+  // const [messageApi, contextHolder] = message.useMessage();
 
   const handleDownload = () => {
-    const existings = Object.values(downloads);
-    if (existings.length > 2) {
-      messageApi.error("Cannot download more than 2 files at the same time!");
-      return;
-    } else if (
-      existings.find(
-        (entry) =>
-          entry.url === file.file &&
-          (entry.status === "downloading" || entry.status === "paused")
-      )
-    ) {
-      messageApi.error("Download is already in process!");
-      return;
-    }
-    startDownload(file.file, file.displayName);
+    const link = document.createElement("a");
+    link.href = file.file;
+    link.download = file.displayName || "";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    // const existings = Object.values(downloads);
+    // if (existings.length > 2) {
+    //   messageApi.error("Cannot download more than 2 files at the same time!");
+    //   return;
+    // } else if (
+    //   existings.find(
+    //     (entry) =>
+    //       entry.url === file.file &&
+    //       (entry.status === "downloading" || entry.status === "paused")
+    //   )
+    // ) {
+    //   messageApi.error("Download is already in process!");
+    //   return;
+    // }
+    // startDownload(file.file, file.displayName);
   };
 
   return (
     <div
       className={`flex p-2 bg-zinc-900 border-zinc-700 rounded border gap-3 mb-2 items-center`}
     >
-      {contextHolder}
+      {/* {contextHolder} */}
       <Button
         type="primary"
         icon={

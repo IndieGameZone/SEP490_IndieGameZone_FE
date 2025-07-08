@@ -22,7 +22,6 @@ import ProfileMenu from "./profile-menu";
 import { MdOutlineInsertChart } from "react-icons/md";
 import useProfileStore from "@/store/use-auth-store";
 import { SearchProps } from "antd/es/input";
-import DownloadProcessesButton from "./download-processes-button";
 
 type MenuItem = GetProp<MenuProps, "items">[number];
 
@@ -129,7 +128,7 @@ const Navbar = () => {
               onSearch={onSearch}
             />
           </div>
-          <DownloadProcessesButton />
+          {/* <DownloadProcessesButton /> */}
           {showDashboardButton && (
             <Button
               onClick={handleGoToDashboard}

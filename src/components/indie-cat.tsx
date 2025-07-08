@@ -175,21 +175,21 @@ const IndieCat = ({ size = 50 }: { size?: number }) => {
         setEmo("winking");
         setTimeout(() => {
           setEmo("normal");
-        }, 300); 
+        }, 300);
       }
     };
-  
+
     intervalRef.current = setInterval(() => {
       randomWink();
-    }, Math.random() * 5000 + 5000) 
-  
+    }, Math.random() * 5000 + 5000);
+
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, []);
 
   return (
-    <div>
+    <div >
       <style>
         {`
         @keyframes earFloatNormal {

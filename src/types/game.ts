@@ -125,6 +125,7 @@ export type GameFile = {
     size: number; // MB
     platform: Platform;
     file: string;
+    isActive: boolean;
 }
 
 export type GameCensorLog = {

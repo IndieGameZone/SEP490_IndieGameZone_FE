@@ -10,7 +10,7 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import UpdateGameFiles from "./update-game-files";
+import UpdateGameFiles from "./game-files/update-game-files";
 import UpdateGameInfo from "./update-game-info";
 import UpdateGameMediaAssets from "./update-game-media-assets";
 import useCategoryStore from "@/store/use-category-store";
@@ -29,7 +29,8 @@ const { useToken } = theme;
 const DevUpdateGamePage = () => {
   const { gameId } = useParams();
   const [selectedKey, setSelectedKey] = useState("info");
-  const { fetchGameById, game, loading, error, renderKey } = useGameStore();
+  const { fetchGameById, fetchGameFiles, game, loading, error, renderKey } =
+    useGameStore();
   const navigate = useNavigate();
   const messageApi = useGlobalMessage();
   const { token } = useToken();
@@ -41,6 +42,7 @@ const DevUpdateGamePage = () => {
   useEffect(() => {
     if (gameId) {
       fetchGameById(gameId);
+      fetchGameFiles(gameId);
       fetchCategories();
       fetchTags();
       fetchAgeRestrictions();

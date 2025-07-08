@@ -17,6 +17,18 @@ export function formatBytes(bytes: number, decimals = 2): string {
     return `${parseFloat(value.toFixed(decimals))} ${units[i]}`;
 }
 
+export function formatMegabytes(mb: number, decimals = 2): string {
+    if (mb === 0) return '0 B';
+
+    const k = 1024;
+    const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    const bytes = mb * k * k;
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const value = bytes / Math.pow(k, i);
+
+    return `${parseFloat(value.toFixed(decimals))} ${units[i]}`;
+}
+
 export function formatTimeLeft(seconds: number): string {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
