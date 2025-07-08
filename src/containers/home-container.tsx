@@ -5,7 +5,7 @@ import { Suspense, lazy } from "react";
 import PageTransition from "@/components/page-transition";
 import DownloadGamePage from "@/pages/download-game/download-game-page";
 import SearchPage from "@/pages/search-page/search-page";
-
+import AboutUsPage from "@/pages/about-us/about-us-page";
 const NotFoundPage = lazy(() => import("@/pages/errors/not-found-page"));
 const VerifyEmailPage = lazy(() => import("@/pages/verify-email-page"));
 const ForumPage = lazy(() => import("@/pages/forum-page/forum-page"));
@@ -23,6 +23,7 @@ const HomeContainer = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/about-us" element={<AboutUsPage />} />
           <Route path="/profile/:userId" element={<ViewProfilePage />} />
           <Route path="/search/*" element={<SearchPage />} />
           <Route path="/game/:gameId" element={<GameDetailsPage />} />

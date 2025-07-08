@@ -9,7 +9,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   { label: "Discover", path: "/" },
   { label: "Search", path: "/search" },
-  { label: "Forum", path: "/forum" },
+  { label: "About Us", path: "/about-us" },
 ];
 
 const NavLinks: React.FC = () => {
