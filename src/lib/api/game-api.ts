@@ -285,3 +285,13 @@ export const updateGameImages = async (gameId: string, request: UpdateGameImages
     return handleApiError(error);
   }
 };
+
+export const toggleFileVisibility = async (developerId: string, gamePlaformId: string, status: boolean) => {
+  try {
+    const formData = toFormData({ isActive: status });
+    const { data } = await axiosClient.put(`/api/developers/${developerId}/game-platforms/${gamePlaformId}/activation`, formData);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

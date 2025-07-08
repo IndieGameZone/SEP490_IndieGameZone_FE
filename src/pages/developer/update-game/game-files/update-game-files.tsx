@@ -8,7 +8,7 @@ const UpdateGameFiles = () => {
   return (
     <div className="p-5 bg-zinc-900">
       <h2 className="text-2xl mb-3">Game Files</h2>
-      <Table<GameFile> columns={columns} dataSource={gameFiles} loading={loadingFiles}/>
+      <Table<GameFile> columns={columns} dataSource={gameFiles} loading={loadingFiles} rowKey={"id"}/>
     </div>
   );
 };

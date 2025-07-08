@@ -12,6 +12,11 @@ const setRefreshingToken = (refreshing: boolean) => {
     authStore.setIsRefreshingToken(refreshing);
 };
 
+const logout = () => {
+    const authStore = useAuthStore.getState();
+    authStore.logout();
+}
+
 let isRefreshing = false;
 let failedQueue: {
     resolve: (value?: unknown) => void;
@@ -91,8 +96,7 @@ axiosClient.interceptors.response.use(
                 return axiosClient(originalRequest);
             } catch (err) {
                 processQueue(err, null);
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('profile');
+                logout();
                 // Optional: redirect to login
                 // window.location.href = '/login';
                 return Promise.reject(err);

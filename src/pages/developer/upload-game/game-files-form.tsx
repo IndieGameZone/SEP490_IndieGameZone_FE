@@ -147,6 +147,7 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
                   label={<span className="font-bold">Platform</span>}
                   name={[name, "platformId"]}
                   extra="Select the platform this game file is for"
+                  rules={[{ required: true, message: "Please select a platform" }]}
                   style={{ width: 500, marginBottom: 20 }}
                 >
                   <Select

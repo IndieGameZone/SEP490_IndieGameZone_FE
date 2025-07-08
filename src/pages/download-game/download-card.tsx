@@ -1,4 +1,5 @@
 import { timeAgo } from "@/lib/date-n-time";
+import { formatMegabytes } from "@/lib/file";
 import { GameFile } from "@/types/game";
 import { Button } from "antd";
 import {
@@ -73,7 +74,7 @@ const DownloadCard = ({
             {file.displayName ? file.displayName : "unnamed file"}
           </span>
           <span className="text-sm text-zinc-400">
-            &nbsp;({file.size.toFixed(1)} MB)
+            &nbsp;({formatMegabytes(file.size)})
           </span>
         </div>
         <p className="text-xs">
