@@ -42,3 +42,20 @@ export function formatTimeLeft(seconds: number): string {
 
     return parts.join(', ');
 }
+
+export function downloadFile(url: string, fileName?: string): void {
+    try {
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = fileName || url.split('/').pop() || 'downloaded-file';
+      anchor.style.display = 'none';
+  
+      document.body.appendChild(anchor);
+      anchor.click();
+  
+      document.body.removeChild(anchor);
+    } catch (error) {
+      console.error('Arrey baba! Something went wrong while downloading:', error);
+    }
+  }
+  

@@ -295,3 +295,12 @@ export const toggleFileVisibility = async (developerId: string, gamePlaformId: s
     return handleApiError(error);
   }
 };
+
+export const getFileUrl = async (userId: string, gamePlaformId: string) => {
+  try {
+    const { data } = await axiosClient.put(`/api/users/${userId}/games/${gamePlaformId}/file-downloading`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

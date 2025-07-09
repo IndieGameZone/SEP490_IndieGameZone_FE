@@ -2,6 +2,7 @@ import { formatMegabytes } from "@/lib/file";
 import { GameFile } from "@/types/game";
 import { Badge, TableProps } from "antd";
 import ToggleVisibilityButton from "./toggle-visibility-button";
+import DownloadFileButton from "@/components/download-file-button";
 
 export const columns: TableProps<GameFile>["columns"] = [
   {
@@ -42,8 +43,9 @@ export const columns: TableProps<GameFile>["columns"] = [
     title: "Action",
     key: "action",
     render: (_, record) => (
-      <div>
+      <div className="flex gap-2">
         <ToggleVisibilityButton file={record} />
+        <DownloadFileButton file={record} />
       </div>
     ),
   },
