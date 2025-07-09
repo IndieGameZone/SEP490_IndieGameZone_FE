@@ -184,27 +184,40 @@ const UpdateGameMediaAssets = () => {
           </Dragger>
         </Form>
       </div>
-      <h2 className="font-bold mb-2">Game Screenshorts</h2>
-      <div className="grid grid-cols-4 gap-3 bg-zinc-900 mb-2">
-        {game.gameImages.map((image, index: number) => (
-          <img
-            key={`game-image-${index}`}
-            src={image.image}
-            className="aspect-16/9 rounded highlight-hover cursor-pointer"
-            onClick={() => setIndex(index + 1)}
+      <div className="bg-zinc-800 p-3">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="font-bold mb-2">Game Screenshorts</h2>
+          <UpdateScreenshotsButton
+            screenshots={game.gameImages.map((x) => x.image)}
           />
-        ))}
+        </div>
+
+        <div className="grid grid-cols-4 gap-3 bg-zinc-900 mb-2">
+          {game.gameImages.map((image, index: number) => (
+            <img
+              key={`game-image-${index}`}
+              src={image.image}
+              className="aspect-16/9 rounded highlight-hover cursor-pointer"
+              onClick={() => setIndex(index + 1)}
+            />
+          ))}
+        </div>
       </div>
-      <UpdateScreenshotsButton
-        screenshots={game.gameImages.map((x) => x.image)}
-      />
-      <h2 className="font-bold mb-2 mt-4">Gameplay/trailer</h2>
-      {game?.videoLink ? (
-        <ReactPlayer className="react-player" url={game?.videoLink} controls />
-      ) : (
-        <div className="text-gray-500">None</div>
-      )}
-      <UpdateVideoButton url={game.videoLink} />
+      <div className="bg-zinc-800 p-3 mt-5">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="font-bold">Gameplay/trailer</h2>
+          <UpdateVideoButton url={game.videoLink} />
+        </div>
+        {game?.videoLink ? (
+          <ReactPlayer
+            className="react-player"
+            url={game?.videoLink}
+            controls
+          />
+        ) : (
+          <div className="text-gray-500">None</div>
+        )}
+      </div>
     </div>
   );
 };

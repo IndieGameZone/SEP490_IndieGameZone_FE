@@ -1,4 +1,4 @@
-import { Button, Modal, Upload, UploadFile, message } from "antd";
+import { Button, Modal, Tooltip, Upload, UploadFile, message } from "antd";
 import DragDropStringSorter from "./drag-drop-string-sorter";
 import { useMemo, useState } from "react";
 import { FaPen, FaSave } from "react-icons/fa";
@@ -123,9 +123,10 @@ const UpdateScreenshotsButton = ({
   return (
     <>
       {contextHolder}
-      <Button onClick={showModal} icon={<FaPen />}>
-        Edit screenshots
-      </Button>
+      <Tooltip title="Edit screenshots">
+        <Button onClick={showModal} icon={<FaPen />} shape="circle"/>
+      </Tooltip>
+
       <Modal
         title={<h4 className="text-xl">Edit screenshots</h4>}
         open={isModalOpen}
