@@ -124,3 +124,18 @@ export const followDeveloper = async (playerId: string, developerId: string) => 
     return handleApiError(error);
   }
 };
+
+export const getAboutUsStats = async () => {
+  try {
+    const totalUserResult = await axiosClient.get(`/api/dashboard/total-users`);
+    const totalOnlineResult = await axiosClient.get(`/api/dashboard/online-count`);
+    return {
+      error: null, data: {
+        totalUsers: totalUserResult.data,
+        totalOnline: totalOnlineResult.data
+      }, success: true
+    };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

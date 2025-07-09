@@ -59,6 +59,8 @@ export default function HeroBanner() {
           </div>
         </div>
       </div>
+      <div className="w-full h-full absolute top-0 left-0 noise pointer-events-none"></div>
+
     </section>
   );
 }

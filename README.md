@@ -1,3 +1,12 @@
+# Credit
+Screenshots from:
+https://anaissalla.itch.io/nomnom
+https://ddrkirbyisq.itch.io/goodnight-meowmie
+https://cookiecrayon.itch.io/pikwip
+https://loafyco.itch.io/b-e-e-t-l-e
+https://simex.itch.io/hollowspire
+https://aunty-games.itch.io/gourdlets
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

@@ -1,49 +1,85 @@
 import NavLinks from "@/components/nav-links";
-import ComputerButton from "./computer-button";
-import computer from "@/assets/indiecomputer/computer.svg";
-import rocket from "@/assets/indiecomputer/rocket.svg";
-import { useState } from "react";
-import { FaPlay } from "react-icons/fa";
+import ComputerSection from "./computer-section";
+import logo from "@/assets/indiegamezone-logo.svg";
+import MaxWidthWrapper from "@/components/max-width-wrapper";
+import { Badge, Button } from "antd";
+import { useEffect, useState } from "react";
+import { getAboutUsStats } from "@/lib/api/user-api";
+import { FaArrowRight } from "react-icons/fa";
+import computerBackground from "@/assets/indiecomputer/computer-background.svg";
+import { useNavigate } from "react-router-dom";
 const AboutUsPage = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const togglePlaying = () => {
-    setIsPlaying((prev) => !prev);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalOnline, setTotalOnline] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchTotalUsers();
+  }, []);
+
+  const fetchTotalUsers = async () => {
+    const result = await getAboutUsStats();
+    if (!result.error) {
+      setTotalUsers(result.data.totalUsers);
+      setTotalOnline(result.data.totalOnline);
+    }
   };
   return (
     <div>
       <NavLinks />
-      <div className="grid grid-cols-2 max-w-screen overflow-hidden bg-zinc-900">
-        <div></div>
-        <div className="relative h-[500px] rounded">
-          <img
-            src={computer}
-            alt=""
-            className="left-30 top-20 absolute select-none pointer-events-none"
-          />
-          <ComputerButton
-            className="absolute top-[88px] left-[136px]"
-            onClick={togglePlaying}
-          />
-          <div className="w-[320px] h-[180px] flex justify-center items-center absolute left-[189px] top-[99px]">
-            <FaPlay className="size-10 text-orange-100 animate-pulse"/>
+      <div
+        className="overflow-hidden bg-zinc-900 rounded relative"
+        style={{
+          background: `url(${computerBackground})`,
+          backgroundSize: "cover",
+        }}
+      >
+        <MaxWidthWrapper className="grid grid-cols-2">
+          <div className="pt-16">
+            <img src={logo} alt="" />
+            <p className="text-lg mt-2">
+              Discover the Games You've Never Heard Of—But Should.
+            </p>
+            <div className="mt-3 flex gap-12">
+              <div>
+                <Badge
+                  text={
+                    <span className="uppercase text-xs text-zinc-400">
+                      Total users
+                    </span>
+                  }
+                  status="processing"
+                />
+                <p className="text-3xl">{totalUsers.toLocaleString()}</p>
+              </div>
+              <div>
+                <Badge
+                  text={
+                    <span className="uppercase text-xs text-zinc-400">
+                      Online
+                    </span>
+                  }
+                  status="success"
+                />
+                <p className="text-3xl">{totalOnline.toLocaleString()}</p>
+              </div>
+            </div>
+            <Button
+              size="large"
+              type="primary"
+              className="mt-5"
+              style={{ paddingInline: 30 }}
+              icon={<FaArrowRight />}
+              iconPosition="end"
+              onClick={() => {navigate("/search")}}
+            >
+              Explore Now
+            </Button>
           </div>
-          {isPlaying && (
-            <iframe
-              src="/cl2doom.html"
-              width="320px"
-              height="180px"
-              title="My HTML"
-              loading="lazy"
-              style={{ border: "none" }}
-              className="absolute left-[189px] top-[99px]"
-            />
-          )}
-          <img
-            src={rocket}
-            alt=""
-            className="left-40 top-[234px] absolute select-none pointer-events-none"
-          />
-        </div>
+          <div>
+            <ComputerSection />
+          </div>
+        </MaxWidthWrapper>
       </div>
     </div>
   );
