@@ -4,12 +4,16 @@ import { columns } from "./columns";
 import { GameFile } from "@/types/game";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import UpdateInstallInstructionButton from "./update-install-instruction-button";
+import UploadNewFileButton from "./upload-new-file-button";
 
 const UpdateGameFiles = () => {
   const { loadingFiles, gameFiles, installInstruction } = useGameStore();
   return (
     <div className="p-5 bg-zinc-900">
-      <h2 className="text-2xl mb-3">Game Files</h2>
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-2xl mb-3">Game Files</h2>
+        <UploadNewFileButton />
+      </div>
       <Table<GameFile>
         columns={columns}
         dataSource={gameFiles}

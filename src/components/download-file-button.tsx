@@ -15,7 +15,6 @@ const DownloadFileButton = ({ file }: { file: GameFile }) => {
     if (!profile) return;
     setLoading(true);
     const result = await getFileUrl(profile.id, file.id);
-    console.log(file.file);
     setLoading(false);
     if (result.error) {
       messageApi.error("Failed to fetch file! Please try again.");

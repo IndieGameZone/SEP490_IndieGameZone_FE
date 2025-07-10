@@ -17,6 +17,7 @@ import useCategoryStore from "@/store/use-category-store";
 import useTagStore from "@/store/use-tag-store";
 import useAgeRestrictionStore from "@/store/use-age-restriction-store";
 import useLanguageStore from "@/store/use-language-store";
+import usePlatformStore from "@/store/use-platform-store";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -38,6 +39,7 @@ const DevUpdateGamePage = () => {
   const { fetchTags } = useTagStore();
   const { fetchAgeRestrictions } = useAgeRestrictionStore();
   const { fetchLanguages } = useLanguageStore();
+  const { fetchPlatforms } = usePlatformStore();
 
   useEffect(() => {
     if (gameId) {
@@ -47,6 +49,7 @@ const DevUpdateGamePage = () => {
       fetchTags();
       fetchAgeRestrictions();
       fetchLanguages();
+      fetchPlatforms();
       window.scrollTo({
         top: 0,
       });
