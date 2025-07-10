@@ -1,7 +1,11 @@
+import { useGlobalMessage } from "@/components/message-provider";
+import { getFileUrl } from "@/lib/api/game-api";
 import { timeAgo } from "@/lib/date-n-time";
-import { formatMegabytes } from "@/lib/file";
+import { downloadFile, formatMegabytes } from "@/lib/file";
+import useAuthStore from "@/store/use-auth-store";
 import { GameFile } from "@/types/game";
 import { Button } from "antd";
+import { useState } from "react";
 import {
   FaApple,
   FaFileArchive,
@@ -19,14 +23,28 @@ const DownloadCard = ({
 }) => {
   // const { downloads, startDownload } = useDownloadStore();
   // const [messageApi, contextHolder] = message.useMessage();
+  const messageApi = useGlobalMessage();
+  const [loading, setLoading] = useState(false);
+  const { profile } = useAuthStore();
 
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = file.file;
-    link.download = file.displayName || "";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    if (!profile) return;
+    setLoading(true);
+    const result = await getFileUrl(profile.id, file.id);
+    setLoading(false);
+    if (result.error) {
+      messageApi.error("Failed to fetch file! Please try again.");
+    } else {
+      downloadFile(file.file);
+    }
+    // NORMAL DOWNLOAD
+    // const link = document.createElement("a");
+    // link.href = file.file;
+    // link.download = file.displayName || "";
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
+    // DOWNLOAD MANAGED BY CLIENT
     // const existings = Object.values(downloads);
     // if (existings.length > 2) {
     //   messageApi.error("Cannot download more than 2 files at the same time!");
@@ -64,6 +82,7 @@ const DownloadCard = ({
         }
         onClick={handleDownload}
         size="large"
+        loading={loading}
       >
         Download
       </Button>

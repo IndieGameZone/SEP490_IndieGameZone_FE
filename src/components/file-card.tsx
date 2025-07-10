@@ -1,13 +1,8 @@
 import { formatMegabytes } from "@/lib/file";
 import { GameFile } from "@/types/game";
-import { Button, Tooltip } from "antd";
-import {
-  FaApple,
-  FaDownload,
-  FaFileArchive,
-  FaLinux,
-  FaWindows,
-} from "react-icons/fa";
+import { Tooltip } from "antd";
+import { FaApple, FaFileArchive, FaLinux, FaWindows } from "react-icons/fa";
+import DownloadFileButton from "./download-file-button";
 
 const FileCard = ({
   file,
@@ -18,15 +13,6 @@ const FileCard = ({
   defaultPlatforms: any;
   darkTheme?: boolean;
 }) => {
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = file.file;
-    link.download = file.displayName || "";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <div
       className={`flex justify-between p-2 ${
@@ -57,7 +43,7 @@ const FileCard = ({
           file.displayName ? file.displayName : "unnamed file"
         }`}
       >
-        <Button shape="circle" icon={<FaDownload />} onClick={handleDownload} />
+        <DownloadFileButton file={file} />
       </Tooltip>
     </div>
   );
