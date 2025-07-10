@@ -50,10 +50,21 @@ const UploadNewFileButton = () => {
   const { platforms } = usePlatformStore();
   const messageApi = useGlobalMessage();
   const [formDataCache, setFormDataCache] = useState<FieldType | null>(null);
-  const { game, rerender } = useGameStore();
+  const { game, rerender, gameFiles } = useGameStore();
   const platformsOptions = useMemo(() => {
     return platforms.map((x) => ({ value: x.id, label: x.name }));
   }, [platforms]);
+
+  const displayNameValidator = async (_: any, value: string) => {
+    if (gameFiles.find((x) => x.displayName == value)) {
+      return Promise.reject(
+        new Error(
+          "Display name must not be duplicated! You can add additional version into the display name (e.g. v1.0)."
+        )
+      );
+    }
+    return Promise.resolve();
+  };
 
   const handleBeforeUpload = (file: File) => {
     const isAllowed = allowedTypes.some((type) =>
@@ -79,6 +90,7 @@ const UploadNewFileButton = () => {
     setFileList([newFile]);
 
     form.setFieldsValue({ displayName: file.name });
+    form.validateFields(["displayName"]);
     setFileUrl(null);
     return false;
   };
@@ -95,7 +107,6 @@ const UploadNewFileButton = () => {
         setUploadProgress(percent);
       },
     });
-    console.log(response.data);
     return response.data;
   };
 
@@ -138,6 +149,7 @@ const UploadNewFileButton = () => {
       }, 1000);
     } catch (err: any) {
       setFormDataCache(values);
+      messageApi.error("Something went wrong! Please try again.");
       setErrorMessage("Something went wrong! Please try again.");
     } finally {
       setLoading(false);
@@ -247,7 +259,10 @@ const UploadNewFileButton = () => {
           <Form.Item<FieldType>
             label="Display Name"
             name="displayName"
-            rules={[{ required: true, message: "Please enter a display name" }]}
+            rules={[
+              { required: true, message: "Please enter a display name" },
+              { validator: displayNameValidator },
+            ]}
             extra="The name that will be shown to users (e.g., Windows Build v1.2)"
             style={{ marginBottom: 10 }}
           >
