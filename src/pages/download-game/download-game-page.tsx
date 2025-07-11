@@ -13,6 +13,7 @@ import usePlatformStore from "@/store/use-platform-store";
 import useAuthStore from "@/store/use-auth-store";
 import useLibraryStore from "@/store/use-library-store";
 import { Game, GameFile } from "@/types/game";
+import ViewAllVersionButton from "./view-all-versions-button";
 
 const DownloadGamePage = () => {
   const { gameId } = useParams<{ gameId: string }>();
@@ -97,6 +98,10 @@ const DownloadGamePage = () => {
     fetchGameData,
   ]);
 
+  const activeFiles = useMemo(() => {
+    return gameFiles.filter((x) => x.isActive);
+  }, [gameFiles]);
+
   if (!gameId) {
     return <Navigate to="/" replace />;
   }
@@ -113,7 +118,7 @@ const DownloadGamePage = () => {
           <BackButton onBack={handleBackToGamePage} />
           <GameContent
             game={game}
-            gameFiles={gameFiles}
+            gameFiles={activeFiles}
             defaultPlatforms={defaultPlatforms as any}
           />
           {installInstruction && (
@@ -176,15 +181,17 @@ const GameContent = ({
     </div>
 
     <div className="mt-5 space-y-4">
-      {gameFiles.map((file, index) => (
-        <DownloadCard
-          file={file}
-          key={`download-card-${file.id || index}`}
-          defaultPlatforms={defaultPlatforms}
-        />
-      ))}
+      {gameFiles
+        .filter((x) => x.isActive)
+        .map((file, index) => (
+          <DownloadCard
+            file={file}
+            key={`download-card-${file.id || index}`}
+            defaultPlatforms={defaultPlatforms}
+          />
+        ))}
     </div>
-    <p>(View all versions)</p>
+    <ViewAllVersionButton />
   </div>
 );
 
