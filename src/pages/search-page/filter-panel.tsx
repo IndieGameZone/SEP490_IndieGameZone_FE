@@ -172,7 +172,7 @@ const FilterPanel = () => {
   };
 
   return (
-    <MaxWidthWrapper>
+    <MaxWidthWrapper className="hidden md:block">
       <div className="bg-zinc-900 grid grid-cols-4 gap-x-5 px-10 py-5 rounded border border-zinc-700">
         <div className="flex justify-between col-span-4">
           <div className="flex gap-2 items-center mb-4">

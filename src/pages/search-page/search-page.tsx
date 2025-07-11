@@ -1,6 +1,5 @@
 import { Input, message } from "antd";
 import { useSearchParams } from "react-router-dom";
-import { MdOutlineSort } from "react-icons/md";
 import MaxWidthWrapper from "@/components/max-width-wrapper";
 import GameCard from "./game-card";
 import PopularGenresSection from "./popular-genres-section";
@@ -17,19 +16,14 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import ScrollToTopButton from "@/components/scroll-to-top-button";
 import useWishlistStore from "@/store/use-wish-list-store";
 import useAuthStore from "@/store/use-auth-store";
-
-const tabs = [
-  "Most popular",
-  "Hot & Trending",
-  "Best",
-  "Best Seller",
-  "Latest",
-];
+import useIsMobile from "@/hooks/use-is-mobile";
+import MobileFilterPanel from "./mobile-filter-panel";
+import SortPanel from "./sort-panel";
 
 const PAGE_SIZE = 9;
 const SearchPage = () => {
+  const isMobile = useIsMobile();
   const [messageApi, contextHolder] = message.useMessage();
-  const [activeTab, setActiveTab] = useState("Most popular");
   const [games, setGames] = useState<any[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState(searchParams.get("q") || "");
@@ -149,30 +143,14 @@ const SearchPage = () => {
               </div>
             </div>
           ) : (
-            <PopularGenresSection />
+            <div className="hidden md:block">
+              <PopularGenresSection />
+            </div>
           )}
         </div>
       </MaxWidthWrapper>
-      <FilterPanel />
-      <MaxWidthWrapper className="flex gap-3">
-        <div className="flex items-center gap-2">
-          <MdOutlineSort />
-          <span className="text-xs">Sort by</span>
-        </div>
-        {tabs.map((tab) => (
-          <span
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`cursor-pointer transition-all duration-200 border-b-2 p-2 ${
-              activeTab === tab
-                ? "text-orange-600 border-orange-600"
-                : "text-zinc-500 hover:text-gray-200 border-transparent"
-            }`}
-          >
-            {tab}
-          </span>
-        ))}
-      </MaxWidthWrapper>
+      {isMobile ? <MobileFilterPanel /> : <FilterPanel />}
+      <SortPanel />
       <MaxWidthWrapper>
         <hr className="border-b border-zinc-700 mb-5"></hr>
         <div>

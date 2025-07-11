@@ -34,8 +34,8 @@ const AboutUsPage = () => {
           backgroundSize: "cover",
         }}
       >
-        <MaxWidthWrapper className="grid grid-cols-2">
-          <div className="pt-16">
+        <MaxWidthWrapper className="grid grid-cols-1 md:grid-cols-2">
+          <div className="pt-16 p-3">
             <img src={logo} alt="" />
             <p className="text-lg mt-2">
               Discover the Games You've Never Heard Of—But Should.
@@ -76,7 +76,7 @@ const AboutUsPage = () => {
               Explore Now
             </Button>
           </div>
-          <div>
+          <div className="hidden md:block">
             <ComputerSection />
           </div>
         </MaxWidthWrapper>
