@@ -2,6 +2,7 @@ import TiptapEditor from "@/components/tiptap/tiptap-editor";
 import usePlatformStore from "@/store/use-platform-store";
 import { GameFiles } from "@/types/game";
 import {
+  Alert,
   Button,
   Form,
   FormInstance,
@@ -12,7 +13,7 @@ import {
   UploadFile,
   message,
 } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaMinus, FaPlus, FaUpload } from "react-icons/fa";
 
 type FieldType = GameFiles;
@@ -34,6 +35,35 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
   const { fetchPlatforms, platforms, loading, getDefaultPlatforms } =
     usePlatformStore();
   const [messageApi, contextHolder] = message.useMessage();
+  const [filesError, setFilesError] = useState("");
+
+  const filesValidator = async (_: any, files: any) => {
+    if (!files || files.length < 1) {
+      return Promise.reject(new Error("At least one file is required"));
+    }
+
+    const names = files.map((f: any) => f?.displayName?.trim()).filter(Boolean);
+    const hasDuplicates = names.some(
+      (name: string, i: number) => names.indexOf(name) !== i
+    );
+
+    if (hasDuplicates) {
+      const message =
+        "Each file must have a unique display name. Please include a version number like 'v1.0' or build name to differentiate!";
+      setFilesError(message);
+      return Promise.reject(new Error(message));
+    }
+    // const versionReminder = names.some((name: string) => !/v?[\d.]+/i.test(name));
+
+    // if (versionReminder) {
+    //   return Promise.reject(
+    //     new Error(
+    //       "Make sure to include a version number in each display name (e.g., 'Windows Build v1.2')"
+    //     )
+    //   );
+    // }
+    return Promise.resolve();
+  };
 
   const normFile = (e: any) => {
     if (Array.isArray(e)) return e;
@@ -57,7 +87,6 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
       );
       return false;
     }
-
     const fileExtension = file.name.split(".").pop();
     const defaultPlatforms = getDefaultPlatforms();
     var platform = "";
@@ -76,6 +105,8 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
       platformId: platform.length ? platform : undefined,
     };
     form.setFieldsValue({ files: updatedList });
+    setFilesError("");
+    form.validateFields(["files"]);
     return false; // Prevent automatic upload
   };
 
@@ -86,13 +117,7 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
         name="files"
         rules={[
           {
-            validator: async (_, files) => {
-              if (!files || files.length < 1) {
-                return Promise.reject(
-                  new Error("At least one file is required")
-                );
-              }
-            },
+            validator: filesValidator,
           },
         ]}
       >
@@ -147,7 +172,9 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
                   label={<span className="font-bold">Platform</span>}
                   name={[name, "platformId"]}
                   extra="Select the platform this game file is for"
-                  rules={[{ required: true, message: "Please select a platform" }]}
+                  rules={[
+                    { required: true, message: "Please select a platform" },
+                  ]}
                   style={{ width: 500, marginBottom: 20 }}
                 >
                   <Select
@@ -172,7 +199,15 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
                 </Button>
               </div>
             ))}
-            <Form.ErrorList errors={errors} className="text-red-400 mb-1" />
+            {/* <Form.ErrorList errors={errors} className="text-red-400 mb-1" /> */}
+            {errors.length > 0 && (
+              <Alert
+                message={filesError}
+                type="error"
+                showIcon
+                style={{ marginBottom: 16 }}
+              />
+            )}
             <Form.Item>
               <Button
                 type="dashed"

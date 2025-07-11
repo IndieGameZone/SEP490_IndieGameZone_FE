@@ -59,7 +59,7 @@ const UploadNewFileButton = () => {
     if (gameFiles.find((x) => x.displayName == value)) {
       return Promise.reject(
         new Error(
-          "Display name must not be duplicated! You can add additional version into the display name (e.g. v1.0)."
+          "Each file must have a unique display name. Please include a version number like 'v1.0' or build name to differentiate!"
         )
       );
     }
@@ -295,7 +295,6 @@ const UploadNewFileButton = () => {
             message={errorMessage}
             type="error"
             showIcon
-            closable
             style={{ marginBottom: 16 }}
           />
         )}
