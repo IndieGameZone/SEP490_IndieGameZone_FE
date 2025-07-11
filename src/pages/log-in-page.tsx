@@ -156,9 +156,9 @@ const LogInPage = () => {
   }, [profile]);
 
   return (
-    <div className="grid grid-cols-2 h-screen bg-zinc-800">
+    <div className="grid grid-cols-1 lg:grid-cols-2 h-screen bg-zinc-800">
       <div
-        className="bg-cover bg-center rounded-2xl relative overflow-hidden drop-shadow-xl"
+        className="bg-cover bg-center rounded-2xl relative overflow-hidden drop-shadow-xl hidden lg:block"
         style={{ backgroundImage: `url(${background})` }}
       >
         <div className="absolute h-full w-full bg-zinc-950/50"></div>
@@ -177,6 +177,13 @@ const LogInPage = () => {
       <div className="flex items-center justify-center flex-col">
         <div className="w-full max-w-md p-4 rounded-xl">
           <img src={logo} alt="" className="mb-10" />
+          <div className="flex items-center gap-3 -mt-8 mb-5 lg:hidden">
+            <div className="border-b border-zinc-400 flex-1"></div>
+            <p className="text-center text-sm italic text-zinc-400">
+              Play Bold. Publish Free.
+            </p>
+            <div className="border-b border-zinc-400 flex-1"></div>
+          </div>
           <Form
             layout="vertical"
             autoComplete="off"

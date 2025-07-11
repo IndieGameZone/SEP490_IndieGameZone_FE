@@ -11,9 +11,13 @@ import rocket from "@/assets/rocket.png";
 export default function HeroBanner() {
   return (
     <section className="relative my-10">
-      <img src={satellite} alt="" className="absolute w-32 -top-16 md:-top-20 left-8 md:left-12" />
-      <div className="py-6 px-6 grid grid-cols-1 md:grid-cols-2 bg-zinc-900 border border-zinc-700 gap-5 relative overflow-hidden">
-        <div className="bg-zinc-800 rounded relative overflow-hidden hidden md:block">
+      <img
+        src={satellite}
+        alt=""
+        className="absolute w-32 -top-16 lg:-top-20 lg:left-12"
+      />
+      <div className="py-6 px-6 grid grid-cols-1 lg:grid-cols-2 bg-zinc-900 border border-zinc-700 gap-5 relative overflow-hidden">
+        <div className="bg-zinc-800 rounded relative overflow-hidden hidden lg:block">
           <div className="twinkling-stars"></div>
           <div className="twinkling"></div>
           <div className="clouds"></div>
@@ -38,24 +42,26 @@ export default function HeroBanner() {
           <img
             src={rocket}
             alt=""
-            className="absolute -bottom-14 -right-12 -z-0 select-none pointer-events-none"
+            className="absolute -bottom-14 -right-12 select-none pointer-events-none"
             width={250}
           />
-          <h1 className="text-4xl md:text-4xl font-bold mb-2">
-            Share Your Indie Game with the World
-          </h1>
-          <p className="mb-8 font-mono pe-32">
-            Join our platform, upload your game, and apply to be featured on the
-            front page. Get discovered by thousands of players looking for the
-            next hidden gem.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button size="large" href="/sign-up">
-              Sign Up & Upload Your Game
-            </Button>
-            {/* <Button href="/feature-request" size="large">
+          <div className="relative z-10">
+            <h1 className="text-4xl font-bold mb-2">
+              Share Your Indie Game with the World
+            </h1>
+            <p className="mb-8 font-mono lg:pe-32 bg-zinc-900/50 rounded">
+              Join our platform, upload your game, and apply to be featured on
+              the front page. Get discovered by thousands of players looking for
+              the next hidden gem.
+            </p>
+            <div className="flex flex-col lg:flex-row gap-4">
+              <Button size="large" href="/sign-up">
+                Sign Up & Upload Your Game
+              </Button>
+              {/* <Button href="/feature-request" size="large">
              Apply for Front Page Feature
           </Button> */}
+            </div>
           </div>
         </div>
       </div>
