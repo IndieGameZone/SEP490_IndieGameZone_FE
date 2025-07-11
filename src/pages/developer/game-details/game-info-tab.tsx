@@ -1,11 +1,11 @@
 import ExpandableWrapper from "@/components/expandable-wrapper";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import { formatCurrencyVND } from "@/lib/currency";
-import { formatDate, formatDateTime } from "@/lib/date-n-time";
+import { formatDate, formatDateTime, formatDuration } from "@/lib/date-n-time";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
 import { Button, Descriptions, DescriptionsProps, Tag } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaEye, FaPencilAlt } from "react-icons/fa";
 import ReactPlayer from "react-player";
 import { useNavigate } from "react-router-dom";
@@ -16,18 +16,29 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import FileCard from "../../../components/file-card";
 import DeleteGameButton from "./delete-game-button";
-import { AITag, ModerationStatusBadge, VisibilityStatus } from "@/components/status-tags";
+import {
+  AITag,
+  ModerationStatusBadge,
+  VisibilityStatus,
+} from "@/components/status-tags";
 import GameNotFound from "@/pages/errors/game-not-found";
 import { CiWarning } from "react-icons/ci";
 import ViewCensorLogButton from "../../../components/view-censor-log-button";
 import { GameCensorLog } from "@/types/game";
+import ViewAllVersionButton from "@/components/view-all-version-button";
 
 const GameInfoTab = () => {
   const { game, error } = useGameStore();
   const navigate = useNavigate();
   const [index, setIndex] = useState(-1);
   const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
-  const { fetchGameFiles, gameFiles, installInstruction, fetchGameCensorLog, gameCensorLogs } = useGameStore();
+  const {
+    fetchGameFiles,
+    gameFiles,
+    installInstruction,
+    fetchGameCensorLog,
+    gameCensorLogs,
+  } = useGameStore();
 
   const handleViewGamePage = () => {
     navigate(`/game/${game?.id}`);
@@ -66,7 +77,7 @@ const GameInfoTab = () => {
     {
       key: "average-time",
       label: "Average time",
-      children: game?.averageSession + " minute(s)",
+      children: formatDuration(game.averageSession),
       span: 1,
     },
     {
@@ -92,13 +103,21 @@ const GameInfoTab = () => {
     {
       key: "created-date",
       label: "Created date",
-      children: game ? formatDate(new Date(game.createdAt)) : <span className="text-gray-500">None</span>,
+      children: game ? (
+        formatDate(new Date(game.createdAt))
+      ) : (
+        <span className="text-gray-500">None</span>
+      ),
       span: 1,
     },
     {
       key: "updated-date",
       label: "Updated date",
-      children: game.updatedAt ? formatDate(new Date(game.updatedAt)) : <span className="text-gray-500">None</span>,
+      children: game.updatedAt ? (
+        formatDate(new Date(game.updatedAt))
+      ) : (
+        <span className="text-gray-500">None</span>
+      ),
       span: 1,
     },
     {
@@ -134,9 +153,13 @@ const GameInfoTab = () => {
       label: "Moderated by",
       children: (() => {
         const latestLog = gameCensorLogs
-          .filter((log: GameCensorLog) => log.censorStatus === "Approved" || log.censorStatus === "Rejected")
+          .filter(
+            (log: GameCensorLog) =>
+              log.censorStatus === "Approved" || log.censorStatus === "Rejected"
+          )
           .sort(
-            (a: GameCensorLog, b: GameCensorLog) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            (a: GameCensorLog, b: GameCensorLog) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           )[0];
 
         if (latestLog?.moderator) {
@@ -150,18 +173,26 @@ const GameInfoTab = () => {
       span: 1,
     },
     {
-  key: "censored-at",
-  label: "Censored at",
-  children: (() => {
-    const latestLog = gameCensorLogs
-      .filter((log: GameCensorLog) => log.censorStatus === "Approved" || log.censorStatus === "Rejected")
-      .sort(
-        (a: GameCensorLog, b: GameCensorLog) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )[0];
-    return latestLog ? formatDateTime(new Date(latestLog.createdAt)) : <span className="text-gray-500">None</span>;
-  })(),
-  span: 1,
-},
+      key: "censored-at",
+      label: "Censored at",
+      children: (() => {
+        const latestLog = gameCensorLogs
+          .filter(
+            (log: GameCensorLog) =>
+              log.censorStatus === "Approved" || log.censorStatus === "Rejected"
+          )
+          .sort(
+            (a: GameCensorLog, b: GameCensorLog) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )[0];
+        return latestLog ? (
+          formatDateTime(new Date(latestLog.createdAt))
+        ) : (
+          <span className="text-gray-500">None</span>
+        );
+      })(),
+      span: 1,
+    },
   ];
 
   const descriptionItems: DescriptionsProps["items"] = [
@@ -192,7 +223,18 @@ const GameInfoTab = () => {
     },
   ];
 
-  const slides = game ? [{ src: game.coverImage }, ...game.gameImages.map((image) => ({ src: image.image }))] : [];
+  const slides = useMemo(() => {
+    return game
+      ? [
+          { src: game.coverImage },
+          ...game.gameImages.map((image) => ({ src: image.image })),
+        ]
+      : [];
+  }, [game]);
+
+  const activeFiles = useMemo(() => {
+    return gameFiles.filter((x) => x.isActive);
+  }, [gameFiles]);
 
   if (game.censorReason) {
     infoItems.push({
@@ -221,7 +263,11 @@ const GameInfoTab = () => {
         <Button icon={<FaEye />} onClick={handleViewGamePage}>
           View game's page
         </Button>
-        <Button icon={<FaPencilAlt />} type="primary" onClick={handleGoToUpdate}>
+        <Button
+          icon={<FaPencilAlt />}
+          type="primary"
+          onClick={handleGoToUpdate}
+        >
           Update game
         </Button>
       </div>
@@ -255,7 +301,13 @@ const GameInfoTab = () => {
           </div>
           <h3 className="font-bold mt-4">Gameplay/trailer</h3>
           {game?.videoLink ? (
-            <ReactPlayer className="react-player" url={game?.videoLink} width="100%" height={200} controls />
+            <ReactPlayer
+              className="react-player"
+              url={game?.videoLink}
+              width="100%"
+              height={200}
+              controls
+            />
           ) : (
             <div className="text-gray-500">None</div>
           )}
@@ -263,10 +315,17 @@ const GameInfoTab = () => {
         <div className="bg-zinc-800 rounded p-3 mt-3">
           <h3 className="font-bold mb-2">Game files</h3>
           <div className="flex flex-col gap-2">
-            {gameFiles.map((file, index) => {
-              return <FileCard file={file} key={`game-file-${index}`} defaultPlatforms={defaultPlatforms} />;
+            {activeFiles.map((file, index) => {
+              return (
+                <FileCard
+                  file={file}
+                  key={`game-file-${index}`}
+                  defaultPlatforms={defaultPlatforms}
+                />
+              );
             })}
             {!gameFiles && <span className="text-gray-500">None</span>}
+            <ViewAllVersionButton />
           </div>
         </div>
       </div>
@@ -276,15 +335,34 @@ const GameInfoTab = () => {
           <div className="bg-orange-900 p-3 rounded mb-2 border-orange-500 border flex gap-3 items-center">
             <CiWarning className="size-9" />
             <div>
-              Your game content has been flagged as  <span className="font-bold">not safe/appropriate</span> by AI.
+              Your game content has been flagged as {" "}
+              <span className="font-bold">not safe/appropriate</span> by AI.
               <br />
-              Our moderation team will examine your game to ensure it is safe before it is made public.
+              Our moderation team will examine your game to ensure it is safe
+              before it is made public.
             </div>
           </div>
         )}
-        <Descriptions title="Game Infomation" column={2} bordered items={infoItems} />
-        <Descriptions column={2} layout="vertical" bordered items={descriptionItems} style={{ marginTop: 15 }} />
-        <Descriptions column={2} layout="vertical" bordered items={installInstructionItems} style={{ marginTop: 15 }} />
+        <Descriptions
+          title="Game Infomation"
+          column={2}
+          bordered
+          items={infoItems}
+        />
+        <Descriptions
+          column={2}
+          layout="vertical"
+          bordered
+          items={descriptionItems}
+          style={{ marginTop: 15 }}
+        />
+        <Descriptions
+          column={2}
+          layout="vertical"
+          bordered
+          items={installInstructionItems}
+          style={{ marginTop: 15 }}
+        />
       </div>
     </div>
   );
