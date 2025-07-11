@@ -31,7 +31,7 @@ const HomePage = () => {
       <SpecialOffersSection />
       <section className="pb-9">
         <h2 className="text-2xl font-bold text-center my-5">Games Search</h2>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <Link
             to={"/search/latest"}
             className="cursor-box btn-1 font-bold drop-shadow relative"
@@ -67,7 +67,7 @@ const HomePage = () => {
         <h2 className="text-2xl font-bold text-center my-5">
           Explore by Category
         </h2>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <GenreCard
             title="Action"
             to="/search?category=7a03afa3-2635-43bd-a58c-daeb80d3cef7"

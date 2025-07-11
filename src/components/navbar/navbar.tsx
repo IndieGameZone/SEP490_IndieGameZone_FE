@@ -108,20 +108,22 @@ const Navbar = () => {
             <img src={logo} alt="IndeGameZone Logo" className="size-7" />
             <h1 className="font-bold text-xl">IndieGameZone</h1>
           </div>
-          <Popover
-            content={popOverContent}
-            styles={{ body: { padding: 0, border: "1px solid black" } }}
-            trigger={"click"}
-          >
-            <Button
-              type="text"
-              shape="circle"
-              icon={<IoMdMore className="text-xl" />}
-            />
-          </Popover>
+          <div className="hidden md:block">
+            <Popover
+              content={popOverContent}
+              styles={{ body: { padding: 0, border: "1px solid black" } }}
+              trigger={"click"}
+            >
+              <Button
+                type="text"
+                shape="circle"
+                icon={<IoMdMore className="text-xl" />}
+              />
+            </Popover>
+          </div>
         </div>
         <div className="flex justify-center items-center gap-3">
-          <div>
+          <div className="hidden md:block">
             <Input.Search
               placeholder="Search for game titles,...."
               allowClear
@@ -130,12 +132,14 @@ const Navbar = () => {
           </div>
           {/* <DownloadProcessesButton /> */}
           {showDashboardButton && (
-            <Button
-              onClick={handleGoToDashboard}
-              icon={<MdOutlineInsertChart />}
-            >
-              Dashboard
-            </Button>
+            <div className="hidden md:block">
+              <Button
+                onClick={handleGoToDashboard}
+                icon={<MdOutlineInsertChart />}
+              >
+                Dashboard
+              </Button>
+            </div>
           )}
 
           {isLoadingProfile && <Skeleton.Avatar active={true} />}

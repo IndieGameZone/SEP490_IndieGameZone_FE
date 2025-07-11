@@ -11,9 +11,9 @@ import rocket from "@/assets/rocket.png";
 export default function HeroBanner() {
   return (
     <section className="relative my-10">
-      <img src={satellite} alt="" className="absolute w-32 -top-20 left-12" />
-      <div className="py-6 px-6 grid grid-cols-2 bg-zinc-900 border border-zinc-700 gap-5 relative overflow-hidden">
-        <div className="bg-zinc-800 rounded relative overflow-hidden ">
+      <img src={satellite} alt="" className="absolute w-32 -top-16 md:-top-20 left-8 md:left-12" />
+      <div className="py-6 px-6 grid grid-cols-1 md:grid-cols-2 bg-zinc-900 border border-zinc-700 gap-5 relative overflow-hidden">
+        <div className="bg-zinc-800 rounded relative overflow-hidden hidden md:block">
           <div className="twinkling-stars"></div>
           <div className="twinkling"></div>
           <div className="clouds"></div>
@@ -60,7 +60,6 @@ export default function HeroBanner() {
         </div>
       </div>
       <div className="w-full h-full absolute top-0 left-0 noise pointer-events-none"></div>
-
     </section>
   );
 }

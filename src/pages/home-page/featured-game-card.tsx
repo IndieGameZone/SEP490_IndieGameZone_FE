@@ -32,7 +32,7 @@ const FeaturedGameCard = ({ game }: any) => {
         open={index >= 0}
         close={() => setIndex(-1)}
       />
-      <div className="grid grid-cols-2 h-[400px] gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 h-[450px] md:h-[400px] gap-3">
         <div className="h-full">
           <img
             src={game.coverImage}
@@ -66,7 +66,7 @@ const FeaturedGameCard = ({ game }: any) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="md:grid grid-cols-2 gap-3 hidden">
             {game.images.map((image: string, index: number) => {
               return (
                 <div

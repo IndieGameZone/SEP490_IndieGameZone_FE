@@ -22,6 +22,29 @@ const settings = {
   autoplaySpeed: 5000,
   slidesToShow: 3,
   slidesToScroll: 3,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1,
+      },
+    },
+    {
+      breakpoint: 768,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1,
+      },
+    },
+    {
+      breakpoint: 640,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+      },
+    },
+  ],
   appendDots: (dots: any) => <ul>{dots}</ul>,
   customPaging: () => (
     <div className="ft-slick__dots--custom">
@@ -93,10 +116,10 @@ const SpecialOffersSection = () => {
                   <h3 className="font-semibold">{game.name}</h3>
                   <p className="text-xs text-gray-400">
                     {new Date(game.salesUtil).getDate() -
-                      new Date().getDate() >= 1
+                      new Date().getDate() >=
+                    1
                       ? "Today's deal!"
-                      : "Offer ends " +
-                        formatDate(new Date(game.salesUtil))}
+                      : "Offer ends " + formatDate(new Date(game.salesUtil))}
                   </p>
                 </div>
                 <div className="text-end">
