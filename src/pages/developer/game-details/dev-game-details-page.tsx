@@ -22,6 +22,12 @@ const DevGameDetailPages = () => {
     }
   }, [gameId]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
+  }, []);
+
   const tabItems: TabsProps["items"] = [
     {
       key: "game-info",

@@ -15,10 +15,20 @@ export const handleApiError = (error: any): ApiResponse => {
 };
 
 export const getAllCommercialPackages = async () => {
-    try {
-        const { data } = await axiosClient.get(`/api/commercial-packages`);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+  try {
+    const { data } = await axiosClient.get(`/api/commercial-packages`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+
+export const getCommercialPackageById = async (packageId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/commercial-packages/${packageId}`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 };

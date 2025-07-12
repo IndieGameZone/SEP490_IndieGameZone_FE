@@ -33,6 +33,14 @@ const ViewAllVersionButton = () => {
             <Button onClick={handleCancel}>Close</Button>
           </>
         )}
+        width={{
+          xs: "90%",
+          sm: "80%",
+          md: "70%",
+          lg: "70%",
+          xl: "70%",
+          xxl: "70%",
+        }}
       >
         {gameFiles.length ? (
           gameFiles.map((x, index: number) => (

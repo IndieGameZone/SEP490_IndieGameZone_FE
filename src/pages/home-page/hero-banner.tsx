@@ -7,8 +7,10 @@ import logo from "@/assets/indiegamezone-logo.svg";
 import satellite from "@/assets/satellite_dish_PNG39.png";
 import tvStatic from "@/assets/tv-static.png";
 import rocket from "@/assets/rocket.png";
+import useIsMobile from "@/hooks/use-is-mobile";
 
 export default function HeroBanner() {
+  const isMobile = useIsMobile();
   return (
     <section className="relative my-10">
       <img
@@ -17,27 +19,30 @@ export default function HeroBanner() {
         className="absolute w-32 -top-16 lg:-top-20 lg:left-12"
       />
       <div className="py-6 px-6 grid grid-cols-1 lg:grid-cols-2 bg-zinc-900 border border-zinc-700 gap-5 relative overflow-hidden">
-        <div className="bg-zinc-800 rounded relative overflow-hidden hidden lg:block">
-          <div className="twinkling-stars"></div>
-          <div className="twinkling"></div>
-          <div className="clouds"></div>
-          <img
-            src={logo}
-            alt=""
-            className="absolute left-10 top-28 z-[2] bg-zinc-900/50 rounded p-3"
-          />
-          <img
-            src={blackhole}
-            className="absolute -bottom-14 -left-7"
-            width={350}
-          />
-          <FloatingContainer items={["🍙", <IndieCat />, "🧶"]} />
-          <img
-            src={tvStatic}
-            alt=""
-            className="pointer-events-none z-10 absolute top-0 left-0 h-full select-none"
-          />
-        </div>
+        {!isMobile && (
+          <div className="bg-zinc-800 rounded relative overflow-hidden hidden lg:block">
+            <div className="twinkling-stars"></div>
+            <div className="twinkling"></div>
+            <div className="clouds"></div>
+            <img
+              src={logo}
+              alt=""
+              className="absolute left-10 top-28 z-[2] bg-zinc-900/50 rounded p-3"
+            />
+            <img
+              src={blackhole}
+              className="absolute -bottom-14 -left-7"
+              width={350}
+            />
+            <FloatingContainer items={["🍙", <IndieCat />, "🧶"]} />
+            <img
+              src={tvStatic}
+              alt=""
+              className="pointer-events-none z-10 absolute top-0 left-0 h-full select-none"
+            />
+          </div>
+        )}
+
         <div className="relative">
           <img
             src={rocket}
@@ -65,7 +70,6 @@ export default function HeroBanner() {
           </div>
         </div>
       </div>
-      <div className="w-full h-full absolute top-0 left-0 noise pointer-events-none"></div>
     </section>
   );
 }
