@@ -29,6 +29,7 @@ const HomeContainer = () => {
           <Route path="/game/:gameId" element={<GameDetailsPage />} />
           <Route path="/download/:gameId" element={<DownloadGamePage />} />
           <Route path="/forum/*" element={<ForumPage />} />
+          
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>

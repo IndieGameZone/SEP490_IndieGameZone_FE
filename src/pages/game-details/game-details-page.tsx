@@ -24,7 +24,7 @@ import MaxWidthWrapper from "@/components/max-width-wrapper";
 import { IoIosChatboxes, IoMdMore } from "react-icons/io";
 import GameOverView from "./game-overview";
 import GameReviews from "./game-reviews";
-import GameForum from "./game-forum";
+import GameForum from "./game-posts/game-pots";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 import useAuthStore from "@/store/use-auth-store";
 import GameNotFound from "@/pages/errors/game-not-found";

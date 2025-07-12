@@ -24,7 +24,16 @@ export const depositTransaction = async (userId: string, amount: number, descrip
     return handleApiError(error);
   }
 };
-
+export const danateGame = async (userId: string, amount: number, gameId: string): Promise<ApiResponse> => {
+  try {
+    const response = await axiosClient.post(`/api/users/${userId}/games/${gameId}/transactions/donation`, {
+      amount,
+    });
+    return { error: null, data: response.data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 export const getTransactions = async (userId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/users/${userId}/transactions`);
@@ -34,16 +43,20 @@ export const getTransactions = async (userId: string) => {
   }
 };
 
+type PaymentMethod = "Wallet" | "PayOS";
+
 export const purchaseGame = async (
   userId: string,
   gameId: string,
+  amount?: number,
   couponCode?: string,
-  paymentMethod: string = "Wallet"
+  paymentMethod?: PaymentMethod
 ): Promise<ApiResponse> => {
   try {
     const requestBody = {
       CouponCode: couponCode || "",
-      PaymentMethod: paymentMethod,
+      Amount: amount,
+      PaymentMethod: paymentMethod ?? "Wallet",
     };
 
     const response = await axiosClient.post(
@@ -55,6 +68,7 @@ export const purchaseGame = async (
         },
       }
     );
+
     return { error: null, data: response.data, success: true };
   } catch (error) {
     return handleApiError(error);
