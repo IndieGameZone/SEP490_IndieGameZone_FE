@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import PayWithWalletButton from "./pay-with-wallet-button";
+import { formatMegabytes } from "@/lib/file";
 
 const addPriceButtonStyle: CSSProperties = {
   background: "oklch(71.2% 0.194 13.428)",
@@ -30,9 +31,12 @@ const BuyGameButton = () => {
   const { getDefaultPlatforms } = usePlatformStore();
   const navigate = useNavigate();
   const { profile, fetchProfile } = useAuthStore();
+  const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    fetchProfile();
+    if (accessToken) {
+      fetchProfile();
+    }
   }, []);
 
   const showModal = () => {
@@ -62,7 +66,6 @@ const BuyGameButton = () => {
     );
   };
 
-  const accessToken = localStorage.getItem("accessToken");
   const handleGoToLogin = () => {
     Cookies.set("waiting-url", `/game/${game.id}`, {
       expires: new Date(Date.now() + 30 * 60 * 1000),
@@ -72,6 +75,8 @@ const BuyGameButton = () => {
 
   const userId = profile?.id || "";
   const gameId = game.id || "";
+
+  const activeFiles = game.gamePlatforms.filter((x) => x.isActive);
 
   return (
     <>
@@ -118,29 +123,36 @@ const BuyGameButton = () => {
             to <span className="font-semibold">{game.developer.userName}</span>
           </p>
         )}
-        <hr className="my-3 border-zinc-700" />
-        <p className="text-center italic">included files</p>
-        <div className="flex flex-col gap-2">
-          {game.gamePlatforms?.map((file, index) => (
-            <div key={`game-file-${index}`} className="flex gap-2 items-center">
-              {file.platform.id === defaultPlatforms.windowsPlatformId ? (
-                <FaWindows />
-              ) : file.platform.id === defaultPlatforms.macOsPlatformId ? (
-                <FaApple />
-              ) : file.platform.id === defaultPlatforms.linuxPlatformId ? (
-                <FaLinux />
-              ) : (
-                <FaFileArchive />
-              )}
-              <span className="font-semibold max-w-50 text-ellipsis overflow-clip">
-                {file.displayName || "unnamed file"}
-              </span>
-              <span className="text-sm text-zinc-400">
-                ({(file.size).toFixed(1)} MB)
-              </span>
+        {activeFiles.length > 0 && (
+          <>
+            <hr className="my-3 border-zinc-700" />
+            <p className="text-center italic">included files</p>
+            <div className="flex flex-col gap-2">
+              {activeFiles.map((file, index) => (
+                <div
+                  key={`game-file-${index}`}
+                  className="flex p-1 gap-2 items-center"
+                >
+                  {file.platform.id === defaultPlatforms.windowsPlatformId ? (
+                    <FaWindows />
+                  ) : file.platform.id === defaultPlatforms.macOsPlatformId ? (
+                    <FaApple />
+                  ) : file.platform.id === defaultPlatforms.linuxPlatformId ? (
+                    <FaLinux />
+                  ) : (
+                    <FaFileArchive />
+                  )}
+                  <span className="font-semibold">
+                    {file.displayName || "unnamed file"}&nbsp;
+                    <span className="text-sm text-zinc-400">
+                      ({formatMegabytes(file.size)})
+                    </span>
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
         <hr className="my-3 border-zinc-700" />
         <div className="flex items-center gap-2 text-rose-400 font-semibold">
           <FaRegHeart className="inline" /> Support the developer with an

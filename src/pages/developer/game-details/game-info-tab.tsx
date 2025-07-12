@@ -26,6 +26,7 @@ import { CiWarning } from "react-icons/ci";
 import ViewCensorLogButton from "../../../components/view-censor-log-button";
 import { GameCensorLog } from "@/types/game";
 import ViewAllVersionButton from "@/components/view-all-version-button";
+import FaultTolerantImage from "@/components/fault-tolerant-image";
 
 const GameInfoTab = () => {
   const { game, error } = useGameStore();
@@ -274,7 +275,7 @@ const GameInfoTab = () => {
       <div className="col-span-4">
         <div className="bg-zinc-800 rounded p-3">
           <h3 className="font-bold mb-2">Cover Image</h3>
-          <img
+          <FaultTolerantImage
             src={game?.coverImage}
             alt="game's cover image"
             className="aspect-video object-contain bg-zinc-900 rounded highlight-hover cursor-pointer w-full"
@@ -287,7 +288,7 @@ const GameInfoTab = () => {
           <div className="grid grid-cols-2 mt-2 gap-3">
             {game?.gameImages.map((image, index: number) => {
               return (
-                <img
+                <FaultTolerantImage
                   src={image.image}
                   key={`game-image-${image.id}`}
                   alt=""

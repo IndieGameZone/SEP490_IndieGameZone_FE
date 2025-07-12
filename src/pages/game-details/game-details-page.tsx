@@ -183,7 +183,7 @@ const GameDetailsPage = () => {
           <div className="flex gap-1 text-sm items-end">
             <span className="uppercase text-zinc-400 text-xs">Tags:</span>
             {game.gameTags.map((tag, index: number) => (
-              <Link key={`game-tag-${index}`} to={`/search?tag=${tag.tag.id}`}>
+              <Link key={`game-tag-${index}`} to={`/search?tags=${tag.tag.id}`}>
                 <Tag color="orange">{tag.tag.name}</Tag>
               </Link>
             ))}
@@ -230,10 +230,10 @@ const GameDetailsPage = () => {
       {/* GAME IMAGES/SCREENSHOT */}
       <div className="flex overflow-auto gap-3 p-3 bg-zinc-900">
         {game.gameImages.map((image, index: number) => (
-          <img
+          <FaultTolerantImage
             key={`game-image-${index}`}
             src={image.image}
-            className="aspect-16/9 w-40 rounded highlight-hover cursor-pointer"
+            className="aspect-16/9 w-40 rounded object-contain highlight-hover cursor-pointer"
             onClick={() => setIndex(index + 1)}
           />
         ))}

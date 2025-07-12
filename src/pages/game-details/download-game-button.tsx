@@ -77,6 +77,8 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
     navigate("/log-in");
   };
 
+  const activeFiles = game.gamePlatforms.filter((x) => x.isActive);
+
   return (
     <>
       <Button
@@ -107,34 +109,39 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
         >
           No thanks, just take me to the downloads
         </Button>
-        <hr className="my-3 border-zinc-700" />
-        <p className="text-center italic">included files</p>
-        <div className="flex flex-col gap-2">
-          {game.gamePlatforms?.map((file, index) => {
-            return (
-              <div
-                key={`game-file-${index}`}
-                className="flex gap-2 items-center"
-              >
-                {file.platform.id == defaultPlatforms.windowsPlatformId ? (
-                  <FaWindows />
-                ) : file.platform.id == defaultPlatforms.macOsPlatformId ? (
-                  <FaApple />
-                ) : file.platform.id == defaultPlatforms.linuxPlatformId ? (
-                  <FaLinux />
-                ) : (
-                  <FaFileArchive />
-                )}
-                <span className="font-semibold max-w-50 text-ellipsis overflow-clip">
-                  {file.displayName ? file.displayName : "unnamed file"}
-                </span>
-                <span className="text-sm text-zinc-400">
-                  ({(file.size).toFixed(1)} MB)
-                </span>
-              </div>
-            );
-          })}
-        </div>
+        {activeFiles.length > 0 && (
+          <>
+            <hr className="my-3 border-zinc-700" />
+            <p className="text-center italic">included files</p>
+            <div className="flex flex-col gap-2">
+              {activeFiles.map((file, index) => {
+                return (
+                  <div
+                    key={`game-file-${index}`}
+                    className="flex gap-2 items-center"
+                  >
+                    {file.platform.id == defaultPlatforms.windowsPlatformId ? (
+                      <FaWindows />
+                    ) : file.platform.id == defaultPlatforms.macOsPlatformId ? (
+                      <FaApple />
+                    ) : file.platform.id == defaultPlatforms.linuxPlatformId ? (
+                      <FaLinux />
+                    ) : (
+                      <FaFileArchive />
+                    )}
+                    <span className="font-semibold max-w-50 text-ellipsis overflow-clip">
+                      {file.displayName ? file.displayName : "unnamed file"}
+                    </span>
+                    <span className="text-sm text-zinc-400">
+                      ({file.size.toFixed(1)} MB)
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+
         <hr className="my-3 border-zinc-700" />
         <div className="flex items-center gap-2 text-rose-400 font-semibold">
           <FaRegHeart className="inline" /> Support the developer with an

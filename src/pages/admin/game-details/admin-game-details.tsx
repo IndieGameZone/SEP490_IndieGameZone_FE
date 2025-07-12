@@ -1,4 +1,5 @@
 import ExpandableWrapper from "@/components/expandable-wrapper";
+import FaultTolerantImage from "@/components/fault-tolerant-image";
 import FileCard from "@/components/file-card";
 import Loader from "@/components/loader";
 import {
@@ -416,13 +417,14 @@ const AdminGameDetail = () => {
         <div className="grid-cols-2 grid gap-3 p-3">
           <div>
             <h3 className="font-bold mb-2 text-lg">Cover Image</h3>
-            <img
+            <FaultTolerantImage
               src={game?.coverImage}
               alt="game's cover image"
               className="aspect-video object-contain bg-zinc-100 rounded highlight-hover cursor-pointer w-full"
               onClick={() => {
                 setIndex(0);
               }}
+              darkTheme={false}
             />
           </div>
           <div>
@@ -430,7 +432,7 @@ const AdminGameDetail = () => {
             <div className="grid grid-cols-2 mt-2 gap-3">
               {game?.gameImages.map((image, index: number) => {
                 return (
-                  <img
+                  <FaultTolerantImage
                     src={image.image}
                     key={`game-image-${image.id}`}
                     alt=""
@@ -438,6 +440,7 @@ const AdminGameDetail = () => {
                     onClick={() => {
                       setIndex(index + 1);
                     }}
+                    darkTheme={false}
                   />
                 );
               })}
@@ -449,8 +452,10 @@ const AdminGameDetail = () => {
               column={2}
               bordered
               items={infoItems}
-              contentStyle={{ border: "1px solid #a1a1aa" }}
-              labelStyle={{ border: "1px solid #a1a1aa", fontWeight: "bold" }}
+              styles={{
+                label: { border: "1px solid #a1a1aa", fontWeight: "bold" },
+                content: { border: "1px solid #a1a1aa" },
+              }}
             />
           </div>
           <div className="col-span-2">
