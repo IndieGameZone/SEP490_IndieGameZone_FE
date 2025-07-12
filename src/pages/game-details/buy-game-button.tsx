@@ -3,7 +3,7 @@ import { formatCurrencyVND } from "@/lib/currency";
 import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
-import { Button, InputNumber, Modal, Tooltip } from "antd";
+import { Button, InputNumber, message, Modal, Tooltip } from "antd";
 import Cookies from "js-cookie";
 import { CSSProperties, useEffect, useState } from "react";
 import {
@@ -32,7 +32,7 @@ const BuyGameButton = () => {
   const navigate = useNavigate();
   const { profile, fetchProfile } = useAuthStore();
   const accessToken = localStorage.getItem("accessToken");
-
+  const [loading, setLoading] = useState(false); 
   useEffect(() => {
     if (accessToken) {
       fetchProfile();
@@ -77,7 +77,28 @@ const BuyGameButton = () => {
   const gameId = game.id || "";
 
   const activeFiles = game.gamePlatforms.filter((x) => x.isActive);
+const handleBuyGameWithPayos = async () => {
+    if (!profile?.id || !game?.id) {
+      message.error("User or game information is missing.");
+      return;
+    }
 
+    setLoading(true);
+    try {
+      const response = await danateGame(profile.id, price, game.id);
+      if (response.success) {
+        message.success("Donation successful! Redirecting to download page...");
+        // handleGoToDownloadPage();
+        window.open(response.data);
+      } else {
+        message.error(response.error || "Failed to process donation.");
+      }
+    } catch (err) {
+      message.error("An unexpected error occurred during donation.");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
       <Button
