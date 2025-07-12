@@ -24,7 +24,16 @@ export const depositTransaction = async (userId: string, amount: number, descrip
     return handleApiError(error);
   }
 };
-
+export const danateGame = async (userId: string, amount: number, gameId: string): Promise<ApiResponse> => {
+  try {
+    const response = await axiosClient.post(`/api/users/${userId}/games/${gameId}/transactions/donation`, {
+      amount,
+    });
+    return { error: null, data: response.data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 export const getTransactions = async (userId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/users/${userId}/transactions`);

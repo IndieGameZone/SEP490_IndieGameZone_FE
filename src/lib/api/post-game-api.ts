@@ -1,0 +1,26 @@
+import { axiosClient } from "./config/axios-client";
+
+export const handleApiError = (error: any): { error: string | null; data: any; success: boolean } => {
+  try {
+    const errorMessage = error.response?.data.message || error?.message || "An unexpected error occurred.";
+    const data = null;
+    return { error: errorMessage, data, success: false };
+  } catch (err) {
+    return { error: "An unexpected error occurred.", data: null, success: false };
+  }
+};
+export interface PostData {
+  Title: string;
+  Content: string;
+  Image: string;
+  Tags: string[];
+}
+
+export const createPost = async (userId: string, gameId: string, postData: PostData) => {
+  try {
+    const { data } = await axiosClient.post(`/api/users/${userId}/games/${gameId}/posts`, postData);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
