@@ -50,7 +50,7 @@ const PayWithWalletButton = ({
       return;
     }
     setIsLoading(true);
-    const result = await purchaseGame(userId, gameId, undefined, "Wallet");
+    const result = await purchaseGame(userId, gameId,game.price, undefined, "Wallet");
     setIsLoading(false);
     if (result.success) {
       messageApi.success("Purchase successful! Proceeding to download.");

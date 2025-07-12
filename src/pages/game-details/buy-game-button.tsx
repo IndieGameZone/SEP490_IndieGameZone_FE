@@ -6,18 +6,11 @@ import usePlatformStore from "@/store/use-platform-store";
 import { Button, InputNumber, message, Modal, Tooltip } from "antd";
 import Cookies from "js-cookie";
 import { CSSProperties, useEffect, useState } from "react";
-import {
-  FaApple,
-  FaFileArchive,
-  FaLinux,
-  FaRegHeart,
-  FaShoppingCart,
-  FaWallet,
-  FaWindows,
-} from "react-icons/fa";
+import { FaApple, FaFileArchive, FaLinux, FaRegHeart, FaShoppingCart, FaWallet, FaWindows } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import PayWithWalletButton from "./pay-with-wallet-button";
 import { formatMegabytes } from "@/lib/file";
+import { purchaseGame } from "@/lib/api/payment-api";
 
 const addPriceButtonStyle: CSSProperties = {
   background: "oklch(71.2% 0.194 13.428)",
@@ -32,7 +25,7 @@ const BuyGameButton = () => {
   const navigate = useNavigate();
   const { profile, fetchProfile } = useAuthStore();
   const accessToken = localStorage.getItem("accessToken");
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (accessToken) {
       fetchProfile();
@@ -59,13 +52,11 @@ const BuyGameButton = () => {
 
   const defaultPlatforms = getDefaultPlatforms();
   const handleAddPrice = (value: number) => {
-    setPrice((prev) =>
-      prev + value > game.price + MAX_DONATION
-        ? game.price + MAX_DONATION
-        : prev + value
-    );
+    setPrice((prev) => (prev + value > game.price + MAX_DONATION ? game.price + MAX_DONATION : prev + value));
   };
-
+  const handleGoToDownloadPage = () => {
+    if (game) navigate(`/download/${game.id}`);
+  };
   const handleGoToLogin = () => {
     Cookies.set("waiting-url", `/game/${game.id}`, {
       expires: new Date(Date.now() + 30 * 60 * 1000),
@@ -77,7 +68,7 @@ const BuyGameButton = () => {
   const gameId = game.id || "";
 
   const activeFiles = game.gamePlatforms.filter((x) => x.isActive);
-const handleBuyGameWithPayos = async () => {
+  const handleBuyGameWithPayos = async () => {
     if (!profile?.id || !game?.id) {
       message.error("User or game information is missing.");
       return;
@@ -85,11 +76,11 @@ const handleBuyGameWithPayos = async () => {
 
     setLoading(true);
     try {
-      const response = await danateGame(profile.id, price, game.id);
+      const response = await purchaseGame(profile.id, game.id, price, undefined, "PayOS");
       if (response.success) {
-        message.success("Donation successful! Redirecting to download page...");
-        // handleGoToDownloadPage();
+        message.success("Purchase Game successful! Redirecting to download page...");
         window.open(response.data);
+        handleGoToDownloadPage();
       } else {
         message.error(response.error || "Failed to process donation.");
       }
@@ -101,12 +92,7 @@ const handleBuyGameWithPayos = async () => {
   };
   return (
     <>
-      <Button
-        size="large"
-        type="primary"
-        icon={<FaShoppingCart />}
-        onClick={showModal}
-      >
+      <Button size="large" type="primary" icon={<FaShoppingCart />} onClick={showModal}>
         Buy Now
       </Button>
 
@@ -119,8 +105,7 @@ const handleBuyGameWithPayos = async () => {
         footer={<div></div>}
       >
         <p>
-          Download this game by purchasing it for{" "}
-          <span className="font-semibold">{formatCurrencyVND(game.price)}</span>{" "}
+          Download this game by purchasing it for <span className="font-semibold">{formatCurrencyVND(game.price)}</span>{" "}
           or more.
         </p>
         <InputNumber
@@ -130,17 +115,12 @@ const handleBuyGameWithPayos = async () => {
           step={1_000}
           onChange={(value) => setPrice(value ?? 0)}
           value={price}
-          formatter={(value) =>
-            `${value}  ₫`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-          }
+          formatter={(value) => `${value}  ₫`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
           style={{ width: "100%", marginTop: "0.5rem" }}
         />
         {price > game.price && (
           <p className="text-sm mt-1">
-            You will donate{" "}
-            <span className="font-semibold text-rose-400">
-              {formatCurrencyVND(price - game.price)}
-            </span>{" "}
+            You will donate <span className="font-semibold text-rose-400">{formatCurrencyVND(price - game.price)}</span>{" "}
             to <span className="font-semibold">{game.developer.userName}</span>
           </p>
         )}
@@ -150,10 +130,7 @@ const handleBuyGameWithPayos = async () => {
             <p className="text-center italic">included files</p>
             <div className="flex flex-col gap-2">
               {activeFiles.map((file, index) => (
-                <div
-                  key={`game-file-${index}`}
-                  className="flex p-1 gap-2 items-center"
-                >
+                <div key={`game-file-${index}`} className="flex p-1 gap-2 items-center">
                   {file.platform.id === defaultPlatforms.windowsPlatformId ? (
                     <FaWindows />
                   ) : file.platform.id === defaultPlatforms.macOsPlatformId ? (
@@ -165,9 +142,7 @@ const handleBuyGameWithPayos = async () => {
                   )}
                   <span className="font-semibold">
                     {file.displayName || "unnamed file"}&nbsp;
-                    <span className="text-sm text-zinc-400">
-                      ({formatMegabytes(file.size)})
-                    </span>
+                    <span className="text-sm text-zinc-400">({formatMegabytes(file.size)})</span>
                   </span>
                 </div>
               ))}
@@ -176,8 +151,7 @@ const handleBuyGameWithPayos = async () => {
         )}
         <hr className="my-3 border-zinc-700" />
         <div className="flex items-center gap-2 text-rose-400 font-semibold">
-          <FaRegHeart className="inline" /> Support the developer with an
-          additional contribution
+          <FaRegHeart className="inline" /> Support the developer with an additional contribution
         </div>
         <div className="mt-3">
           <div className="mt-3">
@@ -208,12 +182,7 @@ const handleBuyGameWithPayos = async () => {
             >
               +50.000₫
             </Button>
-            <Button
-              type="primary"
-              size="small"
-              onClick={() => handleAddPrice(100_000)}
-              style={addPriceButtonStyle}
-            >
+            <Button type="primary" size="small" onClick={() => handleAddPrice(100_000)} style={addPriceButtonStyle}>
               +100.000₫
             </Button>
           </div>
@@ -224,37 +193,25 @@ const handleBuyGameWithPayos = async () => {
               size="large"
               style={{ marginTop: "1.5rem", marginRight: "0.5rem" }}
               type="primary"
+              onClick={handleBuyGameWithPayos}
+              loading={loading}
             >
               Pay with <span className="font-bold">PayOS</span>
             </Button>
-            <PayWithWalletButton
-              amount={price}
-              userId={userId}
-              gameId={gameId}
-            />
+            <PayWithWalletButton amount={price} userId={userId} gameId={gameId} />
           </>
         ) : (
           <>
             <div onClick={handleGoToLogin} className="inline">
               <Tooltip title="Log in to continue">
-                <Button
-                  size="large"
-                  style={{ marginTop: "1.5rem", marginRight: "0.5rem" }}
-                  type="primary"
-                  disabled
-                >
+                <Button size="large" style={{ marginTop: "1.5rem", marginRight: "0.5rem" }} type="primary" disabled>
                   Pay with <span className="font-bold">PayOS</span>
                 </Button>
               </Tooltip>
             </div>
             <div onClick={handleGoToLogin} className="inline">
               <Tooltip title="Log in to continue">
-                <Button
-                  size="large"
-                  style={{ marginTop: "1.5rem" }}
-                  icon={<FaWallet />}
-                  disabled
-                >
+                <Button size="large" style={{ marginTop: "1.5rem" }} icon={<FaWallet />} disabled>
                   Pay with wallet
                 </Button>
               </Tooltip>
@@ -264,15 +221,11 @@ const handleBuyGameWithPayos = async () => {
         <p className="mt-2">
           By completing a payment you agree to our{" "}
           <Link to="/terms-or-service">
-            <span className="text-orange-500 hover:underline">
-              Terms of Service
-            </span>
+            <span className="text-orange-500 hover:underline">Terms of Service</span>
           </Link>{" "}
           and{" "}
           <Link to="/privacy-policy">
-            <span className="text-orange-500 hover:underline">
-              Privacy Policy
-            </span>
+            <span className="text-orange-500 hover:underline">Privacy Policy</span>
           </Link>
           .
         </p>
