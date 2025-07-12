@@ -15,28 +15,31 @@ const FileCard = ({
 }) => {
   return (
     <div
-      className={`flex justify-between p-2 ${
+      className={`flex justify-between p-2 gap-1 ${
         darkTheme
           ? "bg-zinc-900 border-zinc-700"
           : "bg-zinc-100 border-zinc-300"
       } rounded border `}
     >
       <div className="flex gap-2 items-center flex-1">
-        {file.platform.id == defaultPlatforms.windowsPlatformId ? (
-          <FaWindows />
-        ) : file.platform.id == defaultPlatforms.macOsPlatformId ? (
-          <FaApple />
-        ) : file.platform.id == defaultPlatforms.linuxPlatformId ? (
-          <FaLinux />
-        ) : (
-          <FaFileArchive />
-        )}
-        <span className="font-semibold max-w-44 text-ellipsis overflow-clip">
-          {file.displayName ? file.displayName : "unnamed file"}
-        </span>
-        <span className="text-sm text-zinc-400">
-          ({formatMegabytes(file.size)})
-        </span>
+        <div>
+          {file.platform.id == defaultPlatforms.windowsPlatformId ? (
+            <FaWindows />
+          ) : file.platform.id == defaultPlatforms.macOsPlatformId ? (
+            <FaApple />
+          ) : file.platform.id == defaultPlatforms.linuxPlatformId ? (
+            <FaLinux />
+          ) : (
+            <FaFileArchive />
+          )}
+        </div>
+
+        <div className="font-semibold text-ellipsis overflow-clip">
+          {file.displayName ? file.displayName : "unnamed file"}&nbsp;
+          <span className="text-sm text-zinc-400 min-w-14">
+            ({formatMegabytes(file.size)})
+          </span>
+        </div>
       </div>
       <Tooltip
         title={`Download ${

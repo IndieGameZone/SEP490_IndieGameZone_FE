@@ -1,8 +1,14 @@
 import ExpandableWrapper from "@/components/expandable-wrapper";
+import FaultTolerantImage from "@/components/fault-tolerant-image";
 import FileCard from "@/components/file-card";
 import Loader from "@/components/loader";
-import { AITag, ModerationStatusBadge, VisibilityStatus } from "@/components/status-tags";
+import {
+  AITag,
+  ModerationStatusBadge,
+  VisibilityStatus,
+} from "@/components/status-tags";
 import TiptapView from "@/components/tiptap/tiptap-view";
+import ViewAllVersionButton from "@/components/view-all-version-button";
 import ViewCensorLogButton from "@/components/view-censor-log-button";
 import { updateGameActivation } from "@/lib/api/game-api";
 import { formatCurrencyVND } from "@/lib/currency";
@@ -13,7 +19,15 @@ import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
 import { GameCensorLog } from "@/types/game";
-import { Button, Descriptions, DescriptionsProps, Tag, message, Modal, Input } from "antd";
+import {
+  Button,
+  Descriptions,
+  DescriptionsProps,
+  Tag,
+  message,
+  Modal,
+  Input,
+} from "antd";
 import { useEffect, useState } from "react";
 import { FaCheck, FaEye } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
@@ -28,7 +42,14 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 const AdminGameDetail = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
-  const { fetchGameById, loading, error, game, fetchGameCensorLog, gameCensorLogs } = useGameStore();
+  const {
+    fetchGameById,
+    loading,
+    error,
+    game,
+    fetchGameCensorLog,
+    gameCensorLogs,
+  } = useGameStore();
   const [index, setIndex] = useState(-1);
   const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
   const { fetchGameFiles, gameFiles, installInstruction } = useGameStore();
@@ -36,6 +57,13 @@ const AdminGameDetail = () => {
   const [isDeclining, setIsDeclining] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const { profile } = useAuthStore();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "instant",
+    });
+  }, []);
 
   useEffect(() => {
     if (game) {
@@ -106,13 +134,21 @@ const AdminGameDetail = () => {
     {
       key: "created-date",
       label: "Created date",
-      children: game ? formatDate(new Date(game.createdAt)) : <span className="text-gray-500">None</span>,
+      children: game ? (
+        formatDate(new Date(game.createdAt))
+      ) : (
+        <span className="text-gray-500">None</span>
+      ),
       span: 1,
     },
     {
       key: "updated-date",
       label: "Updated date",
-      children: game.updatedAt ? formatDate(new Date(game.updatedAt)) : <span className="text-gray-500">None</span>,
+      children: game.updatedAt ? (
+        formatDate(new Date(game.updatedAt))
+      ) : (
+        <span className="text-gray-500">None</span>
+      ),
       span: 1,
     },
     {
@@ -148,9 +184,13 @@ const AdminGameDetail = () => {
       label: "Moderated by",
       children: (() => {
         const latestLog = gameCensorLogs
-          .filter((log: GameCensorLog) => log.censorStatus === "Approved" || log.censorStatus === "Rejected")
+          .filter(
+            (log: GameCensorLog) =>
+              log.censorStatus === "Approved" || log.censorStatus === "Rejected"
+          )
           .sort(
-            (a: GameCensorLog, b: GameCensorLog) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            (a: GameCensorLog, b: GameCensorLog) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           )[0];
 
         if (latestLog?.moderator) {
@@ -168,17 +208,30 @@ const AdminGameDetail = () => {
       label: "Censored at",
       children: (() => {
         const latestLog = gameCensorLogs
-          .filter((log: GameCensorLog) => log.censorStatus === "Approved" || log.censorStatus === "Rejected")
+          .filter(
+            (log: GameCensorLog) =>
+              log.censorStatus === "Approved" || log.censorStatus === "Rejected"
+          )
           .sort(
-            (a: GameCensorLog, b: GameCensorLog) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            (a: GameCensorLog, b: GameCensorLog) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           )[0];
-        return latestLog ? formatDateTime(new Date(latestLog.createdAt)) : <span className="text-gray-500">None</span>;
+        return latestLog ? (
+          formatDateTime(new Date(latestLog.createdAt))
+        ) : (
+          <span className="text-gray-500">None</span>
+        );
       })(),
       span: 1,
     },
   ];
 
-  const slides = game ? [{ src: game.coverImage }, ...game.gameImages.map((image) => ({ src: image.image }))] : [];
+  const slides = game
+    ? [
+        { src: game.coverImage },
+        ...game.gameImages.map((image) => ({ src: image.image })),
+      ]
+    : [];
 
   if (game.censorReason) {
     infoItems.push({
@@ -209,7 +262,12 @@ const AdminGameDetail = () => {
       onOk: async () => {
         setIsApproving(true);
         if (gameId) {
-          const result = await updateGameActivation(gameId, "Approved", profile.id, "");
+          const result = await updateGameActivation(
+            gameId,
+            "Approved",
+            profile.id,
+            ""
+          );
           if (result.success) {
             messageApi.open({
               type: "success",
@@ -260,7 +318,12 @@ const AdminGameDetail = () => {
         setIsDeclining(true);
 
         if (gameId) {
-          const result = await updateGameActivation(gameId, "Rejected", profile.id, reason);
+          const result = await updateGameActivation(
+            gameId,
+            "Rejected",
+            profile.id,
+            reason
+          );
           if (result.success) {
             messageApi.success(`Game "${game.name}" rejected`);
             fetchGameById(gameId);
@@ -290,7 +353,10 @@ const AdminGameDetail = () => {
       <h1 className="text-2xl font-bold">
         "{game.name}"{" "}
         <span className="font-normal text-sm">
-          by <Link to={`/profile/${game.developer.id}`}>{game.developer.userName}</Link>
+          by{" "}
+          <Link to={`/profile/${game.developer.id}`}>
+            {game.developer.userName}
+          </Link>
         </span>
       </h1>
       <div className="flex gap-3 justify-end mb-3">
@@ -299,9 +365,16 @@ const AdminGameDetail = () => {
           View game's page
         </Button>
 
-        {(game.censorStatus === "PendingAIReview" || game.censorStatus === "PendingManualReview") && (
+        {(game.censorStatus === "PendingAIReview" ||
+          game.censorStatus === "PendingManualReview") && (
           <>
-            <Button icon={<IoMdClose />} type="primary" danger onClick={handleDecline} loading={isDeclining}>
+            <Button
+              icon={<IoMdClose />}
+              type="primary"
+              danger
+              onClick={handleDecline}
+              loading={isDeclining}
+            >
               Decline game
             </Button>
             <Button
@@ -317,7 +390,13 @@ const AdminGameDetail = () => {
         )}
 
         {game.censorStatus === "Approved" && (
-          <Button icon={<IoMdClose />} type="primary" danger onClick={handleDecline} loading={isDeclining}>
+          <Button
+            icon={<IoMdClose />}
+            type="primary"
+            danger
+            onClick={handleDecline}
+            loading={isDeclining}
+          >
             Decline game
           </Button>
         )}
@@ -338,13 +417,14 @@ const AdminGameDetail = () => {
         <div className="grid-cols-2 grid gap-3 p-3">
           <div>
             <h3 className="font-bold mb-2 text-lg">Cover Image</h3>
-            <img
+            <FaultTolerantImage
               src={game?.coverImage}
               alt="game's cover image"
               className="aspect-video object-contain bg-zinc-100 rounded highlight-hover cursor-pointer w-full"
               onClick={() => {
                 setIndex(0);
               }}
+              darkTheme={false}
             />
           </div>
           <div>
@@ -352,7 +432,7 @@ const AdminGameDetail = () => {
             <div className="grid grid-cols-2 mt-2 gap-3">
               {game?.gameImages.map((image, index: number) => {
                 return (
-                  <img
+                  <FaultTolerantImage
                     src={image.image}
                     key={`game-image-${image.id}`}
                     alt=""
@@ -360,6 +440,7 @@ const AdminGameDetail = () => {
                     onClick={() => {
                       setIndex(index + 1);
                     }}
+                    darkTheme={false}
                   />
                 );
               })}
@@ -371,14 +452,20 @@ const AdminGameDetail = () => {
               column={2}
               bordered
               items={infoItems}
-              contentStyle={{ border: "1px solid #a1a1aa" }}
-              labelStyle={{ border: "1px solid #a1a1aa", fontWeight: "bold" }}
+              styles={{
+                label: { border: "1px solid #a1a1aa", fontWeight: "bold" },
+                content: { border: "1px solid #a1a1aa" },
+              }}
             />
           </div>
           <div className="col-span-2">
             <h3 className="font-bold mb-2 text-lg">Gameplay/trailer</h3>
             {game?.videoLink ? (
-              <ReactPlayer className="react-player" url={game?.videoLink} controls />
+              <ReactPlayer
+                className="react-player"
+                url={game?.videoLink}
+                controls
+              />
             ) : (
               <div className="text-gray-500">None</div>
             )}
@@ -391,23 +478,11 @@ const AdminGameDetail = () => {
               </ExpandableWrapper>
             </div>
           </div>
-          <div>
-            <h3 className="font-bold mb-2 text-lg">Install Instructions</h3>
-            <div className="p-3 border border-zinc-400 rounded">
-              {installInstruction ? (
-                <ExpandableWrapper>
-                  <div className="font-mono">
-                    <TiptapView value={installInstruction} darkTheme={false} />
-                  </div>
-                </ExpandableWrapper>
-              ) : (
-                <span className="text-gray-500">None</span>
-              )}
-            </div>
-          </div>
-          <div className="">
+
+          <div className="col-span-2">
             <h3 className="font-bold mb-2 text-lg">Game files</h3>
-            <div className="flex flex-col gap-3">
+
+            <div className="grid grid-cols-2 gap-3 mb-1">
               {gameFiles.map((file, index) => {
                 return (
                   <FileCard
@@ -419,6 +494,21 @@ const AdminGameDetail = () => {
                 );
               })}
               {!gameFiles && <span className="text-gray-500">None</span>}
+            </div>
+            <ViewAllVersionButton darkTheme={false} />
+          </div>
+          <div className="col-span-2">
+            <h3 className="font-bold mb-2 text-lg">Install Instructions</h3>
+            <div className="p-3 border border-zinc-400 rounded">
+              {installInstruction ? (
+                <ExpandableWrapper>
+                  <div className="font-mono">
+                    <TiptapView value={installInstruction} darkTheme={false} />
+                  </div>
+                </ExpandableWrapper>
+              ) : (
+                <span className="text-gray-500">None</span>
+              )}
             </div>
           </div>
         </div>

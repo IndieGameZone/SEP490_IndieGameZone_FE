@@ -25,7 +25,7 @@ const GameCard = ({ game }: { game: Game }) => {
           <FaultTolerantImage
             src={game.coverImage}
             alt={`${game.name} cover image`}
-            className="w-full h-48 object-cover cursor-pointer"
+            className="w-full object-contain cursor-pointer aspect-video"
             onClick={handleClickCard}
           />
           <div className="absolute top-2 right-2">
@@ -62,7 +62,7 @@ const GameCard = ({ game }: { game: Game }) => {
           <p className="py-1 text-sm text-zinc-500">{game.shortDescription}</p>
           <div className="flex items-center mt-1">
             {game.gameTags?.slice(0, 3).map((tag, index) => (
-              <a href={`/search?tag=${tag.tag.id}`} key={index}>
+              <a href={`/search?tags=${tag.tag.id}`} key={index}>
                 <Tag color="orange">{tag.tag.name}</Tag>
               </a>
             ))}

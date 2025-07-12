@@ -15,7 +15,7 @@ const GameCard = ({ game }: { game: Game }) => {
         <FaultTolerantImage
           src={game.coverImage}
           alt={`${game.name} cover image`}
-          className="w-full h-48 object-cover"
+          className="w-full aspect-video object-contain"
         />
       </Link>
 

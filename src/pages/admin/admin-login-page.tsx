@@ -52,7 +52,9 @@ const LoginAdminPage = () => {
           navigate("/moderator");
         }, 1000);
       } else {
-        setError("Your account does not have permission to access this system.")
+        setError(
+          "Your account does not have permission to access this system."
+        );
         logout();
       }
     }
@@ -67,9 +69,9 @@ const LoginAdminPage = () => {
     >
       <div className="absolute inset-0 bg-zinc-950/60"></div>
 
-      <div className="relative grid grid-cols-2 w-full min-h-screen z-10">
-        <div className="w-full p-8 flex flex-col justify-center items-start text-white">
-          <h1 className="text-4xl md:text-4xl font-semibold mb-4">
+      <div className="relative grid grid-cols-1 lg:grid-cols-2 w-full min-h-screen z-10">
+        <div className="w-full p-8 hidden lg:flex flex-col justify-center items-start text-white">
+          <h1 className="text-4xl lg:text-4xl font-semibold mb-4">
             Welcome to{" "}
           </h1>
 
@@ -88,7 +90,15 @@ const LoginAdminPage = () => {
 
         <div className="w-full flex justify-center items-center p-6 bg-zinc-800 rounded-l-2xl">
           <div className="w-full max-w-md p-4">
-            <div className="text-center mb-6 text-5xl font-bold font-mono">
+            <div className="relative mb-16 lg:hidden">
+              <Link to={"/"} className="">
+                <img src={logo} alt="" className="w-80" />
+              </Link>
+              <p className="font-bold absolute right-0 -bottom-5">
+                Admin and Moderator
+              </p>
+            </div>
+            <div className="text-center mb-6 text-5xl font-bold font-mono hidden lg:block">
               Login
             </div>
             <Form

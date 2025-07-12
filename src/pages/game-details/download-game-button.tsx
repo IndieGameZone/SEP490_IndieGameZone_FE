@@ -105,6 +105,8 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
     }
   };
 
+  const activeFiles = game.gamePlatforms.filter((x) => x.isActive);
+
   return (
     <>
       <Button size="large" type="primary" icon={<FaDownload />} onClick={showModal}>
@@ -125,6 +127,39 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
         <Button className="mt-2" icon={<FaAngleRight className="inline" />} onClick={handleGoToDownloadPage}>
           No thanks, just take me to the downloads
         </Button>
+        {activeFiles.length > 0 && (
+          <>
+            <hr className="my-3 border-zinc-700" />
+            <p className="text-center italic">included files</p>
+            <div className="flex flex-col gap-2">
+              {activeFiles.map((file, index) => {
+                return (
+                  <div
+                    key={`game-file-${index}`}
+                    className="flex gap-2 items-center"
+                  >
+                    {file.platform.id == defaultPlatforms.windowsPlatformId ? (
+                      <FaWindows />
+                    ) : file.platform.id == defaultPlatforms.macOsPlatformId ? (
+                      <FaApple />
+                    ) : file.platform.id == defaultPlatforms.linuxPlatformId ? (
+                      <FaLinux />
+                    ) : (
+                      <FaFileArchive />
+                    )}
+                    <span className="font-semibold max-w-50 text-ellipsis overflow-clip">
+                      {file.displayName ? file.displayName : "unnamed file"}
+                    </span>
+                    <span className="text-sm text-zinc-400">
+                      ({file.size.toFixed(1)} MB)
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+
         <hr className="my-3 border-zinc-700" />
         <p className="text-center italic">included files</p>
         <div className="flex flex-col gap-2">

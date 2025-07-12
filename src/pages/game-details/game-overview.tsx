@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import useLibraryStore from "@/store/use-library-store";
 import useAuthStore from "@/store/use-auth-store";
 import { Tooltip } from "antd";
+import { formatMegabytes } from "@/lib/file";
 
 const GameOverView = () => {
   const { game } = useGameStore();
@@ -48,6 +49,8 @@ const GameOverView = () => {
   const releaseStatus = GAME_REALEASE_STATUS.find(
     (x) => x.value == game.status
   )?.label;
+
+  const activeFiles = game.gamePlatforms.filter((x) => x.isActive);
 
   return (
     <div className="grid grid-cols-12 gap-2">
@@ -128,13 +131,13 @@ const GameOverView = () => {
               </div>
             </Tooltip>
             {/* DISPLAYED INCLUDED FILES */}
-            {game.price > 0 && !isGameOwned && (
+            {game.price > 0 && !isGameOwned && activeFiles.length > 0 && (
               <>
                 <p className="my-2">
                   You will get access to the following files:
                 </p>
                 <div className="flex flex-col gap-2">
-                  {game.gamePlatforms?.map((file, index) => {
+                  {activeFiles?.map((file, index) => {
                     return (
                       <div
                         key={`game-file-${index}`}
@@ -152,11 +155,12 @@ const GameOverView = () => {
                         ) : (
                           <FaFileArchive />
                         )}
-                        <span className="font-semibold max-w-50 text-ellipsis overflow-clip">
+                        <span className="font-semibold">
                           {file.displayName ? file.displayName : "unnamed file"}
-                        </span>
-                        <span className="text-sm text-zinc-400">
-                          ({file.size.toFixed(1)} MB)
+                          &nbsp;
+                          <span className="text-sm text-zinc-400">
+                            ({formatMegabytes(file.size)})
+                          </span>
                         </span>
                       </div>
                     );

@@ -123,13 +123,13 @@ const GameDetailsPage = () => {
   return (
     <MaxWidthWrapper className="py-5">
       <ScrollToTop />
-      <div className="grid grid-cols-2 gap-3 bg-zinc-900 h-[300px]">
+      <div className="grid grid-cols-2 gap-3 bg-zinc-900">
         {/* GAME COVER IMAGE */}
         {game.coverImage ? (
           <FaultTolerantImage
             src={game.coverImage}
             alt="game cover image"
-            className="aspect-video object-cover rounded h-full highlight-hover cursor-pointer"
+            className="aspect-video object-contain rounded h-full highlight-hover cursor-pointer"
             onClick={() => setIndex(0)}
           />
         ) : (
@@ -183,7 +183,7 @@ const GameDetailsPage = () => {
           <div className="flex gap-1 text-sm items-end">
             <span className="uppercase text-zinc-400 text-xs">Tags:</span>
             {game.gameTags.map((tag, index: number) => (
-              <Link key={`game-tag-${index}`} to={`/search?tag=${tag.tag.id}`}>
+              <Link key={`game-tag-${index}`} to={`/search?tags=${tag.tag.id}`}>
                 <Tag color="orange">{tag.tag.name}</Tag>
               </Link>
             ))}
@@ -230,10 +230,10 @@ const GameDetailsPage = () => {
       {/* GAME IMAGES/SCREENSHOT */}
       <div className="flex overflow-auto gap-3 p-3 bg-zinc-900">
         {game.gameImages.map((image, index: number) => (
-          <img
+          <FaultTolerantImage
             key={`game-image-${index}`}
             src={image.image}
-            className="aspect-16/9 w-40 rounded highlight-hover cursor-pointer"
+            className="aspect-16/9 w-40 rounded object-contain highlight-hover cursor-pointer"
             onClick={() => setIndex(index + 1)}
           />
         ))}

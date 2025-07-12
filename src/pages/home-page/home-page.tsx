@@ -67,7 +67,7 @@ const HomePage = () => {
         <h2 className="text-2xl font-bold text-center my-5">
           Explore by Category
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <GenreCard
             title="Action"
             to="/search?category=7a03afa3-2635-43bd-a58c-daeb80d3cef7"

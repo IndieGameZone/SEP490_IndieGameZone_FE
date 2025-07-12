@@ -29,22 +29,22 @@ const items: MenuItem[] = [
   {
     key: "1",
     icon: <FaBook />,
-    label: "Nguyên tắc cộng đồng",
+    label: "Community Guidelines",
   },
   {
     key: "2",
     icon: <FaInfoCircle />,
-    label: "Về chúng tôi",
+    label: "About Us",
   },
   {
     key: "3",
     icon: <FaQuestionCircle />,
-    label: "Trợ giúp/Câu hỏi thường gặp",
+    label: "Help/FAQ",
   },
 ];
 
 const popOverContent = (
-  <div className="flex">
+  <div className="flex border border-zinc-700">
     <Menu style={{ width: 256 }} defaultSelectedKeys={["1"]} items={items} />
     <div className="w-[256px] bg-zinc-900 flex flex-col p-3">
       <div className="flex gap-3 flex-1">
@@ -57,9 +57,9 @@ const popOverContent = (
       </div>
       <div>
         <div className="flex gap-1 text-xs flex-wrap justify-center">
-          <Link to={"/"}>Hổ trợ</Link>•<Link to={"/"}>Điều khoản sử dụng</Link>•
-          <Link to={"/"}>Chính sách bảo mật </Link>•
-          <Link to={"/"}>Chính sách Cookie</Link>
+          <Link to={"/"}>Support</Link>•<Link to={"/"}>Terms of Use</Link>•
+          <Link to={"/"}>Privacy Policy</Link>•
+          <Link to={"/"}>Cookie Policy</Link>
         </div>
         <div className="text-xs text-gray-400 text-center mt-1">
           Copyright © 2025 GSU25SE12 Team
@@ -106,7 +106,7 @@ const Navbar = () => {
             className="flex justify-center items-center gap-2 cursor-pointer"
           >
             <img src={logo} alt="IndeGameZone Logo" className="size-7" />
-            <h1 className="font-bold text-xl">IndieGameZone</h1>
+            <h1 className="font-bold lg:text-xl">IndieGameZone</h1>
           </div>
           <div className="hidden md:block">
             <Popover
