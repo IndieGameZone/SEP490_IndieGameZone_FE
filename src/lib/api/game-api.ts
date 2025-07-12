@@ -304,3 +304,12 @@ export const getFileUrl = async (userId: string, gamePlaformId: string) => {
     return handleApiError(error);
   }
 };
+
+export const checkGameOwnership = async (userId: string, gameId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/users/${userId}/games/${gameId}/ownership-checking`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

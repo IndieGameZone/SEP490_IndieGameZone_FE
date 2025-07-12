@@ -7,7 +7,6 @@ export interface ApiResponse {
 }
 
 export const handleApiError = (error: any): ApiResponse => {
-  console.log(error);
   try {
     const errorMessage = error.response?.data.message || error?.message || "An unexpected error occurred.";
     return { error: errorMessage, data: error.response?.data, success: false };
