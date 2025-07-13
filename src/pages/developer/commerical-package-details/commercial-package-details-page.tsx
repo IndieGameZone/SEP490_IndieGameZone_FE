@@ -4,7 +4,7 @@ import {
 } from "@/lib/api/commercial-package-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { CommercialPackage } from "@/types/commercial-package";
-import { Alert, message } from "antd";
+import { Alert, Button, message } from "antd";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import SelectGameInput from "./select-game-input";
@@ -17,6 +17,7 @@ import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import CommercialPackageCalendar from "./commercial-package-calendar";
 import { formatDate } from "@/lib/date-n-time";
+import { FaWallet } from "react-icons/fa";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -94,27 +95,32 @@ const CommericalPackageDetailsPage = () => {
         Register for {commercialPackage.name}
       </h1>
       <div className="grid grid-cols-12 gap-3 p-3">
-        <div className="col-span-8 bg-zinc-800 rounded p-3">
-          <h2 className="text-center font-semibold">Select registation date</h2>
-          <hr className="my-3 border border-zinc-700" />
-          <CommercialPackageCalendar
-            duration={commercialPackage.duration}
-            unavailableDates={unavailableDates}
-            selectedDate={selectedDate}
-            onSelect={handleCalendarSelect}
-          />
-          <p className="text-sm text-zinc-400 italic text-center">
-            Click on a calendar cell to select a start date
-          </p>
-          {isConflict && (
-            <Alert
-              message="Please choose a different date range"
-              description="Some of the dates in your selected range aren't available. Try picking a new one to continue."
-              type="error"
-              showIcon
+        <div className="col-span-8">
+          <div className="bg-zinc-800 rounded p-3">
+            <h2 className="text-center font-semibold">
+              Select registation date
+            </h2>
+            <hr className="my-3 border border-zinc-700" />
+            <CommercialPackageCalendar
+              duration={commercialPackage.duration}
+              unavailableDates={unavailableDates}
+              selectedDate={selectedDate}
+              onSelect={handleCalendarSelect}
             />
-          )}
+            <p className="text-sm text-zinc-400 italic text-center">
+              Click on a calendar cell to select a start date
+            </p>
+            {isConflict && (
+              <Alert
+                message="Please choose a different date range"
+                description="Some of the dates in your selected range aren't available. Try picking a new one to continue."
+                type="error"
+                showIcon
+              />
+            )}
+          </div>
         </div>
+
         <div className="col-span-4">
           <div className="bg-zinc-800 rounded p-5 duration-300">
             <h2 className="text-center font-semibold">Package Information</h2>
@@ -180,6 +186,26 @@ const CommericalPackageDetailsPage = () => {
                 )}
               </div>
             )}
+            <hr className="my-3 border border-zinc-700" />
+            <div>
+              <h2 className="text-center font-semibold mb-2">Payment</h2>
+              {selectGameId && selectedDate ? (
+                <>
+                  <Button size="large" type="primary" style={{ width: "100%" }}>
+                    Pay with <span className="font-bold">PayOS</span>
+                  </Button>
+                  <Button
+                    size="large"
+                    icon={<FaWallet />}
+                    style={{ width: "100%", marginTop: "0.5rem" }}
+                  >
+                    Pay with wallet
+                  </Button>
+                </>
+              ) : (
+                <p className="text-zinc-400 text-sm text-center">Select game and registration date to continue</p>
+              )}
+            </div>
           </div>
         </div>
       </div>
