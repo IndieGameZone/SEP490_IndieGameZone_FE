@@ -1,4 +1,4 @@
-import { axiosClient } from './config/axios-client';
+import { axiosClient } from "./config/axios-client";
 
 export interface ApiResponse {
   error: string | null;
@@ -7,10 +7,10 @@ export interface ApiResponse {
 }
 export const handleApiError = (error: any): ApiResponse => {
   try {
-    const errorMessage = error.response?.data.message || error?.message || 'An unexpected error occurred.';
+    const errorMessage = error.response?.data.message || error?.message || "An unexpected error occurred.";
     return { error: errorMessage, data: null, success: false };
   } catch (err) {
-    return { error: 'An unexpected error occurred.', data: null, success: false };
+    return { error: "An unexpected error occurred.", data: null, success: false };
   }
 };
 export const getAllAccounts = async () => {
@@ -40,41 +40,28 @@ type UpdateUserRequest = {
   bankName?: string;
   bankAccount?: string;
   youtubeChannelLink?: string;
-}
+};
 
 export const updateUser = async (userId: string, request: UpdateUserRequest) => {
   const formData = new FormData();
   formData.append("Fullname", request.fullName);
-  if (request.avatar)
-    formData.append("Avatar", request.avatar);
-  if (request.bio)
-    formData.append("Bio", request.bio);
+  if (request.avatar) formData.append("Avatar", request.avatar);
+  if (request.bio) formData.append("Bio", request.bio);
   formData.append("Birthday", request.birthday);
-  if (request.bankName)
-    formData.append("BankName", request.bankName);
-  if (request.bankAccount)
-    formData.append("BankAccount", request.bankAccount);
-  if (request.facebookLink)
-    formData.append("FacebookLink", request.facebookLink);
-  if (request.youtubeChannelLink)
-    formData.append("YoutubeChannelLink", request.youtubeChannelLink);
+  if (request.bankName) formData.append("BankName", request.bankName);
+  if (request.bankAccount) formData.append("BankAccount", request.bankAccount);
+  if (request.facebookLink) formData.append("FacebookLink", request.facebookLink);
+  if (request.youtubeChannelLink) formData.append("YoutubeChannelLink", request.youtubeChannelLink);
   try {
     const { data } = await axiosClient.put(`/api/users/${userId}`, request, {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+        "Content-Type": "multipart/form-data",
+      },
     });
     return { error: null, data, success: true };
   } catch (error) {
     return handleApiError(error);
   }
-};
-
-type CreateBanHistoryRequest = {
-  banDate: string;
-  unbanDate?: string;
-  reason: string;
-  userId: string;
 };
 
 export const getAllBanHistories = async () => {
@@ -94,13 +81,19 @@ export const getBanHistoryById = async (id: string) => {
     return handleApiError(error);
   }
 };
+type CreateBanHistoryRequest = {
+  unbanDate?: string;
+  reason: string;
+  bannedUserId: string;
+  bannedByUserId: string;
+};
 
 export const createBanHistory = async (request: CreateBanHistoryRequest) => {
   try {
     const { data } = await axiosClient.post(`/api/ban-histories`, request, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     });
     return { error: null, data, success: true };
   } catch (error) {
@@ -130,12 +123,14 @@ export const getAboutUsStats = async () => {
     const totalUserResult = await axiosClient.get(`/api/dashboard/total-users`);
     const totalOnlineResult = await axiosClient.get(`/api/dashboard/online-count`);
     return {
-      error: null, data: {
+      error: null,
+      data: {
         totalUsers: totalUserResult.data,
-        totalOnline: totalOnlineResult.data
-      }, success: true
+        totalOnline: totalOnlineResult.data,
+      },
+      success: true,
     };
   } catch (error) {
     return handleApiError(error);
   }
-}
+};

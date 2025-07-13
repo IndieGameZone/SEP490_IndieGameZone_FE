@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { createBanHistory, unBanUserById } from "@/lib/api/user-api";
 import dayjs, { Dayjs } from "dayjs";
 import { formatDateTime } from "@/lib/date-n-time";
+import useAuthStore from "@/store/use-auth-store";
 
 const ActionMenu = ({ record }: { record: User }) => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const ActionMenu = ({ record }: { record: User }) => {
   const [reason, setReason] = useState("");
   const [banDate] = useState(dayjs());
   const [unBanDate, setUnBanDate] = useState<Dayjs | null>(null);
+  const { profile } = useAuthStore();
 
   const handleView = () => {
     navigate(`/admin/detail-user/${record.id}`);
@@ -25,6 +27,7 @@ const ActionMenu = ({ record }: { record: User }) => {
   const handleBanOrUnBan = async () => {
     try {
       let response;
+
       if (record.isActive) {
         if (!reason) {
           messageApi.error("Please enter a reason for banning.");
@@ -34,12 +37,18 @@ const ActionMenu = ({ record }: { record: User }) => {
           messageApi.error("UnBan date must be after ban date.");
           return;
         }
+        if (!profile?.id) {
+          messageApi.error("Current user info is missing. Please log in again.");
+          return;
+        }
+
         const request = {
-          banDate: banDate.toISOString(),
-          unBanDate: unBanDate.toISOString(),
           reason,
-          userId: record.id,
+          unbanDate: unBanDate.toISOString(),
+          bannedUserId: record.id,
+          bannedByUserId: profile.id,
         };
+
         response = await createBanHistory(request);
       } else {
         response = await unBanUserById(record.id);
@@ -100,6 +109,7 @@ const ActionMenu = ({ record }: { record: User }) => {
       >
         <Button type="text" icon={<FaEllipsisV />} />
       </Dropdown>
+
       <Modal
         title={record.isActive ? "Ban User" : "UnBan User"}
         open={isModalOpen}
