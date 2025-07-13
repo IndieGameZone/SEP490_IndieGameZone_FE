@@ -1,7 +1,7 @@
 import { getCommercialPackageById } from "@/lib/api/commercial-package-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { CommercialPackage } from "@/types/commercial-package";
-import { message } from "antd";
+import { Alert, message } from "antd";
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import SelectGameInput from "./select-game-input";
@@ -9,6 +9,13 @@ import { Game } from "@/types/game";
 import { getGameById } from "@/lib/api/game-api";
 import Loader from "@/components/loader";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
+import dayjs, { Dayjs } from "dayjs";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import CommercialPackageCalendar from "./commercial-package-calendar";
+
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 const CommericalPackageDetailsPage = () => {
   const { packageId } = useParams();
@@ -19,6 +26,17 @@ const CommericalPackageDetailsPage = () => {
   const [selectedGame, setSelectedGame] = useState<Game>();
   const [isFetchingGame, setIsFetchingGame] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+  const [isConflict, setIsConflict] = useState(false);
+  const unavailableDates = ["2025-07-15", "2025-07-18", "2025-07-21"].map((d) =>
+    dayjs(d).startOf("day")
+  );
+
+  const handleCalendarSelect = (date: Dayjs, conflicts: Dayjs[]) => {
+    setSelectedDate(date);
+    setIsConflict(conflicts.length > 0);
+  };
+
   useEffect(() => {
     (async () => {
       if (packageId) {
@@ -77,7 +95,7 @@ const CommericalPackageDetailsPage = () => {
             <div className="mt-2">
               <SelectGameInput setSelectGameId={setSelectGameId} />
             </div>
-            {isFetchingGame && <Loader type="inline" />}
+            {isFetchingGame && <div className="py-5"><Loader type="inline" /></div>}
             {!isFetchingGame && selectedGame && (
               <div className="py-5">
                 <Link to={`/dev/game/${selectedGame.id}`}>
@@ -100,7 +118,22 @@ const CommericalPackageDetailsPage = () => {
             )}
           </div>
         </div>
-        <div className="col-span-8 bg-zinc-800 rounded"></div>
+        <div className="col-span-8 bg-zinc-800 rounded p-3">
+          <CommercialPackageCalendar
+            duration={7}
+            unavailableDates={unavailableDates}
+            selectedDate={selectedDate}
+            onSelect={handleCalendarSelect}
+          />
+          {isConflict && (
+            <Alert
+              message="Please choose a different date range"
+              description="Some of the dates in your selected range aren't available. Try picking a new one to continue."
+              type="error"
+              showIcon
+            />
+          )}
+        </div>
       </div>
     </div>
   );

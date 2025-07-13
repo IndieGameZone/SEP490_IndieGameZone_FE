@@ -1,7 +1,7 @@
 import PageTransition from "@/components/page-transition";
 import DeveloperDashboardLayout from "@/layouts/developer-dashboard-layout";
 import HomeLayout from "@/layouts/home-layout";
-import CommericalPackageDetailsPage from "@/pages/developer/commerical-package-details/commerical-package-details-page";
+import CommericalPackageDetailsPage from "@/pages/developer/commerical-package-details/commercial-package-details-page";
 import DevUpdateGamePage from "@/pages/developer/update-game/dev-update-game-page";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";

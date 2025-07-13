@@ -25,6 +25,7 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/api/config/firebase";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
+import CatCaptcha from "../components/cat-captcha";
 
 type RoleEnum = "Player" | "Developer";
 
@@ -157,6 +158,7 @@ const LogInPage = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 h-screen bg-zinc-800">
+      <CatCaptcha gridSize={25}/>
       <div
         className="bg-cover bg-center rounded-2xl relative overflow-hidden drop-shadow-xl hidden lg:block"
         style={{ backgroundImage: `url(${background})` }}
