@@ -143,7 +143,7 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
                     showUploadList={{
                       extra: ({ size = 0 }) => (
                         <span style={{ color: "#cccccc" }}>
-                          &nbsp;({(size / 1024 / 1024).toFixed(2)}MB)
+                          {" "}({(size / 1024 / 1024).toFixed(2)}MB)
                         </span>
                       ),
                       showRemoveIcon: true,

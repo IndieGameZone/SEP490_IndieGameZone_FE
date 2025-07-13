@@ -157,7 +157,7 @@ const GameOverView = () => {
                         )}
                         <span className="font-semibold">
                           {file.displayName ? file.displayName : "unnamed file"}
-                          &nbsp;
+                          {" "}
                           <span className="text-sm text-zinc-400">
                             ({formatMegabytes(file.size)})
                           </span>

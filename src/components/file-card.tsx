@@ -35,7 +35,7 @@ const FileCard = ({
         </div>
 
         <div className="font-semibold text-ellipsis overflow-clip">
-          {file.displayName ? file.displayName : "unnamed file"}&nbsp;
+          {file.displayName ? file.displayName : "unnamed file"}{" "}
           <span className="text-sm text-zinc-400 min-w-14">
             ({formatMegabytes(file.size)})
           </span>

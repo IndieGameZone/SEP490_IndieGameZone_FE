@@ -241,7 +241,7 @@ const UploadNewFileButton = () => {
               showUploadList={{
                 extra: ({ size = 0 }) => (
                   <span style={{ color: "#cccccc" }}>
-                    &nbsp;({formatBytes(size)})
+                    {" "}({formatBytes(size)})
                   </span>
                 ),
                 showRemoveIcon: true,

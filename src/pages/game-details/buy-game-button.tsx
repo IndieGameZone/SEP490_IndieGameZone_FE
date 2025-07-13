@@ -141,7 +141,7 @@ const BuyGameButton = () => {
                     <FaFileArchive />
                   )}
                   <span className="font-semibold">
-                    {file.displayName || "unnamed file"}&nbsp;
+                    {file.displayName || "unnamed file"}{" "}
                     <span className="text-sm text-zinc-400">({formatMegabytes(file.size)})</span>
                   </span>
                 </div>

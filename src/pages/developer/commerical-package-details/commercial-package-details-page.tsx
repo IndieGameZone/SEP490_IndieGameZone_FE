@@ -1,4 +1,7 @@
-import { getCommercialPackageById } from "@/lib/api/commercial-package-api";
+import {
+  getCommercialPackageById,
+  getUnavailableDates,
+} from "@/lib/api/commercial-package-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { CommercialPackage } from "@/types/commercial-package";
 import { Alert, message } from "antd";
@@ -13,6 +16,7 @@ import dayjs, { Dayjs } from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import CommercialPackageCalendar from "./commercial-package-calendar";
+import { formatDate } from "@/lib/date-n-time";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -28,9 +32,7 @@ const CommericalPackageDetailsPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [isConflict, setIsConflict] = useState(false);
-  const unavailableDates = ["2025-07-15", "2025-07-18", "2025-07-21"].map((d) =>
-    dayjs(d).startOf("day")
-  );
+  const [unavailableDates, setUnavailableDates] = useState<Dayjs[]>([]);
 
   const handleCalendarSelect = (date: Dayjs, conflicts: Dayjs[]) => {
     setSelectedDate(date);
@@ -48,22 +50,40 @@ const CommericalPackageDetailsPage = () => {
         }
       }
     })();
+    fetchUnavailableDates();
   }, [packageId]);
 
   useEffect(() => {
-    (async () => {
-      if (selectGameId) {
-        setIsFetchingGame(true);
-        const result = await getGameById(selectGameId);
-        setIsFetchingGame(false);
-        if (result.error) {
-          messageApi.error("Failed to fetch game! Please try again.");
-        } else {
-          setSelectedGame(result.data);
-        }
-      }
-    })();
+    fetchGame();
   }, [selectGameId]);
+
+  const fetchGame = async () => {
+    if (selectGameId) {
+      setIsFetchingGame(true);
+      const result = await getGameById(selectGameId);
+      setIsFetchingGame(false);
+      if (result.error) {
+        messageApi.error("Failed to fetch game! Please try again.");
+      } else {
+        setSelectedGame(result.data);
+      }
+    }
+  };
+
+  const fetchUnavailableDates = async () => {
+    if (!packageId) return;
+    const result = await getUnavailableDates({
+      commercialPackageId: packageId,
+    });
+    if (result.error) {
+      messageApi.error("Failed to check available dates! Please try again.");
+    } else {
+      const convertedData = result.data.map((x: string) => {
+        return dayjs(x);
+      });
+      setUnavailableDates(convertedData);
+    }
+  };
 
   if (!packageId) return <Navigate to={"/dev/commerical-pack"} />;
   if (!commercialPackage) return;
@@ -74,6 +94,27 @@ const CommericalPackageDetailsPage = () => {
         Register for {commercialPackage.name}
       </h1>
       <div className="grid grid-cols-12 gap-3 p-3">
+        <div className="col-span-8 bg-zinc-800 rounded p-3">
+          <h2 className="text-center font-semibold">Select registation date</h2>
+          <hr className="my-3 border border-zinc-700" />
+          <CommercialPackageCalendar
+            duration={commercialPackage.duration}
+            unavailableDates={unavailableDates}
+            selectedDate={selectedDate}
+            onSelect={handleCalendarSelect}
+          />
+          <p className="text-sm text-zinc-400 italic text-center">
+            Click on a calendar cell to select a start date
+          </p>
+          {isConflict && (
+            <Alert
+              message="Please choose a different date range"
+              description="Some of the dates in your selected range aren't available. Try picking a new one to continue."
+              type="error"
+              showIcon
+            />
+          )}
+        </div>
         <div className="col-span-4">
           <div className="bg-zinc-800 rounded p-5 duration-300">
             <h2 className="text-center font-semibold">Package Information</h2>
@@ -95,9 +136,13 @@ const CommericalPackageDetailsPage = () => {
             <div className="mt-2">
               <SelectGameInput setSelectGameId={setSelectGameId} />
             </div>
-            {isFetchingGame && <div className="py-5"><Loader type="inline" /></div>}
-            {!isFetchingGame && selectedGame && (
+            {isFetchingGame && (
               <div className="py-5">
+                <Loader type="inline" />
+              </div>
+            )}
+            {!isFetchingGame && selectedGame && (
+              <div className="mt-5">
                 <Link to={`/dev/game/${selectedGame.id}`}>
                   <FaultTolerantImage
                     src={selectedGame.coverImage}
@@ -116,23 +161,26 @@ const CommericalPackageDetailsPage = () => {
                 </p>
               </div>
             )}
+            {!selectedGame && (
+              <div className="mt-2">
+                <Alert message="Select a game to continue" showIcon />
+              </div>
+            )}
+            {selectedDate && (
+              <div>
+                <p className="font-semibold mt-2">Selected date: </p>
+                {formatDate(selectedDate.toDate())}
+                {commercialPackage.duration > 1 && (
+                  <>
+                    {" - " +
+                      formatDate(
+                        selectedDate.add(commercialPackage.duration).toDate()
+                      )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
-        </div>
-        <div className="col-span-8 bg-zinc-800 rounded p-3">
-          <CommercialPackageCalendar
-            duration={7}
-            unavailableDates={unavailableDates}
-            selectedDate={selectedDate}
-            onSelect={handleCalendarSelect}
-          />
-          {isConflict && (
-            <Alert
-              message="Please choose a different date range"
-              description="Some of the dates in your selected range aren't available. Try picking a new one to continue."
-              type="error"
-              showIcon
-            />
-          )}
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ export function formatDate(date: Date): string {
     };
     return date.toLocaleDateString("en-EN", options);
 }
+
 export function formatDateTime(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
         year: "numeric",

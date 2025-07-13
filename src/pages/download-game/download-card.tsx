@@ -93,7 +93,7 @@ const DownloadCard = ({
             {file.displayName ? file.displayName : "unnamed file"}
           </span>
           <span className="text-sm text-zinc-400">
-            &nbsp;({formatMegabytes(file.size)})
+            {" "}({formatMegabytes(file.size)})
           </span>
         </div>
         <p className="text-xs">
