@@ -1,12 +1,4 @@
-import {
-  Button,
-  Input,
-  InputRef,
-  Space,
-  Table,
-  TableColumnType,
-  TableProps,
-} from "antd";
+import { Button, Input, InputRef, Space, Table, TableColumnType, TableProps, Tag } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteForever } from "react-icons/md";
@@ -46,11 +38,7 @@ const ManageReportReason = () => {
     fetchReportReasons();
   };
 
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: FilterDropdownProps["confirm"],
-    dataIndex: DataIndex
-  ) => {
+  const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -61,46 +49,28 @@ const ManageReportReason = () => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): TableColumnType<ReportReason> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
+  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<ReportReason> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
             icon={<FaSearch />}
             size="small"
             style={{ width: 90 }}
           >
             Search
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
             Reset
           </Button>
           <Button
@@ -126,12 +96,7 @@ const ManageReportReason = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <FaSearch
-        style={{ color: filtered ? "#FF6600" : undefined }}
-        className="w-5"
-      />
-    ),
+    filterIcon: (filtered: boolean) => <FaSearch style={{ color: filtered ? "#FF6600" : undefined }} className="w-5" />,
     onFilter: (value, record) =>
       record[dataIndex]
         .toString()
@@ -156,14 +121,39 @@ const ManageReportReason = () => {
         text
       ),
   });
+  const getTagColor = (type: string) => {
+    switch (type) {
+      case "Post":
+        return "blue";
+      case "User":
+        return "green";
+      case "Game":
+        return "volcano";
+      default:
+        return "default";
+    }
+  };
 
   const columns: TableProps<ReportReason>["columns"] = [
     {
-      title: "Report Reason ",
+      title: "Report Reason",
       dataIndex: "name",
       key: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
       ...getColumnSearchProps("name"),
+      render: (text) => {
+        const match = text.match(/^\[(.*?)\]\s*-\s*(.*)$/);
+        if (match) {
+          const type = match[1]; 
+          const reason = match[2]; 
+          return (
+            <>
+              <Tag color={getTagColor(type)}>[{type}]</Tag> {reason}
+            </>
+          );
+        }
+        return text;
+      },
     },
     {
       title: "Action",
@@ -195,19 +185,10 @@ const ManageReportReason = () => {
         </Button>
       </div>
       <div className="">
-        <Table<ReportReason>
-          columns={columns}
-          dataSource={reportReasons}
-          loading={loading}
-          bordered
-        />
+        <Table<ReportReason> columns={columns} dataSource={reportReasons} loading={loading} bordered />
       </div>
 
-      <AddReportReason
-        open={addModalOpen}
-        onClose={() => setAddModalOpen(false)}
-        onSuccess={handleRefresh}
-      />
+      <AddReportReason open={addModalOpen} onClose={() => setAddModalOpen(false)} onSuccess={handleRefresh} />
 
       <EditReportReason
         open={editModalOpen}

@@ -1,5 +1,5 @@
 import { createReportReason } from "@/lib/api/report-api";
-import { Form, Input, message, Modal } from "antd";
+import { Form, Input, message, Modal, Select, Tag } from "antd";
 import { useState } from "react";
 
 interface AddReportReasonModalProps {
@@ -9,8 +9,15 @@ interface AddReportReasonModalProps {
 }
 
 interface AddReportReasonForm {
+  types: ("Post" | "User" | "Game")[];
   name: string;
 }
+
+const typeColorMap: Record<string, string> = {
+  Post: "blue",
+  User: "green",
+  Game: "volcano",
+};
 
 const AddReportReason = ({ open, onClose, onSuccess }: AddReportReasonModalProps) => {
   const [form] = Form.useForm<AddReportReasonForm>();
@@ -20,18 +27,24 @@ const AddReportReason = ({ open, onClose, onSuccess }: AddReportReasonModalProps
   const handleSubmit = async (values: AddReportReasonForm) => {
     try {
       setLoading(true);
-      const result = await createReportReason({ name: values.name });
 
-      if (result.success) {
-        messageApi.success("Report Reason added successfully!");
-        form.resetFields();
-        onClose();
-        onSuccess();
-      } else {
-        messageApi.error(result.error || "Failed to add Report Reason ");
+      const reasons = values.types.map(
+        (type) => `[${type}] - ${values.name.trim()}`
+      );
+
+      for (const name of reasons) {
+        const result = await createReportReason({ name });
+        if (!result.success) {
+          throw new Error(result.error || "One or more reasons failed");
+        }
       }
+
+      messageApi.success("Report Reasons added successfully!");
+      form.resetFields();
+      onClose();
+      onSuccess();
     } catch (error) {
-      messageApi.error("Failed to add Report Reason ");
+      messageApi.error("Failed to add Report Reasons");
     } finally {
       setLoading(false);
     }
@@ -46,12 +59,12 @@ const AddReportReason = ({ open, onClose, onSuccess }: AddReportReasonModalProps
     <>
       {contextHolder}
       <Modal
-        title="Add New Report Reason "
+        title="Add New Report Reason"
         open={open}
         onCancel={handleCancel}
         onOk={() => form.submit()}
         confirmLoading={loading}
-        destroyOnHidden
+        destroyOnClose
       >
         <Form
           form={form}
@@ -60,17 +73,35 @@ const AddReportReason = ({ open, onClose, onSuccess }: AddReportReasonModalProps
           autoComplete="off"
         >
           <Form.Item
-            label="Report Reason  "
+            label="Type(s)"
+            name="types"
+            rules={[{ required: true, message: "Please select at least one type!" }]}
+          >
+            <Select
+              mode="multiple"
+              placeholder="Select type(s)"
+              tagRender={({ label }) => (
+                <Tag color={typeColorMap[label as string]}>{label}</Tag>
+              )}
+            >
+              <Select.Option value="Post">Post</Select.Option>
+              <Select.Option value="User">User</Select.Option>
+              <Select.Option value="Game">Game</Select.Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="Report Reason"
             name="name"
             rules={[
-              { required: true, message: "Please input Report Reason  !" },
+              { required: true, message: "Please input Report Reason!" },
               {
                 min: 2,
-                message: "Report Reason   must be at least 2 characters!",
+                message: "Report Reason must be at least 2 characters!",
               },
             ]}
           >
-            <Input placeholder="Enter  Report Reason " />
+            <Input placeholder="Enter reason (e.g., Harassment)" />
           </Form.Item>
         </Form>
       </Modal>
