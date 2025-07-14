@@ -1,4 +1,5 @@
-import { searchGames } from "@/lib/api/game-api";
+import { getGamesByDeveloperId } from "@/lib/api/game-api";
+import useAuthStore from "@/store/use-auth-store";
 import { Game } from "@/types/game";
 import { Select, SelectProps } from "antd";
 import throttle from "lodash/throttle";
@@ -10,11 +11,16 @@ const SelectGameInput = ({
 }) => {
   const [options, setOptions] = useState<SelectProps["options"]>([]);
   const [fetching, setFetching] = useState(false);
+  const { profile } = useAuthStore();
 
   useEffect(() => {
     (async () => {
+      if (!profile) {
+        setOptions([]);
+        return;
+      }
       setFetching(true);
-      const result = await searchGames();
+      const result = await getGamesByDeveloperId(profile.id);
       setFetching(false);
       if (!result.error) {
         const formattedOptions = result.data.games.map((game: Game) => ({
@@ -28,14 +34,15 @@ const SelectGameInput = ({
         setOptions(formattedOptions);
       }
     })();
-  }, []);
+  }, [profile]);
 
   const throttledFetch = useMemo(
     () =>
       throttle(async (value: string) => {
+        if (!profile) return;
         if (!value.trim()) return;
         setFetching(true);
-        const result = await searchGames({
+        const result = await getGamesByDeveloperId(profile.id, {
           searchTerm: value,
         });
         setFetching(false);
