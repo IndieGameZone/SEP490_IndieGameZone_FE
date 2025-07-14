@@ -14,6 +14,8 @@ import { TbCancel } from "react-icons/tb";
 import useProfileStore from "@/store/use-auth-store";
 import { CgGames } from "react-icons/cg";
 import styles from "@/styles/admin-layout.module.css";
+import { GoReport } from "react-icons/go";
+import { GrTransaction } from "react-icons/gr";
 
 const { Footer, Sider } = Layout;
 
@@ -99,22 +101,22 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         navigate("/admin/manage-categories");
       },
     },
-    // {
-    //   key: "/admin/manage-dicounts",
-    //   icon: <CiDiscount1 />,
-    //   label: "Manage Dicounts",
-    //   onClick: () => {
-    //     navigate("/admin/manage-dicounts");
-    //   },
-    // },
-    // {
-    //   key: "/admin/manage-achivements",
-    //   icon: <GrAchievement />,
-    //   label: "Manage Achievements",
-    //   onClick: () => {
-    //     navigate("/admin/manage-achivements");
-    //   },
-    // },
+    {
+      key: "/admin/manage-report-reason",
+      icon: <GoReport />,
+      label: "Manage Report Reasons",
+      onClick: () => {
+        navigate("/admin/manage-report-reason");
+      },
+    },
+    {
+      key: "/admin/manage-transactions",
+      icon: <GrTransaction />,
+      label: "Manage Transactions",
+      onClick: () => {
+        navigate("/admin/manage-transactions");
+      },
+    },
     {
       key: "/admin/manage-age-restrictions",
       icon: <TbCancel />,
@@ -161,22 +163,11 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       }}
     >
       <Layout hasSider className={styles.lightTable}>
-        <Sider
-          trigger={null}
-          collapsible
-          collapsed={collapsed}
-          style={siderStyle}
-          width={256}
-        >
+        <Sider trigger={null} collapsible collapsed={collapsed} style={siderStyle} width={256}>
           <div className="p-3 my-3">
             <img src={logo} alt="indiegamezone logo" className="w-40" />
           </div>
-          <Menu
-            theme="dark"
-            mode="inline"
-            selectedKeys={[location.pathname]}
-            items={items}
-          />
+          <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} items={items} />
         </Sider>
         <Layout>
           <div
@@ -203,9 +194,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             </div>
           </div>
           <div style={{ margin: "24px 16px 0" }}>{children}</div>
-          <Footer style={{ textAlign: "center" }}>
-            Ant Design ©{new Date().getFullYear()} Created by Ant UED
-          </Footer>
+          <Footer style={{ textAlign: "center" }}>Ant Design ©{new Date().getFullYear()} Created by Ant UED</Footer>
         </Layout>
       </Layout>
     </ConfigProvider>
