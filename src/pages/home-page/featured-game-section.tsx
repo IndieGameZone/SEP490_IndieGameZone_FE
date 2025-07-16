@@ -42,6 +42,7 @@ const mockData = [
     price: 120_000,
   },
 ];
+
 const settings = {
   dots: true,
   infinite: true,
