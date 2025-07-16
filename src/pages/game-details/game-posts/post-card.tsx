@@ -6,18 +6,17 @@ import { IoShareSocialOutline } from "react-icons/io5";
 const PostCard = () => {
   return (
     <div>
-      <div className="bg-zinc-800  w-full p-5 rounded-2xl">
+      <div className="bg-zinc-800 w-full p-5">
         <div className="flex justify-between items-center gap-3">
           <div className="flex items-center gap-3">
             <Avatar src="https://cdn.lazi.vn/storage/uploads/users/avatar/1693142947_lazi_435254.jpg" />
-            <span className="font-semibold text-lg ">mày tính múc tao à</span>
+            <span className="font-semibold text-lg ">Lorem ipsum</span>
           </div>
           <div className="flex items-center gap-2 ">
             <CiClock1 />
             <span className="text-xs text-gray-400">2 days ago</span>
           </div>
         </div>
-
         <div className="mt-5">
           <div className="flex flex-col gap-3">
             {" "}
