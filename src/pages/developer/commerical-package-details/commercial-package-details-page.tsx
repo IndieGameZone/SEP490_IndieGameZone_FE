@@ -50,12 +50,12 @@ const CommericalPackageDetailsPage = () => {
         }
       }
     })();
-    fetchUnavailableDates();
   }, [packageId]);
 
   useEffect(() => {
     fetchGame();
-  }, [selectGameId]);
+    fetchUnavailableDates();
+  }, [selectGameId, packageId]);
 
   const fetchGame = async () => {
     if (selectGameId) {
@@ -71,9 +71,10 @@ const CommericalPackageDetailsPage = () => {
   };
 
   const fetchUnavailableDates = async () => {
-    if (!packageId) return;
+    if (!packageId || !selectGameId) return;
     const result = await getUnavailableDates({
       commercialPackageId: packageId,
+      gameId: selectGameId,
     });
     if (result.error) {
       messageApi.error("Failed to check available dates! Please try again.");
@@ -219,7 +220,9 @@ const CommericalPackageDetailsPage = () => {
                   </Button>
                 </>
               ) : (
-                <p className="text-zinc-400 text-sm text-center">Select game and registration date to continue</p>
+                <p className="text-zinc-400 text-sm text-center">
+                  Select game and registration date to continue
+                </p>
               )}
             </div>
           </div>
