@@ -1,18 +1,27 @@
 import { Button, Dropdown, Input, Tag } from "antd";
-import { FaPlus, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import PostCard from "./post-card";
 import { MdOutlineSort } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import CreatePostButton from "./create-post-button";
+import useTagStore from "@/store/use-tag-store";
 
 const tabs = ["Hot & Trending", "Most popular", "Best", "Latest"];
 
 const items = tabs.map((x) => ({ key: x, label: x }));
 
 const GameForum = () => {
+  const { fetchTags } = useTagStore();
   const [selectedSortOption, setSelectedSortOption] = useState(tabs[0]);
+
   const handleSelect = (e: any) => {
     setSelectedSortOption(e.key);
   };
+
+  useEffect(() => {
+    fetchTags();
+  }, []);
+
   return (
     <div className="grid grid-cols-12 gap-3">
       <div className="col-span-4">
@@ -47,13 +56,7 @@ const GameForum = () => {
             <Tag color="orange">#Guide</Tag>
           </div>
           <hr className="border border-zinc-700 my-3" />
-          <Button
-            type="primary"
-            style={{ paddingInline: "2rem" }}
-            icon={<FaPlus />}
-          >
-            Create Post
-          </Button>
+          <CreatePostButton />
         </div>
       </div>
 

@@ -1,3 +1,4 @@
+import { toFormData } from "../object";
 import { axiosClient } from "./config/axios-client";
 
 export const handleApiError = (error: any): { error: string | null; data: any; success: boolean } => {
@@ -12,13 +13,13 @@ export const handleApiError = (error: any): { error: string | null; data: any; s
 export interface PostData {
   Title: string;
   Content: string;
-  Image: string;
+  Images: string[];
   Tags: string[];
 }
 
 export const createPost = async (userId: string, gameId: string, postData: PostData) => {
   try {
-    const { data } = await axiosClient.post(`/api/users/${userId}/games/${gameId}/posts`, postData);
+    const { data } = await axiosClient.post(`/api/users/${userId}/games/${gameId}/posts`, toFormData(postData));
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
