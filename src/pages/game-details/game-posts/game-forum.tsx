@@ -1,10 +1,13 @@
-import { Button, Dropdown, Input, Tag } from "antd";
+import { Button, Dropdown, Input, Tag, message } from "antd";
 import { FaSearch } from "react-icons/fa";
 import PostCard from "./post-card";
 import { MdOutlineSort } from "react-icons/md";
 import { useEffect, useState } from "react";
 import CreatePostButton from "./create-post-button";
 import useTagStore from "@/store/use-tag-store";
+import { useParams } from "react-router-dom";
+import { getGamePosts } from "@/lib/api/post-game-api";
+import Loader from "@/components/loader";
 
 const tabs = ["Hot & Trending", "Most popular", "Best", "Latest"];
 
@@ -13,6 +16,10 @@ const items = tabs.map((x) => ({ key: x, label: x }));
 const GameForum = () => {
   const { fetchTags } = useTagStore();
   const [selectedSortOption, setSelectedSortOption] = useState(tabs[0]);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [posts, setPosts] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
+  const { gameId } = useParams();
 
   const handleSelect = (e: any) => {
     setSelectedSortOption(e.key);
@@ -22,8 +29,25 @@ const GameForum = () => {
     fetchTags();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      if (gameId) {
+        setIsFetching(true);
+        const result = await getGamePosts(gameId);
+        if (result.error) {
+          messageApi.error("Failed to get posts! Please try again.");
+        } else {
+          setPosts(result.data);
+        }
+        setIsFetching(false);
+      }
+    })();
+  }, [gameId]);
+
   return (
     <div className="grid grid-cols-12 gap-3">
+      {contextHolder}
+
       <div className="col-span-4">
         <div className="bg-zinc-800 p-3 rounded">
           <Dropdown
@@ -59,9 +83,16 @@ const GameForum = () => {
           <CreatePostButton />
         </div>
       </div>
-
       <div className="col-span-8">
-        <PostCard />
+        {isFetching ? (
+          <Loader />
+        ) : (
+          <>
+            {posts.map((_, index: number) => {
+              return <PostCard key={`post-${index}`} />;
+            })}
+          </>
+        )}
       </div>
     </div>
   );

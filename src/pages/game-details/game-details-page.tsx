@@ -14,7 +14,13 @@ import {
 import { useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
 import { FaFlag, FaInfoCircle, FaLink, FaStar } from "react-icons/fa";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  Navigate,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
@@ -41,10 +47,20 @@ const GameDetailsPage = () => {
   const { profile } = useAuthStore();
   const { fetchWishlistGameIds } = useWishlistStore();
   const [index, setIndex] = useState(-1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(
+    searchParams.get("tab") ?? "overview"
+  );
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    params.set("tab", activeTab);
+    setSearchParams(params);
+  }, [activeTab]);
 
   const tabItems: TabsProps["items"] = [
     {
-      key: "overview-tab",
+      key: "overview",
       label: (
         <div className="flex gap-2 items-center font-semibold">
           <FaInfoCircle />
@@ -54,7 +70,7 @@ const GameDetailsPage = () => {
       children: <GameOverView />,
     },
     {
-      key: "reviews-tab",
+      key: "reviews",
       label: (
         <div className="flex gap-2 items-center font-semibold">
           <FaStar />
@@ -64,7 +80,7 @@ const GameDetailsPage = () => {
       children: <GameReviews />,
     },
     {
-      key: "forum-tab",
+      key: "forum",
       label: (
         <div className="flex gap-2 items-center font-semibold">
           <IoIosChatboxes />
@@ -151,7 +167,10 @@ const GameDetailsPage = () => {
               </div>
             </div>
             <p className="text-zinc-500">{game.shortDescription}</p>
-            <Link to={`/search?category=${game.category.id}`} className="font-semibold text-orange-200 hover:underline">
+            <Link
+              to={`/search?category=${game.category.id}`}
+              className="font-semibold text-orange-200 hover:underline"
+            >
               {game.category?.name}
             </Link>
           </div>
@@ -240,7 +259,13 @@ const GameDetailsPage = () => {
       </div>
       {/* TABS */}
       <div className="px-5 bg-zinc-900 rounded mt-2 pb-5">
-        <Tabs defaultActiveKey="overview-tab" items={tabItems} />
+        <Tabs
+          defaultActiveKey={activeTab}
+          items={tabItems}
+          onChange={(key) => {
+            setActiveTab(key);
+          }}
+        />
       </div>
     </MaxWidthWrapper>
   );

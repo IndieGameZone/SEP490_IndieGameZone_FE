@@ -1,4 +1,7 @@
-import { getCommercialPackageById, getUnavailableDates } from "@/lib/api/commercial-package-api";
+import {
+  getCommercialPackageById,
+  getUnavailableDates,
+} from "@/lib/api/commercial-package-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { CommercialPackage } from "@/types/commercial-package";
 import { Alert, Button, message } from "antd";
@@ -17,13 +20,16 @@ import { formatDate } from "@/lib/date-n-time";
 import { FaWallet } from "react-icons/fa";
 import { purchaseCommercialPackage } from "@/lib/api/payment-api";
 import useAuthStore from "@/store/use-auth-store";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
+dayjs.extend(customParseFormat);
 
 const CommericalPackageDetailsPage = () => {
   const { packageId } = useParams();
-  const [commercialPackage, setCommercialPackage] = useState<CommercialPackage>();
+  const [commercialPackage, setCommercialPackage] =
+    useState<CommercialPackage>();
   const [selectGameId, setSelectGameId] = useState<string>();
   const [selectedGame, setSelectedGame] = useState<Game>();
   const [isFetchingGame, setIsFetchingGame] = useState(false);
@@ -79,7 +85,9 @@ const CommericalPackageDetailsPage = () => {
     if (result.error) {
       messageApi.error("Failed to check available dates! Please try again.");
     } else {
-      const convertedData = result.data.map((x: string) => dayjs(x));
+      const convertedData = result.data.map((x: string) =>
+        dayjs(x, "DD/MM/YYYY")
+      );
       setUnavailableDates(convertedData);
     }
   };
@@ -99,14 +107,13 @@ const CommericalPackageDetailsPage = () => {
 
     setIsPaying(false);
 
-  if (result.success) {
-    messageApi.success("Purchase successful!");
+    if (result.success) {
+      messageApi.success("Purchase successful!");
 
-    if (method === "PayOS" && result.success) {
-      window.open(result.data);
-    }
-
-  } else {
+      if (method === "PayOS" && result.success) {
+        window.open(result.data);
+      }
+    } else {
       messageApi.error(result.error || "Purchase failed. Please try again.");
     }
   };
@@ -123,7 +130,9 @@ const CommericalPackageDetailsPage = () => {
       <div className="grid grid-cols-12 gap-3 p-3">
         <div className="col-span-8">
           <div className="bg-zinc-800 rounded p-3">
-            <h2 className="text-center font-semibold">Select registation date</h2>
+            <h2 className="text-center font-semibold">
+              Select registation date
+            </h2>
             <hr className="my-3 border border-zinc-700" />
             <CommercialPackageCalendar
               duration={commercialPackage.duration}
@@ -131,7 +140,9 @@ const CommericalPackageDetailsPage = () => {
               selectedDate={selectedDate}
               onSelect={handleCalendarSelect}
             />
-            <p className="text-sm text-zinc-400 italic text-center">Click on a calendar cell to select a start date</p>
+            <p className="text-sm text-zinc-400 italic text-center">
+              Click on a calendar cell to select a start date
+            </p>
             {isConflict && (
               <Alert
                 message="Please choose a different date range"
@@ -148,11 +159,17 @@ const CommericalPackageDetailsPage = () => {
             <h2 className="text-center font-semibold">Package Information</h2>
             <p className="text-sm mt-2 font-semibold">Package</p>
             <p className="text-xl font-bold">{commercialPackage.name}</p>
-            <p className="text-sm text-zinc-400">{commercialPackage.description}</p>
+            <p className="text-sm text-zinc-400">
+              {commercialPackage.description}
+            </p>
             <p className="text-sm mt-2 font-semibold">Duration</p>
-            <p className="text-xl font-semibold text-orange-500">{commercialPackage.duration} day(s)</p>
+            <p className="text-xl font-semibold text-orange-500">
+              {commercialPackage.duration} day(s)
+            </p>
             <p className="text-sm mt-2 font-semibold">Price</p>
-            <p className="text-lg">{formatCurrencyVND(commercialPackage.price)}</p>
+            <p className="text-lg">
+              {formatCurrencyVND(commercialPackage.price)}
+            </p>
             <hr className="my-3 border border-zinc-700" />
             <h2 className="text-center font-semibold">Select game</h2>
             <div className="mt-2">
@@ -177,7 +194,9 @@ const CommericalPackageDetailsPage = () => {
                 </Link>
                 <p className="text-sm mt-2 font-semibold">Short description</p>
                 <p className="text-sm text-zinc-400">
-                  {selectedGame.shortDescription.length === 0 ? "No description" : selectedGame.shortDescription}
+                  {selectedGame.shortDescription.length === 0
+                    ? "No description"
+                    : selectedGame.shortDescription}
                 </p>
               </div>
             )}
@@ -191,7 +210,14 @@ const CommericalPackageDetailsPage = () => {
                 <p className="font-semibold mt-2">Selected date:</p>
                 {formatDate(selectedDate.toDate())}
                 {commercialPackage.duration > 1 && (
-                  <>{" - " + formatDate(selectedDate.add(commercialPackage.duration, "day").toDate())}</>
+                  <>
+                    {" - " +
+                      formatDate(
+                        selectedDate
+                          .add(commercialPackage.duration, "day")
+                          .toDate()
+                      )}
+                  </>
                 )}
               </div>
             )}

@@ -26,3 +26,13 @@ export const createPost = async (userId: string, gameId: string, postData: PostD
     return handleApiError(error);
   }
 };
+
+export const getGamePosts = async (gameId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/games/${gameId}/posts`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
