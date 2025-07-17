@@ -7,6 +7,28 @@ export type Transaction = {
     amount: number;
     description: string;
     status: "Success" | "Pending" | "Failed";
-    type:string;
+    type: "Deposit"
+    | "Withdraw"
+    | "PurchaseGame"
+    | "PurchaseCommercialPackage"
+    | "Donation"
+    | "PurchaseGameRevenue"
+    | "PurchaseCommercialPackageRevenue"
+    | "DonationRevenue";
     createdAt: string;
+}
+
+export function getReadableTransactionType(type: Transaction["type"]): string {
+    const typeMap: Record<Transaction["type"], string> = {
+        Deposit: "Deposit",
+        Withdraw: "Withdraw",
+        PurchaseGame: "Purchase Game",
+        PurchaseCommercialPackage: "Purchase Commercial Package",
+        Donation: "Donation",
+        PurchaseGameRevenue: "Game Sale Revenue",
+        PurchaseCommercialPackageRevenue: "Commercial Package Revenue",
+        DonationRevenue: "Donation Revenue",
+    };
+
+    return typeMap[type] || "Unknown";
 }

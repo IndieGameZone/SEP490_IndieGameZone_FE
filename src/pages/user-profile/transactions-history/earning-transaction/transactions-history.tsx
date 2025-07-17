@@ -1,5 +1,5 @@
 import { Transaction } from "@/types/transaction";
-import { Card, Table } from "antd";
+import { Table } from "antd";
 import { useState, useEffect } from "react";
 import { columns } from "./columns";
 import useAuthStore from "@/store/use-auth-store";
@@ -17,7 +17,7 @@ const EarningTransactionHistory = () => {
           const mappedTransactions = response.data.map((item: any) => ({
             id: item.id,
             orderCode: item.orderCode,
-            type: item.type.toLowerCase(),
+            type: item.type,
             amount: item.amount,
             paymentMethod: item.paymentMethod,
             description: item.description,
@@ -40,9 +40,10 @@ const EarningTransactionHistory = () => {
         pageSize: 10,
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} transactions`,
+        showTotal: (total, range) =>
+          `${range[0]}-${range[1]} of ${total} transactions`,
       }}
-      scroll={{ x: 1000 }}
+      scroll={{ x: "max-content" }}
     />
   );
 };

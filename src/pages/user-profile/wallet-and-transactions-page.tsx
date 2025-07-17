@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import TransactionHistory from "./transactions-history/purchase-transaction.tsx/transactions-history";
 import UserWallet from "./wallet/user-wallet";
 import Cookies from "js-cookie";
 import { message } from "antd";

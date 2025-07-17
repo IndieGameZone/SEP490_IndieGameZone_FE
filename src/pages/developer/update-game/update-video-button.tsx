@@ -54,9 +54,9 @@ const UpdateVideoButton = ({ url }: { url: string }) => {
       visibility: game.visibility,
     });
     if (result.error) {
-      messageApi.error("Failed to update cover image");
+      messageApi.error("Failed to update gameplay/trailer");
     } else {
-      messageApi.success("Update cover image successfully!");
+      messageApi.success("Update gameplay/trailer successfully!");
       setTimeout(() => {
         rerender();
       }, 1000);

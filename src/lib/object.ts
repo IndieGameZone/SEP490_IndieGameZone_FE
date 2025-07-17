@@ -24,7 +24,6 @@ export function toFormData(obj: Record<string, any>): FormData {
   Object.entries(obj).forEach(([key, value]) => {
     if (Array.isArray(value)) {
       value.forEach((v) => {
-        console.log(v);
         if (v) {
           formData.append(key, v)
         }
