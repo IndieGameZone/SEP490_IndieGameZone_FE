@@ -151,9 +151,9 @@ const GameDetailsPage = () => {
               </div>
             </div>
             <p className="text-zinc-500">{game.shortDescription}</p>
-            <span className="font-semibold text-orange-200">
+            <Link to={`/search?category=${game.category.id}`} className="font-semibold text-orange-200 hover:underline">
               {game.category?.name}
-            </span>
+            </Link>
           </div>
           {/* DEVELOPER INFORMATION */}
           <div className="my-2 flex gap-3 items-center justify-between bg-zinc-900 drop-shadow rounded-lg p-2">

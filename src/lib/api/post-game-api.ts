@@ -19,7 +19,8 @@ export interface PostData {
 
 export const createPost = async (userId: string, gameId: string, postData: PostData) => {
   try {
-    const { data } = await axiosClient.post(`/api/users/${userId}/games/${gameId}/posts`, toFormData(postData));
+    const formData = toFormData(postData);
+    const { data } = await axiosClient.post(`/api/users/${userId}/games/${gameId}/posts`, formData);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);

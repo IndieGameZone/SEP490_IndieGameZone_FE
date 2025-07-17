@@ -101,6 +101,9 @@ const FilterPanel = () => {
   const [languages, setLanguages] = useState<string[]>(
     searchParams.get("languages")?.split(",") || []
   );
+  const [category, setCategory] = useState<string | null>(
+    searchParams.get("category")
+  );
 
   useEffect(() => {
     fetchTags();
@@ -131,44 +134,48 @@ const FilterPanel = () => {
     } else {
       params.delete("maxPrice");
     }
+
     if (special) {
       params.set("special", "true");
     } else {
       params.delete("special");
     }
+
     if (tags.length) {
       params.set("tags", tags.join(","));
     } else {
       params.delete("tags");
     }
+
     if (platforms.length) {
       params.set("platforms", platforms.join(","));
     } else {
       params.delete("platforms");
     }
+
     if (languages.length) {
       params.set("languages", languages.join(","));
     } else {
       params.delete("languages");
     }
 
+    if (category) {
+      params.set("category", category);
+    } else {
+      params.delete("category");
+    }
+
     setSearchParams(params);
-  }, [price, special, tags, platforms, languages]);
+  }, [price, special, tags, platforms, languages, category]);
 
   const handleClearFilter = () => {
-    const params = new URLSearchParams(searchParams);
-    params.delete("maxPrice");
     setPrice(MAX_PRICE);
     setPriceDisplay(MAX_PRICE);
-    params.delete("special");
     setSpecial(false);
-    params.delete("tags");
     setTags([]);
-    params.delete("platforms");
     setPlatforms([]);
-    params.delete("languages");
     setLanguages([]);
-    setSearchParams(params);
+    setCategory(null);
   };
 
   return (

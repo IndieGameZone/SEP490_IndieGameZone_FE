@@ -102,6 +102,7 @@ type GameSearchParams = {
   Tags?: string[];
   Languages?: string[];
   Platforms?: string[];
+  Category?: string;
 };
 
 export const searchGames = async (params: GameSearchParams = {}) => {
@@ -111,11 +112,12 @@ export const searchGames = async (params: GameSearchParams = {}) => {
     if (params.pageNumber !== undefined) searchParams.append("PageNumber", params.pageNumber.toString());
     if (params.pageSize !== undefined) searchParams.append("PageSize", params.pageSize.toString());
     if (params.price !== undefined) searchParams.append("Price", params.price.toString());
-    if (params.Tags && params.Tags.length > 0) params.Tags.forEach((id) => searchParams.append("Tags", id)); // Sửa thành Tags
+    if (params.Tags && params.Tags.length > 0) params.Tags.forEach((id) => searchParams.append("Tags", id));
     if (params.Languages && params.Languages.length > 0)
       params.Languages.forEach((id) => searchParams.append("Languages", id));
     if (params.Platforms && params.Platforms.length > 0)
       params.Platforms.forEach((id) => searchParams.append("Platforms", id));
+    if (params.Category) searchParams.append("Category", params.Category);
 
     const queryString = searchParams.toString();
     const url = queryString ? `/api/active-games?${queryString}` : "/api/active-games";

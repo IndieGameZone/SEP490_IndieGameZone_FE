@@ -77,6 +77,7 @@ const SearchPage = () => {
     const tags = parseStringArray(searchParams.get("tags"));
     const languages = parseStringArray(searchParams.get("languages"));
     const platforms = parseStringArray(searchParams.get("platforms"));
+    const category = searchParams.get("category") ?? "";
 
     setIsLoading(true);
     const result = await searchGames({
@@ -87,6 +88,7 @@ const SearchPage = () => {
       price: maxPrice,
       Tags: tags,
       searchTerm: query,
+      Category: category,
     });
     if (result.error) {
       messageApi.error("Failed to fetch games");

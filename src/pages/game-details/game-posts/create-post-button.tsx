@@ -72,7 +72,7 @@ const CreatePostButton = () => {
     if (result.error) {
       messageApi.error("Failed to create post! Please try again.");
     } else {
-      messageApi.error("Post created successfully!");
+      messageApi.success("Post created successfully!");
       localStorage.removeItem(DRAFT_KEY);
       setTimeout(() => {
         form.resetFields();
