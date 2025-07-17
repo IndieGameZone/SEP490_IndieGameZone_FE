@@ -1,7 +1,4 @@
-import {
-  getCommercialPackageById,
-  getUnavailableDates,
-} from "@/lib/api/commercial-package-api";
+import { getCommercialPackageById, getUnavailableDates } from "@/lib/api/commercial-package-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { CommercialPackage } from "@/types/commercial-package";
 import { Alert, Button, message } from "antd";
@@ -18,15 +15,15 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import CommercialPackageCalendar from "./commercial-package-calendar";
 import { formatDate } from "@/lib/date-n-time";
 import { FaWallet } from "react-icons/fa";
+import { purchaseCommercialPackage } from "@/lib/api/payment-api";
+import useAuthStore from "@/store/use-auth-store";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
 const CommericalPackageDetailsPage = () => {
   const { packageId } = useParams();
-  const [commercialPackage, setCommercialPackage] =
-    useState<CommercialPackage>();
-  useState;
+  const [commercialPackage, setCommercialPackage] = useState<CommercialPackage>();
   const [selectGameId, setSelectGameId] = useState<string>();
   const [selectedGame, setSelectedGame] = useState<Game>();
   const [isFetchingGame, setIsFetchingGame] = useState(false);
@@ -34,6 +31,8 @@ const CommericalPackageDetailsPage = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [isConflict, setIsConflict] = useState(false);
   const [unavailableDates, setUnavailableDates] = useState<Dayjs[]>([]);
+  const [isPaying, setIsPaying] = useState(false); // <== For payment loading
+  const { profile } = useAuthStore(); // Lấy user profile từ store
 
   const handleCalendarSelect = (date: Dayjs, conflicts: Dayjs[]) => {
     setSelectedDate(date);
@@ -80,15 +79,41 @@ const CommericalPackageDetailsPage = () => {
     if (result.error) {
       messageApi.error("Failed to check available dates! Please try again.");
     } else {
-      const convertedData = result.data.map((x: string) => {
-        return dayjs(x);
-      });
+      const convertedData = result.data.map((x: string) => dayjs(x));
       setUnavailableDates(convertedData);
+    }
+  };
+
+  const handlePurchase = async (method: "Wallet" | "PayOS") => {
+    if (!packageId || !selectGameId || !selectedDate || !selectedGame) return;
+
+    setIsPaying(true);
+
+    const result = await purchaseCommercialPackage(
+      profile?.id || "",
+      selectGameId,
+      packageId,
+      selectedDate.format("YYYY-MM-DD"),
+      method
+    );
+
+    setIsPaying(false);
+
+  if (result.success) {
+    messageApi.success("Purchase successful!");
+
+    if (method === "PayOS" && result.success) {
+      window.open(result.data);
+    }
+
+  } else {
+      messageApi.error(result.error || "Purchase failed. Please try again.");
     }
   };
 
   if (!packageId) return <Navigate to={"/dev/commerical-pack"} />;
   if (!commercialPackage) return;
+
   return (
     <div>
       {contextHolder}
@@ -98,9 +123,7 @@ const CommericalPackageDetailsPage = () => {
       <div className="grid grid-cols-12 gap-3 p-3">
         <div className="col-span-8">
           <div className="bg-zinc-800 rounded p-3">
-            <h2 className="text-center font-semibold">
-              Select registation date
-            </h2>
+            <h2 className="text-center font-semibold">Select registation date</h2>
             <hr className="my-3 border border-zinc-700" />
             <CommercialPackageCalendar
               duration={commercialPackage.duration}
@@ -108,9 +131,7 @@ const CommericalPackageDetailsPage = () => {
               selectedDate={selectedDate}
               onSelect={handleCalendarSelect}
             />
-            <p className="text-sm text-zinc-400 italic text-center">
-              Click on a calendar cell to select a start date
-            </p>
+            <p className="text-sm text-zinc-400 italic text-center">Click on a calendar cell to select a start date</p>
             {isConflict && (
               <Alert
                 message="Please choose a different date range"
@@ -127,17 +148,11 @@ const CommericalPackageDetailsPage = () => {
             <h2 className="text-center font-semibold">Package Information</h2>
             <p className="text-sm mt-2 font-semibold">Package</p>
             <p className="text-xl font-bold">{commercialPackage.name}</p>
-            <p className="text-sm text-zinc-400">
-              {commercialPackage.description}
-            </p>
+            <p className="text-sm text-zinc-400">{commercialPackage.description}</p>
             <p className="text-sm mt-2 font-semibold">Duration</p>
-            <p className="text-xl font-semibold text-orange-500">
-              {commercialPackage.duration} day(s)
-            </p>
+            <p className="text-xl font-semibold text-orange-500">{commercialPackage.duration} day(s)</p>
             <p className="text-sm mt-2 font-semibold">Price</p>
-            <p className="text-lg">
-              {formatCurrencyVND(commercialPackage.price)}
-            </p>
+            <p className="text-lg">{formatCurrencyVND(commercialPackage.price)}</p>
             <hr className="my-3 border border-zinc-700" />
             <h2 className="text-center font-semibold">Select game</h2>
             <div className="mt-2">
@@ -158,13 +173,11 @@ const CommericalPackageDetailsPage = () => {
                 </Link>
                 <p className="text-sm mt-2 font-semibold">Game</p>
                 <Link to={`/dev/game/${selectedGame.id}`}>
-                  <p className="">{selectedGame.name}</p>
+                  <p>{selectedGame.name}</p>
                 </Link>
                 <p className="text-sm mt-2 font-semibold">Short description</p>
                 <p className="text-sm text-zinc-400">
-                  {selectedGame.shortDescription.length == 0
-                    ? "No description"
-                    : selectedGame.shortDescription}
+                  {selectedGame.shortDescription.length === 0 ? "No description" : selectedGame.shortDescription}
                 </p>
               </div>
             )}
@@ -175,15 +188,10 @@ const CommericalPackageDetailsPage = () => {
             )}
             {selectedDate && (
               <div>
-                <p className="font-semibold mt-2">Selected date: </p>
+                <p className="font-semibold mt-2">Selected date:</p>
                 {formatDate(selectedDate.toDate())}
                 {commercialPackage.duration > 1 && (
-                  <>
-                    {" - " +
-                      formatDate(
-                        selectedDate.add(commercialPackage.duration).toDate()
-                      )}
-                  </>
+                  <>{" - " + formatDate(selectedDate.add(commercialPackage.duration, "day").toDate())}</>
                 )}
               </div>
             )}
@@ -192,12 +200,20 @@ const CommericalPackageDetailsPage = () => {
               <h2 className="text-center font-semibold mb-2">Payment</h2>
               {selectGameId && selectedDate ? (
                 <>
-                  <Button size="large" type="primary" style={{ width: "100%" }}>
+                  <Button
+                    size="large"
+                    type="primary"
+                    loading={isPaying}
+                    onClick={() => handlePurchase("PayOS")}
+                    style={{ width: "100%" }}
+                  >
                     Pay with <span className="font-bold">PayOS</span>
                   </Button>
                   <Button
                     size="large"
                     icon={<FaWallet />}
+                    loading={isPaying}
+                    onClick={() => handlePurchase("Wallet")}
                     style={{ width: "100%", marginTop: "0.5rem" }}
                   >
                     Pay with wallet

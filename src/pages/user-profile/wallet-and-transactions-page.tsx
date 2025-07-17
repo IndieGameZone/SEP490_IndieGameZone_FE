@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import TransactionHistory from "./transactions-history/transactions-history";
+import TransactionHistory from "./transactions-history/purchase-transaction.tsx/transactions-history";
 import UserWallet from "./wallet/user-wallet";
 import Cookies from "js-cookie";
 import { message } from "antd";
+import TransactionHistoryTab from "./transactions-history/transaction-history-tab";
 
 const WalletAndTransactionsPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -26,7 +27,7 @@ const WalletAndTransactionsPage = () => {
     <div>
       {contextHolder}
       <UserWallet />
-      <TransactionHistory />
+      <TransactionHistoryTab />
     </div>
   );
 };
