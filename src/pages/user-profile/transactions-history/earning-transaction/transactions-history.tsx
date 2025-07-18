@@ -44,6 +44,7 @@ const EarningTransactionHistory = () => {
           `${range[0]}-${range[1]} of ${total} transactions`,
       }}
       scroll={{ x: "max-content" }}
+      bordered
     />
   );
 };

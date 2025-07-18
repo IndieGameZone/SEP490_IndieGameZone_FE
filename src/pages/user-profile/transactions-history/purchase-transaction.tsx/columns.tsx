@@ -106,6 +106,7 @@ export const columns: TableProps<Transaction>["columns"] = [
     title: "Game Price",
     dataIndex: "gamePrice",
     key: "gamePrice",
+    width: 150,
     render: (value: number, record: Transaction) => {
       const type = record.type;
       const isPurchase = type === "PurchaseGame";
@@ -132,6 +133,7 @@ export const columns: TableProps<Transaction>["columns"] = [
     title: "Donation",
     dataIndex: "donation",
     key: "donation",
+    width: 150,
     render: (value: number, record: Transaction) => {
       const type = record.type;
       const isPurchase = type === "PurchaseGame";
