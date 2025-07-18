@@ -73,9 +73,9 @@ export const getAllBanHistories = async () => {
   }
 };
 
-export const getBanHistoryById = async (id: string) => {
+export const getBanHistoryById = async (userId: string) => {
   try {
-    const { data } = await axiosClient.get(`/api/ban-histories/${id}`);
+    const { data } = await axiosClient.get(`/api/ban-histories/${userId}`);
     return { error: null, data, success: true };
   } catch (error) {
     return handleApiError(error);
