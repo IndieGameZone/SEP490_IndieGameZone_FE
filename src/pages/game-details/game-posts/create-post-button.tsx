@@ -19,6 +19,7 @@ import { uploadFile } from "@/lib/api/file-api";
 import { createPost } from "@/lib/api/post-game-api";
 import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
+import { useRerender } from "@/hooks/use-rerender";
 
 const { Dragger } = Upload;
 
@@ -41,6 +42,7 @@ const CreatePostButton = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { rerender } = useRerender();
   const { profile } = useAuthStore();
   const { game } = useGameStore();
   const { tags } = useTagStore();
@@ -77,6 +79,7 @@ const CreatePostButton = () => {
       setTimeout(() => {
         form.resetFields();
         handleCancel();
+        rerender();
       }, 1000);
     }
     setIsSubmitting(false);

@@ -1,27 +1,49 @@
 import { Button } from "antd";
 import { useState, useRef, useEffect, ReactNode } from "react";
 
+type ExpandableWrapperProps = {
+  children: ReactNode;
+  maxHeight?: number;
+  variant?: "button" | "text";
+  expanded?: boolean; // ← allow external control
+  onToggle?: (expanded: boolean) => void; // ← external toggle handler
+};
+
 const ExpandableWrapper = ({
   children,
   maxHeight = 200,
-}: {
-  children: ReactNode;
-  maxHeight?: number;
-}) => {
-  const contentRef = useRef<any>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
+  variant = "button",
+  expanded,
+  onToggle,
+}: ExpandableWrapperProps) => {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [internalExpanded, setInternalExpanded] = useState(false);
+  const isControlled = expanded !== undefined;
+  const isExpanded = isControlled ? expanded : internalExpanded;
   const [isOverflowing, setIsOverflowing] = useState(false);
 
   useEffect(() => {
-    if (contentRef.current.scrollHeight > maxHeight) {
-      setIsOverflowing(true);
+    if (contentRef.current) {
+      setIsOverflowing(contentRef.current.scrollHeight > maxHeight);
     }
   }, [children, maxHeight]);
+
+  const toggleExpanded = () => {
+    const newValue = !isExpanded;
+
+    if (isControlled) {
+      onToggle?.(newValue); // call external toggle handler
+    } else {
+      setInternalExpanded(newValue);
+      onToggle?.(newValue); // still notify external listener if provided
+    }
+  };
 
   return (
     <div>
       <div
         ref={contentRef}
+        aria-expanded={isExpanded}
         style={{
           maxHeight: isExpanded ? "none" : `${maxHeight}px`,
           overflow: "hidden",
@@ -32,10 +54,23 @@ const ExpandableWrapper = ({
       </div>
 
       {isOverflowing && (
-        <div className="text-center">
-          <Button onClick={() => setIsExpanded((prev) => !prev)} type="text" style={{fontWeight: "bold"}}>
-            --- {isExpanded ? "Show Less" : "Show More"} ---
-          </Button>
+        <div className="text-center mt-2">
+          {variant === "button" ? (
+            <Button
+              onClick={toggleExpanded}
+              type="text"
+              style={{ fontWeight: "bold" }}
+            >
+              --- {isExpanded ? "Show Less" : "Show More"} ---
+            </Button>
+          ) : (
+            <span
+              onClick={toggleExpanded}
+              className="cursor-pointer text-zinc-500 hover:underline"
+            >
+              {isExpanded ? "Show less" : "Show more"}
+            </span>
+          )}
         </div>
       )}
     </div>

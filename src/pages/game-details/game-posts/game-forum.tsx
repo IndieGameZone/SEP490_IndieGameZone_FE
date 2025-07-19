@@ -8,6 +8,8 @@ import useTagStore from "@/store/use-tag-store";
 import { useParams } from "react-router-dom";
 import { getGamePosts } from "@/lib/api/post-game-api";
 import Loader from "@/components/loader";
+import { useRerender } from "@/hooks/use-rerender";
+import { GamePost } from "@/types/post-game";
 
 const tabs = ["Hot & Trending", "Most popular", "Best", "Latest"];
 
@@ -17,9 +19,10 @@ const GameForum = () => {
   const { fetchTags } = useTagStore();
   const [selectedSortOption, setSelectedSortOption] = useState(tabs[0]);
   const [messageApi, contextHolder] = message.useMessage();
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<GamePost[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const { gameId } = useParams();
+  const { renderKey } = useRerender();
 
   const handleSelect = (e: any) => {
     setSelectedSortOption(e.key);
@@ -42,7 +45,7 @@ const GameForum = () => {
         setIsFetching(false);
       }
     })();
-  }, [gameId]);
+  }, [gameId, renderKey]);
 
   return (
     <div className="grid grid-cols-12 gap-3">
@@ -87,11 +90,11 @@ const GameForum = () => {
         {isFetching ? (
           <Loader />
         ) : (
-          <>
-            {posts.map((_, index: number) => {
-              return <PostCard key={`post-${index}`} />;
+          <div className="space-y-3">
+            {posts.map((post, index: number) => {
+              return <PostCard key={`post-${index}`} post={post} />;
             })}
-          </>
+          </div>
         )}
       </div>
     </div>

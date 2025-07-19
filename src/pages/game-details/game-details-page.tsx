@@ -194,7 +194,7 @@ const GameDetailsPage = () => {
               >
                 Follow
               </Button>
-              <Dropdown menu={{ items: devProfileItems }}>
+              <Dropdown menu={{ items: devProfileItems }} trigger={["click"]}>
                 <Button icon={<IoMdMore />}></Button>
               </Dropdown>
             </div>
