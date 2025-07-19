@@ -64,9 +64,9 @@ const PostCard = ({ post }: PostCardProps) => {
       <div className="bg-zinc-800 w-full p-3 rounded">
         <div className="flex justify-between items-center gap-3">
           <div className="flex items-center gap-3">
-            <Avatar src="https://cdn.lazi.vn/storage/uploads/users/avatar/1693142947_lazi_435254.jpg" />
+            <Avatar src={post.user.avatar} />
             <div>
-              <div className="font-semibold">Lorem ipsum</div>
+              <div className="font-semibold">{post.user.userName}</div>
               <div className="text-xs text-gray-400">2 days ago</div>
             </div>
           </div>
