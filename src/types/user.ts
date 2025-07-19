@@ -9,6 +9,7 @@ export type User = {
   lockoutEnabled: boolean;
   isActive: boolean;
   joinedDate: string;
+
   lastLogin: string;
   fullname?: string;
   avatar?: string;
@@ -22,4 +23,11 @@ export type User = {
   role: {
     name: string;
   };
+};
+export type UserBanHistory = {
+  id: string;
+  reason?: string;
+  banDate: string;
+  unbanDate?: string;
+  bannedByUser: User;
 };
