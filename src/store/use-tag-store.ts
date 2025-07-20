@@ -1,4 +1,4 @@
-import { getAllGameTags, getAllPostTags } from "@/lib/api/game-post-api";
+import { getAllGameTags, getAllPostTags } from "@/lib/api/tag-api";
 import { getAllTags } from "@/lib/api/tag-api";
 import { Tag } from "@/types/tag";
 import { create } from "zustand";

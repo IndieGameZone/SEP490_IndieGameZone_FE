@@ -1,8 +1,7 @@
-import { Button, Input, InputRef, Space, Table, TableColumnType, TableProps, Tag } from "antd";
+import { Button, Input, InputRef, Space, Table, TableColumnType, TableProps, Tabs } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteForever } from "react-icons/md";
-
 import { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
 import { FaSearch } from "react-icons/fa";
@@ -14,9 +13,18 @@ import EditReportReason from "./edit-report-reason";
 import DeleteReportReason from "./delete-report-reason";
 
 type DataIndex = keyof ReportReason;
+
 const ManageReportReason = () => {
   const searchInput = useRef<InputRef>(null);
-  const { loading, fetchReportReasons, reportReasons } = useReportReasonStore();
+  const {
+    loading,
+    gameReportReasons,
+    postReportReasons,
+    commentReportReasons,
+    fetchGameReportReasons,
+    fetchPostReportReasons,
+    fetchCommentReportReasons,
+  } = useReportReasonStore();
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -33,10 +41,16 @@ const ManageReportReason = () => {
     setSelectedReportReason(record);
     setDeleteModalOpen(true);
   };
-
   const handleRefresh = () => {
-    fetchReportReasons();
+    fetchGameReportReasons();
+    fetchPostReportReasons();
+    fetchCommentReportReasons();
   };
+  useEffect(() => {
+    fetchGameReportReasons();
+    fetchPostReportReasons();
+    fetchCommentReportReasons();
+  }, []);
 
   const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
     confirm();
@@ -84,14 +98,8 @@ const ManageReportReason = () => {
           >
             Filter
           </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
+          <Button type="link" size="small" onClick={close}>
+            Close
           </Button>
         </Space>
       </div>
@@ -121,18 +129,6 @@ const ManageReportReason = () => {
         text
       ),
   });
-  const getTagColor = (type: string) => {
-    switch (type) {
-      case "Post":
-        return "blue";
-      case "User":
-        return "green";
-      case "Game":
-        return "volcano";
-      default:
-        return "default";
-    }
-  };
 
   const columns: TableProps<ReportReason>["columns"] = [
     {
@@ -141,19 +137,6 @@ const ManageReportReason = () => {
       key: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
       ...getColumnSearchProps("name"),
-      render: (text) => {
-        const match = text.match(/^\[(.*?)\]\s*-\s*(.*)$/);
-        if (match) {
-          const type = match[1]; 
-          const reason = match[2]; 
-          return (
-            <>
-              <Tag color={getTagColor(type)}>[{type}]</Tag> {reason}
-            </>
-          );
-        }
-        return text;
-      },
     },
     {
       title: "Action",
@@ -172,10 +155,35 @@ const ManageReportReason = () => {
     },
   ];
 
-  useEffect(() => {
-    fetchReportReasons();
-  }, []);
-
+  const items = [
+    {
+      key: "Game",
+      label: "Game Reports",
+      children: (
+        <div>
+          <Table<ReportReason> columns={columns} dataSource={gameReportReasons} loading={loading} bordered />
+        </div>
+      ),
+    },
+    {
+      key: "Post",
+      label: "Post Reports",
+      children: (
+        <div>
+          <Table<ReportReason> columns={columns} dataSource={postReportReasons} loading={loading} bordered />
+        </div>
+      ),
+    },
+    {
+      key: "Comment",
+      label: "Comment Reports",
+      children: (
+        <div>
+          <Table<ReportReason> columns={columns} dataSource={commentReportReasons} loading={loading} bordered />
+        </div>
+      ),
+    },
+  ];
   return (
     <div className="px-5">
       <div className="mb-3 flex justify-between py-3">
@@ -184,9 +192,7 @@ const ManageReportReason = () => {
           Add New Report Reason
         </Button>
       </div>
-      <div className="">
-        <Table<ReportReason> columns={columns} dataSource={reportReasons} loading={loading} bordered />
-      </div>
+      <Tabs defaultActiveKey="game" items={items} />
 
       <AddReportReason open={addModalOpen} onClose={() => setAddModalOpen(false)} onSuccess={handleRefresh} />
 

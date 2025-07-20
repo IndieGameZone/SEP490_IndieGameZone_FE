@@ -1,7 +1,6 @@
 import { createReportReason } from "@/lib/api/report-api";
-import { Form, Input, message, Modal, Select, Tag } from "antd";
+import { Form, Input, message, Modal, Select } from "antd";
 import { useState } from "react";
-
 interface AddReportReasonModalProps {
   open: boolean;
   onClose: () => void;
@@ -9,15 +8,9 @@ interface AddReportReasonModalProps {
 }
 
 interface AddReportReasonForm {
-  types: ("Post" | "User" | "Game")[];
   name: string;
+  type: string;
 }
-
-const typeColorMap: Record<string, string> = {
-  Post: "blue",
-  User: "green",
-  Game: "volcano",
-};
 
 const AddReportReason = ({ open, onClose, onSuccess }: AddReportReasonModalProps) => {
   const [form] = Form.useForm<AddReportReasonForm>();
@@ -27,24 +20,21 @@ const AddReportReason = ({ open, onClose, onSuccess }: AddReportReasonModalProps
   const handleSubmit = async (values: AddReportReasonForm) => {
     try {
       setLoading(true);
+      const result = await createReportReason({
+        name: values.name.trim(),
+        type: values.type,
+      });
 
-      const reasons = values.types.map(
-        (type) => `[${type}] - ${values.name.trim()}`
-      );
-
-      for (const name of reasons) {
-        const result = await createReportReason({ name });
-        if (!result.success) {
-          throw new Error(result.error || "One or more reasons failed");
-        }
+      if (!result.success) {
+        throw new Error(result.error || "Failed to add report reason");
       }
 
-      messageApi.success("Report Reasons added successfully!");
+      messageApi.success("Report Reason added successfully!");
       form.resetFields();
       onClose();
       onSuccess();
     } catch (error) {
-      messageApi.error("Failed to add Report Reasons");
+      messageApi.error("Failed to add Report Reason");
     } finally {
       setLoading(false);
     }
@@ -59,49 +49,38 @@ const AddReportReason = ({ open, onClose, onSuccess }: AddReportReasonModalProps
     <>
       {contextHolder}
       <Modal
-        title="Add New Report Reason"
+        title={`Add New  Report Reason`}
         open={open}
         onCancel={handleCancel}
         onOk={() => form.submit()}
         confirmLoading={loading}
         destroyOnClose
       >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          autoComplete="off"
-        >
-          <Form.Item
-            label="Type(s)"
-            name="types"
-            rules={[{ required: true, message: "Please select at least one type!" }]}
-          >
-            <Select
-              mode="multiple"
-              placeholder="Select type(s)"
-              tagRender={({ label }) => (
-                <Tag color={typeColorMap[label as string]}>{label}</Tag>
-              )}
-            >
-              <Select.Option value="Post">Post</Select.Option>
-              <Select.Option value="User">User</Select.Option>
-              <Select.Option value="Game">Game</Select.Option>
-            </Select>
-          </Form.Item>
-
+        <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
           <Form.Item
             label="Report Reason"
             name="name"
             rules={[
               { required: true, message: "Please input Report Reason!" },
-              {
-                min: 2,
-                message: "Report Reason must be at least 2 characters!",
-              },
+              { min: 2, message: "Report Reason must be at least 2 characters!" },
             ]}
           >
             <Input placeholder="Enter reason (e.g., Harassment)" />
+          </Form.Item>
+          <Form.Item
+            label="Type"
+            name="type"
+            initialValue="Game"
+            rules={[{ required: true, message: "Please select type!" }]}
+          >
+            <Select
+              placeholder="Select report type"
+              options={[
+                { value: "Game", label: "Game Report" },
+                { value: "Post", label: "Post Report" },
+                { value: "User", label: "User Report" },
+              ]}
+            />
           </Form.Item>
         </Form>
       </Modal>
