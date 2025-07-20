@@ -26,7 +26,26 @@ export const createPost = async (userId: string, gameId: string, postData: PostD
     return handleApiError(error);
   }
 };
-
+export interface PostCommentData {
+  Content: string;
+}
+export const createPostComment = async (postId: string, userId: string, postCommentData: PostCommentData) => {
+  try {
+    const formData = toFormData(postCommentData);
+    const { data } = await axiosClient.post(`/api/posts/${postId}/users/${userId}/post-comments`, formData);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+export const createReactionPost = async (userId: string, postId: string) => {
+  try {
+    const { data } = await axiosClient.post(`/api/users/${userId}/posts/${postId}/post-reactions`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 export const getGamePosts = async (gameId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/games/${gameId}/posts`);
@@ -35,4 +54,11 @@ export const getGamePosts = async (gameId: string) => {
     return handleApiError(error);
   }
 };
-
+export const getReactionPost= async (userId: string, postId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/users/${userId}/posts/${postId}/post-reactions`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

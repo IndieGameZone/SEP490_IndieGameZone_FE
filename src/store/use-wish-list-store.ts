@@ -69,7 +69,7 @@ const useWishlistStore = create<WishlistState>((set) => ({
       const response = await addWishList({ userId, gameId });
       if (response.success) {
         set((state) => ({
-          gamedIds: [...state.gamedIds, gameId], // Sửa từ wishlists thành gamedIds
+          gamedIds: [...state.gamedIds, gameId],
           loading: false,
         }));
         return true;
