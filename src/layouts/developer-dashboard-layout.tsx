@@ -1,4 +1,4 @@
-import MaxWidthWrapper from "@/components/max-width-wrapper";
+import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { Menu, MenuProps } from "antd";
 import { ReactNode } from "react";
 import { FaChartLine, FaGamepad, FaTags } from "react-icons/fa";

@@ -109,6 +109,7 @@ export const unBanUserById = async (userid: string) => {
     return handleApiError(error);
   }
 };
+
 export const followDeveloper = async (playerId: string, developerId: string) => {
   try {
     const { data } = await axiosClient.post(`/api/players/${playerId}/developers/${developerId}/user-follows`);
@@ -130,6 +131,15 @@ export const getAboutUsStats = async () => {
       },
       success: true,
     };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const ping = async () => {
+  try {
+    const { data } = await axiosClient.post(`/api/users/ping`);
+    return { error: null, data, success: true };
   } catch (error) {
     return handleApiError(error);
   }

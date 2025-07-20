@@ -5,7 +5,7 @@ import { GameFile } from "@/types/game";
 import { Button } from "antd";
 import { useState } from "react";
 import { FaDownload } from "react-icons/fa";
-import { useGlobalMessage } from "./message-provider";
+import { useGlobalMessage } from "../message-provider";
 
 const DownloadFileButton = ({ file }: { file: GameFile }) => {
   const { profile } = useAuthStore();

@@ -1,4 +1,4 @@
-import ExpandableWrapper from "@/components/expandable-wrapper";
+import ExpandableWrapper from "@/components/wrappers/expandable-wrapper";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import { formatCurrencyVND } from "@/lib/currency";
 import { formatDate, formatDateTime, formatDuration } from "@/lib/date-n-time";
@@ -23,9 +23,9 @@ import {
 } from "@/components/status-tags";
 import GameNotFound from "@/pages/errors/game-not-found";
 import { CiWarning } from "react-icons/ci";
-import ViewCensorLogButton from "../../../components/view-censor-log-button";
+import ViewCensorLogButton from "../../../components/buttons/view-censor-log-button";
 import { GameCensorLog } from "@/types/game";
-import ViewAllVersionButton from "@/components/view-all-version-button";
+import ViewAllVersionButton from "@/components/buttons/view-all-version-button";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 
 const GameInfoTab = () => {

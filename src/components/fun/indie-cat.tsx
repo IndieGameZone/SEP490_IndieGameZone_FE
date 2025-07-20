@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import CatBackRightLeg from "../assets/indiecat/cat_back_right_leg.svg";
-import CatBody from "../assets/indiecat/cat_body.svg";
-import CatEyesNormal from "../assets/indiecat/cat_eyes_normal.svg";
-import CatEyesPanic from "../assets/indiecat/cat_eyes_panic.svg";
-import CatEyesWink from "../assets/indiecat/cat_eyes_wink.svg";
-import CatFrontLeftLeg from "../assets/indiecat/cat_front_left_leg.svg";
-import CatFrontRightLeg from "../assets/indiecat/cat_front_right_leg.svg";
-import CatLeftEar from "../assets/indiecat/cat_left_ear.svg";
-import CatMouthNormal from "../assets/indiecat/cat_mouth_normal.svg";
-import CatMouthWide from "../assets/indiecat/cat_mouth_wide.svg";
-import CatRightEar from "../assets/indiecat/cat_right_ear.svg";
-import CatTailDown from "../assets/indiecat/cat_tail_down.svg";
-import CatTailUp from "../assets/indiecat/cat_tail_up.svg";
+import CatBackRightLeg from "@/assets/indiecat/cat_back_right_leg.svg";
+import CatBody from "@/assets/indiecat/cat_body.svg";
+import CatEyesNormal from "@/assets/indiecat/cat_eyes_normal.svg";
+import CatEyesPanic from "@/assets/indiecat/cat_eyes_panic.svg";
+import CatEyesWink from "@/assets/indiecat/cat_eyes_wink.svg";
+import CatFrontLeftLeg from "@/assets/indiecat/cat_front_left_leg.svg";
+import CatFrontRightLeg from "@/assets/indiecat/cat_front_right_leg.svg";
+import CatLeftEar from "@/assets/indiecat/cat_left_ear.svg";
+import CatMouthNormal from "@/assets/indiecat/cat_mouth_normal.svg";
+import CatMouthWide from "@/assets/indiecat/cat_mouth_wide.svg";
+import CatRightEar from "@/assets/indiecat/cat_right_ear.svg";
+import CatTailDown from "@/assets/indiecat/cat_tail_down.svg";
+import CatTailUp from "@/assets/indiecat/cat_tail_up.svg";
 
 type Emotion = "normal" | "winking" | "panic";
 

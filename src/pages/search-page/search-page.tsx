@@ -1,6 +1,6 @@
 import { Input, message } from "antd";
 import { useSearchParams } from "react-router-dom";
-import MaxWidthWrapper from "@/components/max-width-wrapper";
+import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import GameCard from "./game-card";
 import PopularGenresSection from "./popular-genres-section";
 import notFoundIcon from "@/assets/not-found-icon.svg";
@@ -13,7 +13,7 @@ import { parseNumber, parseStringArray } from "@/types/parsers";
 import { LuRefreshCcw } from "react-icons/lu";
 import { Game } from "@/types/game";
 import InfiniteScroll from "react-infinite-scroll-component";
-import ScrollToTopButton from "@/components/scroll-to-top-button";
+import ScrollToTopButton from "@/components/buttons/scroll-to-top-button";
 import useWishlistStore from "@/store/use-wish-list-store";
 import useAuthStore from "@/store/use-auth-store";
 import useIsMobile from "@/hooks/use-is-mobile";
@@ -170,6 +170,7 @@ const SearchPage = () => {
                 No more games
               </p>
             }
+            style={{ overflow: "visible" }}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {games.length > 0 &&

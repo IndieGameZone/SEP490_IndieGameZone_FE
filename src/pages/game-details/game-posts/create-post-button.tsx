@@ -7,7 +7,7 @@ import { useGlobalMessage } from "@/components/message-provider";
 import { HiMiniInboxArrowDown } from "react-icons/hi2";
 import useTagStore from "@/store/use-tag-store";
 import { uploadFile } from "@/lib/api/file-api";
-import { createPost } from "@/lib/api/post-game-api";
+import { createPost } from "@/lib/api/game-post-api";
 import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import { useRerender } from "@/hooks/use-rerender";

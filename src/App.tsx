@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import AuthLayout from "./layouts/auth-layout";
 import { Suspense, lazy, useEffect, useState } from "react";
 import useAuthStore from "./store/use-auth-store";
 import RequireAuth from "./components/require-auth";
@@ -7,6 +6,8 @@ import PageTransition from "./components/page-transition";
 import HomeContainer from "./containers/home-container";
 import { MdOutlineWifiOff } from "react-icons/md";
 import TransformDebugPage from "./pages/debug/transform-debug-page";
+import AppTheme from "./components/app-theme";
+import { ping } from "./lib/api/user-api";
 
 const LoginPage = lazy(() => import("./pages/log-in-page"));
 const SignUpPage = lazy(() => import("./pages/sign-up-page"));
@@ -20,7 +21,7 @@ const DeveloperDashboardContainer = lazy(
 );
 
 function App() {
-  const { fetchProfile, renderKey } = useAuthStore();
+  const { fetchProfile, renderKey, isLoggedIn } = useAuthStore();
   const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
@@ -48,6 +49,16 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isLoggedIn) {
+        ping();
+      }
+    }, 1000 * 60 * 3);
+
+    return () => clearInterval(interval);
+  }, [isLoggedIn]);
+
   console.log("rendered");
   return (
     <div className="relative">
@@ -62,25 +73,25 @@ function App() {
           <Route
             path="log-in"
             element={
-              <AuthLayout>
+              <AppTheme>
                 <LoginPage />
-              </AuthLayout>
+              </AppTheme>
             }
           />
           <Route
             path="sign-up"
             element={
-              <AuthLayout>
+              <AppTheme>
                 <SignUpPage />
-              </AuthLayout>
+              </AppTheme>
             }
           />
           <Route
             path="/admin/log-in"
             element={
-              <AuthLayout>
+              <AppTheme>
                 <AdminLoginPage />
-              </AuthLayout>
+              </AppTheme>
             }
           />
           <Route

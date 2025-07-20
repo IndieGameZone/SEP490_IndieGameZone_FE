@@ -3,7 +3,7 @@ import { Button, Modal } from "antd";
 import { useState } from "react";
 import { FaFileCircleQuestion } from "react-icons/fa6";
 import usePlatformStore from "@/store/use-platform-store";
-import FileCard from "./file-card";
+import FileCard from "../file-card";
 
 const ViewAllVersionButton = ({
   darkTheme = true,

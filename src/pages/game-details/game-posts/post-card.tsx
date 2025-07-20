@@ -1,6 +1,6 @@
-import ExpandableWrapper from "@/components/expandable-wrapper";
+import ExpandableWrapper from "@/components/wrappers/expandable-wrapper";
 import TiptapView from "@/components/tiptap/tiptap-view";
-import { GamePost } from "@/types/post-game";
+import { GamePost } from "@/types/game-post";
 import { Avatar, Button, Dropdown, MenuProps, Tag } from "antd";
 import { useMemo, useState } from "react";
 import {
@@ -77,7 +77,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
         <div className="mt-2">
           <h4 className="font-bold text-xl">{post.title}</h4>
-          
+
           {post.content.trim() && (
             <ExpandableWrapper>
               <TiptapView value={post.content} />

@@ -25,7 +25,7 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/api/config/firebase";
 import dayjs from "dayjs";
 import Cookies from "js-cookie";
-import CatCaptcha from "../components/cat-captcha";
+import CatCaptcha from "../components/fun/cat-captcha";
 
 type RoleEnum = "Player" | "Developer";
 

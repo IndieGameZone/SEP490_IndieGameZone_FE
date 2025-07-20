@@ -1,5 +1,5 @@
-import FloatingContainer from "@/components/floating-container";
-import IndieCat from "@/components/indie-cat";
+import FloatingContainer from "@/components/fun/floating-container";
+import IndieCat from "@/components/fun/indie-cat";
 import { Button } from "antd";
 import blackhole from "@/assets/blackhole.webp";
 import "@/styles/twinkling-stars.scss";

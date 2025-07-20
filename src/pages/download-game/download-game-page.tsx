@@ -4,7 +4,7 @@ import { Button } from "antd";
 import { FaArrowLeft } from "react-icons/fa";
 
 import Loader from "@/components/loader";
-import MaxWidthWrapper from "@/components/max-width-wrapper";
+import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import DownloadCard from "./download-card";
 

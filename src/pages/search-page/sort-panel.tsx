@@ -1,4 +1,4 @@
-import MaxWidthWrapper from "@/components/max-width-wrapper";
+import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { Button, Dropdown } from "antd";
 import { useState } from "react";
 import { MdOutlineSort } from "react-icons/md";

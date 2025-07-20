@@ -1,4 +1,4 @@
-import ExpandableWrapper from "@/components/expandable-wrapper";
+import ExpandableWrapper from "@/components/wrappers/expandable-wrapper";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 import FileCard from "@/components/file-card";
 import Loader from "@/components/loader";
@@ -8,8 +8,8 @@ import {
   VisibilityStatus,
 } from "@/components/status-tags";
 import TiptapView from "@/components/tiptap/tiptap-view";
-import ViewAllVersionButton from "@/components/view-all-version-button";
-import ViewCensorLogButton from "@/components/view-censor-log-button";
+import ViewAllVersionButton from "@/components/buttons/view-all-version-button";
+import ViewCensorLogButton from "@/components/buttons/view-censor-log-button";
 import { updateGameActivation } from "@/lib/api/game-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { formatDate, formatDateTime, formatDuration } from "@/lib/date-n-time";

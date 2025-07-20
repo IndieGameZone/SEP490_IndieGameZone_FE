@@ -35,7 +35,7 @@ import {
 } from "@ant-design/icons";
 import { User } from "@/types/user";
 import { FaBan } from "react-icons/fa";
-import ViewHistoryBanButton from "@/components/view-history-ban-button";
+import ViewHistoryBanButton from "@/components/buttons/view-history-ban-button";
 import useUserStore from "@/store/use-user-store";
 
 const { Title, Text, Paragraph } = Typography;

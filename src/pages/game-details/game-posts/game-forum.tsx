@@ -6,14 +6,18 @@ import { useEffect, useState } from "react";
 import CreatePostButton from "./create-post-button";
 import useTagStore from "@/store/use-tag-store";
 import { useParams } from "react-router-dom";
-import { getGamePosts } from "@/lib/api/post-game-api";
-import Loader from "@/components/loader";
+import { getGamePosts } from "@/lib/api/game-post-api";
 import { useRerender } from "@/hooks/use-rerender";
-import { GamePost } from "@/types/post-game";
+import { GamePost } from "@/types/game-post";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { LuRefreshCcw } from "react-icons/lu";
+import notFoundIcon from "@/assets/not-found-icon.svg";
 
 const tabs = ["Hot & Trending", "Most popular", "Best", "Latest"];
 
 const items = tabs.map((x) => ({ key: x, label: x }));
+
+const PAGE_SIZE = 2;
 
 const GameForum = () => {
   const { fetchTags } = useTagStore();
@@ -23,9 +27,42 @@ const GameForum = () => {
   const [isFetching, setIsFetching] = useState(false);
   const { gameId } = useParams();
   const { renderKey } = useRerender();
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
   const handleSelect = (e: any) => {
     setSelectedSortOption(e.key);
+  };
+
+  const fetchPosts = async (currentPage: number) => {
+    if (gameId) {
+      setIsFetching(true);
+      const result = await getGamePosts(gameId, {
+        PageNumber: currentPage,
+        PageSize: PAGE_SIZE,
+      });
+      if (result.error) {
+        messageApi.error("Failed to get posts! Please try again.");
+      } else {
+        const newPosts: GamePost[] = result.data.posts;
+        const paginationHeader = result.data.headers["x-pagination"];
+        const pagination = paginationHeader
+          ? JSON.parse(paginationHeader)
+          : null;
+        if (currentPage == 1) {
+          setPosts(newPosts);
+        } else {
+          setPosts((prev) => [...prev, ...newPosts]);
+        }
+        setHasMore(pagination?.HasNext ?? false);
+        setPage(currentPage + 1);
+      }
+      setIsFetching(false);
+    }
+  };
+
+  const fetchMore = () => {
+    fetchPosts(page);
   };
 
   useEffect(() => {
@@ -33,18 +70,7 @@ const GameForum = () => {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      if (gameId) {
-        setIsFetching(true);
-        const result = await getGamePosts(gameId);
-        if (result.error) {
-          messageApi.error("Failed to get posts! Please try again.");
-        } else {
-          setPosts(result.data);
-        }
-        setIsFetching(false);
-      }
-    })();
+    fetchPosts(1);
   }, [gameId, renderKey]);
 
   return (
@@ -87,15 +113,36 @@ const GameForum = () => {
         </div>
       </div>
       <div className="col-span-8">
-        {isFetching ? (
-          <Loader />
-        ) : (
+        <InfiniteScroll
+          dataLength={posts.length}
+          next={fetchMore}
+          hasMore={hasMore}
+          loader={
+            <div className="col-span-full flex justify-center py-10">
+              <LuRefreshCcw className="animate-spin-reverse size-16" />
+            </div>
+          }
+          endMessage={
+            <p className="text-center my-4 text-sm text-zinc-500">
+              No more posts
+            </p>
+          }
+        >
           <div className="space-y-3">
             {posts.map((post, index: number) => {
               return <PostCard key={`post-${index}`} post={post} />;
             })}
+
+            {!isFetching && posts.length === 0 && (
+              <div className="col-span-full flex flex-col items-center py-10 gap-5">
+                <img src={notFoundIcon} />
+                <div className="text-zinc-500 font-semibold text-lg">
+                  No posts found
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </InfiniteScroll>
       </div>
     </div>
   );

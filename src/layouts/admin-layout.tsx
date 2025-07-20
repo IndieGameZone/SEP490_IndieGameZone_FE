@@ -1,5 +1,5 @@
-import { Avatar, Button, ConfigProvider, Dropdown, theme } from "antd";
-import React, { ReactNode, useEffect, useState } from "react";
+import { Avatar, Button, Dropdown, theme } from "antd";
+import React, { ReactNode, useState } from "react";
 import type { MenuProps } from "antd";
 import { Layout, Menu } from "antd";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
@@ -16,6 +16,7 @@ import { CgGames } from "react-icons/cg";
 import styles from "@/styles/admin-layout.module.css";
 import { GoReport } from "react-icons/go";
 import { GrTransaction } from "react-icons/gr";
+import AppTheme from "@/components/app-theme";
 
 const { Footer, Sider } = Layout;
 
@@ -148,26 +149,25 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  useEffect(() => {
-    document.body.classList.remove("dark");
-  }, []);
-
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme.defaultAlgorithm,
-        token: {
-          colorPrimary: "#FF6600",
-          borderRadius: 2,
-        },
-      }}
-    >
+    <AppTheme theme="light">
       <Layout hasSider className={styles.lightTable}>
-        <Sider trigger={null} collapsible collapsed={collapsed} style={siderStyle} width={256}>
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          style={siderStyle}
+          width={256}
+        >
           <div className="p-3 my-3">
             <img src={logo} alt="indiegamezone logo" className="w-40" />
           </div>
-          <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} items={items} />
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            items={items}
+          />
         </Sider>
         <Layout>
           <div
@@ -194,10 +194,12 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             </div>
           </div>
           <div style={{ margin: "24px 16px 0" }}>{children}</div>
-          <Footer style={{ textAlign: "center" }}>Ant Design ©{new Date().getFullYear()} Created by Ant UED</Footer>
+          <Footer style={{ textAlign: "center" }}>
+            Ant Design ©{new Date().getFullYear()} Created by Ant UED
+          </Footer>
         </Layout>
       </Layout>
-    </ConfigProvider>
+    </AppTheme>
   );
 };
 

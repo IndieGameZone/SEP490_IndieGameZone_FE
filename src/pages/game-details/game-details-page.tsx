@@ -26,7 +26,7 @@ import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import MaxWidthWrapper from "@/components/max-width-wrapper";
+import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { IoIosChatboxes, IoMdMore } from "react-icons/io";
 import GameOverView from "./game-overview";
 import GameReviews from "./game-reviews";
@@ -36,7 +36,7 @@ import useAuthStore from "@/store/use-auth-store";
 import GameNotFound from "@/pages/errors/game-not-found";
 import usePlatformStore from "@/store/use-platform-store";
 import useWishlistStore from "@/store/use-wish-list-store";
-import AddToWishlistButton from "@/components/add-to-wishlist-button";
+import AddToWishlistButton from "@/components/buttons/add-to-wishlist-button";
 import { formatDuration } from "@/lib/date-n-time";
 
 const GameDetailsPage = () => {

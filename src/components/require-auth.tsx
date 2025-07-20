@@ -1,8 +1,8 @@
 import useAuthStore from "@/store/use-auth-store";
 import Loader from "./loader";
 import { Navigate, Outlet } from "react-router-dom";
-import { ConfigProvider, theme } from "antd";
 import UnauthorizedPage from "@/pages/errors/unauthorized-page";
+import AppTheme from "./app-theme";
 
 const RequireAuth = ({
   allowedRoles = [],
@@ -15,38 +15,23 @@ const RequireAuth = ({
   const token = localStorage.getItem("accessToken");
   if (loading)
     return (
-      <ConfigProvider
-        theme={{
-          algorithm: theme.defaultAlgorithm,
-          token: {
-            colorPrimary: "#FF6600",
-            borderRadius: 2,
-          },
-        }}
-      >
+      <AppTheme theme="light">
         <Loader />
-      </ConfigProvider>
+      </AppTheme>
     );
+
   if (!token) {
     return <Navigate to={returnUrl} replace />;
   }
+
   if (profile) {
     if (allowedRoles.includes(profile.role.name)) {
       return <Outlet />;
     } else {
       return (
-        <ConfigProvider
-          theme={{
-            algorithm: theme.defaultAlgorithm,
-            token: {
-              colorPrimary: "#FF6600",
-              borderRadius: 2,
-            },
-          }}
-        >
-          {" "}
+        <AppTheme theme="light">
           <UnauthorizedPage />
-        </ConfigProvider>
+        </AppTheme>
       );
     }
   }

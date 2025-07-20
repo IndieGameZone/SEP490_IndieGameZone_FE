@@ -1,4 +1,4 @@
-import MaxWidthWrapper from "@/components/max-width-wrapper";
+import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { formatCurrencyVND } from "@/lib/currency";
 import useLanguageStore from "@/store/use-language-store";
 import useTagStore from "@/store/use-tag-store";
