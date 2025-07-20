@@ -7,6 +7,7 @@ import HomeContainer from "./containers/home-container";
 import { MdOutlineWifiOff } from "react-icons/md";
 import TransformDebugPage from "./pages/debug/transform-debug-page";
 import AppTheme from "./components/app-theme";
+import { ping } from "./lib/api/user-api";
 
 const LoginPage = lazy(() => import("./pages/log-in-page"));
 const SignUpPage = lazy(() => import("./pages/sign-up-page"));
@@ -20,7 +21,7 @@ const DeveloperDashboardContainer = lazy(
 );
 
 function App() {
-  const { fetchProfile, renderKey } = useAuthStore();
+  const { fetchProfile, renderKey, isLoggedIn } = useAuthStore();
   const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
@@ -47,6 +48,16 @@ function App() {
       window.removeEventListener("online", handleOnline);
     };
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isLoggedIn) {
+        ping();
+      }
+    }, 1000 * 60 * 3);
+
+    return () => clearInterval(interval);
+  }, [isLoggedIn]);
 
   console.log("rendered");
   return (

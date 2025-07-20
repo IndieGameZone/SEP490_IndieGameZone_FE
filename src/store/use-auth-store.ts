@@ -7,6 +7,7 @@ interface AuthState {
     loading: boolean;
     error: string | null;
     isRefreshingToken: boolean;
+    isLoggedIn: boolean;
     setIsRefreshingToken: (refreshing: boolean) => void;
     fetchProfile: () => Promise<void>;
     setProfile: (user?: User) => void;
@@ -20,6 +21,7 @@ const useAuthStore = create<AuthState>((set) => ({
     loading: false,
     error: null,
     renderKey: 0,
+    isLoggedIn: false,
     isRefreshingToken: false,
     setIsRefreshingToken: (refreshing) => set({ isRefreshingToken: refreshing }),
     rerender: () => {
@@ -30,7 +32,7 @@ const useAuthStore = create<AuthState>((set) => ({
         try {
             var response = await getUserInfo();
             if (!response.error) {
-                set({ profile: response.data, loading: false });
+                set({ profile: response.data, loading: false, isLoggedIn: true });
             } else {
                 set({ loading: false, error: response.error });
             }
@@ -38,12 +40,14 @@ const useAuthStore = create<AuthState>((set) => ({
             set({ loading: false, error: error.message });
         }
     },
+    
     setProfile(user) {
         set({ profile: user })
     },
+
     logout: () => {
         localStorage.clear();
-        set({ profile: undefined });
+        set({ profile: undefined, isLoggedIn: false });
     }
 }));
 
