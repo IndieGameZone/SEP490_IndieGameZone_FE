@@ -28,7 +28,7 @@
   }
 }
 
-body.dark {
+.dark {
   background-color: #09090b;
   color: #e0e0e0;
   font-family: Arial, sans-serif;
@@ -473,7 +473,6 @@ select:-webkit-autofill:focus {
 }
 
 @media (max-width: 768px) {
-
   .slick-prev,
   .slick-next {
     display: none !important;
