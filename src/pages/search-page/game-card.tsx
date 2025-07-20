@@ -2,15 +2,28 @@ import { useNavigate } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 import { formatCurrencyVND } from "@/lib/currency";
-import { Tag } from "antd";
+import { Badge, Tag } from "antd";
 import { Game } from "@/types/game";
 import AddToWishlistButton from "@/components/add-to-wishlist-button";
 
 const GameCard = ({ game }: { game: Game }) => {
   const navigate = useNavigate();
+
+  const {
+    coverImage,
+    name,
+    category,
+    price,
+    numberOfReviews,
+    averageRating,
+    shortDescription,
+    gameTags,
+    hasCommercial,
+  } = game;
+
   const handleClickCard = () => navigate(`/game/${game.id}`);
 
-  if (!game || !game.id) {
+  if (!game) {
     return (
       <div className="bg-zinc-900 rounded-lg p-4 text-center text-gray-500">
         Game data unavailable
@@ -18,61 +31,73 @@ const GameCard = ({ game }: { game: Game }) => {
     );
   }
 
-  return (
-    <>
-      <div className="bg-zinc-900 rounded-lg shadow-lg border highlight-hover overflow-hidden">
-        <div className="relative">
-          <FaultTolerantImage
-            src={game.coverImage}
-            alt={`${game.name} cover image`}
-            className="w-full object-contain cursor-pointer aspect-video"
-            onClick={handleClickCard}
-          />
-          <div className="absolute top-2 right-2">
-            <AddToWishlistButton game={game} />
-          </div>
+  const cardContent = (
+    <div
+      className={`rounded shadow-lg overflow-hidden bg-zinc-900 ${
+        hasCommercial ? "" : "highlight-hover"
+      }`}
+    >
+      <div className="relative">
+        <FaultTolerantImage
+          src={coverImage}
+          alt={`${name} cover image`}
+          className="w-full object-contain cursor-pointer aspect-video"
+          onClick={handleClickCard}
+        />
+        <div className="absolute top-2 right-2">
+          <AddToWishlistButton game={game} />
         </div>
-        <div className="p-3">
-          <div className="flex justify-between">
-            <div>
-              <h3
-                className="font-bold text-lg truncate cursor-pointer"
-                onClick={handleClickCard}
-              >
-                {game.name}
-              </h3>
-              <a href={`/search?category=${game.category?.id}`}>
-                <p className="text-xs hover:underline">{game.category?.name}</p>
-              </a>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-green-500 text-right">
-                {game.price === 0 ? "Free" : formatCurrencyVND(game.price)}
-              </p>
-              {game.numberOfReviews > 0 ? (
-                <div className="flex items-center justify-end gap-2">
-                  <span>{game.averageRating}</span>
-                  <FaStar />
-                </div>
-              ) : (
-                <p className="text-zinc-400 text-xs text-end">No rating</p>
-              )}
-            </div>
+      </div>
+      <div className="p-3">
+        <div className="flex justify-between">
+          <div>
+            <h3
+              className="font-bold text-lg truncate cursor-pointer"
+              onClick={handleClickCard}
+            >
+              {name}
+            </h3>
+            <a href={`/search?category=${category?.id}`}>
+              <p className="text-xs hover:underline">{category?.name}</p>
+            </a>
           </div>
-          <p className="py-1 text-sm text-zinc-500">{game.shortDescription}</p>
-          <div className="flex items-center mt-1">
-            {game.gameTags?.slice(0, 3).map((tag, index) => (
-              <a href={`/search?tags=${tag.tag.id}`} key={index}>
-                <Tag color="orange">{tag.tag.name}</Tag>
-              </a>
-            ))}
-            {game.gameTags && game.gameTags.length > 3 && (
-              <Tag color="orange">+{game.gameTags.length - 3} more</Tag>
+          <div>
+            <p className="text-sm font-semibold text-green-500 text-right">
+              {price === 0 ? "Free" : formatCurrencyVND(price)}
+            </p>
+            {numberOfReviews > 0 ? (
+              <div className="flex items-center justify-end gap-2">
+                <span>{averageRating}</span>
+                <FaStar />
+              </div>
+            ) : (
+              <p className="text-zinc-400 text-xs text-end">No rating</p>
             )}
           </div>
         </div>
+        <p className="py-1 text-sm text-zinc-500">{shortDescription}</p>
+        <div className="flex items-center mt-1">
+          {gameTags?.slice(0, 3).map((tag) => (
+            <a href={`/search?tags=${tag.tag.id}`} key={tag.tag.id}>
+              <Tag color="orange">{tag.tag.name}</Tag>
+            </a>
+          ))}
+          {gameTags && gameTags.length > 3 && (
+            <Tag color="orange">+{gameTags.length - 3} more</Tag>
+          )}
+        </div>
       </div>
-    </>
+    </div>
+  );
+
+  return hasCommercial ? (
+    <Badge.Ribbon text="Featured" placement="start">
+      <div className="p-[2px] rounded bg-gradient-to-r hover:from-pink-500 hover:via-red-500 hover:to-yellow-500 bg-transparent transition-colors duration-300">
+        {cardContent}
+      </div>
+    </Badge.Ribbon>
+  ) : (
+    cardContent
   );
 };
 

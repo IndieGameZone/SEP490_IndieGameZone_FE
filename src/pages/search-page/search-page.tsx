@@ -170,6 +170,7 @@ const SearchPage = () => {
                 No more games
               </p>
             }
+            style={{ overflow: "visible" }}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {games.length > 0 &&

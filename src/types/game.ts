@@ -79,6 +79,7 @@ export type Game = {
     installInstruction: string;
     moderator?: User;
     censorReason?: string;
+    hasCommercial: boolean;
 }
 
 export type GameStatus = "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";

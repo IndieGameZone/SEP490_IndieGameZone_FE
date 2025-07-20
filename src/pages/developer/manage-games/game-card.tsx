@@ -5,11 +5,11 @@ import {
 } from "@/components/status-tags";
 import { formatCurrencyVND } from "@/lib/currency";
 import { Game } from "@/types/game";
+import { Badge } from "antd";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 const GameCard = ({ game }: { game: Game }) => {
-
-  return (
+  const cardContent = (
     <div className="bg-zinc-900 rounded-lg shadow-lg border highlight-hover overflow-hidden">
       <Link to={`/dev/game/${game.id}`}>
         <FaultTolerantImage
@@ -41,9 +41,7 @@ const GameCard = ({ game }: { game: Game }) => {
                   <FaStar />
                 </div>
               ) : (
-                <p className="text-zinc-400 text-xs text-end">
-                  No rating
-                </p>
+                <p className="text-zinc-400 text-xs text-end">No rating</p>
               )}
             </div>
           </div>
@@ -57,6 +55,12 @@ const GameCard = ({ game }: { game: Game }) => {
         </div>
       </div>
     </div>
+  );
+
+  return game.hasCommercial ? (
+    <Badge.Ribbon text="Featured" placement="start">{cardContent}</Badge.Ribbon>
+  ) : (
+    cardContent
   );
 };
 
