@@ -54,11 +54,23 @@ export const getGamePosts = async (gameId: string) => {
     return handleApiError(error);
   }
 };
-export const getReactionPost= async (userId: string, postId: string) => {
+export const getReactionPost = async (userId: string, postId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/users/${userId}/posts/${postId}/post-reactions`);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
   }
-}
+};
+export const getAllPostTags = async () => {
+  try {
+    const { data } = await axiosClient.get(`/api/tags`, {
+      params: {
+        TagType: "Post",
+      },
+    });
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

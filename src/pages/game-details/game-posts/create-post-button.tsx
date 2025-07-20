@@ -1,14 +1,5 @@
-import { useState } from "react";
-import {
-  Button,
-  Modal,
-  Input,
-  Upload,
-  Select,
-  Form,
-  FormProps,
-  UploadFile,
-} from "antd";
+import { useEffect, useState } from "react";
+import { Button, Modal, Input, Upload, Select, Form, FormProps, UploadFile } from "antd";
 import { FaPlus } from "react-icons/fa";
 import TiptapEditor from "@/components/tiptap/tiptap-editor";
 import { useForm } from "antd/es/form/Form";
@@ -45,7 +36,7 @@ const CreatePostButton = () => {
   const { rerender } = useRerender();
   const { profile } = useAuthStore();
   const { game } = useGameStore();
-  const { tags } = useTagStore();
+  const { postTags, fetchPostTags } = useTagStore();  
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!game) return;
@@ -85,12 +76,12 @@ const CreatePostButton = () => {
     setIsSubmitting(false);
   };
 
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
+  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-
+  useEffect(() => {
+    fetchPostTags(); 
+  }, []);
   const showModal = () => {
     setIsModalOpen(true);
     const draft = localStorage.getItem(DRAFT_KEY);
@@ -139,11 +130,7 @@ const CreatePostButton = () => {
 
   const handleSaveAsDraft = async () => {
     try {
-      const values = await form.validateFields([
-        "title",
-        "description",
-        "tags",
-      ]);
+      const values = await form.validateFields(["title", "description", "tags"]);
       const draftData = {
         title: values.title,
         description: values.description,
@@ -158,12 +145,7 @@ const CreatePostButton = () => {
 
   return (
     <>
-      <Button
-        type="primary"
-        style={{ paddingInline: "2rem" }}
-        icon={<FaPlus />}
-        onClick={showModal}
-      >
+      <Button type="primary" style={{ paddingInline: "2rem" }} icon={<FaPlus />} onClick={showModal}>
         create post
       </Button>
       <Modal
@@ -181,23 +163,12 @@ const CreatePostButton = () => {
           <Button key="draft" onClick={handleSaveAsDraft}>
             Save as draft
           </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            onClick={handleOk}
-            loading={isSubmitting}
-          >
+          <Button key="submit" type="primary" onClick={handleOk} loading={isSubmitting}>
             Post
           </Button>,
         ]}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
+        <Form form={form} layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off">
           <Form.Item<FieldType>
             name="title"
             label={<p className="font-semibold">Title</p>}
@@ -212,10 +183,7 @@ const CreatePostButton = () => {
             <Input placeholder="What's on your mind?" />
           </Form.Item>
 
-          <Form.Item<FieldType>
-            name="description"
-            label={<p className="font-semibold">Description</p>}
-          >
+          <Form.Item<FieldType> name="description" label={<p className="font-semibold">Description</p>}>
             <TiptapEditor />
           </Form.Item>
 
@@ -238,14 +206,10 @@ const CreatePostButton = () => {
               maxCount={MAX_IMAGES}
               beforeUpload={(file: File) => {
                 const isAllowedType =
-                  file.type === "image/png" ||
-                  file.type === "image/jpeg" ||
-                  file.type === "image/webp";
+                  file.type === "image/png" || file.type === "image/jpeg" || file.type === "image/webp";
 
                 if (!isAllowedType) {
-                  messageApi.error(
-                    "Only PNG, JPG, JPEG, and WEBP files are allowed!"
-                  );
+                  messageApi.error("Only PNG, JPG, JPEG, and WEBP files are allowed!");
                   return Upload.LIST_IGNORE;
                 }
                 return false;
@@ -255,25 +219,18 @@ const CreatePostButton = () => {
               <p className="flex justify-center py-5">
                 <HiMiniInboxArrowDown className="size-18" />
               </p>
-              <p className="ant-upload-text">
-                Click or drag images here to upload
-              </p>
-              <p className="ant-upload-hint">
-                Support PNG, JPG, JPEG, and WEBP formats.
-              </p>
+              <p className="ant-upload-text">Click or drag images here to upload</p>
+              <p className="ant-upload-hint">Support PNG, JPG, JPEG, and WEBP formats.</p>
             </Dragger>
           </Form.Item>
 
-          <Form.Item<FieldType>
-            name="tags"
-            label={<p className="font-semibold">Tags</p>}
-          >
+          <Form.Item<FieldType> name="tags" label={<p className="font-semibold">Tags</p>}>
             <Select
               mode="tags"
               style={{ width: "100%" }}
               placeholder="Add relevant tags"
               allowClear
-              options={tags.map((x) => ({
+              options={postTags.map((x) => ({
                 value: x.id,
                 label: x.name,
               }))}
@@ -281,17 +238,8 @@ const CreatePostButton = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <Modal
-        open={previewVisible}
-        title={previewTitle}
-        footer={null}
-        onCancel={handleImageCancel}
-      >
-        <img
-          alt="preview"
-          style={{ width: "100%", borderRadius: "0.5rem" }}
-          src={previewImage}
-        />
+      <Modal open={previewVisible} title={previewTitle} footer={null} onCancel={handleImageCancel}>
+        <img alt="preview" style={{ width: "100%", borderRadius: "0.5rem" }} src={previewImage} />
       </Modal>
     </>
   );
