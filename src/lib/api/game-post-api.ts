@@ -88,3 +88,16 @@ export const getAllPostTags = async () => {
     return handleApiError(error);
   }
 };
+export const getAllGameTags = async () => {
+  try {
+    const { data } = await axiosClient.get(`/api/tags`, {
+      params: {
+        TagType: "Game",
+      },
+    });
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+

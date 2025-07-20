@@ -1,13 +1,5 @@
 import { Tag } from "@/types/tag";
-import {
-  Button,
-  Input,
-  InputRef,
-  Space,
-  Table,
-  TableColumnType,
-  TableProps,
-} from "antd";
+import { Button, Input, InputRef, Space, Table, TableColumnType, TableProps, Tabs } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteForever } from "react-icons/md";
@@ -22,7 +14,7 @@ import { FaSearch } from "react-icons/fa";
 type DataIndex = keyof Tag;
 const ManageTags = () => {
   const searchInput = useRef<InputRef>(null);
-  const { loading, fetchTags, tags } = useTagStore();
+  const { loading, fetchPostTags, fetchGameTags, postTags, gameTags } = useTagStore();
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -41,14 +33,14 @@ const ManageTags = () => {
   };
 
   const handleRefresh = () => {
-    fetchTags();
+    fetchGameTags();
+    fetchPostTags();
   };
-
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: FilterDropdownProps["confirm"],
-    dataIndex: DataIndex
-  ) => {
+  useEffect(() => {
+    fetchGameTags();
+    fetchPostTags();
+  }, []);
+  const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -59,46 +51,28 @@ const ManageTags = () => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): TableColumnType<Tag> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
+  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Tag> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
             icon={<FaSearch />}
             size="small"
             style={{ width: 90 }}
           >
             Search
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
             Reset
           </Button>
           <Button
@@ -124,12 +98,7 @@ const ManageTags = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <FaSearch
-        style={{ color: filtered ? "#FF6600" : undefined }}
-        className="w-5"
-      />
-    ),
+    filterIcon: (filtered: boolean) => <FaSearch style={{ color: filtered ? "#FF6600" : undefined }} className="w-5" />,
     onFilter: (value, record) =>
       record[dataIndex]
         .toString()
@@ -179,10 +148,26 @@ const ManageTags = () => {
       ),
     },
   ];
-
-  useEffect(() => {
-    fetchTags();
-  }, []);
+  const items = [
+    {
+      key: "game",
+      label: "Game Tags",
+      children: (
+        <div>
+          <Table<Tag> columns={columns} dataSource={gameTags} loading={loading} bordered rowKey={(x) => x.name} />
+        </div>
+      ),
+    },
+    {
+      key: "post",
+      label: "Post Tags",
+      children: (
+        <div>
+          <Table<Tag> columns={columns} dataSource={postTags} loading={loading} bordered rowKey={(x) => x.name} />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="px-5">
@@ -192,21 +177,9 @@ const ManageTags = () => {
           Add New Tags
         </Button>
       </div>
-      <div className="">
-        <Table<Tag>
-          columns={columns}
-          dataSource={tags}
-          loading={loading}
-          bordered
-          rowKey={(x) => x.name}
-        />
-      </div>
+      <Tabs defaultActiveKey="game" items={items} />
 
-      <AddTag
-        open={addModalOpen}
-        onClose={() => setAddModalOpen(false)}
-        onSuccess={handleRefresh}
-      />
+      <AddTag open={addModalOpen} onClose={() => setAddModalOpen(false)} onSuccess={handleRefresh} />
 
       <EditTag
         open={editModalOpen}

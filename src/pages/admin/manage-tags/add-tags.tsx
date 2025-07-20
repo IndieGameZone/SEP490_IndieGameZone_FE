@@ -1,5 +1,5 @@
 import { createTag } from "@/lib/api/tag-api";
-import { Form, Input, message, Modal } from "antd";
+import { Form, Input, message, Modal, Select } from "antd";
 import { useState } from "react";
 
 interface AddTagModalProps {
@@ -10,6 +10,7 @@ interface AddTagModalProps {
 
 interface AddTagForm {
   name: string;
+  type: string;
 }
 
 const AddTags = ({ open, onClose, onSuccess }: AddTagModalProps) => {
@@ -20,7 +21,7 @@ const AddTags = ({ open, onClose, onSuccess }: AddTagModalProps) => {
   const handleSubmit = async (values: AddTagForm) => {
     try {
       setLoading(true);
-      const result = await createTag({ name: values.name });
+      const result = await createTag({ name: values.name, type: values.type || "Game" });
 
       if (result.success) {
         messageApi.success("Tag added successfully!");
@@ -54,12 +55,7 @@ const AddTags = ({ open, onClose, onSuccess }: AddTagModalProps) => {
         destroyOnHidden
         forceRender
       >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          autoComplete="off"
-        >
+        <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
           <Form.Item
             label="Tag Name"
             name="name"
@@ -69,6 +65,21 @@ const AddTags = ({ open, onClose, onSuccess }: AddTagModalProps) => {
             ]}
           >
             <Input placeholder="Enter tag name" />
+          </Form.Item>
+          <Form.Item
+            required
+            rules={[{ required: true, message: "Please select tag type!" }]}
+            label="Tag Type"
+            name="type"
+            initialValue="Game"
+          >
+            <Select
+              placeholder="Select tag type"
+              options={[
+                { value: "Game", label: "Game Tag" },
+                { value: "Post", label: "Post Tag" },
+              ]}
+            />
           </Form.Item>
         </Form>
       </Modal>

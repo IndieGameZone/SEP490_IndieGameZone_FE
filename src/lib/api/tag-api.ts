@@ -22,7 +22,7 @@ export const getAllTags = async () => {
     }
 };
 
-export const createTag = async (tagData: { name: string }) => {
+export const createTag = async (tagData: { name: string,type:string }) => {
     try {
         const { data } = await axiosClient.post('/api/tags', tagData);
         return { error: null, data: data, success: true };
