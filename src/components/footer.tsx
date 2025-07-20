@@ -1,6 +1,6 @@
 import { FaFacebookSquare, FaTwitter } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import MaxWidthWrapper from "./max-width-wrapper";
+import MaxWidthWrapper from "./wrappers/max-width-wrapper";
 
 const Footer = () => {
   return (

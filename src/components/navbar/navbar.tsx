@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import MaxWidthWrapper from "../max-width-wrapper";
+import MaxWidthWrapper from "../wrappers/max-width-wrapper";
 import logo from "@/assets/igz_ic.svg";
 import {
   Button,

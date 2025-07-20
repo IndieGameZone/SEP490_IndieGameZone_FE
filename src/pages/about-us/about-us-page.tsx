@@ -1,7 +1,7 @@
 import NavLinks from "@/components/nav-links";
 import ComputerSection from "./computer-section";
 import logo from "@/assets/indiegamezone-logo.svg";
-import MaxWidthWrapper from "@/components/max-width-wrapper";
+import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { Badge, Button } from "antd";
 import { useEffect, useState } from "react";
 import { getAboutUsStats } from "@/lib/api/user-api";

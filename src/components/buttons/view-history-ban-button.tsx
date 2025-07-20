@@ -3,7 +3,7 @@ import { formatDateTime } from "@/lib/date-n-time";
 import { Button, Modal, StepProps, Steps } from "antd";
 import { FaBan, FaHistory } from "react-icons/fa";
 import useUserStore from "@/store/use-user-store";
-import Loader from "./loader";
+import Loader from "../loader";
 
 const ViewHistoryBanButton = () => {
   const user = useUserStore((state) => state.user);

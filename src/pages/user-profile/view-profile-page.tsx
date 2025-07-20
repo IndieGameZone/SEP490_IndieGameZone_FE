@@ -1,5 +1,5 @@
 import Loader from "@/components/loader";
-import MaxWidthWrapper from "@/components/max-width-wrapper";
+import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import useUserStore from "@/store/use-user-store";
 import { Button, Dropdown, MenuProps, Tabs, TabsProps } from "antd";

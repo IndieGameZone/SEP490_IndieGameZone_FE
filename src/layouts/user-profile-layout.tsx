@@ -1,4 +1,4 @@
-import MaxWidthWrapper from "@/components/max-width-wrapper";
+import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { Menu, MenuProps, theme } from "antd";
 import { ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";

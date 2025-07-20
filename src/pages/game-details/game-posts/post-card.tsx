@@ -1,4 +1,4 @@
-import ExpandableWrapper from "@/components/expandable-wrapper";
+import ExpandableWrapper from "@/components/wrappers/expandable-wrapper";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import { GamePost } from "@/types/post-game";
 import { Avatar, Button, Dropdown, MenuProps, Tag } from "antd";

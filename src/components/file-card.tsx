@@ -2,7 +2,7 @@ import { formatMegabytes } from "@/lib/file";
 import { GameFile } from "@/types/game";
 import { Tooltip } from "antd";
 import { FaApple, FaFileArchive, FaLinux, FaWindows } from "react-icons/fa";
-import DownloadFileButton from "./download-file-button";
+import DownloadFileButton from "./buttons/download-file-button";
 
 const FileCard = ({
   file,

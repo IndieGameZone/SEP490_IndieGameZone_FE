@@ -1,4 +1,4 @@
-import MaxWidthWrapper from "@/components/max-width-wrapper";
+import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { Link } from "react-router-dom";
 import FeaturedGameSection from "./featured-game-section";
 import SpecialOffersSection from "./special-offers-section";
@@ -13,7 +13,7 @@ import genre4 from "@/assets/category-role-playing.webp";
 import GenreCard from "./genre-card";
 import { lazy } from "react";
 import NavLinks from "@/components/nav-links";
-import ScrollToTopButton from "@/components/scroll-to-top-button";
+import ScrollToTopButton from "@/components/buttons/scroll-to-top-button";
 import HandleTransactionResult from "@/components/handle-transaction-result";
 import HeroBanner from "./hero-banner";
 

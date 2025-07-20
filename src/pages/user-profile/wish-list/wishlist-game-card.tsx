@@ -5,7 +5,7 @@ import { Tag } from "antd";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 import { formatCurrencyVND } from "@/lib/currency";
 import { Game, WishlistItem } from "@/types/game";
-import AddToWishlistButton from "@/components/add-to-wishlist-button";
+import AddToWishlistButton from "@/components/buttons/add-to-wishlist-button";
 
 interface WishlistGameCardProps {
   game: WishlistItem;

@@ -44,7 +44,6 @@ const RequireAuth = ({
             },
           }}
         >
-          {" "}
           <UnauthorizedPage />
         </ConfigProvider>
       );

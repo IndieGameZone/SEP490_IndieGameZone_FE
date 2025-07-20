@@ -2,7 +2,7 @@ import { formatMegabytes } from "@/lib/file";
 import { GameFile } from "@/types/game";
 import { Badge, TableProps } from "antd";
 import ToggleVisibilityButton from "./toggle-visibility-button";
-import DownloadFileButton from "@/components/download-file-button";
+import DownloadFileButton from "@/components/buttons/download-file-button";
 
 export const columns: TableProps<GameFile>["columns"] = [
   {
