@@ -126,7 +126,7 @@ export interface ReportPostData {
   postId: string;
 }
 
-export const createReportPost = async (userId: string, reportPostData: ReportGameData) => {
+export const createReportPost = async (userId: string, reportPostData: ReportPostData) => {
   try {
     const { data } = await axiosClient.post(`/api/users/${userId}/post-reports`, reportPostData);
 
