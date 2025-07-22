@@ -207,7 +207,7 @@ const DetailUser: React.FC = () => {
                   </div>
                 </div>
                 <Space size="middle" className="mt-4 md:mt-0">
-                  <Button
+                  {/* <Button
                     type="primary"
                     icon={<FaBan />}
                     onClick={handleEdit}
@@ -224,7 +224,7 @@ const DetailUser: React.FC = () => {
                     className="rounded-lg shadow-sm"
                   >
                     Delete
-                  </Button>
+                  </Button> */}
                 </Space>
               </div>
 
