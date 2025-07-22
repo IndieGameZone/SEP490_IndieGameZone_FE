@@ -42,26 +42,40 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
       return Promise.reject(new Error("At least one file is required"));
     }
 
-    const names = files.map((f: any) => f?.displayName?.trim()).filter(Boolean);
-    const hasDuplicates = names.some(
-      (name: string, i: number) => names.indexOf(name) !== i
-    );
+    const entries = files
+      .map((f: any) => ({
+        displayName: f?.displayName?.trim(),
+        platformId: f?.platformId,
+        version: f?.version?.trim(),
+      }))
+      .filter((f: any) => f.displayName);
 
-    if (hasDuplicates) {
-      const message =
-        "Each file must have a unique display name. Please include a version number like 'v1.0' or build name to differentiate!";
+    // Group by displayName
+    const duplicates = new Set<string>();
+    const seen = new Map<string, Set<string>>(); // Map of displayName -> Set of "platformId-version" combos
+
+    for (const { displayName, platformId, version } of entries) {
+      const comboKey = `${platformId || "none"}-${version || "none"}`;
+      if (!seen.has(displayName)) {
+        seen.set(displayName, new Set([comboKey]));
+      } else {
+        const existingCombos = seen.get(displayName)!;
+        if (existingCombos.has(comboKey)) {
+          duplicates.add(displayName);
+        } else {
+          existingCombos.add(comboKey);
+        }
+      }
+    }
+
+    if (duplicates.size > 0) {
+      const message = `Each file with the same name must have a unique combination of platform or version. Duplicates found for: ${[
+        ...duplicates,
+      ].join(", ")}`;
       setFilesError(message);
       return Promise.reject(new Error(message));
     }
-    // const versionReminder = names.some((name: string) => !/v?[\d.]+/i.test(name));
 
-    // if (versionReminder) {
-    //   return Promise.reject(
-    //     new Error(
-    //       "Make sure to include a version number in each display name (e.g., 'Windows Build v1.2')"
-    //     )
-    //   );
-    // }
     return Promise.resolve();
   };
 
@@ -101,17 +115,28 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
       ...currentItem,
       displayName: file.name,
       fileSize: file.size ?? 0,
-      file: [file], // store the file in antd Upload-compatible format
+      file: [file],
       platformId: platform.length ? platform : undefined,
     };
     form.setFieldsValue({ files: updatedList });
     setFilesError("");
-    form.validateFields(["files"]);
     return false; // Prevent automatic upload
   };
 
+  const handleFormChange = (changedValues: any) => {
+    if (changedValues.files !== undefined) {
+      form.validateFields(["files"]);
+    }
+  };
+
   return (
-    <Form form={form} onFinish={onFinish} layout="vertical" autoComplete="off">
+    <Form
+      form={form}
+      onFinish={onFinish}
+      layout="vertical"
+      autoComplete="off"
+      onValuesChange={handleFormChange}
+    >
       {contextHolder}
       <Form.List
         name="files"
@@ -143,7 +168,8 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
                     showUploadList={{
                       extra: ({ size = 0 }) => (
                         <span style={{ color: "#cccccc" }}>
-                          {" "}({(size / 1024 / 1024).toFixed(2)}MB)
+                          {" "}
+                          ({(size / 1024 / 1024).toFixed(2)}MB)
                         </span>
                       ),
                       showRemoveIcon: true,
@@ -166,7 +192,18 @@ const GameFilesForm = ({ form }: { form: FormInstance<any> }) => {
                 >
                   <Input placeholder="Enter display name" disabled />
                 </Form.Item>
-
+                <Form.Item
+                  {...restField}
+                  name={[name, "version"]}
+                  label="Version"
+                  extra="e.g. v1.0.3, build-22, alpha-1"
+                  rules={[
+                    { required: true, message: "Please input the version" },
+                  ]}
+                  style={{ width: 500, marginBottom: 5 }}
+                >
+                  <Input placeholder="Enter file version (e.g., v1.0.0)" />
+                </Form.Item>
                 <Form.Item
                   {...restField}
                   label={<span className="font-bold">Platform</span>}

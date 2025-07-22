@@ -42,7 +42,9 @@ const UploadProcessPage = () => {
   const [currentTask, setCurrentTask] = useState(0);
   const [currentItem, setCurrentItem] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
-  const [currentTaskMessage, setCurrentTaskMessage] = useState(TASKS[currentTask].name);
+  const [currentTaskMessage, setCurrentTaskMessage] = useState(
+    TASKS[currentTask].name
+  );
   const [currentTaskMessage2, setcurrentTaskMessage2] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(50);
@@ -58,7 +60,8 @@ const UploadProcessPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
 
-  const { isSaved, gameFiles, gameMediaAssets, gameInfo } = useManageGameStore();
+  const { isSaved, gameFiles, gameMediaAssets, gameInfo } =
+    useManageGameStore();
   const { profile } = useAuthStore();
   useEffect(() => {
     if (!isSaved) {
@@ -107,7 +110,10 @@ const UploadProcessPage = () => {
 
   const handleApiError = (error: any) => {
     try {
-      const errorMessage = error.response?.data || error?.message || "An unexpected error occurred.";
+      const errorMessage =
+        error.response?.data ||
+        error?.message ||
+        "An unexpected error occurred.";
       const data = null;
       return { error: errorMessage, data };
     } catch (err) {
@@ -124,7 +130,9 @@ const UploadProcessPage = () => {
         onUploadProgress: (event: any) => {
           const percent = Math.round((event.loaded * 100) / event.total);
           if (currentTask == 3 && percent == 100) {
-            setcurrentTaskMessage2("Scanning for harmful files\n(may take a few second)");
+            setcurrentTaskMessage2(
+              "Scanning for harmful files\n(may take a few second)"
+            );
             setIsScanning(true);
           } else if (isScanning) {
             setIsHarmful(false);
@@ -150,11 +158,12 @@ const UploadProcessPage = () => {
       setcurrentTaskMessage2(`Uploading ${file.name}.`);
 
       if (file.originFileObj) {
-        // console.log("Uploading ", file.name);
         const uploadResult = await uploadFile(file);
-        console.log(uploadResult);
         if (uploadResult.error) {
-          if (uploadResult.error.detail == "File scan failed. Please ensure the file is safe and appropriate.") {
+          if (
+            uploadResult.error.detail ==
+            "File scan failed. Please ensure the file is safe and appropriate."
+          ) {
             setErrorMessage(`${file.name}`);
             setIsHarmful(true);
           } else {
@@ -163,12 +172,12 @@ const UploadProcessPage = () => {
           setIsUploading(false);
           return;
         } else {
-          // console.log("Add game file");
           setGamePlatforms((prev) => [
             ...prev,
             {
               file: uploadResult.data,
               platformId: gameFiles.files[i].platformId,
+              version: gameFiles.files[i].version,
             },
           ]);
           setCurrentItem((prev) => prev + 1);
@@ -203,7 +212,6 @@ const UploadProcessPage = () => {
   };
 
   const handleUploadCoverImage = async () => {
-    // console.log("HANDLE UPLOAD COVER IMAGE");
     if (isUploading) return;
     setIsUploading(true);
     setTotalItems(1);
@@ -214,7 +222,9 @@ const UploadProcessPage = () => {
     if (coverImageFile.originFileObj) {
       const uploadResult = await uploadFile(coverImageFile);
       if (uploadResult.error) {
-        setErrorMessage(`Failed to upload ${coverImageFile.name} Please try again.`);
+        setErrorMessage(
+          `Failed to upload ${coverImageFile.name} Please try again.`
+        );
         setIsUploading(false);
         return;
       } else {
@@ -230,14 +240,11 @@ const UploadProcessPage = () => {
   };
 
   const handleUploadImages = async () => {
-    // console.log("HANDLE UPLOAD IMAGES");
     if (isUploading) return;
     setIsUploading(true);
     setTotalItems(gameMediaAssets.gameImages.length);
     setUploadProgress(0);
     const filesToUpload = gameMediaAssets.gameImages;
-    // console.log("Currenet Item: ", currentItem);
-    // console.log("gameImages: ", filesToUpload)
     for (let i = currentItem; i < filesToUpload.length; i++) {
       const file = filesToUpload[i];
       setcurrentTaskMessage2(`Uploading ${file.name}.`);
@@ -275,7 +282,8 @@ const UploadProcessPage = () => {
     setcurrentTaskMessage2(`Uploading game information.`);
     const uploadResult = await addGame(profile.id, {
       ageRestrictionId: gameInfo.ageRestrictionId,
-      allowDonation: gameInfo.pricingOption == "Free" ? gameInfo.allowDonate : true,
+      allowDonation:
+        gameInfo.pricingOption == "Free" ? gameInfo.allowDonate : true,
       averageSession: gameInfo.averageSession,
       categoryId: gameInfo.categoryId,
       coverImage: coverImageUrl,
@@ -329,9 +337,17 @@ const UploadProcessPage = () => {
     <div className="flex flex-col justify-center items-center pb-20">
       {contextHolder}
       {currentTask == 3 && isScanning ? (
-        <LottiePlayer animationData={scanningAnimation} loop={true} className="size-64" />
+        <LottiePlayer
+          animationData={scanningAnimation}
+          loop={true}
+          className="size-64"
+        />
       ) : isUploading ? (
-        <LottiePlayer animationData={uploadingAnimation} loop={true} className="size-64" />
+        <LottiePlayer
+          animationData={uploadingAnimation}
+          loop={true}
+          className="size-64"
+        />
       ) : errorMessage ? (
         <div className="size-64 p-16">
           <img src={cancleIcon} alt="" className="w-full" />
@@ -349,7 +365,15 @@ const UploadProcessPage = () => {
         </h1>
         <Progress
           percent={Math.round((currentTask / 5) * 100)}
-          status={isUploading ? "active" : errorMessage ? "exception" : isFinished ? "success" : "normal"}
+          status={
+            isUploading
+              ? "active"
+              : errorMessage
+              ? "exception"
+              : isFinished
+              ? "success"
+              : "normal"
+          }
         />
         {!isFinished && (
           <>
@@ -358,7 +382,15 @@ const UploadProcessPage = () => {
             </h2>
             <Progress
               percent={uploadProgress}
-              status={isUploading ? "active" : errorMessage ? "exception" : isFinished ? "success" : "normal"}
+              status={
+                isUploading
+                  ? "active"
+                  : errorMessage
+                  ? "exception"
+                  : isFinished
+                  ? "success"
+                  : "normal"
+              }
             />
           </>
         )}

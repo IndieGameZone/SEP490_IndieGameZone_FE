@@ -12,6 +12,7 @@ import { GamePost } from "@/types/game-post";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LuRefreshCcw } from "react-icons/lu";
 import notFoundIcon from "@/assets/not-found-icon.svg";
+import PostDetailModal from "./post-detail-modal";
 
 const tabs = ["Hot & Trending", "Most popular", "Best", "Latest"];
 
@@ -29,6 +30,7 @@ const GameForum = () => {
   const { renderKey } = useRerender();
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<GamePost | null>(null);
 
   const handleSelect = (e: any) => {
     setSelectedSortOption(e.key);
@@ -65,6 +67,10 @@ const GameForum = () => {
     fetchPosts(page);
   };
 
+  const handleCancel = () => {
+    setSelectedPost(null);
+  };
+
   useEffect(() => {
     fetchTags();
   }, []);
@@ -76,7 +82,7 @@ const GameForum = () => {
   return (
     <div className="grid grid-cols-12 gap-3">
       {contextHolder}
-
+      <PostDetailModal post={selectedPost} handleCancel={handleCancel}/>
       <div className="col-span-4">
         <div className="bg-zinc-800 p-3 rounded">
           <Dropdown
@@ -130,7 +136,13 @@ const GameForum = () => {
         >
           <div className="space-y-3">
             {posts.map((post, index: number) => {
-              return <PostCard key={`post-${index}`} post={post} />;
+              return (
+                <PostCard
+                  key={`post-${index}`}
+                  post={post}
+                  onViewPostDetail={setSelectedPost}
+                />
+              );
             })}
 
             {!isFetching && posts.length === 0 && (

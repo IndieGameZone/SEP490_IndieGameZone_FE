@@ -17,9 +17,10 @@ import Lightbox from "yet-another-react-lightbox";
 
 interface PostCardProps {
   post: GamePost;
+  onViewPostDetail?: (post: GamePost) => void;
 }
 
-const PostCard = ({ post }: PostCardProps) => {
+const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
 
@@ -53,6 +54,12 @@ const PostCard = ({ post }: PostCardProps) => {
     setCurrentImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  const handleViewPostDetail = () => {
+    if (onViewPostDetail) {
+      onViewPostDetail(post);
+    }
+  };
+
   return (
     <div>
       <Lightbox
@@ -76,10 +83,12 @@ const PostCard = ({ post }: PostCardProps) => {
         </div>
 
         <div className="mt-2">
-          <h4 className="font-bold text-xl">{post.title}</h4>
+          <h4 className="font-bold text-xl" onClick={handleViewPostDetail}>
+            {post.title}
+          </h4>
 
           {post.content.trim() && (
-            <ExpandableWrapper>
+            <ExpandableWrapper onToggle={handleViewPostDetail}>
               <TiptapView value={post.content} />
             </ExpandableWrapper>
           )}

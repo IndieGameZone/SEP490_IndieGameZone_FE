@@ -54,7 +54,7 @@ function App() {
       if (isLoggedIn) {
         ping();
       }
-    }, 1000 * 60 * 3);
+    }, 1000 * 60);
 
     return () => clearInterval(interval);
   }, [isLoggedIn]);

@@ -39,6 +39,7 @@ export type GameFiles = {
         file: UploadFile[];
         platformId: string;
         fileSize: number;
+        version: string;
     }[];
     installInstruction: string;
 }
@@ -127,6 +128,7 @@ export type GameFile = {
     platform: Platform;
     file: string;
     isActive: boolean;
+    version: string;
 }
 
 export type GameCensorLog = {

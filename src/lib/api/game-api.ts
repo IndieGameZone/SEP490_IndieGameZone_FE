@@ -15,6 +15,7 @@ export const handleApiError = (error: any): { error: string | null; data: any; s
 type AddGameFilesRequest = {
   platformId: string;
   file: string;
+  version: string;
 }[];
 
 export const addGameFiles = async (gameId: string, request: AddGameFilesRequest) => {

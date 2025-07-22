@@ -207,13 +207,18 @@ const PreviewUploadPage = () => {
       </div>
       <div className="grid grid-cols-12">
         <div className="col-span-8 bg-zinc-900 p-5 border border-zinc-800">
-          <h3 className="text-xl font-bold my-2">Gameplay/Trailer</h3>
-          <ReactPlayer
-            className="react-player"
-            url={gameMediaAssets.videoLink}
-            width="100%"
-            controls
-          />
+          {gameMediaAssets.videoLink && (
+            <>
+              <h3 className="text-xl font-bold my-2">Gameplay/Trailer</h3>
+              <ReactPlayer
+                className="react-player"
+                url={gameMediaAssets.videoLink}
+                width="100%"
+                controls
+              />
+            </>
+          )}
+
           <h3 className="text-xl font-bold my-2">Description</h3>
           <TiptapView value={gameInfo.description} />
           <hr className="mt-10 mb-5 border-zinc-700" />

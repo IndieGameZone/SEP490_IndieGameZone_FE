@@ -18,11 +18,3 @@ export const createFollow= async (playerId: string,developerId: string) => {
     return handleApiError(error);
   }
 };
-export const getReviewByGameId = async (gameId: string) => {
-  try {
-    const { data } = await axiosClient.get(`/api/games/${gameId}/reviews`);
-    return { error: null, data: data, success: true };
-  } catch (error) {
-    return handleApiError(error);
-  }
-};
