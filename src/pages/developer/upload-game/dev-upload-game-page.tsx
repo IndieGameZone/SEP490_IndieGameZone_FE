@@ -3,7 +3,7 @@ import UploadGuideLine from "./upload-guideline";
 import GameInfoForm from "./game-info-form";
 import StepLayout from "./step-layout";
 import MediaAssetsForm from "./media-assets-form";
-import GameFilesForm from "./game-files-form";
+import GameFilesForm from "./game-files-form/game-files-form";
 import useManageGameStore from "@/store/use-manage-game-store";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";

@@ -1,0 +1,82 @@
+import { Form, Button, Alert } from "antd";
+import { useEffect } from "react";
+import TiptapEditor from "@/components/tiptap/tiptap-editor";
+import usePlatformStore from "@/store/use-platform-store";
+import { useFileValidation } from "./use-file-validation";
+import { handleBeforeUploadFactory } from "./file-upload-helpers";
+import GameFileItem from "./game-file-item";
+import { FaPlus } from "react-icons/fa";
+
+const GameFilesForm = ({ form }: { form: any }) => {
+  const { fetchPlatforms, platforms, loading, getDefaultPlatforms } =
+    usePlatformStore();
+  const { filesValidator, filesError } = useFileValidation();
+
+  useEffect(() => {
+    fetchPlatforms();
+  }, []);
+
+  const handleBeforeUpload = handleBeforeUploadFactory(
+    form,
+    getDefaultPlatforms
+  );
+
+  const handleFormChange = (changedValues: any) => {
+    if (changedValues.files !== undefined) {
+      form.validateFields(["files"]);
+    }
+  };
+
+  return (
+    <Form
+      form={form}
+      layout="vertical"
+      autoComplete="off"
+      onValuesChange={handleFormChange}
+    >
+      <Form.List name="files" rules={[{ validator: filesValidator }]}>
+        {(fields, { add, remove }, { errors }) => (
+          <>
+            {fields.map(({ key, name, ...restField }, index) => (
+              <GameFileItem
+                key={key}
+                name={name}
+                index={index}
+                remove={remove}
+                restField={restField}
+                form={form}
+                platforms={platforms}
+                loading={loading}
+                handleBeforeUpload={handleBeforeUpload}
+              />
+            ))}
+            {errors.length > 0 && (
+              <Alert
+                message={filesError}
+                type="error"
+                showIcon
+                style={{ marginBottom: 16 }}
+              />
+            )}
+            <Form.Item>
+              <Button
+                type="dashed"
+                onClick={() => add()}
+                block
+                icon={<FaPlus />}
+                disabled={fields.length >= 6}
+              >
+                Add File
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List>
+      <Form.Item name="installInstruction" label="Install instructions">
+        <TiptapEditor />
+      </Form.Item>
+    </Form>
+  );
+};
+
+export default GameFilesForm;
