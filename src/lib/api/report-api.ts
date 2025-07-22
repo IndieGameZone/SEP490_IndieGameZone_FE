@@ -86,3 +86,52 @@ export const getReportReasonById = async (reportReasonId: string | number) => {
     return handleApiError(error);
   }
 };
+
+export interface ReportCommentData {
+  message: string;
+  reportReasonId: string;
+  commentId: string;
+}
+
+export const createReportComment = async (userId: string, reportCommentData: ReportCommentData) => {
+  try {
+    const { data } = await axiosClient.post(`/api/users/${userId}/comment-reports`, reportCommentData);
+
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+
+export interface ReportGameData {
+  message: string;
+  reportReasonId: string;
+  gameId: string;
+}
+
+export const createReportGame = async (userId: string, reportGameData: ReportGameData) => {
+  try {
+    const { data } = await axiosClient.post(`/api/users/${userId}/game-reports`, reportGameData);
+
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export interface ReportPostData {
+  message: string;
+  reportReasonId: string;
+  postId: string;
+}
+
+export const createReportPost = async (userId: string, reportPostData: ReportPostData) => {
+  try {
+    const { data } = await axiosClient.post(`/api/users/${userId}/post-reports`, reportPostData);
+
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

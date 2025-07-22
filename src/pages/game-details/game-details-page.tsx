@@ -1,26 +1,11 @@
 import Loader from "@/components/loader";
 import ScrollToTop from "@/components/scroll-to-top";
 import useGameStore from "@/store/use-game-store";
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  MenuProps,
-  Tabs,
-  TabsProps,
-  Tag,
-  Tooltip,
-} from "antd";
+import { Avatar, Button, Dropdown, MenuProps, Tabs, TabsProps, Tag, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
 import { FaFlag, FaInfoCircle, FaLink, FaStar } from "react-icons/fa";
-import {
-  Link,
-  Navigate,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
@@ -38,6 +23,7 @@ import usePlatformStore from "@/store/use-platform-store";
 import useWishlistStore from "@/store/use-wish-list-store";
 import AddToWishlistButton from "@/components/buttons/add-to-wishlist-button";
 import { formatDuration } from "@/lib/date-n-time";
+import ReportGameModal from "@/components/report-modal/report-game-modal";
 
 const GameDetailsPage = () => {
   const { gameId } = useParams();
@@ -48,9 +34,8 @@ const GameDetailsPage = () => {
   const { fetchWishlistGameIds } = useWishlistStore();
   const [index, setIndex] = useState(-1);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState(
-    searchParams.get("tab") ?? "overview"
-  );
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") ?? "overview");
+  const [reportGameModalOpen, setReportGameModalOpen] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
@@ -131,10 +116,7 @@ const GameDetailsPage = () => {
   }
   if (!game) return null;
 
-  const slides = [
-    { src: game.coverImage },
-    ...game.gameImages.map((image) => ({ src: image.image })),
-  ];
+  const slides = [{ src: game.coverImage }, ...game.gameImages.map((image) => ({ src: image.image }))];
 
   return (
     <MaxWidthWrapper className="py-5">
@@ -161,37 +143,30 @@ const GameDetailsPage = () => {
                   <Button shape="circle" icon={<FaLink />}></Button>
                 </Tooltip>
                 <Tooltip title="Report game">
-                  <Button shape="circle" icon={<FaFlag />}></Button>
+                  <Button shape="circle" icon={<FaFlag />} onClick={() => setReportGameModalOpen(true)}></Button>
                 </Tooltip>
+
+                <ReportGameModal
+                  open={reportGameModalOpen}
+                  onClose={() => setReportGameModalOpen(false)}
+                  gameId={game?.id || ""}
+                />
                 <AddToWishlistButton game={game} />
               </div>
             </div>
             <p className="text-zinc-500">{game.shortDescription}</p>
-            <Link
-              to={`/search?category=${game.category.id}`}
-              className="font-semibold text-orange-200 hover:underline"
-            >
+            <Link to={`/search?category=${game.category.id}`} className="font-semibold text-orange-200 hover:underline">
               {game.category?.name}
             </Link>
           </div>
           {/* DEVELOPER INFORMATION */}
           <div className="my-2 flex gap-3 items-center justify-between bg-zinc-900 drop-shadow rounded-lg p-2">
-            <Link
-              to={`/profile/${game.developer.id}`}
-              className="flex items-center gap-3"
-            >
-              {game.developer.avatar ? (
-                <Avatar src={game.developer.avatar} />
-              ) : (
-                <Avatar icon={<CiUser />} />
-              )}
+            <Link to={`/profile/${game.developer.id}`} className="flex items-center gap-3">
+              {game.developer.avatar ? <Avatar src={game.developer.avatar} /> : <Avatar icon={<CiUser />} />}
               <p className="font-semibold">{game.developer.userName}</p>
             </Link>
             <div>
-              <Button
-                style={{ width: 150 }}
-                disabled={profile?.id === game.developer.id}
-              >
+              <Button style={{ width: 150 }} disabled={profile?.id === game.developer.id}>
                 Follow
               </Button>
               <Dropdown menu={{ items: devProfileItems }} trigger={["click"]}>
@@ -211,21 +186,16 @@ const GameDetailsPage = () => {
             <span className="uppercase text-zinc-400 text-xs">Languages:</span>
             {game.gameLanguages.map((language, index: number) => (
               <span className="text-orange-200" key={`game-language-${index}`}>
-                {language.language.name}{" "}
-                {index !== game.gameLanguages.length - 1 && ", "}
+                {language.language.name} {index !== game.gameLanguages.length - 1 && ", "}
               </span>
             ))}
           </div>
           <div className="flex gap-2 text-sm items-end">
-            <span className="uppercase text-zinc-400 text-xs">
-              Average time:
-            </span>
+            <span className="uppercase text-zinc-400 text-xs">Average time:</span>
             <span>{formatDuration(game.averageSession)}</span>
           </div>
           <div className="flex gap-2 text-sm items-end">
-            <span className="uppercase text-zinc-400 text-xs">
-              Average rating:
-            </span>
+            <span className="uppercase text-zinc-400 text-xs">Average rating:</span>
             {game.numberOfReviews > 0 ? (
               <div className="flex items-center gap-2">
                 <span>
