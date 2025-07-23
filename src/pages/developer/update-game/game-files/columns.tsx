@@ -17,6 +17,11 @@ export const columns: TableProps<GameFile>["columns"] = [
     key: "displayName",
   },
   {
+    title: "Version",
+    dataIndex: "version",
+    key: "version",
+  },
+  {
     title: "File size",
     dataIndex: "size",
     key: "size",

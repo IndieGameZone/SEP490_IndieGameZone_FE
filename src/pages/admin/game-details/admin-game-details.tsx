@@ -472,7 +472,7 @@ const AdminGameDetail = () => {
           </div>
           <div className="col-span-2">
             <h3 className="font-bold mb-2 text-lg">Description</h3>
-            <div className="p-3 border border-zinc-400 rounded">
+            <div className="p-3 border bg-zinc-100 border-zinc-300 rounded">
               <ExpandableWrapper>
                 <TiptapView value={game?.description} darkTheme={false} />
               </ExpandableWrapper>
@@ -497,13 +497,27 @@ const AdminGameDetail = () => {
             </div>
             <ViewAllVersionButton darkTheme={false} />
           </div>
-          <div className="col-span-2">
+          <div>
             <h3 className="font-bold mb-2 text-lg">Install Instructions</h3>
-            <div className="p-3 border border-zinc-400 rounded">
+            <div className="p-3 border bg-zinc-100 border-zinc-300 rounded">
               {installInstruction ? (
                 <ExpandableWrapper>
                   <div className="font-mono">
                     <TiptapView value={installInstruction} darkTheme={false} />
+                  </div>
+                </ExpandableWrapper>
+              ) : (
+                <span className="text-gray-500">None</span>
+              )}
+            </div>
+          </div>
+          <div>
+            <h3 className="font-bold mb-2 text-lg">Version notes</h3>
+            <div className="p-3 border bg-zinc-100 border-zinc-300 rounded">
+              {game.versionDescription ? (
+                <ExpandableWrapper>
+                  <div className="font-mono">
+                    <TiptapView value={game.versionDescription} darkTheme={false} />
                   </div>
                 </ExpandableWrapper>
               ) : (

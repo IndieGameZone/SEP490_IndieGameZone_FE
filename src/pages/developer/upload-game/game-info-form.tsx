@@ -6,7 +6,7 @@ import useCategoryStore from "@/store/use-category-store";
 import useLanguageStore from "@/store/use-language-store";
 import useManageGameStore from "@/store/use-manage-game-store";
 import useTagStore from "@/store/use-tag-store";
-import { GameInfo } from "@/types/game";
+import { GameInfoFieldType } from "@/types/game";
 import {
   Checkbox,
   Form,
@@ -23,7 +23,7 @@ import TextArea from "antd/es/input/TextArea";
 import Paragraph from "antd/es/typography/Paragraph";
 import { useEffect, useState } from "react";
 
-type FieldType = GameInfo;
+type FieldType = GameInfoFieldType;
 
 const pricingOptions: CheckboxGroupProps<string>["options"] = [
   { label: "Free", value: "Free" },
@@ -31,7 +31,7 @@ const pricingOptions: CheckboxGroupProps<string>["options"] = [
 ];
 const releaseStatusOptions = GAME_REALEASE_STATUS;
 const visibilityStatusOptions = GAME_VISIBILITY_STATUS;
-const GameInfoForm = ({ form }: { form: FormInstance<any> }) => {
+const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
   const [allowDonate, setAllowDonate] = useState(true);
   const [isFree, setIsFree] = useState(true);
   const { isLoaded, gameInfo } = useManageGameStore();

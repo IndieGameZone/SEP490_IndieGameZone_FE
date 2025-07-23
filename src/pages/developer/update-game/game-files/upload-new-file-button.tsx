@@ -37,6 +37,7 @@ type FieldType = {
   displayName: string;
   platformId: string;
   file: UploadFile;
+  version: string;
 };
 
 const UploadNewFileButton = () => {
@@ -56,13 +57,24 @@ const UploadNewFileButton = () => {
   }, [platforms]);
 
   const displayNameValidator = async (_: any, value: string) => {
-    if (gameFiles.find((x) => x.displayName == value)) {
+    const version = form.getFieldValue("version");
+    const platformId = form.getFieldValue("platformId");
+
+    const isDuplicate = gameFiles.some(
+      (x) =>
+        x.displayName === value &&
+        x.version === version &&
+        x.platform.id === platformId
+    );
+
+    if (isDuplicate) {
       return Promise.reject(
         new Error(
-          "Each file must have a unique display name. Please include a version number like 'v1.0' or build name to differentiate!"
+          "A file with the same display name, version, and platform already exists! Please change one of them"
         )
       );
     }
+
     return Promise.resolve();
   };
 
@@ -90,30 +102,47 @@ const UploadNewFileButton = () => {
     setFileList([newFile]);
 
     form.setFieldsValue({ displayName: file.name });
-    form.validateFields(["displayName"]);
     setFileUrl(null);
     return false;
   };
 
   const uploadFileToAPI = async (file: File) => {
-    console.log("Aye, I upload again. Not good!");
     const formData = new FormData();
     formData.append("file", file);
-    const response = await axiosClient.post("/api/files", formData, {
-      onUploadProgress: (progressEvent) => {
-        const percent = Math.round(
-          (progressEvent.loaded * 100) / (progressEvent.total || 1)
-        );
-        setUploadProgress(percent);
-      },
-    });
-    return response.data;
+
+    try {
+      const response = await axiosClient.post("/api/files", formData, {
+        onUploadProgress: (progressEvent) => {
+          const percent = Math.round(
+            (progressEvent.loaded * 100) / (progressEvent.total || 1)
+          );
+          setUploadProgress(percent);
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      if (
+        error.response?.status === 400 &&
+        error.response?.data?.detail ===
+          "File scan failed. Please ensure the file is safe and appropriate."
+      ) {
+        const message =
+          "The file couldn't be uploaded because it didn't pass our safety check. Please make sure the file is safe and try again.";
+        messageApi.error(message);
+        setErrorMessage(message);
+      } else {
+        messageApi.error("Upload failed! Please try again.");
+        setErrorMessage("Upload failed! Please try again.");
+      }
+
+      throw error;
+    }
   };
 
   const submitFormData = async (data: FieldType, fileUrl: string) => {
     if (!game) return;
     const result = await addGameFiles(game.id, [
-      { file: fileUrl, platformId: data.platformId },
+      { file: fileUrl, platformId: data.platformId, version: data.version },
     ]);
     if (result.error) {
       throw Error("Failed to attach file!");
@@ -185,6 +214,12 @@ const UploadNewFileButton = () => {
       handleSubmitLogic(formDataCache);
     }
   };
+
+  const handleFormChange = (changedValues: any) => {
+    if (changedValues !== undefined) {
+      form.validateFields(["displayName"]);
+    }
+  };
   return (
     <>
       <Button type="primary" onClick={showModal} icon={<FaUpload />}>
@@ -227,6 +262,7 @@ const UploadNewFileButton = () => {
           layout="vertical"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
+          onValuesChange={handleFormChange}
         >
           <Form.Item<FieldType>
             label="Upload File"
@@ -241,7 +277,8 @@ const UploadNewFileButton = () => {
               showUploadList={{
                 extra: ({ size = 0 }) => (
                   <span style={{ color: "#cccccc" }}>
-                    {" "}({formatBytes(size)})
+                    {" "}
+                    ({formatBytes(size)})
                   </span>
                 ),
                 showRemoveIcon: true,
@@ -281,6 +318,18 @@ const UploadNewFileButton = () => {
               disabled={loading}
               options={platformsOptions}
             ></Select>
+          </Form.Item>
+          <Form.Item<FieldType>
+            label="Version"
+            name="version"
+            rules={[{ required: true, message: "Please enter a version" }]}
+            extra="Specify the version of this build (like v1.0, v2.3-beta etc.)"
+            style={{ marginBottom: 10 }}
+          >
+            <Input
+              placeholder="Enter version (e.g. v1.0.2)"
+              disabled={loading}
+            />
           </Form.Item>
           {loading && uploadProgress > 0 && uploadProgress < 100 && (
             <Progress

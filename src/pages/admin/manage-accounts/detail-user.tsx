@@ -7,7 +7,6 @@ import {
   Button,
   Descriptions,
   Space,
-  message,
   Spin,
   Row,
   Col,
@@ -18,7 +17,6 @@ import {
 import {
   ArrowLeftOutlined,
   UserOutlined,
-  DeleteOutlined,
   PhoneOutlined,
   MailOutlined,
   CalendarOutlined,
@@ -34,7 +32,6 @@ import {
   UserSwitchOutlined,
 } from "@ant-design/icons";
 import { User } from "@/types/user";
-import { FaBan } from "react-icons/fa";
 import ViewHistoryBanButton from "@/components/buttons/view-history-ban-button";
 import useUserStore from "@/store/use-user-store";
 
@@ -44,7 +41,7 @@ const DetailUser: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
+  // const [messageApi, contextHolder] = message.useMessage();
   const user = useUserStore((state) => state.user);
   const fetchUserById = useUserStore((state) => state.fetchUserById);
 
@@ -55,14 +52,14 @@ const DetailUser: React.FC = () => {
     }
   }, [id, fetchUserById]);
 
-  const handleEdit = () => {
-    messageApi.info(`Edit user: ${user?.fullname || user?.userName}`);
-  };
+  // const handleEdit = () => {
+  //   messageApi.info(`Edit user: ${user?.fullname || user?.userName}`);
+  // };
 
-  const handleDelete = () => {
-    const displayName = user?.fullname || user?.userName;
-    messageApi.info(`Delete user: ${displayName}`);
-  };
+  // const handleDelete = () => {
+  //   const displayName = user?.fullname || user?.userName;
+  //   messageApi.info(`Delete user: ${displayName}`);
+  // };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -130,7 +127,7 @@ const DetailUser: React.FC = () => {
   if (!user) {
     return (
       <div className="p-6">
-        {contextHolder}
+        {/* {contextHolder} */}
         <Button icon={<ArrowLeftOutlined />} onClick={() => navigate("/admin/manage-accounts")} className="mb-4">
           Back to Accounts
         </Button>

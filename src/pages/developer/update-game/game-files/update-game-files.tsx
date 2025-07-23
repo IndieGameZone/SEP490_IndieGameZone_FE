@@ -19,6 +19,7 @@ const UpdateGameFiles = () => {
         dataSource={gameFiles}
         loading={loadingFiles}
         rowKey={"id"}
+        scroll={{ x: "max-content" }}
       />
       <div className="flex justify-between mb-2">
         <h2 className="font-bold mb-3">Install instruction</h2>

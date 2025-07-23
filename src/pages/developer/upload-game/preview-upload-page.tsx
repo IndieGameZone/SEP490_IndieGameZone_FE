@@ -17,12 +17,13 @@ import {
   FaDownload,
   FaFileArchive,
   FaLinux,
+  FaRegClock,
   FaShoppingCart,
   FaWindows,
 } from "react-icons/fa";
 import { IoSend } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import UploadSteps from "./upload-steps";
+import UploadSteps from "./misc/upload-steps";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
@@ -30,11 +31,12 @@ import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import ReactPlayer from "react-player/youtube";
-import { formatDate, formatDuration } from "@/lib/date-n-time";
+import { formatDate, formatDuration, timeAgo } from "@/lib/date-n-time";
 import ScrollToTop from "@/components/scroll-to-top";
 import { formatCurrencyVND } from "@/lib/currency";
 import usePlatformStore from "@/store/use-platform-store";
 import { GAME_REALEASE_STATUS } from "@/constants/game";
+import { formatBytes } from "@/lib/file";
 
 const PreviewUploadPage = () => {
   const { isSaved, gameMediaAssets, gameInfo, gameFiles } =
@@ -326,29 +328,56 @@ const PreviewUploadPage = () => {
                 key={`game-file-${index}`}
                 className="flex gap-2 items-center p-2"
               >
-                <Button type="primary">Download</Button>
-                {file.platformId == defaultPlatforms.windowsPlatformId ? (
-                  <FaWindows />
-                ) : file.platformId == defaultPlatforms.macOsPlatformId ? (
-                  <FaApple />
-                ) : file.platformId == defaultPlatforms.linuxPlatformId ? (
-                  <FaLinux />
-                ) : (
-                  <FaFileArchive />
-                )}
-                <span className="font-semibold max-w-50 text-ellipsis overflow-clip">
-                  {file.displayName}
-                </span>
-                <span className="text-sm text-zinc-400">
-                  ({(file.fileSize / 1024 / 1024).toFixed(1)} MB)
-                </span>
+                <Button
+                  type="primary"
+                  size="large"
+                  icon={
+                    file.platformId == defaultPlatforms.windowsPlatformId ? (
+                      <FaWindows />
+                    ) : file.platformId == defaultPlatforms.macOsPlatformId ? (
+                      <FaApple />
+                    ) : file.platformId == defaultPlatforms.linuxPlatformId ? (
+                      <FaLinux />
+                    ) : (
+                      <FaFileArchive />
+                    )
+                  }
+                >
+                  Download
+                </Button>
+
+                <div>
+                  <p className="font-semibold max-w-50 text-ellipsis overflow-clip">
+                    {file.displayName}
+                    <span className="text-sm text-zinc-400">
+                      {" "}
+                      ({formatBytes(file.fileSize)})
+                    </span>
+                  </p>
+                  <p className="text-xs">
+                    {file.version} • <FaRegClock className="inline mb-0.5 me-1" />
+                    {timeAgo(new Date(Date.now() - 24 * 60 * 60 * 1000))}
+                  </p>
+                </div>
               </div>
             );
           })}
           <hr className="border-zinc-700" />
-          <h3>Download and install instructions from {profile?.userName}:</h3>
-          <div className="bg-zinc-800 p-3 font-mono">
-            <TiptapView value={gameFiles.installInstruction} />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <h3 className="font-semibold mb-1">
+                Download and install instructions from {profile?.userName}:
+              </h3>
+              <div className="bg-zinc-800 p-3 font-mono">
+                <TiptapView value={gameFiles.installInstruction} />
+              </div>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-1">Version notes:</h3>
+              <div className="bg-zinc-800 p-3 font-mono">
+                <TiptapView value={gameFiles.versionDescription} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
