@@ -14,8 +14,10 @@ const PostDetailModal = ({ post, handleCancel }: PostDetailModalProps) => {
       closable
       open={post != null}
       onCancel={handleCancel}
+      footer={null}
     >
       {post && <PostCard post={post} />}
+      
     </Modal>
   );
 };

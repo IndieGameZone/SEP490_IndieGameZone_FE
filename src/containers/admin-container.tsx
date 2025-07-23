@@ -17,7 +17,7 @@ const ManageLanguages = lazy(() => import("@/pages/admin/manage-languages/manage
 const ManageTags = lazy(() => import("@/pages/admin/manage-tags/manage-tags"));
 const AdminNotFoundPage = lazy(() => import("@/pages/errors/simple-not-found-page"));
 const ManageReportReason = lazy(() => import("@/pages/admin/manage-report-reason/manage-report-reason"));
-
+const ManageReport = lazy(() => import("@/pages/admin/manage-report/manage-report"));
 const AdminContainer = () => {
   return (
     <AdminLayout>
@@ -28,6 +28,7 @@ const AdminContainer = () => {
           <Route path="*" element={<AdminNotFoundPage />} />
           <Route path="/manage-languages" element={<ManageLanguages />} />
           <Route path="/manage-tags" element={<ManageTags />} />
+          <Route path="/manage-report" element={<ManageReport />} />
           <Route path="/manage-games" element={<ManageGames />} />
           <Route path="/manage-accounts" element={<ManageAccounts />} />
           <Route path="/manage-categories" element={<ManageCategories />} />
