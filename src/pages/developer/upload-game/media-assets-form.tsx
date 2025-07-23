@@ -1,6 +1,6 @@
 import { getBase64 } from "@/lib/file";
 import useManageGameStore from "@/store/use-manage-game-store";
-import { GameMediaAssets } from "@/types/game";
+import { GameMediaAssetsFieldType } from "@/types/game";
 import {
   Button,
   Form,
@@ -20,14 +20,14 @@ import { HiMiniInboxArrowDown } from "react-icons/hi2";
 
 const { Dragger } = Upload;
 
-type FieldType = GameMediaAssets;
+type FieldType = GameMediaAssetsFieldType;
 
 type UploadFileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const YOUTUBE_REGEX =
   /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]{11}$/;
 
-const MediaAssetsForm = ({ form }: { form: FormInstance<any> }) => {
+const MediaAssetsForm = ({ form }: { form: FormInstance<FieldType> }) => {
   const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>("");
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");

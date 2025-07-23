@@ -11,7 +11,7 @@ export type Image = {
     image: string;
 }
 
-export type GameInfo = {
+export type GameInfoFieldType = {
     name: string;
     shortDescription: string;
     averageSession: number;
@@ -27,13 +27,13 @@ export type GameInfo = {
     visibility: GameVisibility,
 };
 
-export type GameMediaAssets = {
+export type GameMediaAssetsFieldType = {
     coverImage: UploadFile[];
     gameImages: UploadFile[];
     videoLink: string;
 };
 
-export type GameFiles = {
+export type GameFilesFieldType = {
     files: {
         displayName: string;
         file: UploadFile[];
@@ -42,12 +42,13 @@ export type GameFiles = {
         version: string;
     }[];
     installInstruction: string;
+    versionDescription: string;
 }
 
-export type GameData = {
-    gameInfo: GameInfo,
-    gameMediaAssets: GameMediaAssets,
-    gameFiles: GameFiles
+export type GameFieldTypes = {
+    gameInfo: GameInfoFieldType,
+    gameMediaAssets: GameMediaAssetsFieldType,
+    gameFiles: GameFilesFieldType
 }
 
 export type Game = {
@@ -81,6 +82,7 @@ export type Game = {
     moderator?: User;
     censorReason?: string;
     hasCommercial: boolean;
+    versionDescription: string;
 }
 
 export type GameStatus = "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";
@@ -116,6 +118,7 @@ export type WishlistItem = {
     }
     addAt: string;
 }
+
 type GameImage = {
     id: string;
     image: string;

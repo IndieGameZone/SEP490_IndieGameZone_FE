@@ -1,13 +1,13 @@
-import { GameData, GameFiles, GameInfo, GameMediaAssets } from '@/types/game';
+import { GameFieldTypes, GameFilesFieldType, GameInfoFieldType, GameMediaAssetsFieldType } from '@/types/game';
 import { create } from 'zustand';
 
 interface ManageGameState {
-    gameInfo: GameInfo;
-    gameMediaAssets: GameMediaAssets;
-    gameFiles: GameFiles;
-    setGameInfo: (info: GameInfo) => void;
-    setGameMediaAssets: (mediaAssets: GameMediaAssets) => void;
-    setGameFiles: (files: GameFiles) => void;
+    gameInfo: GameInfoFieldType;
+    gameMediaAssets: GameMediaAssetsFieldType;
+    gameFiles: GameFilesFieldType;
+    setGameInfo: (info: GameInfoFieldType) => void;
+    setGameMediaAssets: (mediaAssets: GameMediaAssetsFieldType) => void;
+    setGameFiles: (files: GameFilesFieldType) => void;
     loadState: () => boolean;
     saveState: () => void;
     clearState: () => void;
@@ -19,7 +19,7 @@ interface ManageGameState {
     isLoaded: boolean;
 }
 
-const initState: GameData = {
+const initState: GameFieldTypes = {
     gameInfo: {
         name: "",
         shortDescription: "",
@@ -42,7 +42,8 @@ const initState: GameData = {
     },
     gameFiles: {
         files: [],
-        installInstruction: ""
+        installInstruction: "",
+        versionDescription: "",
     },
 }
 

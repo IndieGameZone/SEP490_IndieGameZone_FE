@@ -37,6 +37,7 @@ type FieldType = {
   displayName: string;
   platformId: string;
   file: UploadFile;
+  version: string;
 };
 
 const UploadNewFileButton = () => {
@@ -113,7 +114,7 @@ const UploadNewFileButton = () => {
   const submitFormData = async (data: FieldType, fileUrl: string) => {
     if (!game) return;
     const result = await addGameFiles(game.id, [
-      { file: fileUrl, platformId: data.platformId },
+      { file: fileUrl, platformId: data.platformId, version: data.version },
     ]);
     if (result.error) {
       throw Error("Failed to attach file!");
@@ -241,7 +242,8 @@ const UploadNewFileButton = () => {
               showUploadList={{
                 extra: ({ size = 0 }) => (
                   <span style={{ color: "#cccccc" }}>
-                    {" "}({formatBytes(size)})
+                    {" "}
+                    ({formatBytes(size)})
                   </span>
                 ),
                 showRemoveIcon: true,

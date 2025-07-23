@@ -7,14 +7,18 @@ import GameFilesForm from "./game-files-form/game-files-form";
 import useManageGameStore from "@/store/use-manage-game-store";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { GameFiles, GameInfo, GameMediaAssets } from "@/types/game";
+import {
+  GameFilesFieldType,
+  GameInfoFieldType,
+  GameMediaAssetsFieldType,
+} from "@/types/game";
 import { FaArrowRight, FaUpload } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 
 const DevUploadGamePage = () => {
-  const [infoForm] = Form.useForm<GameInfo>();
-  const [mediaForm] = Form.useForm<GameMediaAssets>();
-  const [fileForm] = Form.useForm<GameFiles>();
+  const [infoForm] = Form.useForm<GameInfoFieldType>();
+  const [mediaForm] = Form.useForm<GameMediaAssetsFieldType>();
+  const [fileForm] = Form.useForm<GameFilesFieldType>();
   const [messageApi, contextHolder] = message.useMessage();
   const {
     setGameInfo,
@@ -87,7 +91,7 @@ const DevUploadGamePage = () => {
     <div className="bg-zinc-900">
       {contextHolder}
       <div className="p-5 bg-orange-900 border-orange-500 border text-2xl flex gap-3">
-        <FaUpload className="mt-0.5"/>
+        <FaUpload className="mt-0.5" />
         <h1 className="font-bold text-2xl">Upload a new game</h1>
       </div>
       {/* <PaymentConfigWarning /> */}
