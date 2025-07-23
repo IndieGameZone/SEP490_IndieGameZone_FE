@@ -5,6 +5,7 @@ export const useFileValidation = () => {
 
     const filesValidator = async (_: any, files: any) => {
         if (!files || files.length < 1) {
+            setFilesError("At least one file is required");
             return Promise.reject(new Error("At least one file is required"));
         }
 

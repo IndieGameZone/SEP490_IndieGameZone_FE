@@ -5,7 +5,7 @@ import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
 const DashBoardPage = lazy(() => import("@/pages/admin/dashboard-page"));
-const DetailUser = lazy(() => import("@/pages/admin/manage-accounts/datail-user"));
+const DetailUser = lazy(() => import("@/pages/admin/manage-accounts/detail-user"));
 const ManageAccounts = lazy(() => import("@/pages/admin/manage-accounts/manage-accounts"));
 const ManageAgeRestrictionPage = lazy(
   () => import("@/pages/admin/manage-age-restrictions/manage-age-restrictions-page")

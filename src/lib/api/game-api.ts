@@ -44,6 +44,7 @@ type AddGameRequest = {
   languageIds: string[];
   tagIds: string[];
   gameImages: string[];
+  versionDescription: string;
 };
 
 export const addGame = async (developerId: string, request: AddGameRequest) => {
@@ -61,6 +62,7 @@ export const addGame = async (developerId: string, request: AddGameRequest) => {
   formData.append("Price", request.price + "");
   formData.append("AverageSession", request.averageSession + "");
   formData.append("AgeRestrictionId", request.ageRestrictionId);
+  formData.append("VersionDescription", request.versionDescription);
   request.languageIds.forEach((x) => formData.append("LanguageIds", x));
   request.tagIds.forEach((x) => formData.append("TagIds", x));
   request.gameImages.forEach((x) => formData.append("GameImages", x));

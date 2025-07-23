@@ -298,6 +298,7 @@ const UploadProcessPage = () => {
       tagIds: gameInfo.tagIds,
       videoLink: gameMediaAssets.videoLink,
       visibility: gameInfo.visibility,
+      versionDescription: gameFiles.versionDescription,
     });
     if (uploadResult.error) {
       setErrorMessage(`Failed to upload game information Please try again.`);

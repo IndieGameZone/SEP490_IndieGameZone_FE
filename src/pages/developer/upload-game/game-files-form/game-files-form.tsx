@@ -61,7 +61,7 @@ const GameFilesForm = ({ form }: { form: FormInstance<FieldType> }) => {
                 style={{ marginBottom: 16 }}
               />
             )}
-            <Form.Item>
+            <Form.Item extra="You can upload up to 6 files.">
               <Button
                 type="dashed"
                 onClick={() => add()}
@@ -75,7 +75,18 @@ const GameFilesForm = ({ form }: { form: FormInstance<FieldType> }) => {
           </>
         )}
       </Form.List>
-      <Form.Item name="installInstruction" label="Install instructions">
+      <Form.Item
+        name="installInstruction"
+        label={<span className="font-bold">Install instructions</span>}
+        extra="Add any special steps players need to follow to install the game."
+      >
+        <TiptapEditor />
+      </Form.Item>
+      <Form.Item
+        name="versionDescription"
+        label={<span className="font-bold">Version notes</span>}
+        extra="Tell players what changed in this version!"
+      >
         <TiptapEditor />
       </Form.Item>
     </Form>

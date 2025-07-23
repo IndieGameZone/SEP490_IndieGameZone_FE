@@ -3,7 +3,14 @@ import TiptapView from "@/components/tiptap/tiptap-view";
 import { GamePost } from "@/types/game-post";
 import { Avatar, Button, Dropdown, MenuProps, Tag } from "antd";
 import { useMemo, useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaFlag, FaLink, FaRegComment, FaRegHeart } from "react-icons/fa";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaFlag,
+  FaLink,
+  FaRegComment,
+  FaRegHeart,
+} from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { IoShareSocialOutline } from "react-icons/io5";
 import Lightbox from "yet-another-react-lightbox";
@@ -23,7 +30,10 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
     return post.postImages.map((image) => image.image);
   }, [post]);
 
-  const slides = useMemo(() => images.map((image) => ({ src: image })), [images]);
+  const slides = useMemo(
+    () => images.map((image) => ({ src: image })),
+    [images]
+  );
 
   const moreOptionItems: MenuProps["items"] = [
     {
@@ -32,7 +42,9 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
       key: "0",
     },
     {
-      label: <div onClick={() => setReportPostModalOpen(true)}>Report post</div>,
+      label: (
+        <div onClick={() => setReportPostModalOpen(true)}>Report post</div>
+      ),
       key: "1",
       icon: <FaFlag />,
     },
@@ -54,13 +66,18 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
 
   return (
     <div>
-      <Lightbox index={currentImage} slides={slides} open={lightboxIndex >= 0} close={() => setLightboxIndex(-1)} />
+      <Lightbox
+        index={currentImage}
+        slides={slides}
+        open={lightboxIndex >= 0}
+        close={() => setLightboxIndex(-1)}
+      />
       <div className="bg-zinc-800 w-full p-3 rounded">
         <div className="flex justify-between items-center gap-3">
           <div className="flex items-center gap-3">
-            {/* <Avatar src={post.user.avatar} /> */}
+            <Avatar src={post.user.avatar} />
             <div>
-              {/* <div className="font-semibold">{post.user.userName}</div> */}
+              <div className="font-semibold">{post.user.userName}</div>
               <div className="text-xs text-gray-400">2 days ago</div>
             </div>
           </div>
@@ -120,15 +137,27 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
           </div>
 
           <div className="flex items-center gap-3 mt-2">
-            <Button icon={<FaRegHeart className="text-gray-400" />} shape="round" type="text">
+            <Button
+              icon={<FaRegHeart className="text-gray-400" />}
+              shape="round"
+              type="text"
+            >
               <span>{post.numberOfLikes}</span>
             </Button>
 
-            <Button icon={<FaRegComment className="text-gray-400" />} shape="round" type="text">
+            <Button
+              icon={<FaRegComment className="text-gray-400" />}
+              shape="round"
+              type="text"
+            >
               <span>{post.numberOfComments}</span>
             </Button>
 
-            <Button icon={<IoShareSocialOutline className="text-gray-400" />} shape="circle" type="text" />
+            <Button
+              icon={<IoShareSocialOutline className="text-gray-400" />}
+              shape="circle"
+              type="text"
+            />
           </div>
         </div>
       </div>
