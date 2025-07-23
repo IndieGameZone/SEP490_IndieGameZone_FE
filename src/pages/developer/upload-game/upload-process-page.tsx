@@ -9,7 +9,7 @@ import checkedIcon from "@/assets/checked.png";
 import { axiosClient } from "@/lib/api/config/axios-client";
 import uploadingAnimation from "@/assets/lotties/uploading.json";
 import scanningAnimation from "@/assets/lotties/scanning.json";
-import HarmfulFileWarning from "./harmful-file-warning";
+import HarmfulFileWarning from "./misc/harmful-file-warning";
 import LottiePlayer from "@/components/lottie-player";
 
 const TASKS = [

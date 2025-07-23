@@ -93,11 +93,12 @@ const DownloadCard = ({
             {file.displayName ? file.displayName : "unnamed file"}
           </span>
           <span className="text-sm text-zinc-400">
-            {" "}({formatMegabytes(file.size)})
+            {" "}
+            ({formatMegabytes(file.size)})
           </span>
         </div>
         <p className="text-xs">
-          <FaRegClock className="inline mb-0.5 me-1" />
+          {file.version} • <FaRegClock className="inline mb-0.5 me-1" />
           {timeAgo(new Date(Date.now() - 24 * 60 * 60 * 1000))}
         </p>
       </div>

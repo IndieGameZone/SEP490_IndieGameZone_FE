@@ -125,6 +125,7 @@ const DownloadGamePage = () => {
             <InstallInstructions
               instruction={installInstruction}
               developerName={game.developer.userName}
+              versionNotes={game.versionDescription}
             />
           )}
         </div>
@@ -197,19 +198,37 @@ const GameContent = ({
 
 interface InstallInstructionsProps {
   instruction: string;
+  versionNotes: string;
   developerName: string;
 }
 
 const InstallInstructions = ({
   instruction,
+  versionNotes,
   developerName,
 }: InstallInstructionsProps) => (
-  <div className="p-5 border-y border-zinc-700">
-    <p className="text-sm font-bold mb-2">
-      Download and install instructions from {developerName}:
-    </p>
-    <div className="p-3 bg-zinc-800 font-mono">
-      <TiptapView value={instruction} />
+  <div className="p-5 border-y border-zinc-700 grid grid-cols-2 gap-3">
+    <div>
+      <p className="text-sm font-bold mb-2">
+        Download and install instructions from {developerName}:
+      </p>
+      <div className="p-3 bg-zinc-800 font-mono">
+        {instruction ? (
+          <TiptapView value={instruction} />
+        ) : (
+          <span className="text-gray-500">None</span>
+        )}
+      </div>
+    </div>
+    <div>
+      <p className="text-sm font-bold mb-2">Version notes</p>
+      <div className="p-3 bg-zinc-800 font-mono">
+        {versionNotes ? (
+          <TiptapView value={versionNotes} />
+        ) : (
+          <span className="text-gray-500">None</span>
+        )}
+      </div>
     </div>
   </div>
 );

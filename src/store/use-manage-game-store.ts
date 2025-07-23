@@ -66,6 +66,7 @@ const useManageGameStore = create<ManageGameState>((set, get) => ({
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
             const parsed = JSON.parse(stored);
+            console.log(parsed);
             set({
                 gameInfo: parsed.info,
                 gameMediaAssets: parsed.mediaAssets,

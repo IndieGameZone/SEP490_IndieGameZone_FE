@@ -224,6 +224,22 @@ const GameInfoTab = () => {
     },
   ];
 
+  const versionDescriptionItems: DescriptionsProps["items"] = [
+    {
+      key: "version-description",
+      label: "Version Notes",
+      children: game.versionDescription ? (
+        <ExpandableWrapper>
+          <div className="font-mono">
+            <TiptapView value={game.versionDescription} />
+          </div>
+        </ExpandableWrapper>
+      ) : (
+        <span className="text-gray-500">None</span>
+      ),
+    },
+  ];
+
   const slides = useMemo(() => {
     return game
       ? [
@@ -355,6 +371,13 @@ const GameInfoTab = () => {
           layout="vertical"
           bordered
           items={descriptionItems}
+          style={{ marginTop: 15 }}
+        />
+        <Descriptions
+          column={2}
+          layout="vertical"
+          bordered
+          items={versionDescriptionItems}
           style={{ marginTop: 15 }}
         />
         <Descriptions

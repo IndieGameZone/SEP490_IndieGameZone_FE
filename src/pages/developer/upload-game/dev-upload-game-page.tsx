@@ -1,7 +1,7 @@
 import { Button, Form, message } from "antd";
-import UploadGuideLine from "./upload-guideline";
+import UploadGuideLine from "./misc/upload-guideline";
 import GameInfoForm from "./game-info-form";
-import StepLayout from "./step-layout";
+import StepLayout from "./misc/step-layout";
 import MediaAssetsForm from "./media-assets-form";
 import GameFilesForm from "./game-files-form/game-files-form";
 import useManageGameStore from "@/store/use-manage-game-store";
@@ -83,6 +83,7 @@ const DevUploadGamePage = () => {
       fileForm.setFieldsValue({
         files: gameFiles.files,
         installInstruction: gameFiles.installInstruction,
+        versionDescription: gameFiles.versionDescription,
       });
     }
   }, [isLoaded]);
