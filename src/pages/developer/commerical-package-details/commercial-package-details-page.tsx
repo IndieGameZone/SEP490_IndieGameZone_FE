@@ -20,11 +20,9 @@ import { formatDate } from "@/lib/date-n-time";
 import { FaWallet } from "react-icons/fa";
 import { purchaseCommercialPackage } from "@/lib/api/payment-api";
 import useAuthStore from "@/store/use-auth-store";
-import customParseFormat from "dayjs/plugin/customParseFormat";
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
-dayjs.extend(customParseFormat);
 
 const CommericalPackageDetailsPage = () => {
   const { packageId } = useParams();
@@ -37,8 +35,8 @@ const CommericalPackageDetailsPage = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [isConflict, setIsConflict] = useState(false);
   const [unavailableDates, setUnavailableDates] = useState<Dayjs[]>([]);
-  const [isPaying, setIsPaying] = useState(false); // <== For payment loading
-  const { profile } = useAuthStore(); // Lấy user profile từ store
+  const [isPaying, setIsPaying] = useState(false);
+  const { profile } = useAuthStore();
 
   const handleCalendarSelect = (date: Dayjs, conflicts: Dayjs[]) => {
     setSelectedDate(date);
@@ -85,9 +83,7 @@ const CommericalPackageDetailsPage = () => {
     if (result.error) {
       messageApi.error("Failed to check available dates! Please try again.");
     } else {
-      const convertedData = result.data.map((x: string) =>
-        dayjs(x, "DD/MM/YYYY")
-      );
+      const convertedData = result.data.map((x: string) => dayjs(x));
       setUnavailableDates(convertedData);
     }
   };
