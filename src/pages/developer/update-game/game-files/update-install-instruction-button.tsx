@@ -4,7 +4,7 @@ import { updateGame } from "@/lib/api/game-api";
 import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import { Button, Form, FormProps, Modal } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPen, FaSave } from "react-icons/fa";
 
 type FieldType = {
@@ -68,6 +68,14 @@ const UpdateInstallInstructionButton = () => {
       setIsModalOpen(false);
     }
   };
+
+  useEffect(() => {
+    if (installInstruction) {
+      form.setFieldsValue({
+        installInstruction: installInstruction,
+      });
+    }
+  }, [installInstruction]);
 
   return (
     <>
