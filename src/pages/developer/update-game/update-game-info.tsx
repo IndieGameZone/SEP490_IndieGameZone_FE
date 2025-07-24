@@ -88,6 +88,7 @@ const UpdateGameInfo = () => {
       tagIds: values.tagIds,
       videoLink: values.videoLink,
       visibility: values.visibility,
+      versionDescription: game.versionDescription
     });
     setLoading(false);
     if (result.error) {

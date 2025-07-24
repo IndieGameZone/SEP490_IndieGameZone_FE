@@ -5,9 +5,10 @@ import { GameFile } from "@/types/game";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import UpdateInstallInstructionButton from "./update-install-instruction-button";
 import UploadNewFileButton from "./upload-new-file-button";
+import UpdateVersionDescription from "./update-version-description-button";
 
 const UpdateGameFiles = () => {
-  const { loadingFiles, gameFiles, installInstruction } = useGameStore();
+  const { loadingFiles, gameFiles, installInstruction, game } = useGameStore();
   return (
     <div className="p-5 bg-zinc-900">
       <div className="flex items-center justify-between mb-2">
@@ -21,8 +22,25 @@ const UpdateGameFiles = () => {
         rowKey={"id"}
         scroll={{ x: "max-content" }}
       />
-      <div className="flex justify-between mb-2">
-        <h2 className="font-bold mb-3">Install instruction</h2>
+      <hr className="my-3 border-zinc-700" />
+
+      <div className="flex justify-between mb-2 items-center">
+        <h2 className="font-bold">Version notes</h2>
+        <UpdateVersionDescription />
+      </div>
+
+      <div className="rounded bg-zinc-800 p-3 border border-zinc-700">
+        {game?.versionDescription ? (
+          <div className="font-mono">
+            <TiptapView value={game.versionDescription} />
+          </div>
+        ) : (
+          <span className="text-zinc-500">None</span>
+        )}
+      </div>
+      <hr className="my-3 border-zinc-700" />
+      <div className="flex justify-between mb-2 mt-5 items-center">
+        <h2 className="font-bold">Install instructions</h2>
         <UpdateInstallInstructionButton />
       </div>
       <div className="rounded bg-zinc-800 p-3 border border-zinc-700">

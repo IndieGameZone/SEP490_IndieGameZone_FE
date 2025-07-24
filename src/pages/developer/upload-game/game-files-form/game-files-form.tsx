@@ -78,14 +78,14 @@ const GameFilesForm = ({ form }: { form: FormInstance<FieldType> }) => {
       <Form.Item
         name="installInstruction"
         label={<span className="font-bold">Install instructions</span>}
-        extra="Add any special steps players need to follow to install the game."
+        extra="Help players install your game on their specific platform"
       >
         <TiptapEditor />
       </Form.Item>
       <Form.Item
         name="versionDescription"
         label={<span className="font-bold">Version notes</span>}
-        extra="Tell players what changed in this version!"
+        extra="Tell players what changed in your versions!"
       >
         <TiptapEditor />
       </Form.Item>

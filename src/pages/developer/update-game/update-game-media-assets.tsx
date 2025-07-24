@@ -83,6 +83,7 @@ const UpdateGameMediaAssets = () => {
       tagIds: form.getFieldValue("tagIds"),
       videoLink: form.getFieldValue("videoLink"),
       visibility: form.getFieldValue("visibility"),
+      versionDescription: game.versionDescription,
     });
     if (result.error) {
       messageApi.error("Failed to update cover image");
@@ -192,12 +193,12 @@ const UpdateGameMediaAssets = () => {
           />
         </div>
 
-        <div className="grid grid-cols-4 gap-3 bg-zinc-900 mb-2">
+        <div className="grid grid-cols-4 gap-3 mb-2">
           {game.gameImages.map((image, index: number) => (
             <img
               key={`game-image-${index}`}
               src={image.image}
-              className="aspect-16/9 rounded highlight-hover cursor-pointer"
+              className="aspect-video object-contain rounded highlight-hover cursor-pointer bg-zinc-900"
               onClick={() => setIndex(index + 1)}
             />
           ))}
