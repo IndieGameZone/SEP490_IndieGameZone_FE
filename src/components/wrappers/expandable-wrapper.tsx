@@ -5,8 +5,8 @@ type ExpandableWrapperProps = {
   children: ReactNode;
   maxHeight?: number;
   variant?: "button" | "text";
-  expanded?: boolean; // ← allow external control
-  onToggle?: (expanded: boolean) => void; // ← external toggle handler
+  expanded?: boolean; 
+  onToggle?: (expanded: boolean) => void;
 };
 
 const ExpandableWrapper = ({
@@ -32,10 +32,10 @@ const ExpandableWrapper = ({
     const newValue = !isExpanded;
 
     if (isControlled) {
-      onToggle?.(newValue); // call external toggle handler
+      onToggle?.(newValue); 
     } else {
       setInternalExpanded(newValue);
-      onToggle?.(newValue); // still notify external listener if provided
+      onToggle?.(newValue); 
     }
   };
 
@@ -54,7 +54,7 @@ const ExpandableWrapper = ({
       </div>
 
       {isOverflowing && (
-        <div className="text-center mt-2">
+        <div className={`${variant == "button" ? "text-center  mt-2" : ""}`}>
           {variant === "button" ? (
             <Button
               onClick={toggleExpanded}
@@ -66,7 +66,7 @@ const ExpandableWrapper = ({
           ) : (
             <span
               onClick={toggleExpanded}
-              className="cursor-pointer text-zinc-500 hover:underline"
+              className="cursor-pointer text-zinc-500 hover:underline font-semibold"
             >
               {isExpanded ? "Show less" : "Show more"}
             </span>
