@@ -1,12 +1,20 @@
 import { GamePost } from "@/types/game-post";
 import { Avatar, Button, Dropdown, MenuProps, Modal } from "antd";
 import { MouseEvent, useMemo, useState } from "react";
-import PostCard from "./post-card";
-import { FaChevronLeft, FaChevronRight, FaFlag, FaLink, FaRegComment, FaRegHeart } from "react-icons/fa";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaFlag,
+  FaLink,
+  FaRegComment,
+  FaRegHeart,
+} from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { timeAgo } from "@/lib/date-n-time";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import { IoShareSocialOutline } from "react-icons/io5";
+import Lightbox from "yet-another-react-lightbox";
+import PostCommentForm from "./post-comment-form";
 
 interface PostDetailModalProps {
   post: GamePost | null;
@@ -19,7 +27,10 @@ const PostDetailModal = ({ post, handleCancel }: PostDetailModalProps) => {
     return post ? post.postImages.map((image) => image.image) : [];
   }, [post]);
 
-  const slides = useMemo(() => images.map((image) => ({ src: image })), [images]);
+  const slides = useMemo(
+    () => images.map((image) => ({ src: image })),
+    [images]
+  );
 
   const handlePrev = () => {
     setCurrentImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -62,6 +73,12 @@ const PostDetailModal = ({ post, handleCancel }: PostDetailModalProps) => {
       }}
       styles={{ content: { padding: "0" } }}
     >
+      <Lightbox
+        index={currentImage}
+        slides={slides}
+        open={lightboxIndex >= 0}
+        close={() => setLightboxIndex(-1)}
+      />
       <div className="grid grid-cols-2">
         <div className="relative">
           {images.length > 1 && (
@@ -85,40 +102,58 @@ const PostDetailModal = ({ post, handleCancel }: PostDetailModalProps) => {
             </>
           )}
           <img
-            className="w-full object-contain aspect-video rounded bg-zinc-900 my-2 cursor-pointer"
+            className="w-full object-contain rounded bg-zinc-900 my-2 cursor-pointer"
             src={images[currentImage]}
             alt={`Post Image ${currentImage + 1}`}
             onClick={() => setLightboxIndex(currentImage)}
           />
         </div>
-        <div className="flex flex-col">
-          <div className="flex justify-between items-center gap-3 p-3 border-b border-zinc-700 pe-10">
+
+        <div>
+          <div className="p-3 border-b border-zinc-700 pe-10">
             <div className="flex items-center gap-3">
               <Avatar src={post.user.avatar} />
               <div>
                 <div className="font-semibold">{post.user.userName}</div>
-                <div className="text-xs text-gray-400">{timeAgo(post.createdAt)}</div>
+                <div className="text-xs text-gray-400">
+                  {timeAgo(post.createdAt)}
+                </div>
               </div>
+            </div>
+          </div>
+          <div className="p-3 h-[60vh] overflow-auto pb-10">
+            <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
+            <TiptapView value={post.content} />
+            <hr className="my-3 border-zinc-700"/>
+          </div>
+          <PostCommentForm />
+          <div className="flex justify-between mt-2 border-t border-zinc-700 p-3">
+            <div className="flex items-center gap-3 ">
+              <Button
+                icon={<FaRegHeart className="text-gray-400" />}
+                shape="round"
+                type="text"
+              >
+                <span>{post.numberOfLikes}</span>
+              </Button>
+
+              <Button
+                icon={<FaRegComment className="text-gray-400 cursor-pointer" />}
+                shape="round"
+                type="text"
+              >
+                <span>{post.numberOfComments}</span>
+              </Button>
+
+              <Button
+                icon={<IoShareSocialOutline className="text-gray-400" />}
+                shape="circle"
+                type="text"
+              />
             </div>
             <Dropdown menu={{ items: moreOptionItems }} trigger={["click"]}>
               <Button icon={<IoMdMore />} shape="circle" type="text"></Button>
             </Dropdown>
-          </div>
-          <div className="p-3 flex-1">
-            <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
-            <TiptapView value={post.content} />
-          </div>
-
-          <div className="flex items-center gap-3 mt-2 border-t border-zinc-700 p-3">
-            <Button icon={<FaRegHeart className="text-gray-400" />} shape="round" type="text">
-              <span>{post.numberOfLikes}</span>
-            </Button>
-
-            <Button icon={<FaRegComment className="text-gray-400 cursor-pointer" />} shape="round" type="text">
-              <span>{post.numberOfComments}</span>
-            </Button>
-
-            <Button icon={<IoShareSocialOutline className="text-gray-400" />} shape="circle" type="text" />
           </div>
         </div>
       </div>

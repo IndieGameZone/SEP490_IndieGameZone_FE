@@ -72,12 +72,12 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
         </div>
 
         <div className="mt-2">
-          <h4 className="font-bold text-xl" onClick={handleViewPostDetail}>
+          <h4 className="font-bold text-xl cursor-pointer" onClick={handleViewPostDetail}>
             {post.title}
           </h4>
 
           {post.content.trim() && (
-            <ExpandableWrapper onToggle={handleViewPostDetail}>
+            <ExpandableWrapper>
               <TiptapView value={post.content} />
             </ExpandableWrapper>
           )}
