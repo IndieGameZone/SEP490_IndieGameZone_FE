@@ -12,5 +12,6 @@ export type GamePost = {
   postTags: { tag: Tag }[];
   numberOfComments: number;
   numberOfLikes: number;
+  createdAt: string;
   user: User;
 };

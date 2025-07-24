@@ -15,6 +15,7 @@ import { IoMdMore } from "react-icons/io";
 import { IoShareSocialOutline } from "react-icons/io5";
 import Lightbox from "yet-another-react-lightbox";
 import ReportPostModal from "@/components/report-modal/report-post-modal";
+import { timeAgo } from "@/lib/date-n-time";
 
 interface PostCardProps {
   post: GamePost;
@@ -78,7 +79,7 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
             <Avatar src={post.user.avatar} />
             <div>
               <div className="font-semibold">{post.user.userName}</div>
-              <div className="text-xs text-gray-400">2 days ago</div>
+              <div className="text-xs text-gray-400">{timeAgo(post.createdAt)}</div>
             </div>
           </div>
           <Dropdown menu={{ items: moreOptionItems }} trigger={["click"]}>
@@ -146,9 +147,10 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
             </Button>
 
             <Button
-              icon={<FaRegComment className="text-gray-400" />}
+              icon={<FaRegComment className="text-gray-400 cursor-pointer" />}
               shape="round"
               type="text"
+              onClick={handleViewPostDetail}
             >
               <span>{post.numberOfComments}</span>
             </Button>
