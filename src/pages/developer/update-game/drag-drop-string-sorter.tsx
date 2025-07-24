@@ -98,7 +98,7 @@ function SortableItem({
         {...attributes}
         {...listeners}
       >
-        <img src={url} alt="" className="aspect-video" />
+        <img src={url} alt="" className="aspect-video object-contain" />
       </div>
       <button
         onClick={() => onRemove?.(id)}

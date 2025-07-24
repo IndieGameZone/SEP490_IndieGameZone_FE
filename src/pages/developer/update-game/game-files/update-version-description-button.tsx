@@ -8,11 +8,11 @@ import { useState } from "react";
 import { FaPen, FaSave } from "react-icons/fa";
 
 type FieldType = {
-  installInstruction: string;
+  versionDescription: string;
 };
 
-const UpdateInstallInstructionButton = () => {
-  const { game, installInstruction, rerender } = useGameStore();
+const UpdateVersionDescription = () => {
+  const { game, rerender, installInstruction } = useGameStore();
   const { profile } = useAuthStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
@@ -33,12 +33,12 @@ const UpdateInstallInstructionButton = () => {
   };
 
   const handleValuesChange = (_: any, allValues: FieldType) => {
-    const changed = allValues.installInstruction != installInstruction;
+    const changed = allValues.versionDescription != game?.versionDescription;
     setIsChanged(changed);
   };
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
-    if (!game || !profile) return;
+    if (!game || !profile || !installInstruction) return;
     setLoading(true);
     const result = await updateGame(profile.id, game.id, {
       ageRestrictionId: game.ageRestriction.id,
@@ -47,7 +47,7 @@ const UpdateInstallInstructionButton = () => {
       categoryId: game.category.id,
       coverImage: game.coverImage,
       description: game.description,
-      installInstruction: values.installInstruction,
+      installInstruction: installInstruction,
       languageIds: game.gameLanguages.map((x) => x.language.id),
       name: game.name,
       price: game.price,
@@ -56,12 +56,12 @@ const UpdateInstallInstructionButton = () => {
       tagIds: game.gameTags.map((x) => x.tag.id),
       videoLink: game.videoLink,
       visibility: game.visibility,
-      versionDescription: game.versionDescription,
+      versionDescription: values.versionDescription,
     });
     if (result.error) {
-      messageApi.error("Failed to update install instructions");
+      messageApi.error("Failed to update version notes");
     } else {
-      messageApi.success("Update install instructions successfully!");
+      messageApi.success("Update update version notes successfully!");
       setTimeout(() => {
         rerender();
       }, 1000);
@@ -72,10 +72,10 @@ const UpdateInstallInstructionButton = () => {
   return (
     <>
       <Button onClick={showModal} icon={<FaPen />}>
-        Edit install instructions
+        Edit version notes
       </Button>
       <Modal
-        title="Edit install instructions"
+        title="Edit version notes"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -109,9 +109,9 @@ const UpdateInstallInstructionButton = () => {
           onValuesChange={handleValuesChange}
         >
           <Form.Item<FieldType>
-            name="installInstruction"
-            label={<span className="font-bold">Install instructions</span>}
-            extra="Help players install your game on their specific platform"
+            name="versionDescription"
+            label={<span className="font-bold">Version notes</span>}
+            extra="Tell players what changed in your versions!"
           >
             <TiptapEditor />
           </Form.Item>
@@ -121,4 +121,4 @@ const UpdateInstallInstructionButton = () => {
   );
 };
 
-export default UpdateInstallInstructionButton;
+export default UpdateVersionDescription;

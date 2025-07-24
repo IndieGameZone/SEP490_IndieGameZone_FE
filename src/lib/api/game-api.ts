@@ -248,6 +248,7 @@ type UpdateGameRequest = {
   categoryId: string;
   languageIds: string[];
   tagIds: string[];
+  versionDescription: string;
 };
 
 
@@ -266,6 +267,7 @@ export const updateGame = async (developerId: string, gameId: string, request: U
   formData.append("Price", request.price + "");
   formData.append("AverageSession", request.averageSession + "");
   formData.append("AgeRestrictionId", request.ageRestrictionId);
+  formData.append("VersionDescription", request.versionDescription);
   request.languageIds.forEach((x) => formData.append("LanguageIds", x));
   request.tagIds.forEach((x) => formData.append("TagIds", x));
 
