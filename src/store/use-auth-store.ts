@@ -9,7 +9,7 @@ interface AuthState {
     isRefreshingToken: boolean;
     isLoggedIn: boolean;
     setIsRefreshingToken: (refreshing: boolean) => void;
-    fetchProfile: () => Promise<void>;
+    fetchProfile: () => Promise<User | null>;
     setProfile: (user?: User) => void;
     logout: () => void;
     renderKey: number;
@@ -33,14 +33,17 @@ const useAuthStore = create<AuthState>((set) => ({
             var response = await getUserInfo();
             if (!response.error) {
                 set({ profile: response.data, loading: false, isLoggedIn: true });
+                return response.data;
             } else {
                 set({ loading: false, error: response.error });
+                return null;
             }
         } catch (error: any) {
             set({ loading: false, error: error.message });
+            return undefined;
         }
     },
-    
+
     setProfile(user) {
         set({ profile: user })
     },

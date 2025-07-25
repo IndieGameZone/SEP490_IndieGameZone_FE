@@ -14,7 +14,7 @@ type FieldType = {
 const LoginAdminPage = () => {
   const [form] = Form.useForm();
   const [isSumitting, setIsSumitting] = useState(false);
-  const { fetchProfile, profile, logout } = useAuthStore();
+  const { fetchProfile, logout, profile } = useAuthStore();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -35,22 +35,35 @@ const LoginAdminPage = () => {
       }
     } else {
       localStorage.setItem("accessToken", result.data);
-      fetchProfile();
+      const profile = await fetchProfile();
+
+      if (profile) {
+        if (profile.role.name == "Admin") {
+          toast.success("Login successfully");
+          setTimeout(() => {
+            navigate("/admin");
+          }, 1000);
+        } else if (profile.role.name == "Moderator") {
+          toast.success("Login successfully");
+          setTimeout(() => {
+            navigate("/moderator");
+          }, 1000);
+        } else {
+          setError(
+            "Your account does not have permission to access this system."
+          );
+          logout();
+        }
+      }
     }
   };
 
   useEffect(() => {
     if (profile) {
       if (profile.role.name == "Admin") {
-        toast.success("Login successfully");
-        setTimeout(() => {
-          navigate("/admin");
-        }, 1000);
+        navigate("/admin");
       } else if (profile.role.name == "Moderator") {
-        toast.success("Login successfully");
-        setTimeout(() => {
-          navigate("/moderator");
-        }, 1000);
+        navigate("/moderator");
       } else {
         setError(
           "Your account does not have permission to access this system."
