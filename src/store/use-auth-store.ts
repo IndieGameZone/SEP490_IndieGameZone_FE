@@ -46,6 +46,7 @@ const useAuthStore = create<AuthState>((set) => ({
     },
 
     logout: () => {
+        localStorage.removeItem("accessToken");
         localStorage.clear();
         set({ profile: undefined, isLoggedIn: false });
     }

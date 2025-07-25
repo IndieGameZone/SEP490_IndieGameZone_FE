@@ -32,6 +32,25 @@ function App() {
   }, [renderKey]);
 
   useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === "accessToken") {
+        if (event.newValue) {
+          fetchProfile();
+        } else {
+          console.log("accessToken is gone");
+          window.location.reload();
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
+
+  useEffect(() => {
     const handleOffline = (_: Event) => {
       setIsOnline(false);
     };
