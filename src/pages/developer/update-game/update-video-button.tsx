@@ -52,6 +52,7 @@ const UpdateVideoButton = ({ url }: { url: string }) => {
       tagIds: game.gameTags.map((x) => x.tag.id),
       videoLink: values.videoLink,
       visibility: game.visibility,
+      versionDescription: game.versionDescription,
     });
     if (result.error) {
       messageApi.error("Failed to update gameplay/trailer");
