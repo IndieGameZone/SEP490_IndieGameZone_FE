@@ -36,7 +36,7 @@ const GameCard = ({ game }: { game: Game }) => {
     <ConditionalWrapper
       condition={hasCommercial}
       wrapper={(children) => (
-        <Badge.Ribbon text="Featured" placement="start">
+        <Badge.Ribbon text="Sponsored" placement="start">
           <div className="p-[2px] rounded bg-gradient-to-r hover:from-pink-500 hover:via-red-500 hover:to-yellow-500 bg-transparent transition-colors duration-300">
             {children}
           </div>

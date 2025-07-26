@@ -17,6 +17,7 @@ import styles from "@/styles/admin-layout.module.css";
 import { GoReport } from "react-icons/go";
 import { GrTransaction } from "react-icons/gr";
 import AppTheme from "@/components/app-theme";
+import DownloadProcessesButton from "@/components/navbar/download-processes-button";
 
 const { Footer, Sider } = Layout;
 
@@ -161,11 +162,22 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
   return (
     <AppTheme theme="light">
       <Layout hasSider className={styles.lightTable}>
-        <Sider trigger={null} collapsible collapsed={collapsed} style={siderStyle} width={256}>
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          style={siderStyle}
+          width={256}
+        >
           <div className="p-3 my-3">
             <img src={logo} alt="indiegamezone logo" className="w-40" />
           </div>
-          <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} items={items} />
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            items={items}
+          />
         </Sider>
         <Layout>
           <div
@@ -181,6 +193,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
                 onClick={() => setCollapsed(!collapsed)}
               />
               <div className="flex gap-3">
+                <DownloadProcessesButton />
                 <div>
                   <p className="font-semibold">{profile?.userName}</p>
                   <p className="text-xs text-zinc-500">{profile?.email}</p>
@@ -192,7 +205,9 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             </div>
           </div>
           <div style={{ margin: "24px 16px 0" }}>{children}</div>
-          <Footer style={{ textAlign: "center" }}>Ant Design ©{new Date().getFullYear()} Created by Ant UED</Footer>
+          <Footer style={{ textAlign: "center" }}>
+            Ant Design ©{new Date().getFullYear()} Created by Ant UED
+          </Footer>
         </Layout>
       </Layout>
     </AppTheme>

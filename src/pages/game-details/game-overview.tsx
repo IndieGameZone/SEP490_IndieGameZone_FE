@@ -141,7 +141,7 @@ const GameOverView = () => {
                     return (
                       <div
                         key={`game-file-${index}`}
-                        className="flex gap-2 items-center p-2 bg-zinc-800 rounded"
+                        className="flex gap-2 items-center bg-zinc-800 rounded"
                       >
                         {file.platform.id ==
                         defaultPlatforms.windowsPlatformId ? (

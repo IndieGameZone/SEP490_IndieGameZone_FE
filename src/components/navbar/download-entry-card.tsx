@@ -4,6 +4,7 @@ import { Button, Progress } from "antd";
 import { formatBytes, formatTimeLeft } from "@/lib/file";
 import { IoClose, IoPause, IoPlay, IoRefresh } from "react-icons/io5";
 import useDownloadStore from "@/store/use-download-store";
+import { useState } from "react";
 
 const processStatusMap: Record<
   DownloadEntry["status"],
@@ -23,6 +24,9 @@ type Props = {
 
 const DownloadEntryCard = ({ downloadEntry }: Props) => {
   const { cancelDownload, pauseDownload, resumeDownload } = useDownloadStore();
+  const [isDarkMode, _] = useState(
+    document.body.classList.contains("dark")
+  );
 
   const {
     id,
@@ -100,7 +104,9 @@ const DownloadEntryCard = ({ downloadEntry }: Props) => {
   };
 
   return (
-    <div className="p-2 bg-transparent hover:bg-zinc-800 rounded duration-300">
+    <div
+      className={`p-2 bg-transparent ${isDarkMode ? "hover:bg-zinc-800" : "hover:bg-zinc-200"} rounded duration-300`}
+    >
       <div className="flex gap-2 items-center">
         <div className="text-2xl">
           <FileIcon fileExtension={fileExtension} />
