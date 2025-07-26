@@ -9,11 +9,13 @@ import GameInfoTab from "./game-info-tab";
 import GameStatisticsTab from "./game-statistics-tab";
 import { IoIosChatboxes } from "react-icons/io";
 import GameReviewTab from "./game-review-tab/game-reviews-tab";
+import { useHashState } from "@/hooks/use-hash-state";
 
 const DevGameDetailPages = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
   const { fetchGameById, loading, error, game } = useGameStore();
+  const [activeTab, setActiveTab] = useHashState("game-info");
   useEffect(() => {
     if (gameId) {
       fetchGameById(gameId);
@@ -76,10 +78,13 @@ const DevGameDetailPages = () => {
         {game?.name}
       </h1>
       <Tabs
-        defaultActiveKey="game-info"
+        defaultActiveKey={activeTab}
         centered
         items={tabItems}
         tabBarStyle={{ background: "#18181b", marginBottom: 0 }}
+        onChange={(key) => {
+          setActiveTab(key);
+        }}
       />
     </div>
   );

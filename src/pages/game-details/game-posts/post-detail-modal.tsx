@@ -80,35 +80,6 @@ const PostDetailModal = ({ post, handleCancel }: PostDetailModalProps) => {
         close={() => setLightboxIndex(-1)}
       />
       <div className="grid grid-cols-2">
-        <div className="relative">
-          {images.length > 1 && (
-            <>
-              <button
-                onClick={handlePrev}
-                className="absolute left-2 bottom-1/2 translate-y-1/2 p-3 rounded-full bg-zinc-500/40 cursor-pointer hover:bg-zinc-500/60 duration-300 z-10"
-                aria-label="Previous image button"
-                tabIndex={0}
-              >
-                <FaChevronLeft />
-              </button>
-              <button
-                onClick={handleNext}
-                className="absolute right-2 bottom-1/2 translate-y-1/2 p-3 rounded-full bg-zinc-500/40 cursor-pointer hover:bg-zinc-500/60 duration-300 z-10"
-                aria-label="Next image button"
-                tabIndex={0}
-              >
-                <FaChevronRight />
-              </button>
-            </>
-          )}
-          <img
-            className="w-full object-contain rounded bg-zinc-900 my-2 cursor-pointer"
-            src={images[currentImage]}
-            alt={`Post Image ${currentImage + 1}`}
-            onClick={() => setLightboxIndex(currentImage)}
-          />
-        </div>
-
         <div>
           <div className="p-3 border-b border-zinc-700 pe-10">
             <div className="flex items-center gap-3">
@@ -121,10 +92,44 @@ const PostDetailModal = ({ post, handleCancel }: PostDetailModalProps) => {
               </div>
             </div>
           </div>
-          <div className="p-3 h-[60vh] overflow-auto pb-10">
+          <div className="p-3 max-h-[80vh] overflow-auto pb-10">
             <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
             <TiptapView value={post.content} />
-            <hr className="my-3 border-zinc-700"/>
+            {images.length > 0 && (
+              <div className="relative">
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={handlePrev}
+                      className="absolute left-2 bottom-1/2 translate-y-1/2 p-3 rounded-full bg-zinc-500/40 cursor-pointer hover:bg-zinc-500/60 duration-300 z-10"
+                      aria-label="Previous image button"
+                      tabIndex={0}
+                    >
+                      <FaChevronLeft />
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      className="absolute right-2 bottom-1/2 translate-y-1/2 p-3 rounded-full bg-zinc-500/40 cursor-pointer hover:bg-zinc-500/60 duration-300 z-10"
+                      aria-label="Next image button"
+                      tabIndex={0}
+                    >
+                      <FaChevronRight />
+                    </button>
+                  </>
+                )}
+                <img
+                  className="w-full object-contain rounded bg-zinc-900 my-2 cursor-pointer"
+                  src={images[currentImage]}
+                  alt={`Post Image ${currentImage + 1}`}
+                  onClick={() => setLightboxIndex(currentImage)}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="flex-1">
+
           </div>
           <PostCommentForm />
           <div className="flex justify-between mt-2 border-t border-zinc-700 p-3">

@@ -28,9 +28,19 @@
   }
 }
 
-.dark {
-  background-color: #09090b;
-  color: #e0e0e0;
+:root {
+  --bg-color: #f0f0f0;
+  --text-color: #222;
+}
+
+[data-theme="dark"] {
+  --bg-color: #09090b;
+  --text-color: #e0e0e0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
   font-family: Arial, sans-serif;
 }
 
@@ -473,8 +483,37 @@ select:-webkit-autofill:focus {
 }
 
 @media (max-width: 768px) {
+
   .slick-prev,
   .slick-next {
     display: none !important;
   }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(120, 120, 120, 0.4);
+  /* Neutral gray with some transparency */
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(120, 120, 120, 0.7);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 120, 120, 0.4) transparent;
 }

@@ -10,7 +10,7 @@ const PostCommentForm = () => {
   const [showPicker, setShowPicker] = useState(false);
 
   const handleEmojiSelect = (emoji: any) => {
-    setComment((prev) => prev + emoji.native);
+    setComment((prev) => prev + emoji);
   };
 
   return (

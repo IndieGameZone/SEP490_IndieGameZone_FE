@@ -27,6 +27,16 @@ export const addGameFiles = async (gameId: string, request: AddGameFilesRequest)
   }
 };
 
+export const updateGameFile = async (gameId: string, request: AddGameFilesRequest) => {
+  try {
+    const { data } = await axiosClient.post(`/api/games/${gameId}/game-platforms`, request);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+
 type AddGameRequest = {
   name: string;
   coverImage: string;

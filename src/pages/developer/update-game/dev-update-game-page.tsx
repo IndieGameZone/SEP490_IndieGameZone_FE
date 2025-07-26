@@ -2,7 +2,7 @@ import Loader from "@/components/loader";
 import { useGlobalMessage } from "@/components/message-provider";
 import useGameStore from "@/store/use-game-store";
 import { Button, Menu, MenuProps, theme } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   FaArrowLeft,
   FaFolderOpen,
@@ -18,6 +18,7 @@ import useTagStore from "@/store/use-tag-store";
 import useAgeRestrictionStore from "@/store/use-age-restriction-store";
 import useLanguageStore from "@/store/use-language-store";
 import usePlatformStore from "@/store/use-platform-store";
+import { useHashState } from "@/hooks/use-hash-state";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -29,7 +30,7 @@ const items: MenuItem[] = [
 const { useToken } = theme;
 const DevUpdateGamePage = () => {
   const { gameId } = useParams();
-  const [selectedKey, setSelectedKey] = useState("info");
+  const [selectedKey, setSelectedKey] = useHashState("info");
   const { fetchGameById, fetchGameFiles, game, loading, error, renderKey } =
     useGameStore();
   const navigate = useNavigate();
