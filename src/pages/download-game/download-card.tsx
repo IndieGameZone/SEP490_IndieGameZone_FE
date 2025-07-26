@@ -1,8 +1,9 @@
 import { useGlobalMessage } from "@/components/message-provider";
 import { getFileUrl } from "@/lib/api/game-api";
 import { timeAgo } from "@/lib/date-n-time";
-import { downloadFile, formatMegabytes } from "@/lib/file";
+import { formatMegabytes } from "@/lib/file";
 import useAuthStore from "@/store/use-auth-store";
+import useDownloadStore from "@/store/use-download-store";
 import { GameFile } from "@/types/game";
 import { Button } from "antd";
 import { useState } from "react";
@@ -21,8 +22,7 @@ const DownloadCard = ({
   file: GameFile;
   defaultPlatforms: any;
 }) => {
-  // const { downloads, startDownload } = useDownloadStore();
-  // const [messageApi, contextHolder] = message.useMessage();
+  const { startDownload } = useDownloadStore();
   const messageApi = useGlobalMessage();
   const [loading, setLoading] = useState(false);
   const { profile } = useAuthStore();
@@ -35,31 +35,9 @@ const DownloadCard = ({
     if (result.error) {
       messageApi.error("Failed to fetch file! Please try again.");
     } else {
-      downloadFile(file.file);
+      // downloadFile(file.file);
+      startDownload(file.file, file.displayName, messageApi);
     }
-    // NORMAL DOWNLOAD
-    // const link = document.createElement("a");
-    // link.href = file.file;
-    // link.download = file.displayName || "";
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
-    // DOWNLOAD MANAGED BY CLIENT
-    // const existings = Object.values(downloads);
-    // if (existings.length > 2) {
-    //   messageApi.error("Cannot download more than 2 files at the same time!");
-    //   return;
-    // } else if (
-    //   existings.find(
-    //     (entry) =>
-    //       entry.url === file.file &&
-    //       (entry.status === "downloading" || entry.status === "paused")
-    //   )
-    // ) {
-    //   messageApi.error("Download is already in process!");
-    //   return;
-    // }
-    // startDownload(file.file, file.displayName);
   };
 
   return (

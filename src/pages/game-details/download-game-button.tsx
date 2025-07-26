@@ -96,7 +96,7 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
       const response = await danateGame(profile.id, price, game.id);
       if (response.success) {
         message.success("Donation successful! Redirecting to download page...");
-        // handleGoToDownloadPage();
+        handleGoToDownloadPage();
         window.open(response.data);
       } else {
         message.error(response.error || "Failed to process donation.");

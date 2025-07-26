@@ -44,12 +44,13 @@
 
 import { DownloadStorage } from "@/lib/download-storage";
 import { DownloadEntry } from "@/types/download-entry";
+import { MessageInstance } from "antd/es/message/interface";
 import { create } from "zustand";
 
 type DownloadState = {
     downloads: Record<string, DownloadEntry>;
     isRehydrated: boolean;
-    startDownload: (url: string, filename: string) => void;
+    startDownload: (url: string, filename: string, messageApi?: MessageInstance) => void;
     pauseDownload: (id: string) => void;
     resumeDownload: (id: string) => void;
     updateDownload: (id: string, patch: Partial<DownloadEntry>) => void;
@@ -160,7 +161,22 @@ const useDownloadStore = create<DownloadState>((set, get) => ({
         }
     },
 
-    startDownload: async (url, filename) => {
+    startDownload: async (url, filename, messageApi) => {
+        const existings = Object.values(get().downloads);
+        if (existings.length > 2) {
+            messageApi?.error("Cannot download more than 2 files at the same time!");
+            return;
+        } else if (
+            existings.find(
+                (entry) =>
+                    entry.url === url &&
+                    (entry.status === "downloading" || entry.status === "paused")
+            )
+        ) {
+            messageApi?.error("Download is already in process!");
+            return;
+        }
+
         const id = crypto.randomUUID();
         const controller = new AbortController();
         abortControllers[id] = controller;
