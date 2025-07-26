@@ -82,7 +82,10 @@ const GameForum = () => {
   return (
     <div className="grid grid-cols-12 gap-3">
       {contextHolder}
-      <PostDetailModal post={selectedPost} handleCancel={handleCancel}/>
+      <PostDetailModal
+        postId={selectedPost?.id ?? null}
+        handleCancel={handleCancel}
+      />
       <div className="col-span-4">
         <div className="bg-zinc-800 p-3 rounded">
           <Dropdown

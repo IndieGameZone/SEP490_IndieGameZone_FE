@@ -1,6 +1,6 @@
 import { GamePost } from "@/types/game-post";
 import { Avatar, Button, Dropdown, MenuProps, Modal } from "antd";
-import { MouseEvent, useMemo, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useState } from "react";
 import {
   FaChevronLeft,
   FaChevronRight,
@@ -15,16 +15,39 @@ import TiptapView from "@/components/tiptap/tiptap-view";
 import { IoShareSocialOutline } from "react-icons/io5";
 import Lightbox from "yet-another-react-lightbox";
 import PostCommentForm from "./post-comment-form";
+import chatEmptyImg from "@/assets/chat-empty.png";
+import { getGamePostById } from "@/lib/api/game-post-api";
+import { useGlobalMessage } from "@/components/message-provider";
+import Loader from "@/components/loader";
 
 interface PostDetailModalProps {
-  post: GamePost | null;
+  postId: string | null;
   handleCancel?: (e: MouseEvent) => void;
 }
-const PostDetailModal = ({ post, handleCancel }: PostDetailModalProps) => {
+
+const postComments = [];
+const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
+  const [post, setPost] = useState<GamePost>();
+  const messageApi = useGlobalMessage();
+
+  const fetchPost = async () => {
+    if (!postId) return;
+    const result = await getGamePostById(postId);
+    if (result.error) {
+      messageApi.error("Failed to fetch post! Please try again later.");
+    } else {
+      setPost(result.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchPost();
+  }, [postId]);
+
   const images: string[] = useMemo(() => {
-    return post ? post.postImages.map((image) => image.image) : [];
+    return post?.postImages ? post.postImages.map((image) => image.image) : [];
   }, [post]);
 
   const slides = useMemo(
@@ -53,14 +76,14 @@ const PostDetailModal = ({ post, handleCancel }: PostDetailModalProps) => {
     },
   ];
 
-  if (!post) {
+  if (!postId) {
     return;
   }
 
   return (
     <Modal
       closable
-      open={post != null}
+      open={postId != null}
       onCancel={handleCancel}
       footer={null}
       width={{
@@ -81,56 +104,67 @@ const PostDetailModal = ({ post, handleCancel }: PostDetailModalProps) => {
       />
       <div className="grid grid-cols-2">
         <div>
+          <div className="p-3 max-h-[80vh] overflow-auto pb-10">
+            {post ? (
+              <>
+                <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
+                <TiptapView value={post.content} />
+                {images.length > 0 && (
+                  <div className="relative">
+                    {images.length > 1 && (
+                      <>
+                        <button
+                          onClick={handlePrev}
+                          className="absolute left-2 bottom-1/2 translate-y-1/2 p-3 rounded-full bg-zinc-500/40 cursor-pointer hover:bg-zinc-500/60 duration-300 z-10"
+                          aria-label="Previous image button"
+                          tabIndex={0}
+                        >
+                          <FaChevronLeft />
+                        </button>
+                        <button
+                          onClick={handleNext}
+                          className="absolute right-2 bottom-1/2 translate-y-1/2 p-3 rounded-full bg-zinc-500/40 cursor-pointer hover:bg-zinc-500/60 duration-300 z-10"
+                          aria-label="Next image button"
+                          tabIndex={0}
+                        >
+                          <FaChevronRight />
+                        </button>
+                      </>
+                    )}
+                    <img
+                      className="w-full object-contain rounded bg-zinc-900 my-2 cursor-pointer"
+                      src={images[currentImage]}
+                      alt={`Post Image ${currentImage + 1}`}
+                      onClick={() => setLightboxIndex(currentImage)}
+                    />
+                  </div>
+                )}
+              </>
+            ) : (
+              <Loader />
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col border-l border-zinc-700">
           <div className="p-3 border-b border-zinc-700 pe-10">
             <div className="flex items-center gap-3">
-              <Avatar src={post.user.avatar} />
+              <Avatar src={post?.user.avatar} />
               <div>
-                <div className="font-semibold">{post.user.userName}</div>
+                <div className="font-semibold">{post?.user.userName}</div>
                 <div className="text-xs text-gray-400">
-                  {timeAgo(post.createdAt)}
+                  {post?.createdAt && timeAgo(post.createdAt)}
                 </div>
               </div>
             </div>
           </div>
-          <div className="p-3 max-h-[80vh] overflow-auto pb-10">
-            <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
-            <TiptapView value={post.content} />
-            {images.length > 0 && (
-              <div className="relative">
-                {images.length > 1 && (
-                  <>
-                    <button
-                      onClick={handlePrev}
-                      className="absolute left-2 bottom-1/2 translate-y-1/2 p-3 rounded-full bg-zinc-500/40 cursor-pointer hover:bg-zinc-500/60 duration-300 z-10"
-                      aria-label="Previous image button"
-                      tabIndex={0}
-                    >
-                      <FaChevronLeft />
-                    </button>
-                    <button
-                      onClick={handleNext}
-                      className="absolute right-2 bottom-1/2 translate-y-1/2 p-3 rounded-full bg-zinc-500/40 cursor-pointer hover:bg-zinc-500/60 duration-300 z-10"
-                      aria-label="Next image button"
-                      tabIndex={0}
-                    >
-                      <FaChevronRight />
-                    </button>
-                  </>
-                )}
-                <img
-                  className="w-full object-contain rounded bg-zinc-900 my-2 cursor-pointer"
-                  src={images[currentImage]}
-                  alt={`Post Image ${currentImage + 1}`}
-                  onClick={() => setLightboxIndex(currentImage)}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <div className="flex-1">
-
-          </div>
+          {postComments.length == 0 ? (
+            <div className="flex-1 flex justify-center items-center flex-col">
+              <img src={chatEmptyImg} alt="" className="w-40 opacity-50" />
+              <p className="text-zinc-500">This post has not comment yet.</p>
+            </div>
+          ) : (
+            <div></div>
+          )}
           <PostCommentForm />
           <div className="flex justify-between mt-2 border-t border-zinc-700 p-3">
             <div className="flex items-center gap-3 ">
@@ -139,7 +173,7 @@ const PostDetailModal = ({ post, handleCancel }: PostDetailModalProps) => {
                 shape="round"
                 type="text"
               >
-                <span>{post.numberOfLikes}</span>
+                <span>{post?.numberOfLikes}</span>
               </Button>
 
               <Button
@@ -147,7 +181,7 @@ const PostDetailModal = ({ post, handleCancel }: PostDetailModalProps) => {
                 shape="round"
                 type="text"
               >
-                <span>{post.numberOfComments}</span>
+                <span>{post?.numberOfComments}</span>
               </Button>
 
               <Button

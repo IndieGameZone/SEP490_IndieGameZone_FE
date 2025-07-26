@@ -32,16 +32,6 @@ export interface PostCommentData {
   Content: string;
 }
 
-export const createPostComment = async (postId: string, userId: string, postCommentData: PostCommentData) => {
-  try {
-    const formData = toFormData(postCommentData);
-    const { data } = await axiosClient.post(`/api/posts/${postId}/users/${userId}/post-comments`, formData);
-    return { error: null, data: data, success: true };
-  } catch (error) {
-    return handleApiError(error);
-  }
-};
-
 export const createReactionPost = async (userId: string, postId: string) => {
   try {
     const { data } = await axiosClient.post(`/api/users/${userId}/posts/${postId}/post-reactions`);
@@ -57,7 +47,6 @@ type GetGamePostParams = {
 }
 
 export const getGamePosts = async (gameId: string, params: GetGamePostParams) => {
-  console.log(params);
   try {
     const { data, headers } = await axiosClient.get(`/api/games/${gameId}/posts${toSearchParams(params)}`);
     return {
@@ -68,12 +57,33 @@ export const getGamePosts = async (gameId: string, params: GetGamePostParams) =>
   }
 };
 
+export const getGamePostById = async (postId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/posts/${postId}`);
+    return {
+      error: null, data: data, success: true
+    };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
 export const getReactionPost = async (userId: string, postId: string) => {
   try {
-    const { data } = await axiosClient.get(`/ api / users / ${userId} / posts / ${postId} / post - reactions`);
+    const { data } = await axiosClient.get(`/api/users/${userId}/posts/${postId}/post-reactions`);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
   }
 };
 
+export const createPostComment = async (userId: string, postId: string, content: string) => {
+  try {
+    const { data } = await axiosClient.post(`/api/posts/${postId}/users/${userId}/post-comments`, {
+      content
+    });
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
