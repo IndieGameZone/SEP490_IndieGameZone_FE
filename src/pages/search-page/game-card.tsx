@@ -52,7 +52,7 @@ const GameCard = ({ game }: { game: Game }) => {
           <FaultTolerantImage
             src={coverImage}
             alt={`${name} cover image`}
-            className="w-full object-contain cursor-pointer aspect-video"
+            className="w-full object-contain cursor-pointer"
             onClick={handleClickCard}
           />
           <div className="absolute top-2 right-2">

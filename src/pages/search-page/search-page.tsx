@@ -19,6 +19,7 @@ import useAuthStore from "@/store/use-auth-store";
 import useIsMobile from "@/hooks/use-is-mobile";
 import MobileFilterPanel from "./mobile-filter-panel";
 import SortPanel from "./sort-panel";
+import Masonry from "react-masonry-css";
 
 const PAGE_SIZE = 9;
 const SearchPage = () => {
@@ -172,23 +173,31 @@ const SearchPage = () => {
             }
             style={{ overflow: "visible" }}
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <Masonry
+              breakpointCols={{
+                default: 3,
+                1280: 3,
+                768: 2,
+                500: 1,
+              }}
+              className="flex gap-6"
+              columnClassName="space-y-6"
+            >
               {games.length > 0 &&
                 games.map((game) => (
                   <div key={game.id}>
                     <GameCard game={game} />
                   </div>
                 ))}
-
-              {!isLoading && games.length === 0 && (
-                <div className="col-span-full flex flex-col items-center py-10 gap-5">
-                  <img src={notFoundIcon} />
-                  <div className="text-zinc-500 font-semibold text-lg">
-                    No games found
-                  </div>
+            </Masonry>
+            {!isLoading && games.length === 0 && (
+              <div className="col-span-full flex flex-col items-center py-10 gap-5">
+                <img src={notFoundIcon} />
+                <div className="text-zinc-500 font-semibold text-lg">
+                  No games found
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </InfiniteScroll>
         </div>
       </MaxWidthWrapper>
