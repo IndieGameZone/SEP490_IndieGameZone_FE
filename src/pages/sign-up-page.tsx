@@ -6,7 +6,6 @@ import {
   CheckboxProps,
   Radio,
   DatePicker,
-  message,
 } from "antd";
 import logo from "@/assets/indiegamezone-logo.svg";
 import googleIcon from "@/assets/google_icon.png";
@@ -14,6 +13,7 @@ import background from "@/assets/videogame-bg.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { register } from "@/lib/api/auth-api";
+import { useGlobalMessage } from "@/components/message-provider";
 
 const USERNAME_REGEX = /^[A-Za-z][A-Za-z0-9]*/;
 const PASSWORD_REGEX =
@@ -46,7 +46,7 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
+  const messageApi = useGlobalMessage();
 
   const onChange: CheckboxProps["onChange"] = (e) => {
     setAcceptTerms(e.target.checked);
@@ -109,7 +109,6 @@ const SignUpPage = () => {
         backgroundImage: `url(${background})`,
       }}
     >
-      {contextHolder}
       <div className="fixed h-full w-full bg-zinc-950/50"></div>
       <Link to={"/"} className="right-7 fixed bottom-5 z-50">
         <img src={logo} alt="" className="w-40" />

@@ -7,6 +7,7 @@ import EmojiPicker from "@/components/emoji-picker";
 import { createPostComment } from "@/lib/api/game-post-api";
 import useAuthStore from "@/store/use-auth-store";
 import { useGlobalMessage } from "@/components/message-provider";
+import { Link } from "react-router-dom";
 
 type FieldType = {
   comment?: string;
@@ -45,6 +46,7 @@ const PostCommentForm = ({ onSubmit, postId }: PostCommentFormProps) => {
   };
 
   const currentComment = Form.useWatch("comment", form);
+  if (!profile) return <div className="text-zinc-500 text-center"><Link to="/log-in" className="font-semibold">Login</Link> to post a comment</div>;
   return (
     <div className="p-3 relative">
       <Form

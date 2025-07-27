@@ -9,7 +9,7 @@ import TransformDebugPage from "./pages/debug/transform-debug-page";
 import AppTheme from "./components/app-theme";
 import { ping } from "./lib/api/user-api";
 
-const LoginPage = lazy(() => import("./pages/log-in-page"));
+const LoginPage = lazy(() => import("./pages/auth/log-in-page"));
 const SignUpPage = lazy(() => import("./pages/sign-up-page"));
 const AdminContainer = lazy(() => import("./containers/admin-container"));
 const AdminLoginPage = lazy(() => import("./pages/admin/admin-login-page"));
