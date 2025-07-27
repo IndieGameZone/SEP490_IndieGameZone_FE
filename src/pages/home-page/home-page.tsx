@@ -65,7 +65,7 @@ const HomePage = () => {
       <PersonalizedSection />
       <section className="pb-20">
         <h2 className="text-2xl font-bold text-center my-5">
-          Explore by Category
+          Explore by Categories
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <GenreCard

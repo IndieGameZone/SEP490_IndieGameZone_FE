@@ -78,7 +78,6 @@ function App() {
     return () => clearInterval(interval);
   }, [isLoggedIn]);
 
-  console.log("rendered");
   return (
     <div className="relative">
       <Suspense fallback={<PageTransition />}>

@@ -1,5 +1,6 @@
 import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { formatCurrencyVND } from "@/lib/currency";
+import useCategoryStore from "@/store/use-category-store";
 import useLanguageStore from "@/store/use-language-store";
 import useTagStore from "@/store/use-tag-store";
 import { Checkbox, Slider, Select, CheckboxOptionType, Button } from "antd";
@@ -82,6 +83,7 @@ const FilterPanel = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { tags: allTags, fetchTags } = useTagStore();
   const { languages: allLanguages, fetchLanguages } = useLanguageStore();
+  const { fetchCategories } = useCategoryStore();
 
   const [priceDisplay, setPriceDisplay] = useState(
     Number(searchParams.get("maxPrice")) || MAX_PRICE
@@ -108,6 +110,7 @@ const FilterPanel = () => {
   useEffect(() => {
     fetchTags();
     fetchLanguages();
+    fetchCategories();
   }, []);
 
   const tagOptions: CheckboxOptionType<string>[] = useMemo(() => {

@@ -20,6 +20,7 @@ import useIsMobile from "@/hooks/use-is-mobile";
 import MobileFilterPanel from "./mobile-filter-panel";
 import SortPanel from "./sort-panel";
 import Masonry from "react-masonry-css";
+import useCategoryStore from "@/store/use-category-store";
 
 const PAGE_SIZE = 9;
 const SearchPage = () => {
@@ -33,6 +34,7 @@ const SearchPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const { fetchWishlistGameIds } = useWishlistStore();
+  const { selectedCategory } = useCategoryStore();
   const { profile } = useAuthStore();
 
   const onSearch: SearchProps["onSearch"] = (value, _e, _) => {
@@ -142,7 +144,20 @@ const SearchPage = () => {
                   Search results for{" "}
                   <span className="text-orange-300">{searchValue}</span>
                 </span>
-                <span>{games.length} results match your search.</span>
+                <span>
+                  {games.length} results match your search{" "}
+                  {selectedCategory && (
+                    <span>
+                      {" "}
+                      in{" "}
+                      <span className="font-semibold text-orange-300">
+                        {selectedCategory.name}
+                      </span>{" "}
+                      category
+                    </span>
+                  )}
+                  .
+                </span>
               </div>
             </div>
           ) : (
