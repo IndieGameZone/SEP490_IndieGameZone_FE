@@ -52,7 +52,7 @@ const LoginForm = () => {
         />
       </Form.Item>
 
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-1">
         <Link to="/recover-password" className="text-xs text-zinc-700">
           Forgot your password?
         </Link>

@@ -36,7 +36,12 @@ const GoogleProfileModal = ({ open, onClose, token, onSuccess }: Props) => {
   };
 
   return (
-    <Modal title="Complete Your Profile" open={open} onCancel={onClose} footer={null}>
+    <Modal
+      title="Complete Your Profile"
+      open={open}
+      onCancel={onClose}
+      footer={null}
+    >
       <p className="mb-4 text-gray-600">
         Please provide additional information to complete your registration.
       </p>
@@ -49,7 +54,9 @@ const GoogleProfileModal = ({ open, onClose, token, onSuccess }: Props) => {
           <DatePicker
             style={{ width: "100%", paddingBlock: 10 }}
             placeholder="Select your birthday"
-            disabledDate={(current) => current && current > dayjs().endOf("day")}
+            disabledDate={(current) =>
+              current && current > dayjs().endOf("day")
+            }
           />
         </Form.Item>
         <Form.Item
@@ -59,7 +66,7 @@ const GoogleProfileModal = ({ open, onClose, token, onSuccess }: Props) => {
         >
           <Select
             placeholder="Select your role"
-            style={{ height: 50 }}
+            style={{ paddingBlock: 10 }}
             options={[
               { value: "Player", label: "Player" },
               { value: "Developer", label: "Developer" },

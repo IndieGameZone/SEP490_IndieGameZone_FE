@@ -155,7 +155,7 @@ const Navbar = () => {
           {!isLoadingProfile && !profile && (
             <>
               <Button type="primary" onClick={() => navigate("/log-in")}>
-                Sign In
+                Log In
               </Button>
               <Button onClick={() => navigate("/sign-up")}>Sign Up</Button>
             </>
