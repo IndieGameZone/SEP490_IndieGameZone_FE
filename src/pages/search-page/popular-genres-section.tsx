@@ -3,23 +3,23 @@ import genre1 from "@/assets/category-action.webp";
 import genre2 from "@/assets/category-adventure.webp";
 import genre3 from "@/assets/category-puzzle.webp";
 import genre4 from "@/assets/category-role-playing.webp";
-import CategoriesListingButton from "@/components/categories-listing-button";
+import CategoriesListingButton from "@/components/buttons/categories-listing-button";
 import useCategoryStore from "@/store/use-category-store";
 
 const PopularGenresSection = () => {
-  const { selectedCategory } = useCategoryStore();
+  const { displayCategory } = useCategoryStore();
 
   return (
     <div className="pt-4">
       <div className="flex justify-between items-center">
         <h2 className="font-bold text-3xl py-2">
-          {selectedCategory
-            ? `${selectedCategory.name} Games`
+          {displayCategory
+            ? `${displayCategory.name} Games`
             : "Popular Categories"}
         </h2>
         <CategoriesListingButton />
       </div>
-      {!selectedCategory && (
+      {!displayCategory && (
         <div className="grid grid-cols-4 gap-3 mb-4">
           <GenreCard
             title="Action"

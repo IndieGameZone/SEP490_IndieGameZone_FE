@@ -34,7 +34,7 @@ const SearchPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const { fetchWishlistGameIds } = useWishlistStore();
-  const { selectedCategory } = useCategoryStore();
+  const { displayCategory } = useCategoryStore();
   const { profile } = useAuthStore();
 
   const onSearch: SearchProps["onSearch"] = (value, _e, _) => {
@@ -146,12 +146,12 @@ const SearchPage = () => {
                 </span>
                 <span>
                   {games.length} results match your search{" "}
-                  {selectedCategory && (
+                  {displayCategory && (
                     <span>
                       {" "}
                       in{" "}
                       <span className="font-semibold text-orange-300">
-                        {selectedCategory.name}
+                        {displayCategory.name}
                       </span>{" "}
                       category
                     </span>

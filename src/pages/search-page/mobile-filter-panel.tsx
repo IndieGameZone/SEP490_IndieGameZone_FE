@@ -1,5 +1,6 @@
 import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { formatCurrencyVND } from "@/lib/currency";
+import { updateSearchParam } from "@/lib/search-params";
 import useLanguageStore from "@/store/use-language-store";
 import useTagStore from "@/store/use-tag-store";
 import {
@@ -108,9 +109,6 @@ const MobileFilterPanel = () => {
   const [languages, setLanguages] = useState<string[]>(
     searchParams.get("languages")?.split(",") || []
   );
-  const [category, setCategory] = useState<string | null>(
-    searchParams.get("category")
-  );
 
   useEffect(() => {
     fetchTags();
@@ -134,30 +132,24 @@ const MobileFilterPanel = () => {
     DEFAULT_LANGUAGE_OPTIONS;
 
   useEffect(() => {
-    const params = new URLSearchParams();
+    let params = new URLSearchParams(searchParams);
+    params = updateSearchParam(
+      params,
+      "maxPrice",
+      price !== MAX_PRICE ? price.toString() : null
+    );
+    params = updateSearchParam(params, "special", special ? "true" : null);
+    params = updateSearchParam(params, "tags", tags);
+    params = updateSearchParam(params, "platforms", platforms);
+    params = updateSearchParam(params, "languages", languages);
 
-    if (price !== MAX_PRICE) {
-      params.set("maxPrice", price.toString());
+    const newParamsStr = params.toString();
+    const oldParamsStr = searchParams.toString();
+
+    if (newParamsStr !== oldParamsStr) {
+      setSearchParams(params);
     }
-    if (special) {
-      params.set("special", "true");
-    }
-    if (tags.length) {
-      params.set("tags", tags.join(","));
-    }
-    if (platforms.length) {
-      params.set("platforms", platforms.join(","));
-    }
-    if (languages.length) {
-      params.set("languages", languages.join(","));
-    }
-    if (category) {
-      params.set("category", category);
-    } else {
-      params.delete("category");
-    }
-    setSearchParams(params);
-  }, [price, special, tags, platforms, languages]);
+  }, [price, special, tags, platforms, languages, searchParams]);
 
   const handleClearFilter = () => {
     setPrice(MAX_PRICE);
@@ -166,7 +158,6 @@ const MobileFilterPanel = () => {
     setTags([]);
     setPlatforms([]);
     setLanguages([]);
-    setCategory(null);
   };
 
   return (

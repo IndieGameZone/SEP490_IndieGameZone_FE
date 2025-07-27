@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { Button, Modal, Tag } from "antd";
 import { useSearchParams } from "react-router-dom";
 import useCategoryStore from "@/store/use-category-store";
+import { updateSearchParam } from "@/lib/search-params";
+import { MdFilterAltOff } from "react-icons/md";
 
 const CategoriesListingButton = () => {
-  const { categories } = useCategoryStore();
+  const { categories, setDisplayCategory } = useCategoryStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const currentCategory = searchParams.get("category");
@@ -12,37 +14,38 @@ const CategoriesListingButton = () => {
     currentCategory
   );
 
-  const updateSearchParams = (categoryId: string | null) => {
-    const params = new URLSearchParams(searchParams);
-
-    if (categoryId) {
-      params.set("category", categoryId);
-    } else {
-      params.delete("category");
-    }
-
-    setSearchParams(params);
-  };
-
   const handleCategoryClick = (categoryId: string | null) => {
+    const newParams = updateSearchParam(searchParams, "category", categoryId);
+    setSearchParams(newParams);
     setSelectedCategory(categoryId);
-    updateSearchParams(categoryId);
     setIsModalOpen(false);
   };
 
-  // Keep selectedCategory in sync if URL changes externally
   useEffect(() => {
     const categoryInParams = searchParams.get("category");
     if (categoryInParams !== selectedCategory) {
       setSelectedCategory(categoryInParams);
     }
+    setDisplayCategory(
+      categories.find((c) => c.id == categoryInParams) ?? null
+    );
   }, [searchParams]);
 
   return (
     <>
-      <Button type="text" onClick={() => setIsModalOpen(true)}>
-        View more
-      </Button>
+      <div className="flex gap-1 items-center">
+        {currentCategory && (
+          <Button
+            type="text"
+            onClick={() => handleCategoryClick(null)}
+            icon={<MdFilterAltOff />}
+            shape="circle"
+          />
+        )}
+        <Button type="text" onClick={() => setIsModalOpen(true)}>
+          View more
+        </Button>
+      </div>
 
       <Modal
         title="All Game Categories"
