@@ -29,12 +29,15 @@ const postComments = [];
 const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
+  const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState<GamePost>();
   const messageApi = useGlobalMessage();
 
   const fetchPost = async () => {
     if (!postId) return;
+    setIsLoading(true);
     const result = await getGamePostById(postId);
+    setIsLoading(false);
     if (result.error) {
       messageApi.error("Failed to fetch post! Please try again later.");
     } else {
@@ -76,6 +79,10 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
     },
   ];
 
+  const onSubmitComment = () => {
+    fetchPost();
+  };
+
   if (!postId) {
     return;
   }
@@ -105,10 +112,10 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
       <div className="grid grid-cols-2">
         <div>
           <div className="p-3 max-h-[80vh] overflow-auto pb-10">
-            {post ? (
+            {!isLoading ? (
               <>
-                <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
-                <TiptapView value={post.content} />
+                <h3 className="text-xl font-semibold mb-2">{post?.title}</h3>
+                <TiptapView value={post?.content} />
                 {images.length > 0 && (
                   <div className="relative">
                     {images.length > 1 && (
@@ -141,7 +148,9 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
                 )}
               </>
             ) : (
-              <Loader />
+              <div className="flex items-center justify-center py-32">
+                <Loader type="inline" />
+              </div>
             )}
           </div>
         </div>
@@ -165,7 +174,10 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
           ) : (
             <div></div>
           )}
-          <PostCommentForm />
+          <PostCommentForm
+            onSubmit={onSubmitComment}
+            postId={post?.id ?? null}
+          />
           <div className="flex justify-between mt-2 border-t border-zinc-700 p-3">
             <div className="flex items-center gap-3 ">
               <Button
