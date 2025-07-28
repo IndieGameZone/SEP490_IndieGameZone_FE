@@ -173,7 +173,7 @@ type GamesAsAdminParams = {
   searchTerm?: string;
   pageNumber?: number;
   pageSize?: number;
-  censorStatus?: GameCensorStatus;
+  censorStatus?: GameCensorStatus | "";
 };
 
 export const getGamesAsAdmin = async (params?: GamesAsAdminParams) => {
@@ -182,7 +182,7 @@ export const getGamesAsAdmin = async (params?: GamesAsAdminParams) => {
     if (params?.searchTerm) searchParams.append("SearchTerm", params.searchTerm);
     if (params?.pageNumber !== undefined) searchParams.append("PageNumber", params.pageNumber.toString());
     if (params?.pageSize !== undefined) searchParams.append("PageSize", params.pageSize.toString());
-    if (params?.censorStatus !== undefined) searchParams.append("CensorStatus", params.censorStatus);
+    if (params?.censorStatus !== undefined && params.censorStatus != "") searchParams.append("CensorStatus", params.censorStatus);
 
     const queryString = searchParams.toString();
     const url = queryString ? `/api/games?${queryString}` : "/api/games";

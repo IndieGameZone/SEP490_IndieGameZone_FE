@@ -42,7 +42,16 @@ const GameCard = ({ game }: { game: Game }) => {
               </div>
               <div>
                 <p className="text-sm font-semibold text-green-500 text-right">
-                  {game.price == 0 ? "Free" : formatCurrencyVND(game.price)}
+                  {game.price != game.priceAfterDiscount && (
+                    <>
+                      <span className="text-zinc-400 line-through text-sm">
+                        {formatCurrencyVND(game.price)}
+                      </span>{" "}
+                    </>
+                  )}
+                  {game.priceAfterDiscount === 0
+                    ? "Free"
+                    : formatCurrencyVND(game.priceAfterDiscount)}
                 </p>
 
                 {game.numberOfReviews > 0 ? (
