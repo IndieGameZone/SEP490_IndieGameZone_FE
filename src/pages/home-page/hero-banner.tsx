@@ -8,9 +8,17 @@ import satellite from "@/assets/satellite_dish_PNG39.png";
 import tvStatic from "@/assets/tv-static.png";
 import rocket from "@/assets/rocket.png";
 import useIsMobile from "@/hooks/use-is-mobile";
+import useAuthStore from "@/store/use-auth-store";
+import { FaGamepad, FaUpload } from "react-icons/fa";
 
 export default function HeroBanner() {
   const isMobile = useIsMobile();
+  const { profile } = useAuthStore();
+
+  const isLoggedIn = profile != null;
+  const isDeveloper = profile?.role.name === "Developer";
+  const isPlayer = profile?.role.name === "Player";
+
   return (
     <section className="relative my-10">
       <img
@@ -27,7 +35,7 @@ export default function HeroBanner() {
             <img
               src={logo}
               alt=""
-              className="absolute left-10 top-28 z-[2] bg-zinc-900/50 rounded p-3"
+              className="absolute left-10 top-24 z-[2] bg-zinc-900/50 rounded p-3"
             />
             <img
               src={blackhole}
@@ -60,12 +68,25 @@ export default function HeroBanner() {
               the next hidden gem.
             </p>
             <div className="flex flex-col lg:flex-row gap-4">
-              <Button size="large" href="/sign-up">
-                Sign Up & Upload Your Game
-              </Button>
-              {/* <Button href="/feature-request" size="large">
-             Apply for Front Page Feature
-          </Button> */}
+              {!isLoggedIn && (
+                <Button size="large" href="/sign-up">
+                  Sign Up & Upload Your Game
+                </Button>
+              )}
+              {isLoggedIn && isDeveloper && (
+                <Button
+                  size="large"
+                  href="/dev/upload-game"
+                  icon={<FaUpload />}
+                >
+                  Upload Your Game
+                </Button>
+              )}
+              {isLoggedIn && isPlayer && (
+                <Button size="large" href="/search" icon={<FaGamepad />}>
+                  Explore Games
+                </Button>
+              )}
             </div>
           </div>
         </div>

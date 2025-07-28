@@ -1,7 +1,7 @@
 import { Input, message } from "antd";
 import { useSearchParams } from "react-router-dom";
 import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
-import GameCard from "./game-card";
+import GameCard from "../../components/game-card";
 import PopularGenresSection from "./popular-genres-section";
 import notFoundIcon from "@/assets/not-found-icon.svg";
 import { useEffect, useState } from "react";
@@ -201,7 +201,7 @@ const SearchPage = () => {
               {games.length > 0 &&
                 games.map((game) => (
                   <div key={game.id}>
-                    <GameCard game={game} />
+                    <GameCard game={game} variant="masonry"/>
                   </div>
                 ))}
             </Masonry>

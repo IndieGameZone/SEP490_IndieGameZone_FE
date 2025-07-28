@@ -7,7 +7,11 @@ import { Game } from "@/types/game";
 import AddToWishlistButton from "@/components/buttons/add-to-wishlist-button";
 import ConditionalWrapper from "@/components/wrappers/conditional-wrapper";
 
-const GameCard = ({ game }: { game: Game }) => {
+interface GameCardProps {
+  game: Game;
+  variant?: "masonry" | "default";
+}
+const GameCard = ({ game, variant = "default" }: GameCardProps) => {
   const navigate = useNavigate();
 
   const {
@@ -52,7 +56,9 @@ const GameCard = ({ game }: { game: Game }) => {
           <FaultTolerantImage
             src={coverImage}
             alt={`${name} cover image`}
-            className="w-full object-contain cursor-pointer"
+            className={`w-full object-contain cursor-pointer bg-zinc-950 ${
+              variant == "default" ? "aspect-video" : ""
+            }`}
             onClick={handleClickCard}
           />
           <div className="absolute top-2 right-2">
@@ -86,7 +92,13 @@ const GameCard = ({ game }: { game: Game }) => {
               )}
             </div>
           </div>
-          <p className="py-1 text-sm text-zinc-500">{shortDescription}</p>
+          <p
+            className={`py-1 text-sm text-zinc-500 ${
+              variant == "default" ? "line-clamp-2" : ""
+            }`}
+          >
+            {shortDescription}
+          </p>
           <div className="flex items-center mt-1">
             {gameTags?.slice(0, 3).map((tag) => (
               <a href={`/search?tags=${tag.tag.id}`} key={tag.tag.id}>

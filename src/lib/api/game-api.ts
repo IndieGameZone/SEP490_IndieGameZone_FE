@@ -330,3 +330,12 @@ export const checkGameOwnership = async (userId: string, gameId: string) => {
     return handleApiError(error);
   }
 };
+
+export const getRecommendedGames = async (userId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/users/${userId}/recommended-games`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
