@@ -47,3 +47,12 @@ export const getUnavailableDates = async (params: {
     return handleApiError(error);
   }
 };
+
+export const getTodayCarousel = async () => {
+  try {
+    const { data } = await axiosClient.get(`/api/games/today-homepage-banner`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
