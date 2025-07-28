@@ -11,6 +11,7 @@ import { createPost } from "@/lib/api/game-post-api";
 import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import { useRerender } from "@/hooks/use-rerender";
+import useGamePostStore from "@/store/use-game-post-store";
 
 const { Dragger } = Upload;
 
@@ -37,6 +38,7 @@ const CreatePostButton = () => {
   const { profile } = useAuthStore();
   const { game } = useGameStore();
   const { postTags, fetchPostTags } = useTagStore();  
+  const { fetchGamePosts } = useGamePostStore();
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!game) return;
@@ -67,6 +69,10 @@ const CreatePostButton = () => {
     } else {
       messageApi.success("Post created successfully!");
       localStorage.removeItem(DRAFT_KEY);
+       await fetchGamePosts(game.id, {
+          PageNumber: 1,
+          PageSize: 10,
+        });
       setTimeout(() => {
         form.resetFields();
         handleCancel();

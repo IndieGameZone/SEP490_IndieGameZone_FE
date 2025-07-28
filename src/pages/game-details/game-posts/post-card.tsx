@@ -3,19 +3,13 @@ import TiptapView from "@/components/tiptap/tiptap-view";
 import { GamePost } from "@/types/game-post";
 import { Avatar, Button, Dropdown, MenuProps, Tag } from "antd";
 import { useMemo, useState } from "react";
-import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaFlag,
-  FaLink,
-  FaRegComment,
-  FaRegHeart,
-} from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaFlag, FaLink, FaRegComment, FaRegHeart } from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { IoShareSocialOutline } from "react-icons/io5";
 import Lightbox from "yet-another-react-lightbox";
 import ReportPostModal from "@/components/report-modal/report-post-modal";
 import { timeAgo } from "@/lib/date-n-time";
+import useGamePostStore from "@/store/use-game-post-store";
 
 interface PostCardProps {
   post: GamePost;
@@ -26,15 +20,13 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [reportPostModalOpen, setReportPostModalOpen] = useState(false);
+  const { fetchPostComments } = useGamePostStore();
 
   const images: string[] = useMemo(() => {
     return post.postImages.map((image) => image.image);
   }, [post]);
 
-  const slides = useMemo(
-    () => images.map((image) => ({ src: image })),
-    [images]
-  );
+  const slides = useMemo(() => images.map((image) => ({ src: image })), [images]);
 
   const moreOptionItems: MenuProps["items"] = [
     {
@@ -58,29 +50,23 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
     setCurrentImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  const handleViewPostDetail = () => {
+  const handleViewPostDetail = async () => {
     if (onViewPostDetail) {
+      await fetchPostComments(post.id);
       onViewPostDetail(post);
     }
   };
 
   return (
     <div>
-      <Lightbox
-        index={currentImage}
-        slides={slides}
-        open={lightboxIndex >= 0}
-        close={() => setLightboxIndex(-1)}
-      />
+      <Lightbox index={currentImage} slides={slides} open={lightboxIndex >= 0} close={() => setLightboxIndex(-1)} />
       <div className="bg-zinc-800 w-full p-3 rounded">
         <div className="flex justify-between items-center gap-3">
           <div className="flex items-center gap-3">
             <Avatar src={post.user.avatar} />
             <div>
               <div className="font-semibold">{post.user.userName}</div>
-              <div className="text-xs text-gray-400">
-                {timeAgo(post.createdAt)}
-              </div>
+              <div className="text-xs text-gray-400">{timeAgo(post.createdAt)}</div>
             </div>
           </div>
           <Dropdown menu={{ items: moreOptionItems }} trigger={["click"]}>
@@ -89,10 +75,7 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
         </div>
 
         <div className="mt-2">
-          <h4
-            className="font-bold text-xl cursor-pointer"
-            onClick={handleViewPostDetail}
-          >
+          <h4 className="font-bold text-xl cursor-pointer" onClick={handleViewPostDetail}>
             {post.title}
           </h4>
 
@@ -144,11 +127,7 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
           )}
 
           <div className="flex items-center gap-3 mt-2">
-            <Button
-              icon={<FaRegHeart className="text-gray-400" />}
-              shape="round"
-              type="text"
-            >
+            <Button icon={<FaRegHeart className="text-gray-400" />} shape="round" type="text">
               <span>{post.numberOfLikes}</span>
             </Button>
 
@@ -161,11 +140,7 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
               <span>{post.numberOfComments}</span>
             </Button>
 
-            <Button
-              icon={<IoShareSocialOutline className="text-gray-400" />}
-              shape="circle"
-              type="text"
-            />
+            <Button icon={<IoShareSocialOutline className="text-gray-400" />} shape="circle" type="text" />
           </div>
         </div>
       </div>
