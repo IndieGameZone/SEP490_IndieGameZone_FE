@@ -24,7 +24,7 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState<GamePost>();
   const messageApi = useGlobalMessage();
-  const { postComments, fetchPostComments, loading: commentsLoading } = useGamePostStore();
+  const { postComments, loading: commentsLoading } = useGamePostStore();
 
   const fetchPost = async () => {
     if (!postId) return;
