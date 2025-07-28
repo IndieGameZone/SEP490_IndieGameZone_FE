@@ -1,5 +1,5 @@
 import Slider from "react-slick";
-import FeaturedGameCard from "./featured-game-card";
+import CarouselItem from "./carousel-item";
 import { useEffect, useState } from "react";
 import { Game } from "@/types/game";
 import { getTodayCarousel } from "@/lib/api/commercial-package-api";
@@ -22,7 +22,7 @@ const settings = {
   ),
 };
 
-const FeaturedGameSection = () => {
+const CarouselSection = () => {
   const [featuredGames, setFeaturedGames] = useState<Game[]>([]);
   const messageApi = useGlobalMessage();
   useEffect(() => {
@@ -44,13 +44,11 @@ const FeaturedGameSection = () => {
       <h2 className="my-3 text-2xl font-bold">Featured Games</h2>
       <Slider {...settings}>
         {featuredGames.map((game) => {
-          return (
-            <FeaturedGameCard game={game} key={`featured-game-${game.id}`} />
-          );
+          return <CarouselItem game={game} key={`featured-game-${game.id}`} />;
         })}
       </Slider>
     </section>
   );
 };
 
-export default FeaturedGameSection;
+export default CarouselSection;

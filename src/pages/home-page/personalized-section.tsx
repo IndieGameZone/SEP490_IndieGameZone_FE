@@ -65,6 +65,7 @@ const PersonalizedSection = () => {
     }
   };
 
+  if (profile && !isLoading && recommendedGames.length == 0) return;
   if (!profile) {
     return (
       <div className="bg-zinc-800 border-2 border-zinc-200 rounded text-center p-5 flex flex-col gap-3">

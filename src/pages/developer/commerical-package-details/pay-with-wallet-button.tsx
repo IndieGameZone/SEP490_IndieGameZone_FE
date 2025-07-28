@@ -20,7 +20,7 @@ const PayWithWalletButton = ({
   selectedDate,
 }: PayWithWalletButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { profile } = useAuthStore();
+  const { profile, fetchProfile } = useAuthStore();
   const messageApi = useGlobalMessage();
   const navigate = useNavigate();
 
@@ -44,6 +44,11 @@ const PayWithWalletButton = ({
     }
   };
 
+const handleOpenModal = () => {
+  fetchProfile();
+  setIsModalOpen(true);
+};
+
   if (!profile) return null;
 
   return (
@@ -52,7 +57,7 @@ const PayWithWalletButton = ({
         size="large"
         style={{ marginTop: "1rem", width: "100%" }}
         icon={<FaWallet />}
-        onClick={() => setIsModalOpen(true)}
+        onClick={handleOpenModal}
       >
         Pay with wallet
       </Button>

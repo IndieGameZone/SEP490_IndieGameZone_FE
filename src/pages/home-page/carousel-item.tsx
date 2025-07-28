@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Lightbox from "yet-another-react-lightbox";
 
-interface FeaturedGameCardProps {
+interface CarouselItemProps {
   game: Game;
 }
-const FeaturedGameCard = ({ game }: FeaturedGameCardProps) => {
+const CarouselItem = ({ game }: CarouselItemProps) => {
   const [index, setIndex] = useState(-1);
   const [gameImages, setGameImages] = useState<any>([]);
   const [slides, setSlides] = useState<any>([]);
@@ -93,4 +93,4 @@ const FeaturedGameCard = ({ game }: FeaturedGameCardProps) => {
   );
 };
 
-export default FeaturedGameCard;
+export default CarouselItem;

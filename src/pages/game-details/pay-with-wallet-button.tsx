@@ -58,6 +58,11 @@ const PayWithWalletButton = ({
     }
   };
 
+  const handleOpenModal = () => {
+    fetchProfile();
+    setIsModalOpen(true);
+  };
+
   if (!game || !profile) return null;
 
   return (
@@ -66,7 +71,7 @@ const PayWithWalletButton = ({
         size="large"
         style={{ marginTop: "1.5rem" }}
         icon={<FaWallet />}
-        onClick={() => setIsModalOpen(true)}
+        onClick={handleOpenModal}
       >
         Pay with wallet
       </Button>

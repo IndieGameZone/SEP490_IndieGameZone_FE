@@ -1,6 +1,6 @@
 import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { Link } from "react-router-dom";
-import FeaturedGameSection from "./featured-game-section";
+import CarouselSection from "./carousel-section";
 import SpecialOffersSection from "./special-offers-section";
 import { IoTimer } from "react-icons/io5";
 import { MdAttachMoney, MdMoneyOff } from "react-icons/md";
@@ -16,6 +16,7 @@ import NavLinks from "@/components/nav-links";
 import ScrollToTopButton from "@/components/buttons/scroll-to-top-button";
 import HandleTransactionResult from "@/components/handle-transaction-result";
 import HeroBanner from "./hero-banner";
+import SponsoredGamesSections from "./sponsored-games-section";
 
 const DisclaimerModal = lazy(() => import("../../components/disclaimer-modal"));
 
@@ -26,8 +27,9 @@ const HomePage = () => {
       <DisclaimerModal />
       <HandleTransactionResult />
       <NavLinks />
-      <FeaturedGameSection />
+      <CarouselSection />
       <HeroBanner />
+      <SponsoredGamesSections />
       <SpecialOffersSection />
       <section className="pb-9">
         <h2 className="text-2xl font-bold text-center my-5">Games Search</h2>
