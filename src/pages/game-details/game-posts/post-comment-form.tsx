@@ -8,6 +8,7 @@ import { createPostComment } from "@/lib/api/game-post-api";
 import useAuthStore from "@/store/use-auth-store";
 import { useGlobalMessage } from "@/components/message-provider";
 import { Link } from "react-router-dom";
+import useGamePostStore from "@/store/use-game-post-store";
 
 type FieldType = {
   comment?: string;
@@ -23,6 +24,7 @@ const PostCommentForm = ({ onSubmit, postId }: PostCommentFormProps) => {
   const [showPicker, setShowPicker] = useState(false);
   const { profile } = useAuthStore();
   const messageApi = useGlobalMessage();
+  const { fetchPostComments } = useGamePostStore();
 
   const handleEmojiSelect = (emoji: any) => {
     form.setFieldValue("comment", form.getFieldValue("comment") + emoji);
@@ -35,33 +37,31 @@ const PostCommentForm = ({ onSubmit, postId }: PostCommentFormProps) => {
       messageApi.error("Failed to post comment! Please try again.");
     } else {
       form.resetFields();
+      await fetchPostComments(postId);
+      messageApi.success("Comment posted successfully!");
       onSubmit();
     }
   };
 
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
-    errorInfo
-  ) => {
+  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
   const currentComment = Form.useWatch("comment", form);
-  if (!profile) return <div className="text-zinc-500 text-center"><Link to="/log-in" className="font-semibold">Login</Link> to post a comment</div>;
+  if (!profile)
+    return (
+      <div className="text-zinc-500 text-center">
+        <Link to="/log-in" className="font-semibold">
+          Login
+        </Link>{" "}
+        to post a comment
+      </div>
+    );
   return (
     <div className="p-3 relative">
-      <Form
-        name="basic"
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-        form={form}
-      >
+      <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off" form={form}>
         <div className="flex items-start gap-2 mt-2">
-          <Form.Item<FieldType>
-            name="comment"
-            className="w-full"
-            style={{ marginBottom: 0 }}
-          >
+          <Form.Item<FieldType> name="comment" className="w-full" style={{ marginBottom: 0 }}>
             <TextArea
               className="w-full p-2 border rounded resize-none"
               placeholder="Write your comment..."
@@ -81,12 +81,7 @@ const PostCommentForm = ({ onSubmit, postId }: PostCommentFormProps) => {
               size="large"
             />
 
-            {showPicker && (
-              <EmojiPicker
-                onSelect={handleEmojiSelect}
-                onClose={() => setShowPicker(false)}
-              />
-            )}
+            {showPicker && <EmojiPicker onSelect={handleEmojiSelect} onClose={() => setShowPicker(false)} />}
           </div>
           <Form.Item label={null} style={{ marginBottom: 0 }}>
             <Button

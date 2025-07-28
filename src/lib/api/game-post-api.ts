@@ -87,3 +87,11 @@ export const createPostComment = async (userId: string, postId: string, content:
     return handleApiError(error);
   }
 };
+export const getPostCommentsByPostId = async ( postId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/posts/${postId}/post-comments`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
