@@ -35,6 +35,13 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
             navigate("/account/ratings-and-reviews");
           },
         },
+        {
+          key: "/account/recommendations",
+          label: "Recommendations",
+          onClick: () => {
+            navigate("/account/recommendations");
+          },
+        },
       ],
     },
     {
@@ -75,6 +82,13 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
           label: "Wallet & Transactions",
           onClick: () => {
             navigate("/account/wallet-and-transactions");
+          },
+        },
+        {
+          key: "/account/orders",
+          label: "Orders",
+          onClick: () => {
+            navigate("/account/orders");
           },
         },
       ],
@@ -118,8 +132,6 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
-
 
   return (
     <MaxWidthWrapper>

@@ -61,7 +61,7 @@ const ProfileMenu = () => {
       key: "5",
       label: "Recommendations ",
       icon: <FaLightbulb />,
-      onClick: () => navigate("/recommendations"),
+      onClick: () => navigate("/account/recommendations"),
     },
     {
       type: "divider",

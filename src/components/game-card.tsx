@@ -6,6 +6,7 @@ import { Badge, Tag } from "antd";
 import { Game } from "@/types/game";
 import AddToWishlistButton from "@/components/buttons/add-to-wishlist-button";
 import ConditionalWrapper from "@/components/wrappers/conditional-wrapper";
+import { useMemo } from "react";
 
 interface GameCardProps {
   game: Game;
@@ -24,10 +25,15 @@ const GameCard = ({ game, variant = "default" }: GameCardProps) => {
     shortDescription,
     gameTags,
     hasCommercial,
+    discount,
   } = game;
 
   const handleClickCard = () => navigate(`/game/${game.id}`);
-
+  
+  const priceAfterDiscount = useMemo(
+    () => game.price * (1 - game.discount / 100),
+    [game]
+  );
   if (!game) {
     return (
       <div className="bg-zinc-900 rounded-lg p-4 text-center text-gray-500">
@@ -57,7 +63,7 @@ const GameCard = ({ game, variant = "default" }: GameCardProps) => {
             src={coverImage}
             alt={`${name} cover image`}
             className={`w-full object-contain cursor-pointer bg-zinc-950 ${
-              variant == "default" ? "aspect-video" : ""
+              variant == "default" ? "aspect-video" : "max-h-64"
             }`}
             onClick={handleClickCard}
           />
@@ -79,8 +85,17 @@ const GameCard = ({ game, variant = "default" }: GameCardProps) => {
               </a>
             </div>
             <div>
-              <p className="text-sm font-semibold text-green-500 text-right">
-                {price === 0 ? "Free" : formatCurrencyVND(price)}
+              <p className="font-semibold text-green-500 text-right">
+                {discount > 0 && (
+                  <>
+                    <span className="text-zinc-400 line-through text-sm">
+                      {formatCurrencyVND(price)}
+                    </span>{" "}
+                  </>
+                )}
+                {priceAfterDiscount === 0
+                  ? "Free"
+                  : formatCurrencyVND(priceAfterDiscount)}
               </p>
               {numberOfReviews > 0 ? (
                 <div className="flex items-center justify-end gap-2">

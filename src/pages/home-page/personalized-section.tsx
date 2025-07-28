@@ -72,9 +72,9 @@ const PersonalizedSection = () => {
           Sign in to see <span className="font-semibold">personalized</span>{" "}
           recommendations
         </p>
-        <div>
+        <Link to={"/log-in"}>
           <Button type="primary">Log in</Button>
-        </div>
+        </Link>
         <div>
           Or{" "}
           <Link

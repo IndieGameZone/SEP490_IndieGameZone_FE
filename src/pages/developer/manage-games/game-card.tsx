@@ -9,7 +9,12 @@ import { Game } from "@/types/game";
 import { Badge } from "antd";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useMemo } from "react";
 const GameCard = ({ game }: { game: Game }) => {
+  const priceAfterDiscount = useMemo(
+    () => game.price * (1 - game.discount / 100),
+    [game]
+  );
   return (
     <ConditionalWrapper
       condition={game.hasCommercial}
@@ -24,7 +29,7 @@ const GameCard = ({ game }: { game: Game }) => {
           <FaultTolerantImage
             src={game.coverImage}
             alt={`${game.name} cover image`}
-            className="w-full aspect-video object-contain"
+            className="w-full aspect-video object-contain bg-zinc-950"
           />
         </Link>
         <div className="p-3">
@@ -42,7 +47,16 @@ const GameCard = ({ game }: { game: Game }) => {
               </div>
               <div>
                 <p className="text-sm font-semibold text-green-500 text-right">
-                  {game.price == 0 ? "Free" : formatCurrencyVND(game.price)}
+                  {game.discount > 0 && (
+                    <>
+                      <span className="text-zinc-400 line-through text-sm">
+                        {formatCurrencyVND(game.price)}
+                      </span>{" "}
+                    </>
+                  )}
+                  {priceAfterDiscount === 0
+                    ? "Free"
+                    : formatCurrencyVND(priceAfterDiscount)}
                 </p>
 
                 {game.numberOfReviews > 0 ? (

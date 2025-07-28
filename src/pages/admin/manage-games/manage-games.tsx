@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Table,
   Button,
@@ -30,7 +30,7 @@ const censorStatusMap: Record<GameCensorStatus, string> = {
 
 const DEFAULT_PAGE_SIZE = 10;
 
-const ManageGames: React.FC = () => {
+const ManageGames = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -80,7 +80,6 @@ const ManageGames: React.FC = () => {
   useEffect(() => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
     });
     const query = searchParams.get("q") ?? undefined;
     const pageNumber = parseNumber(searchParams.get("page"));
