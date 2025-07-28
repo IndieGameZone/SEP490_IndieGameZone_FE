@@ -35,6 +35,13 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
             navigate("/account/ratings-and-reviews");
           },
         },
+        {
+          key: "/account/recommendations",
+          label: "Recommendations",
+          onClick: () => {
+            navigate("/account/recommendations");
+          },
+        },
       ],
     },
     {
@@ -118,8 +125,6 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
-
 
   return (
     <MaxWidthWrapper>
