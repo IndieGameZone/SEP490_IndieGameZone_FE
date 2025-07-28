@@ -84,6 +84,13 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
             navigate("/account/wallet-and-transactions");
           },
         },
+        {
+          key: "/account/orders",
+          label: "Orders",
+          onClick: () => {
+            navigate("/account/orders");
+          },
+        },
       ],
     },
     {

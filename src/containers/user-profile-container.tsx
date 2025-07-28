@@ -19,6 +19,9 @@ const UserLibraryPage = lazy(
 const GameRecommendationsPage = lazy(
   () => import("@/pages/user-profile/game-recommendations-page")
 );
+const UserOrdersPage = lazy(
+  () => import("@/pages/user-profile/orders/user-orders-page")
+);
 const UserProfileContainer = () => {
   return (
     <HomeLayout>
@@ -36,6 +39,7 @@ const UserProfileContainer = () => {
               path="/recommendations"
               element={<GameRecommendationsPage />}
             />
+            <Route path="/orders" element={<UserOrdersPage />} />
           </Routes>
         </Suspense>
       </UserProfileLayout>

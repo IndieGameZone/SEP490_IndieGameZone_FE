@@ -1,5 +1,6 @@
 import GameCard from "@/components/game-card";
 import Loader from "@/components/loader";
+import { useGlobalMessage } from "@/components/message-provider";
 import { getRecommendedGames } from "@/lib/api/game-api";
 import useAuthStore from "@/store/use-auth-store";
 import { Game } from "@/types/game";
@@ -9,6 +10,7 @@ import { Link } from "react-router-dom";
 const GameRecommendationsPage = () => {
   const [recommendedGames, setRecommendedGames] = useState<Game[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const messageApi = useGlobalMessage();
   const { profile } = useAuthStore();
   useEffect(() => {
     fetchRecommendedGames();
@@ -21,6 +23,8 @@ const GameRecommendationsPage = () => {
     setIsLoading(false);
     if (!result.error) {
       setRecommendedGames(result.data);
+    } else {
+      messageApi.error("Failed to load games. Please try again!");
     }
   };
 

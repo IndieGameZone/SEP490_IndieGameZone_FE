@@ -34,7 +34,9 @@ const PayWithWalletButton = ({
     );
     if (result.success) {
       messageApi.success("Purchase successful!");
-      setTimeout(() => navigate(`/dev/commercial-packages`), 1000);
+      setTimeout(() => {
+        navigate(`/dev/commercial-packages`);
+      }, 1000);
       return true;
     } else {
       messageApi.error(result.error || "Purchase failed");

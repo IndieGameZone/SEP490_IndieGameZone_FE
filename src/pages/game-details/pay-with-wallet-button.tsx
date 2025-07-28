@@ -22,7 +22,7 @@ const PayWithWalletButton = ({
 }: PayWithWalletButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { game } = useGameStore();
-  const { profile } = useAuthStore();
+  const { profile, fetchProfile } = useAuthStore();
   const { ownedGameIds, fetchOwnedGameIds } = useLibraryStore();
   const messageApi = useGlobalMessage();
   const navigate = useNavigate();
@@ -38,10 +38,19 @@ const PayWithWalletButton = ({
       messageApi.error("Invalid game data");
       return false;
     }
-    const result = await purchaseGame(userId, gameId, amount, undefined, "Wallet");
+    const result = await purchaseGame(
+      userId,
+      gameId,
+      amount,
+      undefined,
+      "Wallet"
+    );
     if (result.success) {
       messageApi.success("Purchase successful! Proceeding to download.");
-      setTimeout(() => navigate(`/download/${game.id}`), 1000);
+      setTimeout(() => {
+        fetchProfile();
+        navigate(`/download/${game.id}`);
+      }, 1000);
       return true;
     } else {
       messageApi.error(result.error || "Purchase failed");

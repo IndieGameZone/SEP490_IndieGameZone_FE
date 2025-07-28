@@ -29,7 +29,7 @@ const GameCard = ({ game }: { game: Game }) => {
           <FaultTolerantImage
             src={game.coverImage}
             alt={`${game.name} cover image`}
-            className="w-full aspect-video object-contain"
+            className="w-full aspect-video object-contain bg-zinc-950"
           />
         </Link>
         <div className="p-3">
