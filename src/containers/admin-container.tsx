@@ -1,6 +1,7 @@
 import SuspenseFallback from "@/components/suspense-fallback";
 import AdminLayout from "@/layouts/admin-layout";
 import AdminGameDetail from "@/pages/admin/game-details/admin-game-details";
+import ManageCommercialPackage from "@/pages/admin/manage-commercial-package/manage-commercial-package";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
@@ -17,7 +18,7 @@ const ManageLanguages = lazy(() => import("@/pages/admin/manage-languages/manage
 const ManageTags = lazy(() => import("@/pages/admin/manage-tags/manage-tags"));
 const AdminNotFoundPage = lazy(() => import("@/pages/errors/simple-not-found-page"));
 const ManageReportReason = lazy(() => import("@/pages/admin/manage-report-reason/manage-report-reason"));
-const ManageReport = lazy(() => import("@/pages/admin/manage-report/manage-report"));
+const ManageReport = lazy(() => import("@/pages/admin/manage-report/manage-system-report"));
 const AdminContainer = () => {
   return (
     <AdminLayout>
@@ -37,6 +38,7 @@ const AdminContainer = () => {
           <Route path="/game/:gameId" element={<AdminGameDetail />} />
           <Route path="/manage-age-restrictions" element={<ManageAgeRestrictionPage />} />
           <Route path="/manage-platforms" element={<ManagePlatforms />} />
+          <Route path="/manage-commercial-package" element={<ManageCommercialPackage />} />
         </Routes>
       </Suspense>
     </AdminLayout>

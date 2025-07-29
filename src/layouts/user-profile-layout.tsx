@@ -128,6 +128,21 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
         },
       ],
     },
+    {
+      key: "otherGrp",
+      label: "Other",
+      type: "group",
+      children: [
+        {
+          key: "/account/manage-reports",
+          label: "Manage Reports",
+          onClick: () => {
+            navigate("/account/manage-reports");
+          },
+        },
+      
+      ],
+    }
   ];
   const {
     token: { colorBgContainer },

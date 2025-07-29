@@ -56,3 +56,11 @@ export const getTodayCarousel = async () => {
     return handleApiError(error);
   }
 };
+export const getAllCommercialPackagesRegistrations = async () => {
+  try {
+    const { data } = await axiosClient.get(`/api/commercial-packages/registrations`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

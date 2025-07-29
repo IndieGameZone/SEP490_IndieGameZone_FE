@@ -18,6 +18,7 @@ import { GoReport } from "react-icons/go";
 import { GrTransaction } from "react-icons/gr";
 import AppTheme from "@/components/app-theme";
 import DownloadProcessesButton from "@/components/navbar/download-processes-button";
+import { RiAdvertisementLine } from "react-icons/ri";
 
 const { Footer, Sider } = Layout;
 
@@ -129,6 +130,22 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       },
     },
     {
+      key: "/admin/manage-commercial-package",
+      icon: <RiAdvertisementLine />,
+      label: "Manage Commercial Package",
+      onClick: () => {
+        navigate("/admin/manage-commercial-package");
+      },
+    },
+    {
+      key: "/admin/game/:gameId",
+      icon: <CgGames />,
+      label: "Game Details",
+      onClick: () => {
+        navigate("/admin/game/1"); // Example game ID, replace with actual logic
+      },
+    },
+    {
       key: "/admin/manage-age-restrictions",
       icon: <TbCancel />,
       label: "Manage Age Restrictions",
@@ -162,22 +179,11 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
   return (
     <AppTheme theme="light">
       <Layout hasSider className={styles.lightTable}>
-        <Sider
-          trigger={null}
-          collapsible
-          collapsed={collapsed}
-          style={siderStyle}
-          width={256}
-        >
+        <Sider trigger={null} collapsible collapsed={collapsed} style={siderStyle} width={256}>
           <div className="p-3 my-3">
             <img src={logo} alt="indiegamezone logo" className="w-40" />
           </div>
-          <Menu
-            theme="dark"
-            mode="inline"
-            selectedKeys={[location.pathname]}
-            items={items}
-          />
+          <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} items={items} />
         </Sider>
         <Layout>
           <div
@@ -205,9 +211,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             </div>
           </div>
           <div style={{ margin: "24px 16px 0" }}>{children}</div>
-          <Footer style={{ textAlign: "center" }}>
-            Ant Design ©{new Date().getFullYear()} Created by Ant UED
-          </Footer>
+          <Footer style={{ textAlign: "center" }}>Ant Design ©{new Date().getFullYear()} Created by Ant UED</Footer>
         </Layout>
       </Layout>
     </AppTheme>
