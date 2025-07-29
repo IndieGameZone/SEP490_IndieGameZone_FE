@@ -135,3 +135,19 @@ export const createReportPost = async (userId: string, reportPostData: ReportPos
     return handleApiError(error);
   }
 };
+export const getAllReport = async () => {
+    try {
+        const { data } = await axiosClient.get(`/api/reports`);
+        return { error: null, data: data, success: true };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
+export const changeStatusReport = async (id: string, status: "true" | "false") => {
+    try {
+        const { data } = await axiosClient.put(`/api/reports/${id}/resolve-status`, { status });
+        return { error: null, data: data, success: true };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
