@@ -1,50 +1,38 @@
 // import { useGlobalMessage } from "@/components/message-provider";
-// import { axiosClient } from "@/lib/api/config/axios-client";
-// import { addGameFiles } from "@/lib/api/game-api";
+// import { updateGameFile } from "@/lib/api/game-api"; // You might need this API
 // import { formatBytes } from "@/lib/file";
 // import useGameStore from "@/store/use-game-store";
 // import usePlatformStore from "@/store/use-platform-store";
 // import { GameFile } from "@/types/game";
-// import { Alert, Button, Form, FormProps, Input, Modal, Progress, Select, UploadFile } from "antd";
-// import Upload, { RcFile } from "antd/es/upload";
+// import { Alert, Button, Form, FormProps, Input, Modal, Select } from "antd";
 // import { useMemo, useState } from "react";
 // import { FaRedo, FaUpload } from "react-icons/fa";
 
-// const allowedTypes = [
-//   ".exe",
-//   ".msi",
-//   ".sh",
-//   ".bat",
-//   ".apk",
-//   ".zip",
-//   ".rar",
-//   ".7z",
-//   ".tar",
-//   ".gz",
-// ];
-
 // type FieldType = {
 //   displayName: string;
-//   platformId: string;
-//   file: UploadFile;
 //   version: string;
+//   platformId: string;
 // };
 
 // interface UpdateGameFileModalProps {
 //   file: GameFile | null;
+//   open: boolean;
+//   onClose: () => void;
 // }
-// const UpdateGameFileModal = ({ file }: UpdateGameFileModalProps) => {
+
+// const UpdateGameFileModal = ({
+//   file,
+//   open,
+//   onClose,
+// }: UpdateGameFileModalProps) => {
 //   const [form] = Form.useForm();
-//   const [fileList, setFileList] = useState<any[]>([]);
-//   const [isModalOpen, setIsModalOpen] = useState(false);
 //   const [loading, setLoading] = useState(false);
-//   const [uploadProgress, setUploadProgress] = useState(0);
-//   const [fileUrl, setFileUrl] = useState<string | null>(null);
 //   const [errorMessage, setErrorMessage] = useState("");
-//   const { platforms } = usePlatformStore();
-//   const messageApi = useGlobalMessage();
 //   const [formDataCache, setFormDataCache] = useState<FieldType | null>(null);
-//   const { game, rerender, gameFiles } = useGameStore();
+//   const { platforms } = usePlatformStore();
+//   const { rerender, gameFiles } = useGameStore();
+//   const messageApi = useGlobalMessage();
+
 //   const platformsOptions = useMemo(() => {
 //     return platforms.map((x) => ({ value: x.id, label: x.name }));
 //   }, [platforms]);
@@ -55,6 +43,7 @@
 
 //     const isDuplicate = gameFiles.some(
 //       (x) =>
+//         x.id !== file?.id &&
 //         x.displayName === value &&
 //         x.version === version &&
 //         x.platform.id === platformId
@@ -71,212 +60,96 @@
 //     return Promise.resolve();
 //   };
 
-//   const handleBeforeUpload = (file: File) => {
-//     const isAllowed = allowedTypes.some((type) =>
-//       file.name.toLowerCase().endsWith(type)
-//     );
-//     if (!isAllowed) {
-//       messageApi.error(
-//         `${file.name} is not a valid executable or compressed file`
-//       );
-//       return false;
-//     }
-//     const rcFile = file as RcFile;
-//     rcFile.uid = String(Date.now());
-
-//     const newFile: UploadFile = {
-//       uid: rcFile.uid,
-//       name: rcFile.name,
-//       status: "done",
-//       originFileObj: rcFile,
-//       size: rcFile.size,
-//     };
-
-//     setFileList([newFile]);
-
-//     form.setFieldsValue({ displayName: file.name });
-//     setFileUrl(null);
-//     return false;
-//   };
-
-//   const uploadFileToAPI = async (file: File) => {
-//     const formData = new FormData();
-//     formData.append("file", file);
-
-//     try {
-//       const response = await axiosClient.post("/api/files", formData, {
-//         onUploadProgress: (progressEvent) => {
-//           const percent = Math.round(
-//             (progressEvent.loaded * 100) / (progressEvent.total || 1)
-//           );
-//           setUploadProgress(percent);
-//         },
-//       });
-//       return response.data;
-//     } catch (error: any) {
-//       if (
-//         error.response?.status === 400 &&
-//         error.response?.data?.detail ===
-//           "File scan failed. Please ensure the file is safe and appropriate."
-//       ) {
-//         const message =
-//           "The file couldn't be uploaded because it didn't pass our safety check. Please make sure the file is safe and try again.";
-//         messageApi.error(message);
-//         setErrorMessage(message);
-//       } else {
-//         messageApi.error("Upload failed! Please try again.");
-//         setErrorMessage("Upload failed! Please try again.");
-//       }
-
-//       throw error;
-//     }
-//   };
-
-//   const submitFormData = async (data: FieldType, fileUrl: string) => {
-//     if (!game) return;
-//     const result = await addGameFiles(game.id, [
-//       { file: fileUrl, platformId: data.platformId, version: data.version },
-//     ]);
-//     if (result.error) {
-//       throw Error("Failed to attach file!");
-//     }
-//   };
-
 //   const handleSubmitLogic = async (values: FieldType) => {
+//     if (!file) return;
 //     setLoading(true);
 //     setErrorMessage("");
 
 //     try {
-//       let url = fileUrl;
-//       if (!url) {
-//         const rawFile = fileList[0]?.originFileObj;
-//         if (!rawFile) throw new Error("No file selected");
-//         url = await uploadFileToAPI(rawFile);
-//         setFileUrl(url); // Save for retry
-//       }
-//       if (url) {
-//         await submitFormData(values, url);
-//       } else {
-//         throw new Error("No file url");
-//       }
+//       await updateGameFile(file.id, {
+//         displayName: values.displayName,
+//         version: values.version,
+//         platformId: values.platformId,
+//       });
 
-//       form.resetFields();
-//       setFileList([]);
-//       setFileUrl(null);
-//       setFormDataCache(null);
-//       setIsModalOpen(false);
-//       messageApi.success("Upload file successfully!");
-//       setTimeout(() => {
-//         rerender();
-//       }, 1000);
-//     } catch (err: any) {
+//       messageApi.success("File info updated successfully!");
+//       rerender();
+//       onClose();
+//     } catch (err) {
+//       messageApi.error("Update failed! Please try again.");
+//       setErrorMessage("Update failed! Please try again.");
 //       setFormDataCache(values);
-//       messageApi.error("Something went wrong! Please try again.");
-//       setErrorMessage("Something went wrong! Please try again.");
 //     } finally {
 //       setLoading(false);
-//       setUploadProgress(0);
 //     }
 //   };
 
-//   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
+//   const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
 //     handleSubmitLogic(values);
 //   };
 
-//   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (_) => {};
-
-//   const showModal = () => {
-//     setIsModalOpen(true);
-//   };
-
-//   const handleOk = () => {
-//     form.submit();
-//   };
-
-//   const handleCancel = () => {
-//     form.resetFields();
-//     setFileList([]);
-//     setFileUrl(null);
-//     setErrorMessage("");
-//     setIsModalOpen(false);
-//     setFormDataCache(null);
-//   };
-
 //   const handleRetry = () => {
-//     if (formDataCache && fileUrl) {
+//     if (formDataCache) {
 //       handleSubmitLogic(formDataCache);
 //     }
 //   };
 
-//   const handleFormChange = (changedValues: any) => {
-//     if (changedValues !== undefined) {
-//       form.validateFields(["displayName"]);
-//     }
-//   };
+//   const initialValues = file
+//     ? {
+//         displayName: file.displayName,
+//         version: file.version,
+//         platformId: file.platform.id,
+//       }
+//     : {};
+
 //   return (
 //     <Modal
-//       title="Upload new file"
-//       open={isModalOpen}
-//       onOk={handleOk}
+//       title="Update File Info"
+//       open={open}
+//       onCancel={onClose}
 //       maskClosable={false}
-//       onCancel={handleCancel}
-//       footer={() => (
-//         <>
-//           <Button onClick={handleCancel}>Cancel</Button>
-//           {errorMessage && fileUrl && formDataCache ? (
-//             <Button
-//               onClick={handleRetry}
-//               disabled={loading}
-//               type="primary"
-//               loading={loading}
-//               icon={<FaRedo />}
-//             >
-//               Retry Submit
-//             </Button>
-//           ) : (
-//             <Button
-//               type="primary"
-//               onClick={handleOk}
-//               icon={<FaUpload />}
-//               loading={loading}
-//             >
-//               Submit
-//             </Button>
-//           )}
-//         </>
-//       )}
+//       footer={[
+//         <Button key="cancel" onClick={onClose}>
+//           Cancel
+//         </Button>,
+//         errorMessage && formDataCache ? (
+//           <Button
+//             key="retry"
+//             onClick={handleRetry}
+//             disabled={loading}
+//             loading={loading}
+//             icon={<FaRedo />}
+//             type="primary"
+//           >
+//             Retry Update
+//           </Button>
+//         ) : (
+//           <Button
+//             key="submit"
+//             type="primary"
+//             htmlType="submit"
+//             onClick={() => form.submit()}
+//             icon={<FaUpload />}
+//             loading={loading}
+//           >
+//             Save Changes
+//           </Button>
+//         ),
+//       ]}
 //     >
 //       <Form
 //         form={form}
 //         layout="vertical"
+//         initialValues={initialValues}
 //         onFinish={onFinish}
-//         onFinishFailed={onFinishFailed}
-//         onValuesChange={handleFormChange}
 //       >
-//         <Form.Item<FieldType>
-//           label="Upload File"
-//           name="file"
-//           rules={[{ required: true, message: "Please upload a file" }]}
-//           extra="Upload the actual game file (compressed builds are accepted). File size limit: 1 GB."
-//           style={{ marginBottom: 10 }}
-//         >
-//           <Upload
-//             maxCount={1}
-//             beforeUpload={handleBeforeUpload}
-//             showUploadList={{
-//               extra: ({ size = 0 }) => (
-//                 <span style={{ color: "#cccccc" }}> ({formatBytes(size)})</span>
-//               ),
-//               showRemoveIcon: true,
-//             }}
-//             fileList={fileList}
-//             onRemove={() => setFileList([])}
-//             accept={allowedTypes.join(",")}
-//           >
-//             <Button icon={<FaUpload />} disabled={loading}>
-//               Select File
-//             </Button>
-//           </Upload>
+//         <Form.Item label="Current File">
+//           <div>
+//             <strong>{file?.displayName}</strong>{" "}
+//             <span style={{ color: "#888" }}>
+//               ({file ? formatBytes(file.size) : "Unknown size"})
+//             </span>
+//           </div>
 //         </Form.Item>
 
 //         <Form.Item<FieldType>
@@ -286,48 +159,37 @@
 //             { required: true, message: "Please enter a display name" },
 //             { validator: displayNameValidator },
 //           ]}
-//           extra="The name that will be shown to users (e.g., Windows Build v1.2)"
-//           style={{ marginBottom: 10 }}
 //         >
-//           <Input placeholder="Enter display name" disabled />
+//           <Input placeholder="Enter display name" disabled={loading} />
+//         </Form.Item>
+
+//         <Form.Item<FieldType>
+//           label="Version"
+//           name="version"
+//           rules={[{ required: true, message: "Please enter a version" }]}
+//         >
+//           <Input placeholder="Enter version" disabled={loading} />
 //         </Form.Item>
 
 //         <Form.Item<FieldType>
 //           label="Platform"
 //           name="platformId"
 //           rules={[{ required: true, message: "Please select a platform" }]}
-//           extra="Select the platform this game file is for"
-//           style={{ marginBottom: 10 }}
 //         >
 //           <Select
 //             placeholder="Select platform"
 //             disabled={loading}
 //             options={platformsOptions}
-//           ></Select>
-//         </Form.Item>
-//         <Form.Item<FieldType>
-//           label="Version"
-//           name="version"
-//           rules={[{ required: true, message: "Please enter a version" }]}
-//           extra="Specify the version of this build (like v1.0, v2.3-beta etc.)"
-//           style={{ marginBottom: 10 }}
-//         >
-//           <Input placeholder="Enter version (e.g. v1.0.2)" disabled={loading} />
-//         </Form.Item>
-//         {loading && uploadProgress > 0 && uploadProgress < 100 && (
-//           <Progress
-//             percent={uploadProgress}
-//             status="active"
-//             style={{ marginBottom: 16 }}
 //           />
-//         )}
+//         </Form.Item>
 //       </Form>
+
 //       {errorMessage && (
 //         <Alert
 //           message={errorMessage}
 //           type="error"
 //           showIcon
-//           style={{ marginBottom: 16 }}
+//           style={{ marginTop: 16 }}
 //         />
 //       )}
 //     </Modal>

@@ -8,6 +8,7 @@ import UploadNewFileButton from "./upload-new-file-button";
 import UpdateVersionDescription from "./update-version-description-button";
 
 const UpdateGameFiles = () => {
+  // const [editingFile, setEditingFile] = useState<GameFile | null>(null);
   const { loadingFiles, gameFiles, installInstruction, game } = useGameStore();
   return (
     <div className="p-5 bg-zinc-900">
@@ -15,6 +16,7 @@ const UpdateGameFiles = () => {
         <h2 className="text-2xl mb-3">Game Files</h2>
         <UploadNewFileButton />
       </div>
+
       <Table<GameFile>
         columns={columns}
         dataSource={gameFiles}
@@ -22,6 +24,7 @@ const UpdateGameFiles = () => {
         rowKey={"id"}
         scroll={{ x: "max-content" }}
       />
+
       <hr className="my-3 border-zinc-700" />
 
       <div className="flex justify-between mb-2 items-center">

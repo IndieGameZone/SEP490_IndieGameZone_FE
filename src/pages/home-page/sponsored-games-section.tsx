@@ -63,6 +63,11 @@ const SponsoredGamesSections = () => {
 
   if (!isLoading && setSponsoredGames.length == 0) return;
 
+  const dynamicSettings = {
+    ...settings,
+    infinite: sponsoredGames.length > 3,
+  };
+
   return (
     <section className="pb-9">
       <h2 className="my-3 text-2xl font-bold text-center">Sponsored Games</h2>
@@ -71,7 +76,7 @@ const SponsoredGamesSections = () => {
           <Loader type="inline" />
         </div>
       ) : (
-        <Slider {...settings}>
+        <Slider {...dynamicSettings}>
           {sponsoredGames.map((game) => {
             return (
               <GameCard game={{ ...game, hasCommercial: true }} key={game.id} />
