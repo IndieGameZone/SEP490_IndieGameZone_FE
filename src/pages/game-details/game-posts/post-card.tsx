@@ -22,7 +22,7 @@ import useAuthStore from "@/store/use-auth-store";
 
 interface PostCardProps {
   post: GamePost;
-  onViewPostDetail?: (post: GamePost) => void;
+  onViewPostDetail?: (postId: string) => void;
   onDelete: (postId: string) => void;
 }
 
@@ -84,7 +84,7 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
   const handleViewPostDetail = async () => {
     if (onViewPostDetail) {
       await fetchPostComments(post.id);
-      onViewPostDetail(post);
+      onViewPostDetail(post.id);
     }
   };
 
