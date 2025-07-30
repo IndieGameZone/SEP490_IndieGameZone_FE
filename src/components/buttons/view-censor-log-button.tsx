@@ -1,7 +1,9 @@
+import useDocumentTheme from "@/hooks/use-document-theme";
 import { formatDateTime } from "@/lib/date-n-time";
 import useGameStore from "@/store/use-game-store";
 import { GameCensorStatus } from "@/types/game";
-import { Button, Modal, StepProps, Steps } from "antd";
+import { Button, Modal, Steps } from "antd";
+import type { StepProps } from "antd";
 import { ReactNode, useMemo, useState } from "react";
 import {
   FaCheck,
@@ -30,53 +32,66 @@ const censorStatusMap: Record<
 const ViewCensorLogButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { gameCensorLogs } = useGameStore();
+  const theme = useDocumentTheme();
+  const isDarkTheme = theme == "dark";
 
-  const stepItem: StepProps[] = useMemo(
-    () =>
-      gameCensorLogs
-        .map((x, index: number) => ({
-          title: censorStatusMap[x.censorStatus].label,
-          icon: (
-            <div className={` rounded-full aspect-square flex justify-center items-center ${index == 0 ? "bg-orange-900" : "bg-zinc-800"}`}>
-              {censorStatusMap[x.censorStatus].icon}
-            </div>
-          ),
-          description: (
-            <div>
-              {formatDateTime(new Date(x.createdAt))}
-              {x.moderator && (
-                <>
-                  <br />
-                  by <span className="font-semibold">{x.moderator?.userName}</span>
-                  <br />
-                  {x.censorReason && (
-                    <>
-                      <span className="text-sm text-zinc-500">Reason: </span>
-                      <span className="text-sm">{x.censorReason}</span>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-          ),
-        })),
-    [gameCensorLogs]
-  );
+  // Group logs by date (YYYY-MM-DD)
+  const groupedSteps = useMemo(() => {
+    const groups: Record<string, StepProps[]> = {};
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
+    for (let i = 0; i < gameCensorLogs.length; i++) {
+      const log = gameCensorLogs[i];
+      const dateKey = new Date(log.createdAt).toISOString().split("T")[0]; // yyyy-mm-dd
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
+      if (!groups[dateKey]) groups[dateKey] = [];
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-  if (gameCensorLogs.length == 0) {
-    return;
-  }
+      groups[dateKey].push({
+        title: censorStatusMap[log.censorStatus].label,
+        icon: (
+          <div
+            className={`rounded-full aspect-square flex justify-center items-center ${
+              i === 0
+                ? isDarkTheme
+                  ? "bg-orange-900"
+                  : "bg-orange-200"
+                : isDarkTheme
+                ? "bg-zinc-700"
+                : "bg-zinc-300"
+            }`}
+          >
+            {censorStatusMap[log.censorStatus].icon}
+          </div>
+        ),
+        description: (
+          <div>
+            {formatDateTime(new Date(log.createdAt))}
+            {log.moderator && (
+              <>
+                <br />
+                by{" "}
+                <span className="font-semibold">{log.moderator?.userName}</span>
+                <br />
+                {log.censorReason && (
+                  <>
+                    <span className="text-sm text-zinc-500">Reason: </span>
+                    <span className="text-sm">{log.censorReason}</span>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        ),
+      });
+    }
+
+    return groups;
+  }, [gameCensorLogs]);
+
+  const showModal = () => setIsModalOpen(true);
+  const handleCancel = () => setIsModalOpen(false);
+
+  if (gameCensorLogs.length === 0) return null;
+
   return (
     <>
       <Button
@@ -86,17 +101,21 @@ const ViewCensorLogButton = () => {
         shape="circle"
       />
       <Modal
-        title={"Censor status history"}
+        title="Censor status history"
         open={isModalOpen}
-        onOk={handleOk}
         onCancel={handleCancel}
         footer={null}
       >
-        <Steps
-          current={0}
-          items={stepItem}
-          direction="vertical"
-        />
+        <div className="space-y-8">
+          {Object.entries(groupedSteps).map(([date, steps]) => (
+            <div key={date}>
+              <h3 className="text-lg font-semibold mb-2">
+                {new Date(date).toLocaleDateString()}
+              </h3>
+              <Steps current={0} items={steps} direction="vertical" />
+            </div>
+          ))}
+        </div>
       </Modal>
     </>
   );
