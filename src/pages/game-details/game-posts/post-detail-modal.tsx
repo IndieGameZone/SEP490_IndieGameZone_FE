@@ -1,15 +1,7 @@
 import { GamePost } from "@/types/game-post";
 import { Avatar, Button, Dropdown, MenuProps, Modal, Tooltip } from "antd";
 import { MouseEvent, useEffect, useMemo, useState } from "react";
-import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaFlag,
-  FaLink,
-  FaRegComment,
-  FaRegHeart,
-  FaTrash,
-} from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaFlag, FaLink, FaRegComment, FaRegHeart, FaTrash } from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { timeAgo } from "@/lib/date-n-time";
 import TiptapView from "@/components/tiptap/tiptap-view";
@@ -31,12 +23,7 @@ interface PostDetailModalProps {
   onDelete: (postId: string) => void;
 }
 
-const PostDetailModal = ({
-  postId,
-  open,
-  handleCancel,
-  onDelete,
-}: PostDetailModalProps) => {
+const PostDetailModal = ({ postId, handleCancel, onDelete }: PostDetailModalProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [isLoading, setIsLoading] = useState(false);
@@ -77,10 +64,7 @@ const PostDetailModal = ({
     return post?.postImages ? post.postImages.map((image) => image.image) : [];
   }, [post]);
 
-  const slides = useMemo(
-    () => images.map((image) => ({ src: image })),
-    [images]
-  );
+  const slides = useMemo(() => images.map((image) => ({ src: image })), [images]);
 
   const handlePrev = () => {
     setCurrentImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));

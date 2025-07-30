@@ -1,0 +1,68 @@
+// columns.tsx
+import { formatDateTime } from "@/lib/date-n-time";
+import { ColumnsType } from "antd/es/table";
+
+export interface ReportItem {
+  id: string;
+  title: string;
+  type: string;
+  createdAt: string;
+  status: string;
+}
+
+export const reportColumns: ColumnsType<ReportItem> = [
+  {
+    title: "Order ID",
+    dataIndex: "id",
+    key: "id",
+  },
+  {
+    title: "Game name",
+    dataIndex: "title",
+    key: "title",
+  },
+  {
+    title: "Type",
+    dataIndex: "type",
+    key: "type",
+  },
+
+  {
+    title: "Price",
+    dataIndex: "price",
+    key: "price",
+  },
+  {
+    title: "Discount",
+    dataIndex: "discount",
+    key: "discount",
+  },
+  {
+    title: "Price after discount",
+    dataIndex: "priceAfterDiscount",
+    key: "priceAfterDiscount",
+  },
+  {
+    title: "Donation",
+    dataIndex: "donation",
+    key: "donation",
+  },
+  {
+    title: "Payment Method",
+    dataIndex: "paymentMethod",
+    key: "paymentMethod",
+  },
+
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+  },
+
+  {
+    title: "Created At",
+    dataIndex: "createdAt",
+    key: "createdAt",
+    render: (text) => formatDateTime(new Date(text)),
+  },
+];

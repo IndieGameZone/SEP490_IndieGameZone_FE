@@ -151,3 +151,20 @@ export const changeStatusReport = async (id: string, status: "true" | "false") =
         return handleApiError(error);
     }
 };
+
+export const getReportByReporting = async (reportingUserId: string ) => {
+    try {
+        const { data } = await axiosClient.get(`/api/reporting-users/${reportingUserId}/reports`);
+        return { error: null, data: data, success: true };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
+export const getReportByReported = async (reportedUserId: string ) => {
+    try {
+        const { data } = await axiosClient.get(`/api/reported-users/${reportedUserId}/reports`);
+        return { error: null, data: data, success: true };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};

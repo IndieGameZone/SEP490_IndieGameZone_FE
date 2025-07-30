@@ -129,3 +129,12 @@ export const purchaseCommercialPackage = async (
     return handleApiError(error);
   }
 };
+
+export const getOrderByUserId = async (userId : string ) => {
+    try {
+        const { data } = await axiosClient.get(`/api/users/${userId}/orders`);
+        return { error: null, data: data, success: true };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
