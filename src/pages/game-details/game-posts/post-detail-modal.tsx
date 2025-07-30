@@ -1,7 +1,15 @@
 import { GamePost } from "@/types/game-post";
 import { Avatar, Button, Dropdown, MenuProps, Modal, Tooltip } from "antd";
 import { MouseEvent, useEffect, useMemo, useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaFlag, FaLink, FaRegComment, FaRegHeart } from "react-icons/fa";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaFlag,
+  FaLink,
+  FaRegComment,
+  FaRegHeart,
+  FaTrash,
+} from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { timeAgo } from "@/lib/date-n-time";
 import TiptapView from "@/components/tiptap/tiptap-view";
@@ -13,20 +21,29 @@ import { getGamePostById } from "@/lib/api/game-post-api";
 import { useGlobalMessage } from "@/components/message-provider";
 import Loader from "@/components/loader";
 import useGamePostStore from "@/store/use-game-post-store";
+import useAuthStore from "@/store/use-auth-store";
 import { TbMessageReportFilled } from "react-icons/tb";
 import ReportCommentModal from "@/components/report-modal/report-comment-modal";
 interface PostDetailModalProps {
   postId: string | null;
+  open: boolean;
   handleCancel?: (e: MouseEvent) => void;
+  onDelete: (postId: string) => void;
 }
 
-const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
+const PostDetailModal = ({
+  postId,
+  open,
+  handleCancel,
+  onDelete,
+}: PostDetailModalProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState<GamePost>();
   const messageApi = useGlobalMessage();
   const { postComments, loading: commentsLoading } = useGamePostStore();
+  const { profile } = useAuthStore();
   const [reportCommentModalOpen, setReportCommentModalOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string>("");
 
@@ -60,7 +77,10 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
     return post?.postImages ? post.postImages.map((image) => image.image) : [];
   }, [post]);
 
-  const slides = useMemo(() => images.map((image) => ({ src: image })), [images]);
+  const slides = useMemo(
+    () => images.map((image) => ({ src: image })),
+    [images]
+  );
 
   const handlePrev = () => {
     setCurrentImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -70,18 +90,37 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
     setCurrentImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  const moreOptionItems: MenuProps["items"] = [
-    {
-      label: <div>Copy link to post</div>,
-      icon: <FaLink />,
-      key: "0",
-    },
-    {
-      label: <div>Report post</div>,
-      key: "1",
-      icon: <FaFlag />,
-    },
-  ];
+  const moreOptionItems: MenuProps["items"] = useMemo(() => {
+    const items: MenuProps["items"] = [
+      {
+        label: <div>Copy link to post</div>,
+        icon: <FaLink />,
+        key: "copy",
+      },
+    ];
+
+    if (profile?.id === post?.user.id) {
+      items.push({
+        label: <div>Delete post</div>,
+        key: "delete",
+        icon: <FaTrash />,
+        onClick: () => {
+          if (post) {
+            onDelete(post.id);
+          }
+        },
+        danger: true,
+      });
+    } else {
+      items.push({
+        label: <div>Report post</div>,
+        key: "report",
+        icon: <FaFlag />,
+      });
+    }
+
+    return items;
+  }, [profile, post]);
 
   const onSubmitComment = () => {
     fetchPost();

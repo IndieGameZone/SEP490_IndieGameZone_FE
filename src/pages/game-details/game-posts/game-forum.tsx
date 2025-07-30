@@ -1,75 +1,102 @@
+import { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Button, Dropdown, Input, Tag, message } from "antd";
 import { FaSearch } from "react-icons/fa";
-import PostCard from "./post-card";
 import { MdOutlineSort } from "react-icons/md";
-import { useEffect, useState } from "react";
-import CreatePostButton from "./create-post-button";
-import useTagStore from "@/store/use-tag-store";
-import { useParams } from "react-router-dom";
-import { getGamePosts } from "@/lib/api/game-post-api";
-import { useRerender } from "@/hooks/use-rerender";
-import { GamePost } from "@/types/game-post";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { LuRefreshCcw } from "react-icons/lu";
-import notFoundIcon from "@/assets/not-found-icon.svg";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+import PostCard from "./post-card";
+import CreatePostButton from "./create-post-button";
 import PostDetailModal from "./post-detail-modal";
+import DeletePostConfirmationModal from "./delete-post-confirmation-modal";
 
-const tabs = ["Hot & Trending", "Most popular", "Best", "Latest"];
+import useTagStore from "@/store/use-tag-store";
+import { useRerender } from "@/hooks/use-rerender";
+import { getGamePosts } from "@/lib/api/game-post-api";
+import { GamePost } from "@/types/game-post";
+import notFoundIcon from "@/assets/not-found-icon.svg";
 
-const items = tabs.map((x) => ({ key: x, label: x }));
+const SORT_TABS = ["Hot & Trending", "Most popular", "Best", "Latest"];
+const PAGE_SIZE = 4;
 
-const PAGE_SIZE = 2;
+const sortMenuItems = SORT_TABS.map((tab) => ({ key: tab, label: tab }));
 
 const GameForum = () => {
   const { fetchTags } = useTagStore();
-  const [selectedSortOption, setSelectedSortOption] = useState(tabs[0]);
-  const [messageApi, contextHolder] = message.useMessage();
-  const [posts, setPosts] = useState<GamePost[]>([]);
-  const [isFetching, setIsFetching] = useState(false);
   const { gameId } = useParams();
-  const { renderKey } = useRerender();
+  const { renderKey, rerender } = useRerender();
+
+  const [selectedSortOption, setSelectedSortOption] = useState(SORT_TABS[0]);
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const [posts, setPosts] = useState<GamePost[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<GamePost | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
 
-  const handleSelect = (e: any) => {
-    setSelectedSortOption(e.key);
+  const [postDetailOpen, setPostDetailOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const postToDelete = useRef<string | null>(null);
+  const selectedPost = useRef<string | null>(null);
+
+  const handleSortSelect = ({ key }: { key: string }) => {
+    setSelectedSortOption(key);
+  };
+
+  const handleViewPostDetail = (postId: string) => {
+    selectedPost.current = postId;
+    setPostDetailOpen(true);
+  };
+
+  const handleCancelDetail = () => {
+    selectedPost.current == null;
+    setPostDetailOpen(false);
+  };
+
+  const handleSetPostToDelete = (postId: string) => {
+    postToDelete.current = postId;
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleCancelDelete = () => {
+    postToDelete.current = null;
+    setDeleteConfirmOpen(false);
+  };
+
+  const handleDeleteFinish = () => {
+    postToDelete.current = null;
+    setDeleteConfirmOpen(false);
   };
 
   const fetchPosts = async (currentPage: number) => {
-    if (gameId) {
-      setIsFetching(true);
-      const result = await getGamePosts(gameId, {
-        PageNumber: currentPage,
-        PageSize: PAGE_SIZE,
-      });
-      if (result.error) {
-        messageApi.error("Failed to get posts! Please try again.");
-      } else {
-        const newPosts: GamePost[] = result.data.posts;
-        const paginationHeader = result.data.headers["x-pagination"];
-        const pagination = paginationHeader
-          ? JSON.parse(paginationHeader)
-          : null;
-        if (currentPage == 1) {
-          setPosts(newPosts);
-        } else {
-          setPosts((prev) => [...prev, ...newPosts]);
-        }
-        setHasMore(pagination?.HasNext ?? false);
-        setPage(currentPage + 1);
-      }
-      setIsFetching(false);
+    if (!gameId) return;
+
+    setIsFetching(true);
+
+    const result = await getGamePosts(gameId, {
+      PageNumber: currentPage,
+      PageSize: PAGE_SIZE,
+    });
+
+    if (result.error) {
+      messageApi.error("Failed to get posts! Please try again.");
+    } else {
+      const newPosts: GamePost[] = result.data.posts;
+      const paginationHeader = result.data.headers["x-pagination"];
+      const pagination = paginationHeader ? JSON.parse(paginationHeader) : null;
+
+      setPosts((prev) =>
+        currentPage === 1 ? newPosts : [...prev, ...newPosts]
+      );
+      setHasMore(pagination?.HasNext ?? false);
+      setPage(currentPage + 1);
     }
+
+    setIsFetching(false);
   };
 
-  const fetchMore = () => {
-    fetchPosts(page);
-  };
-
-  const handleCancel = () => {
-    setSelectedPost(null);
-  };
+  const fetchMorePosts = () => fetchPosts(page);
 
   useEffect(() => {
     fetchTags();
@@ -82,18 +109,31 @@ const GameForum = () => {
   return (
     <div className="grid grid-cols-12 gap-3">
       {contextHolder}
+
       <PostDetailModal
-        postId={selectedPost?.id ?? null}
-        handleCancel={handleCancel}
+        open={postDetailOpen}
+        postId={selectedPost.current}
+        handleCancel={handleCancelDetail}
+        onDelete={handleSetPostToDelete}
       />
+
+      <DeletePostConfirmationModal
+        postId={postToDelete.current}
+        onCancel={handleCancelDelete}
+        onDeleteFinish={handleDeleteFinish}
+        open={deleteConfirmOpen}
+        rerender={rerender}
+      />
+
+      {/* Left Panel */}
       <div className="col-span-4">
         <div className="bg-zinc-800 p-3 rounded">
           <Dropdown
             menu={{
-              items,
+              items: sortMenuItems,
               selectable: true,
               defaultSelectedKeys: [selectedSortOption],
-              onSelect: handleSelect,
+              onSelect: handleSortSelect,
             }}
             trigger={["click"]}
           >
@@ -104,30 +144,41 @@ const GameForum = () => {
               </span>
             </Button>
           </Dropdown>
+
           <Input
             className="mt-2"
             placeholder="Search Post title or post tags"
             variant="filled"
             suffix={<FaSearch />}
           />
+
           <div className="flex flex-wrap gap-2 mt-3">
-            <Tag color="orange">#Announcement</Tag>
-            <Tag color="orange">#Bug</Tag>
-            <Tag color="orange">#Discussion</Tag>
-            <Tag color="orange">#Question</Tag>
-            <Tag color="orange">#Guide</Tag>
+            {[
+              "#Announcement",
+              "#Bug",
+              "#Discussion",
+              "#Question",
+              "#Guide",
+            ].map((tag) => (
+              <Tag key={tag} color="orange">
+                {tag}
+              </Tag>
+            ))}
           </div>
+
           <hr className="border border-zinc-700 my-3" />
-          <CreatePostButton />
+          <CreatePostButton rerender={rerender} />
         </div>
       </div>
+
+      {/* Right Panel */}
       <div className="col-span-8">
         <InfiniteScroll
           dataLength={posts.length}
-          next={fetchMore}
+          next={fetchMorePosts}
           hasMore={hasMore}
           loader={
-            <div className="col-span-full flex justify-center py-10">
+            <div className="flex justify-center py-10">
               <LuRefreshCcw className="animate-spin-reverse size-16" />
             </div>
           }
@@ -138,19 +189,18 @@ const GameForum = () => {
           }
         >
           <div className="space-y-3">
-            {posts.map((post, index: number) => {
-              return (
-                <PostCard
-                  key={`post-${index}`}
-                  post={post}
-                  onViewPostDetail={setSelectedPost}
-                />
-              );
-            })}
+            {posts.map((post, index) => (
+              <PostCard
+                key={`post-${index}`}
+                post={post}
+                onViewPostDetail={handleViewPostDetail}
+                onDelete={handleSetPostToDelete}
+              />
+            ))}
 
             {!isFetching && posts.length === 0 && (
-              <div className="col-span-full flex flex-col items-center py-10 gap-5">
-                <img src={notFoundIcon} />
+              <div className="flex flex-col items-center py-10 gap-5">
+                <img src={notFoundIcon} alt="No posts found" />
                 <div className="text-zinc-500 font-semibold text-lg">
                   No posts found
                 </div>
