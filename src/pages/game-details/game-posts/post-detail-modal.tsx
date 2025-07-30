@@ -1,7 +1,15 @@
 import { GamePost } from "@/types/game-post";
 import { Avatar, Button, Dropdown, MenuProps, Modal } from "antd";
 import { MouseEvent, useEffect, useMemo, useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaFlag, FaLink, FaRegComment, FaRegHeart } from "react-icons/fa";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaFlag,
+  FaLink,
+  FaRegComment,
+  FaRegHeart,
+  FaTrash,
+} from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { timeAgo } from "@/lib/date-n-time";
 import TiptapView from "@/components/tiptap/tiptap-view";
@@ -13,18 +21,27 @@ import { getGamePostById } from "@/lib/api/game-post-api";
 import { useGlobalMessage } from "@/components/message-provider";
 import Loader from "@/components/loader";
 import useGamePostStore from "@/store/use-game-post-store";
+import useAuthStore from "@/store/use-auth-store";
 interface PostDetailModalProps {
   postId: string | null;
+  open: boolean;
   handleCancel?: (e: MouseEvent) => void;
+  onDelete: (postId: string) => void;
 }
 
-const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
+const PostDetailModal = ({
+  postId,
+  open,
+  handleCancel,
+  onDelete,
+}: PostDetailModalProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState<GamePost>();
   const messageApi = useGlobalMessage();
   const { postComments, loading: commentsLoading } = useGamePostStore();
+  const { profile } = useAuthStore();
 
   const fetchPost = async () => {
     if (!postId) return;
@@ -52,7 +69,10 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
     return post?.postImages ? post.postImages.map((image) => image.image) : [];
   }, [post]);
 
-  const slides = useMemo(() => images.map((image) => ({ src: image })), [images]);
+  const slides = useMemo(
+    () => images.map((image) => ({ src: image })),
+    [images]
+  );
 
   const handlePrev = () => {
     setCurrentImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -62,18 +82,37 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
     setCurrentImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  const moreOptionItems: MenuProps["items"] = [
-    {
-      label: <div>Copy link to post</div>,
-      icon: <FaLink />,
-      key: "0",
-    },
-    {
-      label: <div>Report post</div>,
-      key: "1",
-      icon: <FaFlag />,
-    },
-  ];
+  const moreOptionItems: MenuProps["items"] = useMemo(() => {
+    const items: MenuProps["items"] = [
+      {
+        label: <div>Copy link to post</div>,
+        icon: <FaLink />,
+        key: "copy",
+      },
+    ];
+
+    if (profile?.id === post?.user.id) {
+      items.push({
+        label: <div>Delete post</div>,
+        key: "delete",
+        icon: <FaTrash />,
+        onClick: () => {
+          if (post) {
+            onDelete(post.id);
+          }
+        },
+        danger: true,
+      });
+    } else {
+      items.push({
+        label: <div>Report post</div>,
+        key: "report",
+        icon: <FaFlag />,
+      });
+    }
+
+    return items;
+  }, [profile, post]);
 
   const onSubmitComment = () => {
     fetchPost();
@@ -86,7 +125,7 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
   return (
     <Modal
       closable
-      open={postId != null}
+      open={open}
       onCancel={handleCancel}
       footer={null}
       width={{
@@ -99,7 +138,12 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
       }}
       styles={{ content: { padding: "0" } }}
     >
-      <Lightbox index={currentImage} slides={slides} open={lightboxIndex >= 0} close={() => setLightboxIndex(-1)} />
+      <Lightbox
+        index={currentImage}
+        slides={slides}
+        open={lightboxIndex >= 0}
+        close={() => setLightboxIndex(-1)}
+      />
       <div className="grid grid-cols-2">
         <div>
           <div className="p-3 max-h-[80vh] overflow-auto pb-10">
@@ -151,7 +195,9 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
               <Avatar src={post?.user.avatar} />
               <div>
                 <div className="font-semibold">{post?.user.userName}</div>
-                <div className="text-xs text-gray-400">{post?.createdAt && timeAgo(post.createdAt)}</div>
+                <div className="text-xs text-gray-400">
+                  {post?.createdAt && timeAgo(post.createdAt)}
+                </div>
               </div>
             </div>
           </div>
@@ -174,7 +220,9 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
                         <div>
-                          <span className="font-semibold">{comment.user?.userName}</span>
+                          <span className="font-semibold">
+                            {comment.user?.userName}
+                          </span>
                           <div className="text-sm">{comment.content}</div>
                           {/* <div className="text-xs text-gray-400 mt-1">{timeAgo(comment.createdAt)}</div> */}
                         </div>
@@ -185,18 +233,33 @@ const PostDetailModal = ({ postId, handleCancel }: PostDetailModalProps) => {
               ))}
             </div>
           )}
-          <PostCommentForm onSubmit={onSubmitComment} postId={post?.id ?? null} />
+          <PostCommentForm
+            onSubmit={onSubmitComment}
+            postId={post?.id ?? null}
+          />
           <div className="flex justify-between mt-2 border-t border-zinc-700 p-3">
             <div className="flex items-center gap-3 ">
-              <Button icon={<FaRegHeart className="text-gray-400" />} shape="round" type="text">
+              <Button
+                icon={<FaRegHeart className="text-gray-400" />}
+                shape="round"
+                type="text"
+              >
                 <span>{post?.numberOfLikes}</span>
               </Button>
 
-              <Button icon={<FaRegComment className="text-gray-400 cursor-pointer" />} shape="round" type="text">
+              <Button
+                icon={<FaRegComment className="text-gray-400 cursor-pointer" />}
+                shape="round"
+                type="text"
+              >
                 <span>{post?.numberOfComments}</span>
               </Button>
 
-              <Button icon={<IoShareSocialOutline className="text-gray-400" />} shape="circle" type="text" />
+              <Button
+                icon={<IoShareSocialOutline className="text-gray-400" />}
+                shape="circle"
+                type="text"
+              />
             </div>
             <Dropdown menu={{ items: moreOptionItems }} trigger={["click"]}>
               <Button icon={<IoMdMore />} shape="circle" type="text"></Button>

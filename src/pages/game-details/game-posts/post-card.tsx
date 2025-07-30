@@ -3,44 +3,75 @@ import TiptapView from "@/components/tiptap/tiptap-view";
 import { GamePost } from "@/types/game-post";
 import { Avatar, Button, Dropdown, MenuProps, Tag } from "antd";
 import { useMemo, useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaFlag, FaLink, FaRegComment, FaRegHeart } from "react-icons/fa";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaFlag,
+  FaLink,
+  FaRegComment,
+  FaRegHeart,
+  FaTrash,
+} from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { IoShareSocialOutline } from "react-icons/io5";
 import Lightbox from "yet-another-react-lightbox";
 import ReportPostModal from "@/components/report-modal/report-post-modal";
 import { timeAgo } from "@/lib/date-n-time";
 import useGamePostStore from "@/store/use-game-post-store";
+import useAuthStore from "@/store/use-auth-store";
 
 interface PostCardProps {
   post: GamePost;
   onViewPostDetail?: (post: GamePost) => void;
+  onDelete: (postId: string) => void;
 }
 
-const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
+const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [reportPostModalOpen, setReportPostModalOpen] = useState(false);
   const { fetchPostComments } = useGamePostStore();
+  const { profile } = useAuthStore();
 
   const images: string[] = useMemo(() => {
     return post.postImages.map((image) => image.image);
   }, [post]);
 
-  const slides = useMemo(() => images.map((image) => ({ src: image })), [images]);
+  const slides = useMemo(
+    () => images.map((image) => ({ src: image })),
+    [images]
+  );
 
-  const moreOptionItems: MenuProps["items"] = [
-    {
-      label: <div>Copy link to post</div>,
-      icon: <FaLink />,
-      key: "0",
-    },
-    {
-      label: <div>Report post</div>,
-      key: "1",
-      icon: <FaFlag />,
-      onClick: () => setReportPostModalOpen(true),
-    },
-  ];
+  const moreOptionItems: MenuProps["items"] = useMemo(() => {
+    const items: MenuProps["items"] = [
+      {
+        label: <div>Copy link to post</div>,
+        icon: <FaLink />,
+        key: "copy",
+      },
+    ];
+
+    if (profile?.id === post.user.id) {
+      items.push({
+        label: <div>Delete post</div>,
+        key: "delete",
+        icon: <FaTrash />,
+        onClick: () => {
+          onDelete(post.id);
+        },
+        danger: true,
+      });
+    } else {
+      items.push({
+        label: <div>Report post</div>,
+        key: "report",
+        icon: <FaFlag />,
+        onClick: () => setReportPostModalOpen(true),
+      });
+    }
+
+    return items;
+  }, [profile, post]);
 
   const handlePrev = () => {
     setCurrentImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -59,14 +90,21 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
 
   return (
     <div>
-      <Lightbox index={currentImage} slides={slides} open={lightboxIndex >= 0} close={() => setLightboxIndex(-1)} />
+      <Lightbox
+        index={currentImage}
+        slides={slides}
+        open={lightboxIndex >= 0}
+        close={() => setLightboxIndex(-1)}
+      />
       <div className="bg-zinc-800 w-full p-3 rounded">
         <div className="flex justify-between items-center gap-3">
           <div className="flex items-center gap-3">
             <Avatar src={post.user.avatar} />
             <div>
               <div className="font-semibold">{post.user.userName}</div>
-              <div className="text-xs text-gray-400">{timeAgo(post.createdAt)}</div>
+              <div className="text-xs text-gray-400">
+                {timeAgo(post.createdAt)}
+              </div>
             </div>
           </div>
           <Dropdown menu={{ items: moreOptionItems }} trigger={["click"]}>
@@ -75,12 +113,18 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
         </div>
 
         <div className="mt-2">
-          <h4 className="font-bold text-xl cursor-pointer" onClick={handleViewPostDetail}>
+          <h4
+            className="font-bold text-xl cursor-pointer"
+            onClick={handleViewPostDetail}
+          >
             {post.title}
           </h4>
 
           {post.content.trim() && (
-            <ExpandableWrapper maxHeight={images.length > 0 ? 100 : 500} variant="text">
+            <ExpandableWrapper
+              maxHeight={images.length > 0 ? 100 : 500}
+              variant="text"
+            >
               <TiptapView value={post.content} />
             </ExpandableWrapper>
           )}
@@ -127,7 +171,11 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
           )}
 
           <div className="flex items-center gap-3 mt-2">
-            <Button icon={<FaRegHeart className="text-gray-400" />} shape="round" type="text">
+            <Button
+              icon={<FaRegHeart className="text-gray-400" />}
+              shape="round"
+              type="text"
+            >
               <span>{post.numberOfLikes}</span>
             </Button>
 
@@ -140,7 +188,11 @@ const PostCard = ({ post, onViewPostDetail }: PostCardProps) => {
               <span>{post.numberOfComments}</span>
             </Button>
 
-            <Button icon={<IoShareSocialOutline className="text-gray-400" />} shape="circle" type="text" />
+            <Button
+              icon={<IoShareSocialOutline className="text-gray-400" />}
+              shape="circle"
+              type="text"
+            />
           </div>
         </div>
       </div>

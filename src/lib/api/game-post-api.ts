@@ -68,6 +68,15 @@ export const getGamePostById = async (postId: string) => {
   }
 };
 
+export const deletePost = async (userId: string, postId: string) => {
+  try {
+    const { data } = await axiosClient.delete(`/api/users/${userId}/posts/${postId}`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
 export const getReactionPost = async (userId: string, postId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/users/${userId}/posts/${postId}/post-reactions`);
@@ -87,7 +96,8 @@ export const createPostComment = async (userId: string, postId: string, content:
     return handleApiError(error);
   }
 };
-export const getPostCommentsByPostId = async ( postId: string) => {
+
+export const getPostCommentsByPostId = async (postId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/posts/${postId}/post-comments`);
     return { error: null, data: data, success: true };

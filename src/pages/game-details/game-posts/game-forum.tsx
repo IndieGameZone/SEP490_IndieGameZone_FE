@@ -2,7 +2,7 @@ import { Button, Dropdown, Input, Tag, message } from "antd";
 import { FaSearch } from "react-icons/fa";
 import PostCard from "./post-card";
 import { MdOutlineSort } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CreatePostButton from "./create-post-button";
 import useTagStore from "@/store/use-tag-store";
 import { useParams } from "react-router-dom";
@@ -13,12 +13,13 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { LuRefreshCcw } from "react-icons/lu";
 import notFoundIcon from "@/assets/not-found-icon.svg";
 import PostDetailModal from "./post-detail-modal";
+import DeletePostConfirmationModal from "./delete-post-confirmation-modal";
 
 const tabs = ["Hot & Trending", "Most popular", "Best", "Latest"];
 
 const items = tabs.map((x) => ({ key: x, label: x }));
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 4;
 
 const GameForum = () => {
   const { fetchTags } = useTagStore();
@@ -27,10 +28,13 @@ const GameForum = () => {
   const [posts, setPosts] = useState<GamePost[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const { gameId } = useParams();
-  const { renderKey } = useRerender();
+  const { renderKey, rerender } = useRerender();
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [selectedPost, setSelectedPost] = useState<GamePost | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [postDetailOpen, setPostDetailOpen] = useState(false);
+  const postToDelete = useRef<string | null>(null);
 
   const handleSelect = (e: any) => {
     setSelectedSortOption(e.key);
@@ -69,6 +73,27 @@ const GameForum = () => {
 
   const handleCancel = () => {
     setSelectedPost(null);
+    setPostDetailOpen(false);
+  };
+
+  const handleSetPostToDelete = (postId: string) => {
+    postToDelete.current = postId;
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleCancelDelete = () => {
+    postToDelete.current = null;
+    setDeleteConfirmOpen(false);
+  };
+
+  const handleDeleteFinish = () => {
+    postToDelete.current = null;
+    setDeleteConfirmOpen(false);
+  };
+
+  const handleSetSelectedPost = (post: GamePost) => {
+    setSelectedPost(post);
+    setPostDetailOpen(true);
   };
 
   useEffect(() => {
@@ -83,8 +108,17 @@ const GameForum = () => {
     <div className="grid grid-cols-12 gap-3">
       {contextHolder}
       <PostDetailModal
+        open={postDetailOpen}
         postId={selectedPost?.id ?? null}
         handleCancel={handleCancel}
+        onDelete={handleSetPostToDelete}
+      />
+      <DeletePostConfirmationModal
+        postId={postToDelete.current}
+        onCancel={handleCancelDelete}
+        onDeleteFinish={handleDeleteFinish}
+        open={deleteConfirmOpen}
+        rerender={rerender}
       />
       <div className="col-span-4">
         <div className="bg-zinc-800 p-3 rounded">
@@ -118,7 +152,7 @@ const GameForum = () => {
             <Tag color="orange">#Guide</Tag>
           </div>
           <hr className="border border-zinc-700 my-3" />
-          <CreatePostButton />
+          <CreatePostButton rerender={rerender} />
         </div>
       </div>
       <div className="col-span-8">
@@ -143,7 +177,8 @@ const GameForum = () => {
                 <PostCard
                   key={`post-${index}`}
                   post={post}
-                  onViewPostDetail={setSelectedPost}
+                  onViewPostDetail={handleSetSelectedPost}
+                  onDelete={handleSetPostToDelete}
                 />
               );
             })}

@@ -40,7 +40,7 @@ const UpdateGameFiles = () => {
         ) : (
           <span className="text-zinc-500">None</span>
         )}
-      </div>
+    </div>
       <hr className="my-3 border-zinc-700" />
       <div className="flex justify-between mb-2 mt-5 items-center">
         <h2 className="font-bold">Install instructions</h2>
