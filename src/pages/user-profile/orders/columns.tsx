@@ -26,7 +26,7 @@ export const reportColumns: ColumnsType<ReportItem> = [
     dataIndex: "type",
     key: "type",
   },
-
+  
   {
     title: "Price",
     dataIndex: "price",
@@ -38,7 +38,7 @@ export const reportColumns: ColumnsType<ReportItem> = [
     key: "discount",
   },
   {
-    title: "Price after discount",
+    title: "Price After Discount",
     dataIndex: "priceAfterDiscount",
     key: "priceAfterDiscount",
   },
@@ -46,6 +46,11 @@ export const reportColumns: ColumnsType<ReportItem> = [
     title: "Donation",
     dataIndex: "donation",
     key: "donation",
+  },
+  {
+    title: "Commercial Package ",
+    dataIndex: "commercialPackage",
+    key: "commercialPackage",
   },
   {
     title: "Payment Method",
@@ -58,7 +63,7 @@ export const reportColumns: ColumnsType<ReportItem> = [
     dataIndex: "status",
     key: "status",
   },
-
+  
   {
     title: "Created At",
     dataIndex: "createdAt",
