@@ -1,11 +1,12 @@
 import { getGamePosts, getPostCommentsByPostId } from "@/lib/api/game-post-api";
-import { GamePost } from "@/types/game-post";
+import { GamePost, PostComment } from "@/types/game-post";
 
 import { create } from "zustand";
 
 interface GamePostState {
-  postComments: GamePost[];
-  postGame: { items: GamePost[];
+  postComments: PostComment[];
+  postGame: {
+    items: GamePost[];
     totalItems?: number;
     totalPages?: number;
     currentPage?: number;
@@ -51,7 +52,7 @@ const useGamePostStore = create<GamePostState>((set) => ({
       set({ loading: false, error: error.message });
     }
   },
-fetchGamePosts: async (gameId, params) => {
+  fetchGamePosts: async (gameId, params) => {
     set({ loading: true, error: null });
     try {
       const response = await getGamePosts(gameId, params);
@@ -64,7 +65,7 @@ fetchGamePosts: async (gameId, params) => {
             totalPages: Number(headers['x-total-pages']),
             currentPage: params.PageNumber || 1
           },
-          loading: false 
+          loading: false
         });
       } else {
         set({ loading: false, error: response.error });

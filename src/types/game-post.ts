@@ -15,3 +15,11 @@ export type GamePost = {
   createdAt: string;
   user: User;
 };
+
+export type PostComment = {
+  id: string;
+  createdAt: string;
+  content: string;
+  updatedAt?: string;
+  user: User;
+}

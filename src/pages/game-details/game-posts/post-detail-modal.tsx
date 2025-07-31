@@ -1,5 +1,5 @@
 import { GamePost } from "@/types/game-post";
-import { Avatar, Button, Dropdown, MenuProps, Modal, Tooltip } from "antd";
+import { Avatar, Button, Dropdown, MenuProps, Modal } from "antd";
 import { MouseEvent, useEffect, useMemo, useState } from "react";
 import {
   FaChevronLeft,
@@ -22,8 +22,9 @@ import { useGlobalMessage } from "@/components/message-provider";
 import Loader from "@/components/loader";
 import useGamePostStore from "@/store/use-game-post-store";
 import useAuthStore from "@/store/use-auth-store";
-import { TbMessageReportFilled } from "react-icons/tb";
 import ReportCommentModal from "@/components/report-modal/report-comment-modal";
+import PostCommentCard from "./post-comment-card";
+import { Link } from "react-router-dom";
 interface PostDetailModalProps {
   postId: string | null;
   open: boolean;
@@ -201,9 +202,13 @@ const PostDetailModal = ({
           <div className="flex flex-col border-l border-zinc-700">
             <div className="p-3 border-b border-zinc-700 pe-10">
               <div className="flex items-center gap-3">
-                <Avatar src={post?.user.avatar} />
+                <Link className="mt-1" to={`/profile/${post?.user.id}`}>
+                  <Avatar src={post?.user.avatar} />
+                </Link>
                 <div>
-                  <div className="font-semibold">{post?.user.userName}</div>
+                  <Link className="mt-1" to={`/profile/${post?.user.id}`}>
+                    <div className="font-semibold">{post?.user.userName}</div>
+                  </Link>
                   <div className="text-xs text-gray-400">
                     {post?.createdAt && timeAgo(post.createdAt)}
                   </div>
@@ -223,40 +228,11 @@ const PostDetailModal = ({
             ) : (
               <div className="flex-1 overflow-y-auto">
                 {postComments.map((comment) => (
-                  <div key={comment.id} className="p-3 hover:bg-zinc-800">
-                    <div className="flex gap-3">
-                      <Avatar src={comment.user?.avatar} />
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <span className="font-semibold">
-                              {comment.user?.userName}
-                            </span>
-                            <div className="text-sm">{comment.content}</div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="text-xs text-gray-400 ">
-                              {timeAgo(comment.createdAt)}
-                            </div>
-                            <div className="cursor-pointer">
-                              <Tooltip
-                                placement="rightTop"
-                                title={"Report Comment"}
-                              >
-                                <TbMessageReportFilled
-                                  size={18}
-                                  onClick={() =>
-                                    handleReportComment(comment.id)
-                                  }
-                                  className="text-zinc-400 hover:text-zinc-200 transition-colors"
-                                />{" "}
-                              </Tooltip>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <PostCommentCard
+                    comment={comment}
+                    key={comment.id}
+                    onReportComment={handleReportComment}
+                  />
                 ))}
               </div>
             )}
