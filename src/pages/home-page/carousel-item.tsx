@@ -1,3 +1,4 @@
+import FaultTolerantImage from "@/components/fault-tolerant-image";
 import { formatCurrencyVND } from "@/lib/currency";
 import { Game } from "@/types/game";
 import { useEffect, useState } from "react";
@@ -69,13 +70,13 @@ const CarouselItem = ({ game }: CarouselItemProps) => {
           </div>
 
           <div className="md:grid grid-cols-2 gap-3 hidden">
-            {game.gameImages.map((image, index: number) => {
+            {game.gameImages.slice(3).map((image, index: number) => {
               return (
                 <div
                   className="h-[150px]"
                   key={`featured-game-${game.id}-image-${index}`}
                 >
-                  <img
+                  <FaultTolerantImage
                     src={image.image}
                     alt={game.name + " screenshort " + index}
                     className="object-contain w-full h-full rounded cursor-zoom-in border-2 border-black hover:border-orange-500 duration-300"

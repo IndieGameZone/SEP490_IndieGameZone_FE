@@ -168,7 +168,7 @@ const CreatePostButton = ({ rerender }: CreatePostButtonProps) => {
         icon={<FaPlus />}
         onClick={showModal}
       >
-        create post
+        Create post
       </Button>
       <Modal
         title="Create a new post"

@@ -105,6 +105,7 @@ const UpdateVideoButton = ({ url }: { url: string }) => {
             </Button>
           </>
         )}
+        forceRender
       >
         <Form
           form={form}

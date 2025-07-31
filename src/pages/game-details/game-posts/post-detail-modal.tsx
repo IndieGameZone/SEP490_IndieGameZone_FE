@@ -1,7 +1,15 @@
 import { GamePost } from "@/types/game-post";
 import { Avatar, Button, Dropdown, MenuProps, Modal, Tooltip } from "antd";
 import { MouseEvent, useEffect, useMemo, useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaFlag, FaLink, FaRegComment, FaRegHeart, FaTrash } from "react-icons/fa";
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaFlag,
+  FaLink,
+  FaRegComment,
+  FaRegHeart,
+  FaTrash,
+} from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { timeAgo } from "@/lib/date-n-time";
 import TiptapView from "@/components/tiptap/tiptap-view";
@@ -23,7 +31,12 @@ interface PostDetailModalProps {
   onDelete: (postId: string) => void;
 }
 
-const PostDetailModal = ({ postId, handleCancel, onDelete }: PostDetailModalProps) => {
+const PostDetailModal = ({
+  postId,
+  open,
+  handleCancel,
+  onDelete,
+}: PostDetailModalProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +77,10 @@ const PostDetailModal = ({ postId, handleCancel, onDelete }: PostDetailModalProp
     return post?.postImages ? post.postImages.map((image) => image.image) : [];
   }, [post]);
 
-  const slides = useMemo(() => images.map((image) => ({ src: image })), [images]);
+  const slides = useMemo(
+    () => images.map((image) => ({ src: image })),
+    [images]
+  );
 
   const handlePrev = () => {
     setCurrentImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -118,7 +134,7 @@ const PostDetailModal = ({ postId, handleCancel, onDelete }: PostDetailModalProp
     <>
       <Modal
         closable
-        open={postId != null}
+        open={open}
         onCancel={handleCancel}
         footer={null}
         width={{
@@ -131,7 +147,12 @@ const PostDetailModal = ({ postId, handleCancel, onDelete }: PostDetailModalProp
         }}
         styles={{ content: { padding: "0" } }}
       >
-        <Lightbox index={currentImage} slides={slides} open={lightboxIndex >= 0} close={() => setLightboxIndex(-1)} />
+        <Lightbox
+          index={currentImage}
+          slides={slides}
+          open={lightboxIndex >= 0}
+          close={() => setLightboxIndex(-1)}
+        />
         <div className="grid grid-cols-2">
           <div>
             <div className="p-3 max-h-[80vh] overflow-auto pb-10">
@@ -183,7 +204,9 @@ const PostDetailModal = ({ postId, handleCancel, onDelete }: PostDetailModalProp
                 <Avatar src={post?.user.avatar} />
                 <div>
                   <div className="font-semibold">{post?.user.userName}</div>
-                  <div className="text-xs text-gray-400">{post?.createdAt && timeAgo(post.createdAt)}</div>
+                  <div className="text-xs text-gray-400">
+                    {post?.createdAt && timeAgo(post.createdAt)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -206,16 +229,25 @@ const PostDetailModal = ({ postId, handleCancel, onDelete }: PostDetailModalProp
                       <div className="flex-1">
                         <div className="flex items-start justify-between">
                           <div>
-                            <span className="font-semibold">{comment.user?.userName}</span>
+                            <span className="font-semibold">
+                              {comment.user?.userName}
+                            </span>
                             <div className="text-sm">{comment.content}</div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <div className="text-xs text-gray-400 ">{timeAgo(comment.createdAt)}</div>
+                            <div className="text-xs text-gray-400 ">
+                              {timeAgo(comment.createdAt)}
+                            </div>
                             <div className="cursor-pointer">
-                              <Tooltip placement="rightTop" title={"Report Comment"}>
+                              <Tooltip
+                                placement="rightTop"
+                                title={"Report Comment"}
+                              >
                                 <TbMessageReportFilled
                                   size={18}
-                                  onClick={() => handleReportComment(comment.id)}
+                                  onClick={() =>
+                                    handleReportComment(comment.id)
+                                  }
                                   className="text-zinc-400 hover:text-zinc-200 transition-colors"
                                 />{" "}
                               </Tooltip>
@@ -228,18 +260,35 @@ const PostDetailModal = ({ postId, handleCancel, onDelete }: PostDetailModalProp
                 ))}
               </div>
             )}
-            <PostCommentForm onSubmit={onSubmitComment} postId={post?.id ?? null} />
+            <PostCommentForm
+              onSubmit={onSubmitComment}
+              postId={post?.id ?? null}
+            />
             <div className="flex justify-between mt-2 border-t border-zinc-700 p-3">
               <div className="flex items-center gap-3 ">
-                <Button icon={<FaRegHeart className="text-gray-400" />} shape="round" type="text">
+                <Button
+                  icon={<FaRegHeart className="text-gray-400" />}
+                  shape="round"
+                  type="text"
+                >
                   <span>{post?.numberOfLikes}</span>
                 </Button>
 
-                <Button icon={<FaRegComment className="text-gray-400 cursor-pointer" />} shape="round" type="text">
+                <Button
+                  icon={
+                    <FaRegComment className="text-gray-400 cursor-pointer" />
+                  }
+                  shape="round"
+                  type="text"
+                >
                   <span>{post?.numberOfComments}</span>
                 </Button>
 
-                <Button icon={<IoShareSocialOutline className="text-gray-400" />} shape="circle" type="text" />
+                <Button
+                  icon={<IoShareSocialOutline className="text-gray-400" />}
+                  shape="circle"
+                  type="text"
+                />
               </div>
               <Dropdown menu={{ items: moreOptionItems }} trigger={["click"]}>
                 <Button icon={<IoMdMore />} shape="circle" type="text"></Button>
