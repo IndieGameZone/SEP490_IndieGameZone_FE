@@ -3,6 +3,7 @@ import { formatDateTime } from "@/lib/date-n-time";
 import { Withdraw } from "@/types/withdraw-request";
 import { ColumnsType } from "antd/es/table";
 
+
 export const withdrawRequestColumns: ColumnsType<Withdraw> = [
   {
     title: "Withdraw Request ID",
@@ -10,15 +11,21 @@ export const withdrawRequestColumns: ColumnsType<Withdraw> = [
     key: "id",
   },
   {
+    title: "Requester",
+    dataIndex: "userId",
+    key: "userId",
+  },
+  
+  {
     title: "Amount",
     dataIndex: "amount",
     key: "amount",
   },
   {
-    title: "Description",
+    title:"Description",
     dataIndex: "description",
     key: "description",
-  },
+  },    
   {
     title: "Image Proof",
     dataIndex: "imageProof",
@@ -43,9 +50,10 @@ export const withdrawRequestColumns: ColumnsType<Withdraw> = [
     render: (text) => formatDateTime(new Date(text)),
   },
   {
+
     title: "Handled Date",
     dataIndex: "handledAt",
     key: "handledAt",
     render: (text) => formatDateTime(new Date(text)),
-  },
+  }
 ];
