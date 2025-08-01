@@ -1,7 +1,10 @@
 // columns.tsx
 import { formatDateTime } from "@/lib/date-n-time";
+import { User } from "@/types/user";
 import { Withdraw } from "@/types/withdraw-request";
 import { ColumnsType } from "antd/es/table";
+import ActionMenu from "../../admin/manage-withdraw-request/action-menu";
+import { Tag } from "antd";
 
 export const withdrawRequestColumns: ColumnsType<Withdraw> = [
   {
@@ -25,10 +28,18 @@ export const withdrawRequestColumns: ColumnsType<Withdraw> = [
     key: "imageProof",
   },
   {
-    title: "Is Transferred",
+    title: "Transfer Status",
     dataIndex: "isTransfered",
     key: "isTransfered",
-    render: (text) => (text ? "Yes" : "No"),
+    render: (status) => (
+      <Tag
+        color={
+          status === "Approved" ? "green" : status === "Rejected" ? "red" : status === "Pending" ? "gold" : "default"
+        }
+      >
+        {status || "Unknown"}
+      </Tag>
+    ),
   },
   {
     title: "Message",
@@ -48,4 +59,5 @@ export const withdrawRequestColumns: ColumnsType<Withdraw> = [
     key: "handledAt",
     render: (text) => formatDateTime(new Date(text)),
   },
+  
 ];

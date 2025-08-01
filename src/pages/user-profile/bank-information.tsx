@@ -1,31 +1,126 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Card, message } from "antd";
-import { BsBank2, BsCreditCard2Front, BsPerson } from "react-icons/bs";
-import useAuthStore from "@/store/use-auth-store";
+import { Form, Input, Button, Card, message, Select, Spin } from "antd";
+import { BsBank2, BsCreditCard2Front, BsPerson, BsHash } from "react-icons/bs";
+
+const useAuthStore = () => ({
+  profile: {
+    bankName: "Vietcombank",
+    code: "970436",
+    bin: "970436",
+    shortName: "VCB",
+    bankAccountNumber: "1234567890123456",
+    accountName: "NGUYEN VAN A",
+  },
+});
+
+interface Bank {
+  id: number;
+  name: string;
+  code: string;
+  bin: string;
+  shortName: string;
+  logo: string;
+  transferSupported: number;
+  lookupSupported: number;
+  short_name: string;
+  support: number;
+  isTransfer: number;
+  swift_code: string;
+}
+
+interface BankResponse {
+  code: string;
+  desc: string;
+  data: Bank[];
+}
 
 const BankInformationPage = () => {
   const { profile } = useAuthStore();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [banks, setBanks] = useState<Bank[]>([]);
+  const [loadingBanks, setLoadingBanks] = useState(false);
+  const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false); 
 
   useEffect(() => {
-    if (profile) {
+    if (profile && !isInitialized) {
       form.setFieldsValue({
         bankName: profile.bankName || "",
-        bankAccount: profile.bankAccount || "",
-        accountName: profile.fullname || "",
+        code: profile.code || "",
+        bin: profile.bin || "",
+        shortName: profile.shortName || "",
+        bankAccountNumber: profile.bankAccountNumber || "",
+        accountName: profile.accountName || "",
+      });
+      setIsInitialized(true);
+    }
+  }, [profile, form, isInitialized]);
+
+  useEffect(() => {
+    if (profile?.code && banks.length > 0 && !selectedBank) {
+      const bank = banks.find((b) => b.code === profile.code);
+      if (bank) {
+        setSelectedBank(bank);
+      }
+    }
+  }, [profile?.code, banks, selectedBank]);
+
+  const fetchBanks = async () => {
+    setLoadingBanks(true);
+    try {
+      const response = await fetch("https://api.vietqr.io/v2/banks");
+      const data: BankResponse = await response.json();
+
+      if (data.code === "00" && data.data) {
+        setBanks(data.data);
+      } else {
+        message.error("Failed to load bank list");
+      }
+    } catch (error) {
+      console.error("Error fetching banks:", error);
+      message.error("Failed to load bank list");
+    } finally {
+      setLoadingBanks(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBanks();
+  }, []);
+
+  const handleBankSelect = (value: string) => {
+    const bank = banks.find((b) => b.code === value);
+    if (bank) {
+      setSelectedBank(bank);
+      form.setFieldsValue({
+        bankName: bank.name,
+        code: bank.code,
+        bin: bank.bin,
+        shortName: bank.shortName || bank.short_name,
+        bankAccountNumber: form.getFieldValue('bankAccountNumber'),
+        accountName: form.getFieldValue('accountName'),
       });
     }
-  }, [profile, form]);
+  };
 
-  const onFinish = async () => {
+  const onFinish = async (values: any) => {
     setLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      message.success("Bank information saved successfully!");
+      console.log("Form values:", values);
+    } catch (error) {
+      message.error("Failed to save bank information");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-black p-4 flex items-center justify-center">
       <Card
-        className="w-full max-w-md bg-gray-900 border-gray-700"
+        className="w-full max-w-lg bg-gray-900 border-gray-700"
         styles={{
           body: { padding: "2rem" },
         }}
@@ -40,22 +135,70 @@ const BankInformationPage = () => {
           <Form.Item
             name="bankName"
             label={<span className="text-white font-medium">Bank Name</span>}
-            rules={[
-              { required: true, message: "Please enter bank name" },
-              { min: 2, message: "Bank name must be at least 2 characters" },
-            ]}
+            rules={[{ required: true, message: "Please select a bank" }]}
           >
-            <Input
-              prefix={<BsBank2 className="text-gray-400" />}
-              placeholder="Enter bank name"
-              className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 hover:border-blue-400 focus:border-blue-400"
+            <Select
+              placeholder="Select your bank"
               size="large"
-              defaultValue={profile?.bankName}
+              loading={loadingBanks}
+              showSearch
+              filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+              className="bank-select"
+              onChange={handleBankSelect}
+              options={banks.map((bank) => ({
+                value: bank.code,
+                label: bank.name,
+                key: bank.code,
+              }))}
+              notFoundContent={loadingBanks ? <Spin size="small" /> : "No banks found"}
             />
           </Form.Item>
 
+          <div className="grid grid-cols-3 gap-4">
+            <Form.Item
+              name="code"
+              label={<span className="text-white font-medium">Bank Code</span>}
+              rules={[{ required: true, message: "Bank code is required" }]}
+            >
+              <Input
+                prefix={<BsHash className="text-gray-400" />}
+                placeholder="Bank code"
+                className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 hover:border-blue-400 focus:border-blue-400"
+                size="large"
+                readOnly
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="bin"
+              label={<span className="text-white font-medium">BIN</span>}
+              rules={[{ required: true, message: "BIN is required" }]}
+            >
+              <Input
+                prefix={<BsHash className="text-gray-400" />}
+                placeholder="BIN"
+                className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 hover:border-blue-400 focus:border-blue-400"
+                size="large"
+                readOnly
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="shortName"
+              label={<span className="text-white font-medium">Short Name</span>}
+              rules={[{ required: true, message: "Short name is required" }]}
+            >
+              <Input
+                placeholder="Short name"
+                className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 hover:border-blue-400 focus:border-blue-400"
+                size="large"
+                readOnly
+              />
+            </Form.Item>
+          </div>
+
           <Form.Item
-            name="bankAccount"
+            name="bankAccountNumber"
             label={<span className="text-white font-medium">Bank Account Number</span>}
             rules={[
               { required: true, message: "Please enter bank account number" },
@@ -68,17 +211,15 @@ const BankInformationPage = () => {
               className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 hover:border-blue-400 focus:border-blue-400"
               size="large"
               maxLength={20}
-              defaultValue={profile?.bankAccount}
             />
           </Form.Item>
 
           <Form.Item
-            name="fullName"
+            name="accountName"
             label={<span className="text-white font-medium">Account Name</span>}
             rules={[
               { required: true, message: "Please enter account name" },
               { min: 2, message: "Account name must be at least 2 characters" },
-              { pattern: /^[a-zA-Z\s]+$/, message: "Account name can only contain letters and spaces" },
             ]}
           >
             <Input
@@ -86,7 +227,11 @@ const BankInformationPage = () => {
               placeholder="Enter account name"
               className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 hover:border-blue-400 focus:border-blue-400"
               size="large"
-              defaultValue={profile?.fullname}
+              style={{ textTransform: "uppercase" }}
+              onChange={(e) => {
+                const uppercaseValue = e.target.value.toUpperCase();
+                form.setFieldValue("accountName", uppercaseValue);
+              }}
             />
           </Form.Item>
 

@@ -28,7 +28,6 @@ const CreateWithdrawRequest = ({ open, onClose, onSuccess }: AddCreateWithdrawRe
             setLoading(true);
             const result = await createWithdrawRequest(profile?.id, {
                 amount: values.amount,
-                description: values.description,
             });
             
             if (result.success) {

@@ -19,7 +19,6 @@ export const getWithdrawRequestById = async (userId: string) => {
 };
 export interface withdrawRequestData {
   amount: number;
-  description: string;
 }
 
 export const createWithdrawRequest = async (userId: string, withdrawData: withdrawRequestData) => {
@@ -33,6 +32,14 @@ export const createWithdrawRequest = async (userId: string, withdrawData: withdr
 export const getAllWithdrawRequests = async () => {
   try {
     const { data } = await axiosClient.get(`/api/withdraw-requests`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+export const updateWithdrawRequestStatus = async (withdrawId: string, ImageProof: string, status: string, RejectReason?: string) => {
+  try {
+    const { data } = await axiosClient.put(`/api/withdraw-requests/${withdrawId}`, { ImageProof, status, RejectReason });
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
