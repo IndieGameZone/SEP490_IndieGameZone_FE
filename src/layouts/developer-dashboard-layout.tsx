@@ -3,6 +3,7 @@ import { Menu, MenuProps } from "antd";
 import { ReactNode } from "react";
 import { FaChartLine, FaGamepad, FaTags } from "react-icons/fa";
 import { LuPackage } from "react-icons/lu";
+import { PiHandWithdraw } from "react-icons/pi";
 import { TbCoin } from "react-icons/tb";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -34,6 +35,14 @@ const DeveloperDashboardLayout = ({ children }: { children: ReactNode }) => {
       icon: <TbCoin />,
       onClick: () => {
         navigate("/dev/earnings");
+      },
+    },
+    {
+      label: "Withdrawal Requests",
+      key: "/dev/withdrawal-requests",
+      icon: <PiHandWithdraw />,
+      onClick: () => {
+        navigate("/dev/withdrawal-requests");
       },
     },
     {

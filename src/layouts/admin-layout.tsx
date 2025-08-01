@@ -6,7 +6,7 @@ import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import logo from "@/assets/indiegamezone-logo.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MdCategory, MdOutlineReport, MdSpaceDashboard } from "react-icons/md";
-import { BiSolidUserAccount } from "react-icons/bi";
+import { BiMoneyWithdraw, BiSolidUserAccount } from "react-icons/bi";
 import { LiaLanguageSolid } from "react-icons/lia";
 import { FaDoorOpen, FaTags, FaWindows } from "react-icons/fa";
 import { CiUser } from "react-icons/ci";
@@ -127,6 +127,14 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       label: "Manage Transactions",
       onClick: () => {
         navigate("/admin/manage-transactions");
+      },
+    },
+    {
+      key:"/admin/manage-withdraw-requests",
+      icon:<BiMoneyWithdraw />, 
+      label: "Manage Withdraw Requests",
+      onClick: () => {
+        navigate("/admin/manage-withdraw-requests");
       },
     },
     {
