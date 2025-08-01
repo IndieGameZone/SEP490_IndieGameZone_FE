@@ -105,3 +105,21 @@ export const getPostCommentsByPostId = async (postId: string) => {
     return handleApiError(error);
   }
 };
+
+export const reactPost = async (userId: string, postId: string) => {
+  try {
+    const { data } = await axiosClient.post(`/api/users/${userId}/posts/${postId}/post-reactions`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const getPostReactionByPostId = async (userId: string, postId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/users/${userId}/posts/${postId}/post-reactions`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

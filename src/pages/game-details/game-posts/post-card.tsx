@@ -2,11 +2,12 @@ import ExpandableWrapper from "@/components/wrappers/expandable-wrapper";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import { GamePost } from "@/types/game-post";
 import { Avatar, Button, Dropdown, MenuProps, Tag } from "antd";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FaChevronLeft,
   FaChevronRight,
   FaFlag,
+  FaHeart,
   FaLink,
   FaRegComment,
   FaRegHeart,
@@ -19,6 +20,8 @@ import ReportPostModal from "@/components/report-modal/report-post-modal";
 import { timeAgo } from "@/lib/date-n-time";
 import useGamePostStore from "@/store/use-game-post-store";
 import useAuthStore from "@/store/use-auth-store";
+import { getPostReactionByPostId, reactPost } from "@/lib/api/game-post-api";
+import { useGlobalMessage } from "@/components/message-provider";
 
 interface PostCardProps {
   post: GamePost;
@@ -30,6 +33,10 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [reportPostModalOpen, setReportPostModalOpen] = useState(false);
+  const [numOfLikes, setNumOfLikes] = useState(post.numberOfLikes);
+  const [liked, setLiked] = useState(false);
+  const [isSubmittingLike, setIsSubmittingLike] = useState(false);
+  const messageApi = useGlobalMessage();
   const { fetchPostComments } = useGamePostStore();
   const { profile } = useAuthStore();
 
@@ -81,10 +88,50 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
     setCurrentImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  useEffect(() => {
+    (async () => {
+      if (!profile || !post) return;
+      const result = await getPostReactionByPostId(profile.id, post.id);
+      if (!result.error) {
+        setLiked(result.data);
+      }
+    })();
+  }, [profile]);
+
   const handleViewPostDetail = async () => {
     if (onViewPostDetail) {
       await fetchPostComments(post.id);
       onViewPostDetail(post.id);
+    }
+  };
+
+  const handleReact = async () => {
+    if (!profile) {
+      messageApi.error("Login to like this post");
+      return;
+    }
+    if (!post) return;
+    setIsSubmittingLike(true);
+    setLiked((prev) => !prev);
+    setNumOfLikes((prev) => {
+      if (liked) {
+        return prev - 1;
+      } else {
+        return prev + 1;
+      }
+    });
+    const result = await reactPost(profile.id, post.id);
+    setIsSubmittingLike(false);
+    if (result.error) {
+      messageApi.error("Failed to like post. Please try again!");
+      setLiked((prev) => !prev);
+      setNumOfLikes((prev) => {
+        if (liked) {
+          return prev + 1;
+        } else {
+          return prev - 1;
+        }
+      });
     }
   };
 
@@ -172,11 +219,19 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
 
           <div className="flex items-center gap-3 mt-2">
             <Button
-              icon={<FaRegHeart className="text-gray-400" />}
+              icon={
+                liked ? (
+                  <FaHeart className="fill-rose-600" />
+                ) : (
+                  <FaRegHeart className="fill-gray-400" />
+                )
+              }
               shape="round"
               type="text"
+              loading={isSubmittingLike}
+              onClick={handleReact}
             >
-              <span>{post.numberOfLikes}</span>
+              <span>{numOfLikes}</span>
             </Button>
 
             <Button
