@@ -10,7 +10,7 @@ interface CarouselItemProps {
 }
 const CarouselItem = ({ game }: CarouselItemProps) => {
   const [index, setIndex] = useState(-1);
-  const [gameImages, setGameImages] = useState<any>([]);
+  const [gameImages, setGameImages] = useState<any[]>([]);
   const [slides, setSlides] = useState<any>([]);
   useEffect(() => {
     setGameImages(
@@ -70,16 +70,16 @@ const CarouselItem = ({ game }: CarouselItemProps) => {
           </div>
 
           <div className="md:grid grid-cols-2 gap-3 hidden">
-            {game.gameImages.slice(3).map((image, index: number) => {
+            {gameImages.slice(0, 3).map((image: any, index: number) => {
               return (
                 <div
                   className="h-[150px]"
                   key={`featured-game-${game.id}-image-${index}`}
                 >
                   <FaultTolerantImage
-                    src={image.image}
+                    src={image.src}
                     alt={game.name + " screenshort " + index}
-                    className="object-contain w-full h-full rounded cursor-zoom-in border-2 border-black hover:border-orange-500 duration-300"
+                    className="bg-zinc-950 object-contain w-full h-full rounded cursor-zoom-in border-2 border-black hover:border-orange-500 duration-300"
                     onClick={() => {
                       setIndex(index + 1);
                     }}

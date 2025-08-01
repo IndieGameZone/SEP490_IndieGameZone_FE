@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Typography, Spin } from "antd";
+import { Table, Typography } from "antd";
 import type { ReportItem } from "./columns";
 import { reportColumns } from "./columns";
 import { getOrderByUserId } from "@/lib/api/payment-api";
@@ -31,7 +31,7 @@ const UserOrdersPage: React.FC = () => {
 
     fetchOrders();
   }, [profile]);
-  
+
   return (
     <>
       <div className="flex justify-center py-5">
@@ -47,7 +47,8 @@ const UserOrdersPage: React.FC = () => {
             pageSize: 10,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} Orders`,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} Orders`,
           }}
           scroll={{ x: "max-content" }}
           bordered

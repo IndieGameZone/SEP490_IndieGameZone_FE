@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { Button, Dropdown, Input, Tag, message } from "antd";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineSort } from "react-icons/md";
@@ -27,6 +32,10 @@ const GameForum = () => {
   const { gameId } = useParams();
   const { renderKey, rerender } = useRerender();
 
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [selectedSortOption, setSelectedSortOption] = useState(SORT_TABS[0]);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -47,11 +56,29 @@ const GameForum = () => {
   const handleViewPostDetail = (postId: string) => {
     selectedPost.current = postId;
     setPostDetailOpen(true);
+
+    const params = new URLSearchParams(location.search);
+    params.set("postId", postId);
+
+    navigate({
+      pathname: location.pathname,
+      search: params.toString(),
+      hash: location.hash,
+    });
   };
 
   const handleCancelDetail = () => {
-    selectedPost.current == null;
+    selectedPost.current = null;
     setPostDetailOpen(false);
+
+    const params = new URLSearchParams(location.search);
+    params.delete("postId");
+
+    navigate({
+      pathname: location.pathname,
+      search: params.toString(),
+      hash: location.hash,
+    });
   };
 
   const handleSetPostToDelete = (postId: string) => {
@@ -105,6 +132,14 @@ const GameForum = () => {
   useEffect(() => {
     fetchPosts(1);
   }, [gameId, renderKey]);
+
+  useEffect(() => {
+    const postId = searchParams.get("postId");
+    if (postId) {
+      selectedPost.current = postId;
+      setPostDetailOpen(true);
+    }
+  }, [searchParams]);
 
   return (
     <div className="grid grid-cols-12 gap-3">

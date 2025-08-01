@@ -5,6 +5,7 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaFlag,
+  FaHeart,
   FaLink,
   FaRegComment,
   FaRegHeart,
@@ -13,11 +14,14 @@ import {
 import { IoMdMore } from "react-icons/io";
 import { timeAgo } from "@/lib/date-n-time";
 import TiptapView from "@/components/tiptap/tiptap-view";
-import { IoShareSocialOutline } from "react-icons/io5";
 import Lightbox from "yet-another-react-lightbox";
 import PostCommentForm from "./post-comment-form";
 import chatEmptyImg from "@/assets/chat-empty.png";
-import { getGamePostById } from "@/lib/api/game-post-api";
+import {
+  getGamePostById,
+  getPostReactionByPostId,
+  reactPost,
+} from "@/lib/api/game-post-api";
 import { useGlobalMessage } from "@/components/message-provider";
 import Loader from "@/components/loader";
 import useGamePostStore from "@/store/use-game-post-store";
@@ -25,6 +29,7 @@ import useAuthStore from "@/store/use-auth-store";
 import ReportCommentModal from "@/components/report-modal/report-comment-modal";
 import PostCommentCard from "./post-comment-card";
 import { Link } from "react-router-dom";
+import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
 interface PostDetailModalProps {
   postId: string | null;
   open: boolean;
@@ -42,11 +47,17 @@ const PostDetailModal = ({
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState<GamePost>();
+
   const messageApi = useGlobalMessage();
   const { postComments, loading: commentsLoading } = useGamePostStore();
   const { profile } = useAuthStore();
+  const { copyLink } = useCopyCurrentLink();
+
   const [reportCommentModalOpen, setReportCommentModalOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string>("");
+  const [numOfLikes, setNumOfLikes] = useState(0);
+  const [isSubmittingLike, setIsSubmittingLike] = useState(false);
+  const [liked, setLiked] = useState(false);
 
   const fetchPost = async () => {
     if (!postId) return;
@@ -59,6 +70,7 @@ const PostDetailModal = ({
         return;
       }
       setPost(result.data);
+      setNumOfLikes(result.data.numberOfLikes ?? 0);
     } catch (error) {
       messageApi.error("An error occurred while fetching data!");
     } finally {
@@ -69,6 +81,16 @@ const PostDetailModal = ({
   useEffect(() => {
     fetchPost();
   }, [postId]);
+
+  useEffect(() => {
+    (async () => {
+      if (!profile || !postId) return;
+      const result = await getPostReactionByPostId(profile.id, postId);
+      if (!result.error) {
+        setLiked(result.data);
+      }
+    })();
+  }, [profile]);
 
   const handleReportComment = (commentId: string) => {
     setSelectedCommentId(commentId);
@@ -97,6 +119,9 @@ const PostDetailModal = ({
         label: <div>Copy link to post</div>,
         icon: <FaLink />,
         key: "copy",
+        onClick: () => {
+          copyLink();
+        },
       },
     ];
 
@@ -125,6 +150,36 @@ const PostDetailModal = ({
 
   const onSubmitComment = () => {
     fetchPost();
+  };
+
+  const handleReact = async () => {
+    if (!profile) {
+      messageApi.error("Login to like this post");
+      return;
+    }
+    if (!post) return;
+    setIsSubmittingLike(true);
+    setLiked((prev) => !prev);
+    setNumOfLikes((prev) => {
+      if (liked) {
+        return prev - 1;
+      } else {
+        return prev + 1;
+      }
+    });
+    const result = await reactPost(profile.id, post.id);
+    setIsSubmittingLike(false);
+    if (result.error) {
+      messageApi.error("Failed to like post. Please try again!");
+      setLiked((prev) => !prev);
+      setNumOfLikes((prev) => {
+        if (liked) {
+          return prev + 1;
+        } else {
+          return prev - 1;
+        }
+      });
+    }
   };
 
   if (!postId) {
@@ -243,11 +298,19 @@ const PostDetailModal = ({
             <div className="flex justify-between mt-2 border-t border-zinc-700 p-3">
               <div className="flex items-center gap-3 ">
                 <Button
-                  icon={<FaRegHeart className="text-gray-400" />}
+                  icon={
+                    liked ? (
+                      <FaHeart className="fill-rose-600" />
+                    ) : (
+                      <FaRegHeart className="fill-gray-400" />
+                    )
+                  }
                   shape="round"
                   type="text"
+                  loading={isSubmittingLike}
+                  onClick={handleReact}
                 >
-                  <span>{post?.numberOfLikes}</span>
+                  <span>{numOfLikes}</span>
                 </Button>
 
                 <Button
@@ -260,11 +323,11 @@ const PostDetailModal = ({
                   <span>{post?.numberOfComments}</span>
                 </Button>
 
-                <Button
+                {/* <Button
                   icon={<IoShareSocialOutline className="text-gray-400" />}
                   shape="circle"
                   type="text"
-                />
+                /> */}
               </div>
               <Dropdown menu={{ items: moreOptionItems }} trigger={["click"]}>
                 <Button icon={<IoMdMore />} shape="circle" type="text"></Button>
