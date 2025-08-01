@@ -14,7 +14,6 @@ import {
 import { IoMdMore } from "react-icons/io";
 import { timeAgo } from "@/lib/date-n-time";
 import TiptapView from "@/components/tiptap/tiptap-view";
-import { IoShareSocialOutline } from "react-icons/io5";
 import Lightbox from "yet-another-react-lightbox";
 import PostCommentForm from "./post-comment-form";
 import chatEmptyImg from "@/assets/chat-empty.png";
@@ -30,6 +29,7 @@ import useAuthStore from "@/store/use-auth-store";
 import ReportCommentModal from "@/components/report-modal/report-comment-modal";
 import PostCommentCard from "./post-comment-card";
 import { Link } from "react-router-dom";
+import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
 interface PostDetailModalProps {
   postId: string | null;
   open: boolean;
@@ -47,9 +47,12 @@ const PostDetailModal = ({
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [isLoading, setIsLoading] = useState(false);
   const [post, setPost] = useState<GamePost>();
+
   const messageApi = useGlobalMessage();
   const { postComments, loading: commentsLoading } = useGamePostStore();
   const { profile } = useAuthStore();
+  const { copyLink } = useCopyCurrentLink();
+
   const [reportCommentModalOpen, setReportCommentModalOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string>("");
   const [numOfLikes, setNumOfLikes] = useState(0);
@@ -116,6 +119,9 @@ const PostDetailModal = ({
         label: <div>Copy link to post</div>,
         icon: <FaLink />,
         key: "copy",
+        onClick: () => {
+          copyLink();
+        },
       },
     ];
 
@@ -317,11 +323,11 @@ const PostDetailModal = ({
                   <span>{post?.numberOfComments}</span>
                 </Button>
 
-                <Button
+                {/* <Button
                   icon={<IoShareSocialOutline className="text-gray-400" />}
                   shape="circle"
                   type="text"
-                />
+                /> */}
               </div>
               <Dropdown menu={{ items: moreOptionItems }} trigger={["click"]}>
                 <Button icon={<IoMdMore />} shape="circle" type="text"></Button>

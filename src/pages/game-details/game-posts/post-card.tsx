@@ -14,7 +14,6 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
-import { IoShareSocialOutline } from "react-icons/io5";
 import Lightbox from "yet-another-react-lightbox";
 import ReportPostModal from "@/components/report-modal/report-post-modal";
 import { timeAgo } from "@/lib/date-n-time";
@@ -22,6 +21,7 @@ import useGamePostStore from "@/store/use-game-post-store";
 import useAuthStore from "@/store/use-auth-store";
 import { getPostReactionByPostId, reactPost } from "@/lib/api/game-post-api";
 import { useGlobalMessage } from "@/components/message-provider";
+import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
 
 interface PostCardProps {
   post: GamePost;
@@ -38,6 +38,7 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
   const [isSubmittingLike, setIsSubmittingLike] = useState(false);
   const messageApi = useGlobalMessage();
   const { fetchPostComments } = useGamePostStore();
+  const { copyLink } = useCopyCurrentLink();
   const { profile } = useAuthStore();
 
   const images: string[] = useMemo(() => {
@@ -55,6 +56,10 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
         label: <div>Copy link to post</div>,
         icon: <FaLink />,
         key: "copy",
+        onClick: () => {
+          if (!post) return;
+          copyLink({ postId: post.id });
+        },
       },
     ];
 
@@ -243,11 +248,11 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
               <span>{post.numberOfComments}</span>
             </Button>
 
-            <Button
+            {/* <Button
               icon={<IoShareSocialOutline className="text-gray-400" />}
               shape="circle"
               type="text"
-            />
+            /> */}
           </div>
         </div>
       </div>
