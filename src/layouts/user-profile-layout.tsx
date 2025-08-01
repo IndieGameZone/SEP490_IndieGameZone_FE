@@ -71,10 +71,10 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
       type: "group",
       children: [
         {
-          key: "/account/credit-card",
-          label: "Credit Card",
+          key: "/account/bank-information",
+          label: "Bank information",
           onClick: () => {
-            navigate("/account/credit-card");
+            navigate("/account/bank-information");
           },
         },
         {
