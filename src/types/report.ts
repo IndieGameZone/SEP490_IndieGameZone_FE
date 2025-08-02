@@ -1,15 +1,20 @@
 import { Game } from "./game";
+import { GamePost, PostComment } from "./game-post";
 import { ReportReason } from "./report-reason";
 import { User } from "./user";
 
 export interface ReportItem {
   id: string;
   user: User;
-  reportType: "comment" | "post" | "game";
   reportReason: ReportReason;
   message: string;
+  status:string; 
   game: Game;
   isResolved: boolean;
   createdAt: string;
   updatedAt: string;
+  reportingUser: User;
+  postComment:PostComment;
+  post:GamePost
 }
+

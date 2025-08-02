@@ -55,11 +55,11 @@ const DeveloperDashboardLayout = ({ children }: { children: ReactNode }) => {
       },
     },
     {
-      label: "Promotions",
-      key: "/dev/promotions",
+      label: "Manage Received Report",
+      key: "/dev/manage-received-report",
       icon: <FaTags />,
       onClick: () => {
-        navigate("/dev/promotions");
+        navigate("/dev/manage-received-report");
       },
     },
     {

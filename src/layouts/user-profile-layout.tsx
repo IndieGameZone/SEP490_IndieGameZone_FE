@@ -127,10 +127,10 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
       type: "group",
       children: [
         {
-          key: "/account/manage-reports",
-          label: "Manage Reports",
+          key: "/account/manage-sent-reports",
+          label: "Manage Sent Reports",
           onClick: () => {
-            navigate("/account/manage-reports");
+            navigate("/account/manage-sent-reports");
           },
         },
       ],
