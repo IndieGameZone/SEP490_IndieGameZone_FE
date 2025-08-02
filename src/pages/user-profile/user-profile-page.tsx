@@ -89,8 +89,6 @@ const UserProfilePage = () => {
       facebookLink: values.facebookLink,
       youtubeChannelLink: values.youtubeChannelLink,
       fullName: values.fullName,
-      bankAccount: profile.bankAccount,
-      bankName: profile.bankName,
     });
     if (result.error) {
       messageApi.error("Failed to update profile. Please try again.");

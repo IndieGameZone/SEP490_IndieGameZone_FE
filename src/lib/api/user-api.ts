@@ -37,8 +37,6 @@ type UpdateUserRequest = {
   bio?: string;
   birthday: string;
   facebookLink?: string;
-  bankName?: string;
-  bankAccount?: string;
   youtubeChannelLink?: string;
 };
 
@@ -48,8 +46,6 @@ export const updateUser = async (userId: string, request: UpdateUserRequest) => 
   if (request.avatar) formData.append("Avatar", request.avatar);
   if (request.bio) formData.append("Bio", request.bio);
   formData.append("Birthday", request.birthday);
-  if (request.bankName) formData.append("BankName", request.bankName);
-  if (request.bankAccount) formData.append("BankAccount", request.bankAccount);
   if (request.facebookLink) formData.append("FacebookLink", request.facebookLink);
   if (request.youtubeChannelLink) formData.append("YoutubeChannelLink", request.youtubeChannelLink);
   try {

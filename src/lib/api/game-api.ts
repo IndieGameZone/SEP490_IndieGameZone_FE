@@ -16,6 +16,7 @@ type AddGameFilesRequest = {
   platformId: string;
   file: string;
   version: string;
+  displayName: string;
 }[];
 
 export const addGameFiles = async (gameId: string, request: AddGameFilesRequest) => {

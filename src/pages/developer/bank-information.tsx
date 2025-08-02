@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Form, Input, Button, Card, message, Select, Spin } from "antd";
 import { BsBank2, BsCreditCard2Front, BsPerson, BsHash } from "react-icons/bs";
 import { BankInfo } from "@/types/bank-info";
 import useAuthStore from "@/store/use-auth-store";
-
-
-
-
 
 interface BankResponse {
   code: string;
@@ -21,11 +17,9 @@ const BankInformationPage = () => {
   const [banks, setBanks] = useState<BankInfo[]>([]);
   const [loadingBanks, setLoadingBanks] = useState(false);
   const [selectedBank, setSelectedBank] = useState<BankInfo | null>(null);
-  const [isInitialized, setIsInitialized] = useState(false); 
+  const [isInitialized, setIsInitialized] = useState(false);
 
-
-
- if (!profile) {
+  if (!profile) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <span>Please log in to view this page</span>
@@ -36,25 +30,25 @@ const BankInformationPage = () => {
   useEffect(() => {
     if (profile && !isInitialized) {
       form.setFieldsValue({
-        bankName: profile.bankName || "",
-        code: profile.code || "",
-        bin: profile.bin || "",
-        shortName: profile.shortName || "",
+        bankName: profile.bank.name || "",
+        code: profile.bank.code || "",
+        bin: profile.bank.bin || "",
+        shortName: profile.bank.shortName || "",
         bankAccountNumber: profile.bankAccountNumber || "",
-        accountName: profile.accountName || "",
+        bankAccountName: profile.bankAccountName || "",
       });
       setIsInitialized(true);
     }
   }, [profile, form, isInitialized]);
 
   useEffect(() => {
-    if (profile?.code && banks.length > 0 && !selectedBank) {
-      const bank = banks.find((b) => b.code === profile.code);
+    if (profile?.bank.code && banks.length > 0 && !selectedBank) {
+      const bank = banks.find((b) => b.code === profile.bank.code);
       if (bank) {
         setSelectedBank(bank);
       }
     }
-  }, [profile?.code, banks, selectedBank]);
+  }, [profile.bank, banks, selectedBank]);
 
   const fetchBanks = async () => {
     setLoadingBanks(true);
@@ -88,8 +82,8 @@ const BankInformationPage = () => {
         code: bank.code,
         bin: bank.bin,
         shortName: bank.shortName || bank.short_name,
-        bankAccountNumber: form.getFieldValue('bankAccountNumber'),
-        accountName: form.getFieldValue('accountName'),
+        bankAccountNumber: form.getFieldValue("bankAccountNumber"),
+        accountName: form.getFieldValue("accountName"),
       });
     }
   };
@@ -117,11 +111,18 @@ const BankInformationPage = () => {
       >
         <div className="text-center mb-8">
           <BsBank2 className="text-4xl text-blue-400 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-white mb-2">Bank Information</h1>
+          <h1 className="text-2xl font-bold text-white mb-2">
+            Bank Information
+          </h1>
           <p className="text-gray-400">Enter your banking details securely</p>
         </div>
 
-        <Form form={form} layout="vertical" onFinish={onFinish} className="space-y-4">
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          className="space-y-4"
+        >
           <Form.Item
             name="bankName"
             label={<span className="text-white font-medium">Bank Name</span>}
@@ -132,7 +133,11 @@ const BankInformationPage = () => {
               size="large"
               loading={loadingBanks}
               showSearch
-              filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+              filterOption={(input, option) =>
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
               className="bank-select"
               onChange={handleBankSelect}
               options={banks.map((bank) => ({
@@ -140,7 +145,9 @@ const BankInformationPage = () => {
                 label: bank.name,
                 key: bank.code,
               }))}
-              notFoundContent={loadingBanks ? <Spin size="small" /> : "No banks found"}
+              notFoundContent={
+                loadingBanks ? <Spin size="small" /> : "No banks found"
+              }
             />
           </Form.Item>
 
@@ -189,10 +196,17 @@ const BankInformationPage = () => {
 
           <Form.Item
             name="bankAccountNumber"
-            label={<span className="text-white font-medium">Bank Account Number</span>}
+            label={
+              <span className="text-white font-medium">
+                Bank Account Number
+              </span>
+            }
             rules={[
               { required: true, message: "Please enter bank account number" },
-              { pattern: /^\d{8,20}$/, message: "Account number must be 8-20 digits" },
+              {
+                pattern: /^\d{8,20}$/,
+                message: "Account number must be 8-20 digits",
+              },
             ]}
           >
             <Input
@@ -250,8 +264,9 @@ const BankInformationPage = () => {
             <span className="text-sm font-medium">Attention</span>
           </div>
           <p className="text-gray-300 text-sm">
-            We will rely on this information to transfer money. You need to write your account information correctly. If
-            there is any error, we will not be responsible.
+            We will rely on this information to transfer money. You need to
+            write your account information correctly. If there is any error, we
+            will not be responsible.
           </p>
         </div>
       </Card>

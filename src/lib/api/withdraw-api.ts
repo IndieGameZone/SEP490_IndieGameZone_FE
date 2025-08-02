@@ -37,6 +37,7 @@ export const getAllWithdrawRequests = async () => {
     return handleApiError(error);
   }
 };
+
 export type UpdateWithdrawStatusData = {
   ImageProof: string;
   Status: "Approved" | "Rejected" | "Pending";

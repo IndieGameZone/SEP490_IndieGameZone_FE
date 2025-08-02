@@ -128,7 +128,11 @@ const DetailUser: React.FC = () => {
     return (
       <div className="p-6">
         {/* {contextHolder} */}
-        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate("/admin/manage-accounts")} className="mb-4">
+        <Button
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate("/admin/manage-accounts")}
+          className="mb-4"
+        >
           Back to Accounts
         </Button>
         <Card>
@@ -140,7 +144,10 @@ const DetailUser: React.FC = () => {
     );
   }
 
-  const shouldShowBankingInfo = user.role.name === "Developer" || user.bankName || user.bankAccount;
+  const shouldShowBankingInfo =
+    user.role.name === "Developer" ||
+    user.bankAccountName ||
+    user.bankAccountNumber;
   const avatarUrl = getAvatarUrl(user);
   const cleanBio = stripHtmlTags(user.bio || "");
 
@@ -174,10 +181,18 @@ const DetailUser: React.FC = () => {
               <Space direction="vertical" className="text-center" size="small">
                 <Badge
                   status={user.isActive ? "success" : "error"}
-                  text={<span className="font-medium">{user.isActive ? "Active" : "Inactive"}</span>}
+                  text={
+                    <span className="font-medium">
+                      {user.isActive ? "Active" : "Inactive"}
+                    </span>
+                  }
                 />
                 {user.twoFactorEnabled && (
-                  <Tag color="purple" icon={<SafetyOutlined />} className="rounded-full">
+                  <Tag
+                    color="purple"
+                    icon={<SafetyOutlined />}
+                    className="rounded-full"
+                  >
                     2FA Secured
                   </Tag>
                 )}
@@ -227,10 +242,15 @@ const DetailUser: React.FC = () => {
 
               {cleanBio && (
                 <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500">
-                  <Text strong className="text-gray-600 text-sm uppercase tracking-wide">
+                  <Text
+                    strong
+                    className="text-gray-600 text-sm uppercase tracking-wide"
+                  >
                     About
                   </Text>
-                  <Paragraph className="mt-2 mb-0 text-gray-700 leading-relaxed">{cleanBio}</Paragraph>
+                  <Paragraph className="mt-2 mb-0 text-gray-700 leading-relaxed">
+                    {cleanBio}
+                  </Paragraph>
                 </div>
               )}
             </div>
@@ -248,7 +268,11 @@ const DetailUser: React.FC = () => {
               }
               className="shadow-lg border-0 rounded-xl h-full"
             >
-              <Descriptions column={1} size="middle" className="custom-descriptions">
+              <Descriptions
+                column={1}
+                size="middle"
+                className="custom-descriptions"
+              >
                 <Descriptions.Item
                   label={
                     <span className="font-medium text-gray-600">
@@ -281,7 +305,9 @@ const DetailUser: React.FC = () => {
                 >
                   <div className="flex items-center gap-3">
                     <Text className="text-gray-800">
-                      {user.phoneNumber || <Text type="secondary">Not provided</Text>}
+                      {user.phoneNumber || (
+                        <Text type="secondary">Not provided</Text>
+                      )}
                     </Text>
                     {user.phoneNumber &&
                       (user.phoneNumberConfirmed ? (
@@ -375,7 +401,13 @@ const DetailUser: React.FC = () => {
               className="shadow-lg border-0 rounded-xl h-full"
             >
               <Descriptions column={1} size="middle">
-                <Descriptions.Item label={<span className="font-medium text-gray-600">Role & Permissions</span>}>
+                <Descriptions.Item
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Role & Permissions
+                    </span>
+                  }
+                >
                   <Tag
                     color={getRoleColor(user?.role?.name)}
                     icon={getRoleIcon(user?.role?.name)}
@@ -385,9 +417,18 @@ const DetailUser: React.FC = () => {
                   </Tag>
                 </Descriptions.Item>
 
-                <Descriptions.Item label={<span className="font-medium text-gray-600">Account Status</span>}>
+                <Descriptions.Item
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Account Status
+                    </span>
+                  }
+                >
                   <div className="flex items-center">
-                    <Tag color={user.isActive ? "success" : "error"} className="font-medium px-3 py-1 rounded-full">
+                    <Tag
+                      color={user.isActive ? "success" : "error"}
+                      className="font-medium px-3 py-1 rounded-full"
+                    >
                       {user.isActive ? "Active" : "Suspended"}
                     </Tag>
                     <div>
@@ -396,7 +437,13 @@ const DetailUser: React.FC = () => {
                   </div>
                 </Descriptions.Item>
 
-                <Descriptions.Item label={<span className="font-medium text-gray-600">Two-Factor Authentication</span>}>
+                <Descriptions.Item
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Two-Factor Authentication
+                    </span>
+                  }
+                >
                   <Tag
                     color={user.twoFactorEnabled ? "success" : "warning"}
                     className="font-medium px-3 py-1 rounded-full"
@@ -405,7 +452,13 @@ const DetailUser: React.FC = () => {
                   </Tag>
                 </Descriptions.Item>
 
-                <Descriptions.Item label={<span className="font-medium text-gray-600">Account Lockout</span>}>
+                <Descriptions.Item
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Account Lockout
+                    </span>
+                  }
+                >
                   <Tag
                     color={user.lockoutEnabled ? "processing" : "default"}
                     className="font-medium px-3 py-1 rounded-full"
@@ -414,13 +467,29 @@ const DetailUser: React.FC = () => {
                   </Tag>
                 </Descriptions.Item>
 
-                <Descriptions.Item label={<span className="font-medium text-gray-600">Member Since</span>}>
-                  <Text className="text-gray-800 font-medium">{formatDate(user.joinedDate)}</Text>
+                <Descriptions.Item
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Member Since
+                    </span>
+                  }
+                >
+                  <Text className="text-gray-800 font-medium">
+                    {formatDate(user.joinedDate)}
+                  </Text>
                 </Descriptions.Item>
 
-                <Descriptions.Item label={<span className="font-medium text-gray-600">Last Activity</span>}>
+                <Descriptions.Item
+                  label={
+                    <span className="font-medium text-gray-600">
+                      Last Activity
+                    </span>
+                  }
+                >
                   <Text className="text-gray-800 font-medium">
-                    {user.lastLogin ? formatDate(user.lastLogin) : "Never logged in"}
+                    {user.lastLogin
+                      ? formatDate(user.lastLogin)
+                      : "Never logged in"}
                   </Text>
                 </Descriptions.Item>
               </Descriptions>
@@ -446,22 +515,32 @@ const DetailUser: React.FC = () => {
                 <Row gutter={[24, 16]}>
                   <Col xs={24} md={12}>
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <Text strong className="text-gray-600 text-sm uppercase tracking-wide block mb-2">
+                      <Text
+                        strong
+                        className="text-gray-600 text-sm uppercase tracking-wide block mb-2"
+                      >
                         Bank Name
                       </Text>
                       <Text className="text-gray-800 text-lg">
-                        {user.bankName || <Text type="secondary">Not provided</Text>}
+                        {user.bankAccountName || (
+                          <Text type="secondary">Not provided</Text>
+                        )}
                       </Text>
                     </div>
                   </Col>
 
                   <Col xs={24} md={12}>
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <Text strong className="text-gray-600 text-sm uppercase tracking-wide block mb-2">
+                      <Text
+                        strong
+                        className="text-gray-600 text-sm uppercase tracking-wide block mb-2"
+                      >
                         Account Number
                       </Text>
                       <Text className="text-gray-800 text-lg font-mono">
-                        {user.bankAccount || <Text type="secondary">Not provided</Text>}
+                        {user.bankAccountNumber || (
+                          <Text type="secondary">Not provided</Text>
+                        )}
                       </Text>
                     </div>
                   </Col>
@@ -471,7 +550,8 @@ const DetailUser: React.FC = () => {
                       <div className="bg-purple-50 border border-purple-200 p-4 rounded-lg">
                         <Text className="text-purple-700">
                           <SafetyOutlined className="mr-2" />
-                          This user has Developer privileges and access to payment processing features.
+                          This user has Developer privileges and access to
+                          payment processing features.
                         </Text>
                       </div>
                     </Col>
