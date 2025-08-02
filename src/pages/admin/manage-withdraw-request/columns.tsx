@@ -1,11 +1,13 @@
 // columns.tsx
 import { formatDateTime } from "@/lib/date-n-time";
 import { Withdraw } from "@/types/withdraw-request";
-import { Tag } from "antd";
+import { Image, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
 import ActionMenu from "./action-menu";
 
-export const getWithdrawRequestColumns = (onRefresh?: () => void): ColumnsType<Withdraw> => [
+export const getWithdrawRequestColumns = (
+  onRefresh?: () => void
+): ColumnsType<Withdraw> => [
   {
     title: "ID",
     dataIndex: "id",
@@ -32,7 +34,13 @@ export const getWithdrawRequestColumns = (onRefresh?: () => void): ColumnsType<W
     render: (status: string) => (
       <Tag
         color={
-          status === "Approved" ? "green" : status === "Rejected" ? "red" : status === "Pending" ? "gold" : "default"
+          status === "Approved"
+            ? "green"
+            : status === "Rejected"
+            ? "red"
+            : status === "Pending"
+            ? "gold"
+            : "default"
         }
       >
         {status || "Unknown"}
@@ -45,7 +53,15 @@ export const getWithdrawRequestColumns = (onRefresh?: () => void): ColumnsType<W
     key: "imageProof",
     render: (imageProof: string) =>
       imageProof ? (
-        <img src={imageProof} alt="Proof" className="w-16 h-16 object-cover rounded" />
+        <Image
+          src={imageProof}
+          alt="Proof"
+          className="object-cover rounded"
+          style={{
+            width: "4rem",
+            height: "4rem",
+          }}
+        />
       ) : (
         <span className="text-gray-400">No image</span>
       ),
@@ -71,6 +87,8 @@ export const getWithdrawRequestColumns = (onRefresh?: () => void): ColumnsType<W
   {
     title: "Action",
     key: "action",
-    render: (_, record: Withdraw) => <ActionMenu record={record} onSuccess={onRefresh} />,
+    render: (_, record: Withdraw) => (
+      <ActionMenu record={record} onSuccess={onRefresh} />
+    ),
   },
 ];

@@ -49,7 +49,11 @@ const PostDetailModal = ({
   const [post, setPost] = useState<GamePost>();
 
   const messageApi = useGlobalMessage();
-  const { postComments, loading: commentsLoading } = useGamePostStore();
+  const {
+    postComments,
+    loading: commentsLoading,
+    fetchPostComments,
+  } = useGamePostStore();
   const { profile } = useAuthStore();
   const { copyLink } = useCopyCurrentLink();
 
@@ -62,6 +66,7 @@ const PostDetailModal = ({
   const fetchPost = async () => {
     if (!postId) return;
     setIsLoading(true);
+    fetchPostComments(postId);
     try {
       const result = await getGamePostById(postId);
       setIsLoading(false);

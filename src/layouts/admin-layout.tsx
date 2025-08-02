@@ -153,14 +153,6 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       },
     },
     {
-      key: "/admin/game/:gameId",
-      icon: <CgGames />,
-      label: "Game Details",
-      onClick: () => {
-        navigate("/admin/game/1"); // Example game ID, replace with actual logic
-      },
-    },
-    {
       key: "/admin/manage-age-restrictions",
       icon: <TbCancel />,
       label: "Manage Age Restrictions",

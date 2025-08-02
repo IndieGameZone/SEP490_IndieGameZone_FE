@@ -11,20 +11,16 @@ import genre2 from "@/assets/category-adventure.webp";
 import genre3 from "@/assets/category-puzzle.webp";
 import genre4 from "@/assets/category-role-playing.webp";
 import GenreCard from "./genre-card";
-import { lazy } from "react";
 import NavLinks from "@/components/nav-links";
 import ScrollToTopButton from "@/components/buttons/scroll-to-top-button";
 import HandleTransactionResult from "@/components/handle-transaction-result";
 import HeroBanner from "./hero-banner";
 import SponsoredGamesSections from "./sponsored-games-section";
 
-const DisclaimerModal = lazy(() => import("../../components/disclaimer-modal"));
-
 const HomePage = () => {
   return (
     <MaxWidthWrapper>
       <ScrollToTopButton />
-      <DisclaimerModal />
       <HandleTransactionResult />
       <NavLinks />
       <CarouselSection />
