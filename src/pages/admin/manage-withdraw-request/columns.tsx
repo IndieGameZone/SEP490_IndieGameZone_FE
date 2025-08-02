@@ -5,34 +5,31 @@ import { Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
 import ActionMenu from "./action-menu";
 
-export const withdrawRequestColumns: ColumnsType<Withdraw> = [
+export const getWithdrawRequestColumns = (onRefresh?: () => void): ColumnsType<Withdraw> => [
   {
-    title: "Withdraw Request ID",
+    title: "ID",
     dataIndex: "id",
     key: "id",
+    width: 100,
   },
   {
-    title: "Requester",
-    dataIndex: "userId",
-    key: "userId",
+    title: "Requester ",
+    dataIndex: "user",
+    key: "user.fullname",
+    render: (user: { fullname: string }) => user.fullname || "N/A",
   },
 
   {
     title: "Amount",
     dataIndex: "amount",
     key: "amount",
-  },
-
-  {
-    title: "Image Proof",
-    dataIndex: "imageProof",
-    key: "imageProof",
+    render: (amount: number) => `${amount?.toLocaleString()} VND`,
   },
   {
     title: "Status",
     dataIndex: "status",
     key: "status",
-    render: (status) => (
+    render: (status: string) => (
       <Tag
         color={
           status === "Approved" ? "green" : status === "Rejected" ? "red" : status === "Pending" ? "gold" : "default"
@@ -43,27 +40,37 @@ export const withdrawRequestColumns: ColumnsType<Withdraw> = [
     ),
   },
   {
+    title: "Image Proof",
+    dataIndex: "imageProof",
+    key: "imageProof",
+    render: (imageProof: string) =>
+      imageProof ? (
+        <img src={imageProof} alt="Proof" className="w-16 h-16 object-cover rounded" />
+      ) : (
+        <span className="text-gray-400">No image</span>
+      ),
+  },
+  {
     title: "Reject Reason",
     dataIndex: "rejectReason",
     key: "rejectReason",
-    render: (text) => text || "",
+    render: (text: string) => text || "-",
   },
-
   {
     title: "Created At",
     dataIndex: "createdAt",
     key: "createdAt",
-    render: (text) => formatDateTime(new Date(text)),
+    render: (text: string) => formatDateTime(new Date(text)),
   },
   {
     title: "Handled Date",
     dataIndex: "handledAt",
     key: "handledAt",
-    render: (text) => formatDateTime(new Date(text)),
+    render: (text: string) => formatDateTime(new Date(text)),
   },
   {
     title: "Action",
     key: "action",
-    render: (_, record: Withdraw) => <ActionMenu record={record} />,
-  }
+    render: (_, record: Withdraw) => <ActionMenu record={record} onSuccess={onRefresh} />,
+  },
 ];

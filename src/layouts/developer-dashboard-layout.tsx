@@ -1,6 +1,7 @@
 import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { Menu, MenuProps } from "antd";
 import { ReactNode } from "react";
+import { CiBank } from "react-icons/ci";
 import { FaChartLine, FaGamepad, FaTags } from "react-icons/fa";
 import { LuPackage } from "react-icons/lu";
 import { PiHandWithdraw } from "react-icons/pi";
@@ -38,6 +39,14 @@ const DeveloperDashboardLayout = ({ children }: { children: ReactNode }) => {
       },
     },
     {
+      label: "Bank Information",
+      key: "/dev/bank-information",
+      icon: <CiBank />,
+      onClick: () => {
+        navigate("/dev/bank-information");
+      },
+    },
+    {
       label: "Withdrawal Requests",
       key: "/dev/withdrawal-requests",
       icon: <PiHandWithdraw />,
@@ -66,11 +75,7 @@ const DeveloperDashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
     <MaxWidthWrapper className="py-5">
       <div className="bg-zinc-900/50 rounded border overflow-hidden border-zinc-800">
-        <Menu
-          mode="horizontal"
-          items={items}
-          selectedKeys={[location.pathname]}
-        />
+        <Menu mode="horizontal" items={items} selectedKeys={[location.pathname]} />
         <div>{children}</div>
       </div>
     </MaxWidthWrapper>

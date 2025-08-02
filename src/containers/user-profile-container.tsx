@@ -11,7 +11,6 @@ const UserLibraryPage = lazy(() => import("@/pages/user-profile/library-games/vi
 const GameRecommendationsPage = lazy(() => import("@/pages/user-profile/game-recommendations-page"));
 const UserOrdersPage = lazy(() => import("@/pages/user-profile/orders/user-orders-page"));
 const UserManageReportPage = lazy(() => import("@/pages/user-profile/manage-report/manage-report-page"));
-const BankInformationPage = lazy(() => import("@/pages/user-profile/bank-information"));
 const UserProfileContainer = () => {
   return (
     <HomeLayout>
@@ -21,7 +20,6 @@ const UserProfileContainer = () => {
             <Route path="/profile" element={<UserProfilePage />} />
             <Route path="/wallet-and-transactions" element={<WalletAndTransactionsPage />} />
             <Route path="/wishlist" element={<UserWishlistPage />} />
-            <Route path="/bank-information" element={<BankInformationPage />} />
             <Route path="/library" element={<UserLibraryPage />} />
             <Route path="/recommendations" element={<GameRecommendationsPage />} />
             <Route path="/manage-reports" element={<UserManageReportPage />} />

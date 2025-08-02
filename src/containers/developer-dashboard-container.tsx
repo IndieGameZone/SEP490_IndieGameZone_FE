@@ -17,6 +17,7 @@ const PreviewUploadPage = lazy(() => import("@/pages/developer/upload-game/previ
 const UploadProcessPage = lazy(() => import("@/pages/developer/upload-game/upload-process-page"));
 const NotFoundPage = lazy(() => import("@/pages/errors/simple-not-found-page"));
 const WithdrawalRequestsPage = lazy(() => import("@/pages/developer/withdraw-request/manage-withdraw-requests-page"));
+const BankInformationPage = lazy(() => import("@/pages/developer/bank-information"));
 const DeveloperDashboardContainer = () => {
   return (
     <HomeLayout>
@@ -28,6 +29,7 @@ const DeveloperDashboardContainer = () => {
             <Route path="/withdrawal-requests" element={<WithdrawalRequestsPage />} />
             <Route path="/upload-game" element={<DevUploadGamePage />} />
             <Route path="/game/:gameId" element={<DevGameDetailsPage />} />
+            <Route path="/bank-information" element={<BankInformationPage />} />
             <Route path="/commercial-packages" element={<DevCommercialPackagePage />} />
             <Route path="/commercial-package/:packageId" element={<CommericalPackageDetailsPage />} />
             <Route path="/upload-game/preview" element={<PreviewUploadPage />} />

@@ -1,41 +1,57 @@
-import { Button, Dropdown, message, Modal, Input, DatePicker, Form } from "antd";
+import { Button, Dropdown } from "antd";
 import { useState } from "react";
-import {  FaEye,  FaEllipsisV } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import dayjs, { Dayjs } from "dayjs";
-import useAuthStore from "@/store/use-auth-store";
-import { Withdraw } from "@/types/withdraw-request";
+import { FaEllipsisV } from "react-icons/fa";
 import { FcApproval, FcCancel } from "react-icons/fc";
+import { Withdraw } from "@/types/withdraw-request";
+import WithdrawActionModal from "./withdraw-modal";
 
-const ActionMenu = ({ record }: { record: Withdraw }) => {
-  const [messageApi, contextHolder] = message.useMessage();
+interface ActionMenuProps {
+  record: Withdraw;
+  onSuccess?: () => void;
+}
 
+const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [reason, setReason] = useState("");
-  const [banDate] = useState(dayjs());
-  const [unBanDate, setUnBanDate] = useState<Dayjs | null>(null);
-  const { profile } = useAuthStore();
+  const [actionType, setActionType] = useState<"approve" | "reject">("approve");
 
+  // Mở modal
+  const handleMenuClick = (key: string) => {
+    if (key === "approve") {
+      setActionType("approve");
+    } else if (key === "reject") {
+      setActionType("reject");
+    }
+    setIsModalOpen(true);
+  };
 
+  // Đóng modal
+  const handleModalCancel = () => {
+    setIsModalOpen(false);
+  };
 
-  
+  // Xử lý thành công
+  const handleModalSuccess = () => {
+    setIsModalOpen(false);
+    onSuccess?.();
+  };
+
   return (
     <div>
-      {contextHolder}
       <Dropdown
         menu={{
           items: [
             {
               key: "approve",
-              label: <span className="text-green-400">Approval</span> ,
-              icon: <FcApproval  />,
+              label: <span className="text-green-400">Approval</span>,
+              icon: <FcApproval />,
+              onClick: () => handleMenuClick("approve"),
             },
             {
-              key: "rejected",
+              key: "reject",
               label: <span className="text-red-400">Rejection</span>,
               icon: <FcCancel />,
+              onClick: () => handleMenuClick("reject"),
             },
-            
           ],
         }}
         trigger={["click"]}
@@ -43,7 +59,13 @@ const ActionMenu = ({ record }: { record: Withdraw }) => {
         <Button type="text" icon={<FaEllipsisV />} />
       </Dropdown>
 
-      
+      <WithdrawActionModal
+        open={isModalOpen}
+        actionType={actionType}
+        record={record}
+        onCancel={handleModalCancel}
+        onSuccess={handleModalSuccess}
+      />
     </div>
   );
 };

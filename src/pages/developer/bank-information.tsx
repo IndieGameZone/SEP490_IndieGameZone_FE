@@ -1,47 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Card, message, Select, Spin } from "antd";
 import { BsBank2, BsCreditCard2Front, BsPerson, BsHash } from "react-icons/bs";
+import { BankInfo } from "@/types/bank-info";
+import useAuthStore from "@/store/use-auth-store";
 
-const useAuthStore = () => ({
-  profile: {
-    bankName: "Vietcombank",
-    code: "970436",
-    bin: "970436",
-    shortName: "VCB",
-    bankAccountNumber: "1234567890123456",
-    accountName: "NGUYEN VAN A",
-  },
-});
 
-interface Bank {
-  id: number;
-  name: string;
-  code: string;
-  bin: string;
-  shortName: string;
-  logo: string;
-  transferSupported: number;
-  lookupSupported: number;
-  short_name: string;
-  support: number;
-  isTransfer: number;
-  swift_code: string;
-}
+
+
 
 interface BankResponse {
   code: string;
   desc: string;
-  data: Bank[];
+  data: BankInfo[];
 }
 
 const BankInformationPage = () => {
   const { profile } = useAuthStore();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [banks, setBanks] = useState<Bank[]>([]);
+  const [banks, setBanks] = useState<BankInfo[]>([]);
   const [loadingBanks, setLoadingBanks] = useState(false);
-  const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
+  const [selectedBank, setSelectedBank] = useState<BankInfo | null>(null);
   const [isInitialized, setIsInitialized] = useState(false); 
+
+
+
+ if (!profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span>Please log in to view this page</span>
+      </div>
+    );
+  }
 
   useEffect(() => {
     if (profile && !isInitialized) {

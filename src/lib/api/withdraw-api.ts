@@ -37,10 +37,16 @@ export const getAllWithdrawRequests = async () => {
     return handleApiError(error);
   }
 };
-export const updateWithdrawRequestStatus = async (withdrawId: string, ImageProof: string, status: string, RejectReason?: string) => {
+export type UpdateWithdrawStatusData = {
+  ImageProof: string;
+  Status: "Approved" | "Rejected" | "Pending";
+  RejectReason?: string;
+};
+
+export const updateWithdrawRequestStatus = async (withdrawId: string, updateWithdrawData: UpdateWithdrawStatusData) => {
   try {
-    const { data } = await axiosClient.put(`/api/withdraw-requests/${withdrawId}`, { ImageProof, status, RejectReason });
-    return { error: null, data: data, success: true };
+    const { data } = await axiosClient.put(`/api/withdraw-requests/${withdrawId}`, updateWithdrawData);
+    return { error: null, data, success: true };
   } catch (error) {
     return handleApiError(error);
   }

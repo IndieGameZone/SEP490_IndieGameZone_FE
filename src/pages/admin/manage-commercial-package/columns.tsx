@@ -32,6 +32,7 @@ export const reportColumns: ColumnsType<CommercialPackage> = [
     title: "Price ",
     dataIndex: "price",
     key: "price",
+    render: (price: number) => `${price?.toLocaleString()} VND`,
   },
 
   {
