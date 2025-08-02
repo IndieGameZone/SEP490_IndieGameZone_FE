@@ -18,7 +18,7 @@ export const getWithdrawRequestById = async (userId: string) => {
   }
 };
 export interface withdrawRequestData {
-  amount: number;
+  Amount: number;
 }
 
 export const createWithdrawRequest = async (userId: string, withdrawData: withdrawRequestData) => {
