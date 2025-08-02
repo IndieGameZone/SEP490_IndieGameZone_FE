@@ -182,6 +182,7 @@ const WithdrawActionModal = ({
               label="Proof Image"
               required
               extra="Upload proof of bank transfer completion (JPG, PNG - Max: 5MB)"
+              style={{ width: "100%" }}
             >
               {!imageUrl ? (
                 <Upload
@@ -191,6 +192,7 @@ const WithdrawActionModal = ({
                   onChange={handleUploadChange}
                   customRequest={customUpload}
                   className="w-full"
+                  style={{ width: "100%" }}
                 >
                   <div className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition-colors cursor-pointer">
                     <div className="flex flex-col items-center justify-center h-full">
@@ -212,7 +214,7 @@ const WithdrawActionModal = ({
                 </Upload>
               ) : (
                 <div className="w-full">
-                  <div className="relative inline-block">
+                  <div className="relative inline-block w-fit min-h-40 min-w-40">
                     <Image
                       src={imageUrl}
                       alt="Proof"
