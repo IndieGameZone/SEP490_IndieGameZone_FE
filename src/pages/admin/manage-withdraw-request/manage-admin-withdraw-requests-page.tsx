@@ -21,7 +21,6 @@ const AdminWithdrawalRequestsPage: React.FC = () => {
       const response = await getAllWithdrawRequests();
       if (response.success) {
         setWithdrawRequests(response.data);
-        console.log("Fetched data:", response.data); // Debug log
       } else {
         messageApi.error("Failed to fetch withdraw requests");
       }
@@ -42,7 +41,7 @@ const AdminWithdrawalRequestsPage: React.FC = () => {
         <Title level={2}>Manage All Withdraw Requests</Title>
       </div>
 
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto md:px-4">
         <Table
           dataSource={withdrawRequests}
           columns={getWithdrawRequestColumns(fetchAdminWithdrawRequests)} // Truyền callback

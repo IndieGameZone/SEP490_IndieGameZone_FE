@@ -109,8 +109,6 @@ const WithdrawActionModal = ({
         RejectReason: rejectReason,
       });
 
-      console.log("Update result:", result);
-
       if (result.error) {
         messageApi.error(result.error);
         return;
@@ -154,7 +152,7 @@ const WithdrawActionModal = ({
         onCancel={handleCancel}
         footer={null}
         width={700}
-        destroyOnClose
+        destroyOnHidden 
       >
         <div className="mt-4">
           <div className="bg-gray-50 p-4 rounded-lg mb-6">
