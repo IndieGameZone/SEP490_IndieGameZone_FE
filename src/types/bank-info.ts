@@ -1,6 +1,10 @@
 export type BankInfo = {
   id: number;
+  bankName: string;
+  bankCode: string;
   name: string;
+  bankBin: string;
+  bankShortName: string;
   code: string;
   bin: string;
   shortName: string;
