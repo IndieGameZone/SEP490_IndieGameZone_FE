@@ -24,7 +24,7 @@ export interface withdrawRequestData {
 
 export const createWithdrawRequest = async (userId: string, withdrawData: withdrawRequestData) => {
   try {
-    const { data } = await axiosClient.post(`/api/users/${userId}/withdraw-requests`, withdrawData);
+    const { data } = await axiosClient.post(`/api/users/${userId}/withdraw-requests`, toFormData(withdrawData));
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
