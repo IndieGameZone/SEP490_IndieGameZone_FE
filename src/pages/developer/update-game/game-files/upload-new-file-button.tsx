@@ -142,7 +142,12 @@ const UploadNewFileButton = () => {
   const submitFormData = async (data: FieldType, fileUrl: string) => {
     if (!game) return;
     const result = await addGameFiles(game.id, [
-      { file: fileUrl, platformId: data.platformId, version: data.version },
+      {
+        file: fileUrl,
+        platformId: data.platformId,
+        version: data.version,
+        displayName: data.displayName,
+      },
     ]);
     if (result.error) {
       throw Error("Failed to attach file!");
@@ -303,7 +308,7 @@ const UploadNewFileButton = () => {
             extra="The name that will be shown to users (e.g., Windows Build v1.2)"
             style={{ marginBottom: 10 }}
           >
-            <Input placeholder="Enter display name" disabled />
+            <Input placeholder="Enter display name" />
           </Form.Item>
 
           <Form.Item<FieldType>

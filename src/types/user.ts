@@ -1,3 +1,5 @@
+import { BankInfo } from "./bank-info";
+
 export type User = {
   id: string;
   userName: string;
@@ -17,13 +19,15 @@ export type User = {
   birthday: string;
   facebookLink?: string;
   youtubeChannelLink?: string;
-  bankName?: string;
   balance: number;
-  bankAccount?: string;
+  bankAccountName?: string;
+  bankAccountNumber?: string;
+  bank: BankInfo;
   role: {
     name: string;
   };
 };
+
 export type UserBanHistory = {
   id: string;
   reason?: string;

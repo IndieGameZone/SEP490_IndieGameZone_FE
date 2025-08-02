@@ -11,6 +11,7 @@ import uploadingAnimation from "@/assets/lotties/uploading.json";
 import scanningAnimation from "@/assets/lotties/scanning.json";
 import HarmfulFileWarning from "./misc/harmful-file-warning";
 import LottiePlayer from "@/components/lottie-player";
+import { GameFileFormItem } from "@/types/game";
 
 const TASKS = [
   {
@@ -53,7 +54,7 @@ const UploadProcessPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isFinished, setIsFinished] = useState(false);
   const [gameId, setGameId] = useState("");
-  const [gamePlatforms, setGamePlatforms] = useState<any[]>([]);
+  const [gamePlatforms, setGamePlatforms] = useState<GameFileFormItem[]>([]);
   const [isHarmful, setIsHarmful] = useState(false);
   const [deleteAttempts, setDeleteAttempts] = useState(0);
   const [isScanning, setIsScanning] = useState(false);
@@ -175,9 +176,11 @@ const UploadProcessPage = () => {
           setGamePlatforms((prev) => [
             ...prev,
             {
-              file: uploadResult.data,
+              file: gameFiles.files[1].file,
+              fileUrl: uploadResult.data,
               platformId: gameFiles.files[i].platformId,
               version: gameFiles.files[i].version,
+              displayName: gameFiles.files[i].displayName,
             },
           ]);
           setCurrentItem((prev) => prev + 1);
@@ -198,7 +201,17 @@ const UploadProcessPage = () => {
     setTotalItems(gamePlatforms.length);
     setUploadProgress(0);
     setcurrentTaskMessage2(`Attaching game files.`);
-    const addFilesResult = await addGameFiles(gameId, gamePlatforms);
+    const addFilesResult = await addGameFiles(
+      gameId,
+      gamePlatforms.map((file) => {
+        return {
+          displayName: file.displayName,
+          file: file.fileUrl,
+          platformId: file.platformId,
+          version: file.version,
+        };
+      })
+    );
     if (addFilesResult.error) {
       setErrorMessage(`Failed to attach game files Please try again.`);
       setIsUploading(false);

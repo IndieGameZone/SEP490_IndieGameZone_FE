@@ -1,6 +1,6 @@
 import { Modal, Input, Form, Upload, Image, Button, message } from "antd";
 import { useState } from "react";
-import { FaUpload, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { FcApproval, FcCancel } from "react-icons/fc";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import type { UploadChangeParam } from "antd/es/upload";
@@ -19,7 +19,13 @@ interface WithdrawActionModalProps {
   onSuccess: () => void;
 }
 
-const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: WithdrawActionModalProps) => {
+const WithdrawActionModal = ({
+  open,
+  actionType,
+  record,
+  onCancel,
+  onSuccess,
+}: WithdrawActionModalProps) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
@@ -63,7 +69,9 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
     }
   };
 
-  const handleUploadChange: UploadProps["onChange"] = (info: UploadChangeParam<UploadFile>) => {
+  const handleUploadChange: UploadProps["onChange"] = (
+    info: UploadChangeParam<UploadFile>
+  ) => {
     if (info.file.status === "uploading") {
       setUploadLoading(true);
       return;
@@ -92,20 +100,27 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
     setLoading(true);
     try {
       const status = actionType === "approve" ? "Approved" : "Rejected";
-      const rejectReason = actionType === "reject" ? values.rejectReason : undefined;
+      const rejectReason =
+        actionType === "reject" ? values.rejectReason : undefined;
 
-      const result = await updateWithdrawRequestStatus(record.id, imageUrl, status, rejectReason);
-
-      console.log("Update result:", result); 
+      const result = await updateWithdrawRequestStatus(record.id, {
+        ImageProof: imageUrl,
+        Status: status,
+        RejectReason: rejectReason,
+      });
 
       if (result.error) {
         messageApi.error(result.error);
         return;
       }
 
-      messageApi.success(`Withdraw request ${actionType === "approve" ? "approved" : "rejected"} successfully!`);
+      messageApi.success(
+        `Withdraw request ${
+          actionType === "approve" ? "approved" : "rejected"
+        } successfully!`
+      );
       handleCancel();
-      onSuccess(); 
+      onSuccess();
     } catch (error) {
       console.error("Update error:", error); // Debug log
       messageApi.error("An error occurred while processing the request");
@@ -137,7 +152,7 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
         onCancel={handleCancel}
         footer={null}
         width={700}
-        destroyOnClose
+        destroyOnHidden 
       >
         <div className="mt-4">
           <div className="bg-gray-50 p-4 rounded-lg mb-6">
@@ -147,10 +162,12 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
                 <span className="font-medium">ID:</span> {record.id}
               </div>
               <div>
-                <span className="font-medium">Amount:</span> {record.amount?.toLocaleString()} VND
+                <span className="font-medium">Amount:</span>{" "}
+                {record.amount?.toLocaleString()} VND
               </div>
               <div>
-                <span className="font-medium">Requester:</span> {record.Requester?.userName || "N/A"}
+                <span className="font-medium">Requester:</span>{" "}
+                {record.requester?.userName || "N/A"}
               </div>
               <div>
                 <span className="font-medium">Status:</span> {record.status}
@@ -163,6 +180,7 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
               label="Proof Image"
               required
               extra="Upload proof of bank transfer completion (JPG, PNG - Max: 5MB)"
+              style={{ width: "100%" }}
             >
               {!imageUrl ? (
                 <Upload
@@ -172,6 +190,7 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
                   onChange={handleUploadChange}
                   customRequest={customUpload}
                   className="w-full"
+                  style={{ width: "100%" }}
                 >
                   <div className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition-colors cursor-pointer">
                     <div className="flex flex-col items-center justify-center h-full">
@@ -181,15 +200,19 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
                         <PlusOutlined className="text-2xl text-gray-400 mb-2" />
                       )}
                       <div className="text-sm text-gray-500">
-                        {uploadLoading ? "Uploading..." : "Click or drag file to upload"}
+                        {uploadLoading
+                          ? "Uploading..."
+                          : "Click or drag file to upload"}
                       </div>
-                      <div className="text-xs text-gray-400 mt-1">JPG, PNG (Max: 5MB)</div>
+                      <div className="text-xs text-gray-400 mt-1">
+                        JPG, PNG (Max: 5MB)
+                      </div>
                     </div>
                   </div>
                 </Upload>
               ) : (
                 <div className="w-full">
-                  <div className="relative inline-block">
+                  <div className="relative inline-block w-fit min-h-40 min-w-40">
                     <Image
                       src={imageUrl}
                       alt="Proof"
@@ -200,7 +223,11 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
                         objectFit: "contain",
                       }}
                       preview={{
-                        mask: <div className="text-white text-sm">Click to preview</div>,
+                        mask: (
+                          <div className="text-white text-sm">
+                            Click to preview
+                          </div>
+                        ),
                       }}
                     />
                     <div className="absolute top-2 right-2 flex gap-1">
@@ -216,7 +243,9 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
                       </Button>
                     </div>
                   </div>
-                  <div className="mt-2 text-xs text-gray-500">Click the image to preview in full size</div>
+                  <div className="mt-2 text-xs text-gray-500">
+                    Click the image to preview in full size
+                  </div>
                 </div>
               )}
             </Form.Item>
@@ -226,8 +255,14 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
                 name="rejectReason"
                 label="Rejection Reason"
                 rules={[
-                  { required: true, message: "Please provide rejection reason!" },
-                  { min: 10, message: "Reason must be at least 10 characters!" },
+                  {
+                    required: true,
+                    message: "Please provide rejection reason!",
+                  },
+                  {
+                    min: 10,
+                    message: "Reason must be at least 10 characters!",
+                  },
                 ]}
               >
                 <TextArea
@@ -249,9 +284,17 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
                 htmlType="submit"
                 loading={loading}
                 size="large"
-                className={actionType === "approve" ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
+                className={
+                  actionType === "approve"
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-red-600 hover:bg-red-700"
+                }
               >
-                {loading ? "Processing..." : actionType === "approve" ? "Approve Request" : "Reject Request"}
+                {loading
+                  ? "Processing..."
+                  : actionType === "approve"
+                  ? "Approve Request"
+                  : "Reject Request"}
               </Button>
             </div>
           </Form>

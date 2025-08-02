@@ -56,8 +56,9 @@ const GameFileItem = ({
       label="Display Name"
       rules={[{ required: true, message: "Please input display name" }]}
       style={{ width: 500 }}
+      extra="Display name extension must match uploaded file"
     >
-      <Input placeholder="Enter display name" disabled />
+      <Input placeholder="Enter display name" />
     </Form.Item>
 
     <Form.Item

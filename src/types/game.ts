@@ -34,15 +34,18 @@ export type GameMediaAssetsFieldType = {
 };
 
 export type GameFilesFieldType = {
-    files: {
-        displayName: string;
-        file: UploadFile[];
-        platformId: string;
-        fileSize: number;
-        version: string;
-    }[];
+    files: GameFileFormItem[];
     installInstruction: string;
     versionDescription: string;
+}
+
+export type GameFileFormItem = {
+    displayName: string;
+    file: UploadFile[];
+    fileUrl: string;
+    platformId: string;
+    fileSize?: number;
+    version: string;
 }
 
 export type GameFieldTypes = {

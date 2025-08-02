@@ -37,13 +37,17 @@ const PostCommentForm = ({ onSubmit, postId }: PostCommentFormProps) => {
       messageApi.error("Failed to post comment! Please try again.");
     } else {
       form.resetFields();
-      await fetchPostComments(postId);
+      setTimeout(async () => {
+        await fetchPostComments(postId);
+      }, 1000);
       messageApi.success("Comment posted successfully!");
       onSubmit();
     }
   };
 
-  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (errorInfo) => {
+  const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
+    errorInfo
+  ) => {
     console.log("Failed:", errorInfo);
   };
 
@@ -59,9 +63,19 @@ const PostCommentForm = ({ onSubmit, postId }: PostCommentFormProps) => {
     );
   return (
     <div className="p-3 relative">
-      <Form name="basic" onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off" form={form}>
+      <Form
+        name="basic"
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+        form={form}
+      >
         <div className="flex items-start gap-2 mt-2">
-          <Form.Item<FieldType> name="comment" className="w-full" style={{ marginBottom: 0 }}>
+          <Form.Item<FieldType>
+            name="comment"
+            className="w-full"
+            style={{ marginBottom: 0 }}
+          >
             <TextArea
               className="w-full p-2 border rounded resize-none"
               placeholder="Write your comment..."
@@ -81,7 +95,12 @@ const PostCommentForm = ({ onSubmit, postId }: PostCommentFormProps) => {
               size="large"
             />
 
-            {showPicker && <EmojiPicker onSelect={handleEmojiSelect} onClose={() => setShowPicker(false)} />}
+            {showPicker && (
+              <EmojiPicker
+                onSelect={handleEmojiSelect}
+                onClose={() => setShowPicker(false)}
+              />
+            )}
           </div>
           <Form.Item label={null} style={{ marginBottom: 0 }}>
             <Button

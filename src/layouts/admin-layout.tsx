@@ -1,4 +1,4 @@
-import { Avatar, Button, Dropdown, theme } from "antd";
+import { Avatar, Button, Drawer, Dropdown, theme } from "antd";
 import React, { ReactNode, useState } from "react";
 import type { MenuProps } from "antd";
 import { Layout, Menu } from "antd";
@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { MdCategory, MdOutlineReport, MdSpaceDashboard } from "react-icons/md";
 import { BiMoneyWithdraw, BiSolidUserAccount } from "react-icons/bi";
 import { LiaLanguageSolid } from "react-icons/lia";
-import { FaDoorOpen, FaTags, FaWindows } from "react-icons/fa";
+import { FaDoorOpen, FaTags, FaTimes, FaWindows } from "react-icons/fa";
 import { CiUser } from "react-icons/ci";
 import { TbCancel } from "react-icons/tb";
 import useProfileStore from "@/store/use-auth-store";
@@ -19,6 +19,7 @@ import { GrTransaction } from "react-icons/gr";
 import AppTheme from "@/components/app-theme";
 import DownloadProcessesButton from "@/components/navbar/download-processes-button";
 import { RiAdvertisementLine } from "react-icons/ri";
+import useIsMobile from "@/hooks/use-is-mobile";
 
 const { Footer, Sider } = Layout;
 
@@ -33,9 +34,15 @@ const siderStyle: React.CSSProperties = {
   scrollbarGutter: "stable",
 };
 
+const { darkAlgorithm } = theme;
+
 const AdminLayout = ({ children }: { children: ReactNode }) => {
   const [collapsed, setCollapsed] = useState(false);
   const { logout, profile } = useProfileStore();
+
+  const isMobile = useIsMobile();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const location = useLocation();
   const handleLogout = () => {
     navigate("/admin/log-in");
@@ -55,7 +62,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
     },
   ];
 
-  const items: MenuProps["items"] = [
+  const fullMenuItems: MenuProps["items"] = [
     {
       key: "/admin/dashboard",
       icon: <MdSpaceDashboard />,
@@ -130,8 +137,8 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       },
     },
     {
-      key:"/admin/manage-withdraw-requests",
-      icon:<BiMoneyWithdraw />, 
+      key: "/admin/manage-withdraw-requests",
+      icon: <BiMoneyWithdraw />,
       label: "Manage Withdraw Requests",
       onClick: () => {
         navigate("/admin/manage-withdraw-requests");
@@ -143,14 +150,6 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       label: "Manage Commercial Package",
       onClick: () => {
         navigate("/admin/manage-commercial-package");
-      },
-    },
-    {
-      key: "/admin/game/:gameId",
-      icon: <CgGames />,
-      label: "Game Details",
-      onClick: () => {
-        navigate("/admin/game/1"); // Example game ID, replace with actual logic
       },
     },
     {
@@ -180,19 +179,75 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
     },
   ];
 
+  const mobileMenuItems: MenuProps["items"] = [
+    {
+      key: "/admin/manage-withdraw-requests",
+      icon: <BiMoneyWithdraw />,
+      label: "Manage Withdraw Requests",
+      onClick: () => {
+        navigate("/admin/manage-withdraw-requests");
+        setDrawerOpen(false);
+      },
+    },
+    {
+      key: "log-out",
+      icon: <FaDoorOpen />,
+      label: "Log out",
+      onClick: () => {
+        handleLogout();
+        setDrawerOpen(false);
+      },
+      danger: true,
+    },
+  ];
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
+  const darkToken = theme.getDesignToken({ algorithm: darkAlgorithm });
+
   return (
     <AppTheme theme="light">
       <Layout hasSider className={styles.lightTable}>
-        <Sider trigger={null} collapsible collapsed={collapsed} style={siderStyle} width={256}>
-          <div className="p-3 my-3">
-            <img src={logo} alt="indiegamezone logo" className="w-40" />
-          </div>
-          <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} items={items} />
-        </Sider>
+        {!isMobile ? (
+          <Sider
+            trigger={null}
+            collapsible
+            collapsed={collapsed}
+            style={siderStyle}
+            width={256}
+          >
+            <div className="p-3 my-3">
+              <img src={logo} alt="indiegamezone logo" className="w-40" />
+            </div>
+            <Menu
+              theme="dark"
+              mode="inline"
+              selectedKeys={[location.pathname]}
+              items={fullMenuItems}
+            />
+          </Sider>
+        ) : (
+          <Drawer
+            title={<img src={logo} alt="indiegamezone logo" className="w-32" />}
+            placement="left"
+            onClose={() => setDrawerOpen(false)}
+            closeIcon={<FaTimes className="text-zinc-200"/>}
+            open={drawerOpen}
+            styles={{
+              body: { padding: 0, background: darkToken.colorBgContainer },
+              header: { background: darkToken.colorBgContainer },
+            }}
+          >
+            <Menu
+              theme="dark"
+              mode="inline"
+              selectedKeys={[location.pathname]}
+              items={mobileMenuItems}
+            />
+          </Drawer>
+        )}
         <Layout>
           <div
             style={{
@@ -204,7 +259,13 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
               <Button
                 type="text"
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
+                onClick={() => {
+                  if (isMobile) {
+                    setDrawerOpen(true);
+                  } else {
+                    setCollapsed(!collapsed);
+                  }
+                }}
               />
               <div className="flex gap-3">
                 <DownloadProcessesButton />
@@ -219,7 +280,9 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             </div>
           </div>
           <div style={{ margin: "24px 16px 0" }}>{children}</div>
-          <Footer style={{ textAlign: "center" }}>Ant Design ©{new Date().getFullYear()} Created by Ant UED</Footer>
+          <Footer style={{ textAlign: "center" }}>
+            Ant Design ©{new Date().getFullYear()} Created by Ant UED
+          </Footer>
         </Layout>
       </Layout>
     </AppTheme>

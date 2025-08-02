@@ -45,8 +45,6 @@ const UploadAvatar = () => {
       birthday: profile.birthday,
       fullName: profile.fullname ?? "",
       avatar: url,
-      bankAccount: profile.bankAccount,
-      bankName: profile.bankName,
       bio: profile.bio,
       facebookLink: profile.facebookLink,
       youtubeChannelLink: profile.youtubeChannelLink,

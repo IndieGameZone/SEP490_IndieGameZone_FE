@@ -302,7 +302,7 @@ const PreviewUploadPage = () => {
                           {file.displayName}
                         </span>
                         <span className="text-sm text-zinc-400">
-                          ({(file.fileSize / 1024 / 1024).toFixed(1)} MB)
+                          ({formatBytes(file.fileSize ?? 0)})
                         </span>
                       </div>
                     );
@@ -347,15 +347,16 @@ const PreviewUploadPage = () => {
                 </Button>
 
                 <div>
-                  <p className="font-semibold max-w-50 text-ellipsis overflow-clip">
+                  <p className="font-semibold text-ellipsis overflow-clip">
                     {file.displayName}
                     <span className="text-sm text-zinc-400">
                       {" "}
-                      ({formatBytes(file.fileSize)})
+                      ({formatBytes(file.fileSize ?? 0)})
                     </span>
                   </p>
                   <p className="text-xs">
-                    {file.version} • <FaRegClock className="inline mb-0.5 me-1" />
+                    {file.version} •{" "}
+                    <FaRegClock className="inline mb-0.5 me-1" />
                     {timeAgo(new Date(Date.now() - 24 * 60 * 60 * 1000))}
                   </p>
                 </div>

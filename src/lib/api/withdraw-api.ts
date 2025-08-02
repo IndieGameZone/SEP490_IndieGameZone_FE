@@ -1,3 +1,4 @@
+import { toFormData } from "../object";
 import { axiosClient } from "./config/axios-client";
 
 export const handleApiError = (error: any): { error: string | null; data: any; success: boolean } => {
@@ -37,6 +38,7 @@ export const getAllWithdrawRequests = async () => {
     return handleApiError(error);
   }
 };
+
 export type UpdateWithdrawStatusData = {
   ImageProof: string;
   Status: "Approved" | "Rejected" | "Pending";
@@ -45,7 +47,7 @@ export type UpdateWithdrawStatusData = {
 
 export const updateWithdrawRequestStatus = async (withdrawId: string, updateWithdrawData: UpdateWithdrawStatusData) => {
   try {
-    const { data } = await axiosClient.put(`/api/withdraw-requests/${withdrawId}`, updateWithdrawData);
+    const { data } = await axiosClient.put(`/api/withdraw-requests/${withdrawId}`, toFormData(updateWithdrawData));
     return { error: null, data, success: true };
   } catch (error) {
     return handleApiError(error);
