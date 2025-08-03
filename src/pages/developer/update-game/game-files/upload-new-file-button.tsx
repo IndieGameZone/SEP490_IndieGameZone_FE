@@ -59,6 +59,7 @@ const UploadNewFileButton = () => {
   const displayNameValidator = async (_: any, value: string) => {
     const version = form.getFieldValue("version");
     const platformId = form.getFieldValue("platformId");
+    const uploadedFile = fileList[0];
 
     const isDuplicate = gameFiles.some(
       (x) =>
@@ -75,6 +76,21 @@ const UploadNewFileButton = () => {
       );
     }
 
+    if (uploadedFile) {
+      const originalName = uploadedFile.name;
+      const originalExt = originalName
+        .substring(originalName.lastIndexOf("."))
+        .toLowerCase();
+      const displayExt = value.substring(value.lastIndexOf(".")).toLowerCase();
+
+      if (originalExt !== displayExt) {
+        return Promise.reject(
+          new Error(
+            `Display name extension must match the uploaded file extension (${originalExt})`
+          )
+        );
+      }
+    }
     return Promise.resolve();
   };
 
@@ -261,6 +277,7 @@ const UploadNewFileButton = () => {
             )}
           </>
         )}
+        forceRender
       >
         <Form
           form={form}

@@ -109,6 +109,7 @@ const UpdateVersionDescription = () => {
             </Button>
           </>
         )}
+        forceRender
       >
         <Form
           form={form}

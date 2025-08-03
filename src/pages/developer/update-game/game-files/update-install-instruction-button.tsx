@@ -109,6 +109,7 @@ const UpdateInstallInstructionButton = () => {
             </Button>
           </>
         )}
+        forceRender
       >
         <Form
           form={form}
