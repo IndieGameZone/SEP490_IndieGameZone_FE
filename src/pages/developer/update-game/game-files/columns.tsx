@@ -3,11 +3,10 @@ import { GameFile } from "@/types/game";
 import { Badge, Button, TableProps } from "antd";
 import ToggleVisibilityButton from "./toggle-visibility-button";
 import DownloadFileButton from "@/components/buttons/download-file-button";
-import { Dispatch, SetStateAction } from "react";
 import { FaPen } from "react-icons/fa";
 
 export const getColumns = (
-  setEditingFile: Dispatch<SetStateAction<GameFile | null>>
+  handleSetEditingFile: (file: GameFile) => void
 ): TableProps<GameFile>["columns"] => {
   return [
     {
@@ -59,7 +58,7 @@ export const getColumns = (
           <Button
             icon={<FaPen />}
             shape="circle"
-            onClick={() => setEditingFile(record)}
+            onClick={() => handleSetEditingFile(record)}
           />
         </div>
       ),

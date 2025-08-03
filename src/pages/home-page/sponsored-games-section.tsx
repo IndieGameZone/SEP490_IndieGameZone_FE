@@ -61,7 +61,7 @@ const SponsoredGamesSections = () => {
     }
   };
 
-  if (!isLoading && setSponsoredGames.length == 0) return;
+  if (!isLoading && sponsoredGames.length == 0) return;
 
   const dynamicSettings = {
     ...settings,
