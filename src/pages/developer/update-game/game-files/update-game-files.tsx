@@ -1,24 +1,42 @@
 import useGameStore from "@/store/use-game-store";
 import { Table } from "antd";
-import { columns } from "./columns";
+import { getColumns } from "./columns";
 import { GameFile } from "@/types/game";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import UpdateInstallInstructionButton from "./update-install-instruction-button";
 import UploadNewFileButton from "./upload-new-file-button";
 import UpdateVersionDescription from "./update-version-description-button";
+import { useState } from "react";
+import UpdateGameFileModal from "./update-game-file-modal";
 
 const UpdateGameFiles = () => {
-  // const [editingFile, setEditingFile] = useState<GameFile | null>(null);
+  const [editingFile, setEditingFile] = useState<GameFile | null>(null);
+  const [openEditModal, setOpenEditModal] = useState(false);
   const { loadingFiles, gameFiles, installInstruction, game } = useGameStore();
+
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+    setEditingFile(null);
+  };
+
+  const handleSetEditingFile = (file: GameFile) => {
+    setOpenEditModal(true);
+    setEditingFile(file);
+  };
   return (
     <div className="p-5 bg-zinc-900">
+      <UpdateGameFileModal
+        file={editingFile}
+        onClose={handleCloseEditModal}
+        open={openEditModal}
+      />
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-2xl mb-3">Game Files</h2>
         <UploadNewFileButton />
       </div>
 
       <Table<GameFile>
-        columns={columns}
+        columns={getColumns(handleSetEditingFile)}
         dataSource={gameFiles}
         loading={loadingFiles}
         rowKey={"id"}
@@ -40,7 +58,7 @@ const UpdateGameFiles = () => {
         ) : (
           <span className="text-zinc-500">None</span>
         )}
-    </div>
+      </div>
       <hr className="my-3 border-zinc-700" />
       <div className="flex justify-between mb-2 mt-5 items-center">
         <h2 className="font-bold">Install instructions</h2>

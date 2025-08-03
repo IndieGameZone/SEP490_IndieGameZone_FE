@@ -28,9 +28,16 @@ export const addGameFiles = async (gameId: string, request: AddGameFilesRequest)
   }
 };
 
-export const updateGameFile = async (gameId: string, request: AddGameFilesRequest) => {
+type UpdateGameFilesRequest = {
+  platformId: string;
+  file: string;
+  version: string;
+  displayName: string;
+};
+
+export const updateGameFile = async (fileId: string, request: UpdateGameFilesRequest) => {
   try {
-    const { data } = await axiosClient.post(`/api/games/${gameId}/game-platforms`, request);
+    const { data } = await axiosClient.put(`/api/game-platforms/${fileId}`, request);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
