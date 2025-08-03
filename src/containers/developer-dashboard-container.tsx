@@ -5,10 +5,7 @@ import CommericalPackageDetailsPage from "@/pages/developer/commerical-package-d
 import DevUpdateGamePage from "@/pages/developer/update-game/dev-update-game-page";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-
-const DevCommercialPackagePage = lazy(
-  () => import("@/pages/developer/commercial-packages/dev-commercial-package-page")
-);
+const DevManageCommercialPackage = lazy(() => import("@/pages/developer/dev-manage-commericial-package/dev-manage-commericial-package"));
 const DevDashBoardPage = lazy(() => import("@/pages/developer/dev-dashboard-page"));
 const DevGameDetailsPage = lazy(() => import("@/pages/developer/game-details/dev-game-details-page"));
 const DevManageGamesPage = lazy(() => import("@/pages/developer/manage-games/dev-manage-games-page"));
@@ -28,7 +25,7 @@ const DeveloperDashboardContainer = () => {
             <Route path="/dashboard" element={<DevDashBoardPage />} />
             <Route path="/upload-game" element={<DevUploadGamePage />} />
             <Route path="/game/:gameId" element={<DevGameDetailsPage />} />
-            <Route path="/commercial-packages" element={<DevCommercialPackagePage />} />
+            <Route path="/manage-commercial-package" element={<DevManageCommercialPackage />} />
             <Route path="/payout-information" element={<DevPayoutInfo />} />
             <Route path="/manage-received-report" element={<ManageReceivedReportPage />} />
             <Route path="/commercial-package/:packageId" element={<CommericalPackageDetailsPage />} />

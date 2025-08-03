@@ -48,10 +48,10 @@ const DeveloperDashboardLayout = ({ children }: { children: ReactNode }) => {
     },
     {
       label: "Commercial Packages",
-      key: "/dev/commercial-packages",
+      key: "/dev/manage-commercial-package",
       icon: <LuPackage />,
       onClick: () => {
-        navigate("/dev/commercial-packages");
+        navigate("/dev/manage-commercial-package");
       },
     },
   ];
