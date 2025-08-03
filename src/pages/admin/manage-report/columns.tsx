@@ -1,18 +1,19 @@
-import { changeStatusReport } from "@/lib/api/report-api";
 import { formatDateTime } from "@/lib/date-n-time";
 import { ReportItem } from "@/types/report";
 import { ReportReason } from "@/types/report-reason";
 import { User } from "@/types/user";
-import { Select } from "antd";
+import { Select, Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
+import ActionMenu from "./action-menu";
 
-export const createReportColumns = (messageApi: any, onStatusChange?: () => void): ColumnsType<ReportItem> => [
-  // {
-  //   title: "ID",
-  //   dataIndex: "id",
-  //   key: "id",
-  //   width: 80,
-  // },
+export const getAllReportColumns = (onRefresh?: () => void): ColumnsType<ReportItem> => [
+  {
+    title: "No",
+    dataIndex: "no",
+    key: "no",
+    render: (_, __, index) => index + 1,
+    width: 55,
+  },
   {
     title: "Reporter",
     dataIndex: "reportingUser",
@@ -35,77 +36,36 @@ export const createReportColumns = (messageApi: any, onStatusChange?: () => void
   },
   {
     title: "Report Type",
-    dataIndex: "reportType",
-    key: "reportType",
-    render: (reportType: { name: string } | undefined) => reportType?.name ?? "N/A",
+    dataIndex: "reportReason",
+    key: "reportReason.type",
+    render: (reportReason: { type: string } | undefined) => reportReason?.type ?? "N/A",
     width: 120,
   },
   {
+    title: "Game Name",
+    dataIndex: "game",
+    key: "game.name",
+    render: (game: { name: string } | undefined) => game?.name ?? "N/A",
+  },
+  {
     title: "Status",
-    dataIndex: "isResolved",
-    key: "isResolved",
-    width: 130,
-    render: (isResolved: boolean, record: ReportItem) => (
-      <Select
-        value={isResolved}
-        onChange={async (value: boolean) => {
-          try {
-            const result = await changeStatusReport(record.id, value ? "true" : "false");
-
-            if (result.error) {
-              messageApi.error("Failed to update report status");
-              return;
-            }
-
-            messageApi.success("Report status updated successfully");
-
-            if (onStatusChange) {
-              onStatusChange();
-            }
-          } catch (error) {
-            console.error("Error updating report status:", error);
-            messageApi.error("An error occurred while updating status");
-          }
-        }}
-        options={[
-          {
-            value: false,
-            label: (
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                <span className="text-red-700 font-medium">No</span>
-              </div>
-            ),
-          },
-          {
-            value: true,
-            label: (
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-green-700 font-medium">Yes</span>
-              </div>
-            ),
-          },
-        ]}
-        className="min-w-[110px]"
-        size="small"
-        variant="borderless"
-        suffixIcon={
-          <div className="text-gray-400">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-              <path
-                d="M3 4.5L6 7.5L9 4.5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
+    dataIndex: "status",
+    key: "status",
+    render: (status: string) => (
+      <Tag
+        color={
+          status === "Approved" ? "green" : status === "Rejected" ? "red" : status === "Pending" ? "gold" : "default"
         }
-      />
+      >
+        {status || "Unknown"}
+      </Tag>
     ),
+  },
+  {
+    title: "Response",
+    dataIndex: "reviewMessage",
+    key: "reviewMessage",
+    render: (text: string) => text || "-",
   },
   {
     title: "Created At",
@@ -120,5 +80,10 @@ export const createReportColumns = (messageApi: any, onStatusChange?: () => void
     key: "updatedAt",
     width: 150,
     render: (date: string) => <div className="text-sm text-gray-600">{formatDateTime(new Date(date))}</div>,
+  },
+  {
+    title: "Action",
+    key: "action",
+    render: (_, record: ReportItem) => <ActionMenu record={record} onSuccess={onRefresh} />,
   },
 ];

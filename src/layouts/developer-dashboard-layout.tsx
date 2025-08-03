@@ -5,6 +5,7 @@ import { FaChartLine, FaGamepad, FaTags } from "react-icons/fa";
 import { LuPackage } from "react-icons/lu";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HiMiniBanknotes } from "react-icons/hi2";
+import { TbMessageReport } from "react-icons/tb";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -40,7 +41,7 @@ const DeveloperDashboardLayout = ({ children }: { children: ReactNode }) => {
     {
       label: "Manage Received Report",
       key: "/dev/manage-received-report",
-      icon: <FaTags />,
+      icon: <TbMessageReport />,
       onClick: () => {
         navigate("/dev/manage-received-report");
       },

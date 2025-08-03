@@ -1,18 +1,18 @@
 import { Button, Dropdown } from "antd";
 import { useState } from "react";
-import { FaEllipsisV } from "react-icons/fa";
 import { FcApproval, FcCancel } from "react-icons/fc";
-import { Withdraw } from "@/types/withdraw-request";
-import WithdrawActionModal from "./withdraw-modal";
+import { ReportItem } from "@/types/report";
+import ReplyReportModal from "./reply-report-modal";
+import { FaEllipsisV } from "react-icons/fa";
 
 interface ActionMenuProps {
-  record: Withdraw;
+  record: ReportItem;
   onSuccess?: () => void;
 }
 
 const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [actionType, setActionType] = useState<"approve" | "reject">("approve");
+ const [actionType, setActionType] = useState<"approve" | "reject">("approve");
 
   const handleMenuClick = (key: string) => {
     if (key === "approve") {
@@ -33,8 +33,8 @@ const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
   };
 
   return (
-    <div>
-      <Dropdown
+    <>
+        <Dropdown
         menu={{
           items: [
             {
@@ -56,7 +56,9 @@ const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
         <Button type="text" icon={<FaEllipsisV />} />
       </Dropdown>
 
-      <WithdrawActionModal
+    <div className="flex gap-2">
+
+      <ReplyReportModal
         open={isModalOpen}
         actionType={actionType}
         record={record}
@@ -64,6 +66,7 @@ const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
         onSuccess={handleModalSuccess}
       />
     </div>
+    </>
   );
 };
 
