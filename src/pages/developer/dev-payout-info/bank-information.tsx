@@ -116,9 +116,9 @@ const BankInformationPage = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-black p-4 flex items-center justify-center">
+      <div className="min-h-screen  p-4 flex items-center justify-center">
         <Card
-          className="w-full max-w-lg bg-gray-900 border-gray-700"
+          className="w-full max-w-lg  border-gray-700"
           styles={{
             body: { padding: "2rem" },
           }}

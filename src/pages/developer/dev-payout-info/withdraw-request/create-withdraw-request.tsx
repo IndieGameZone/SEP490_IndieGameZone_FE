@@ -1,6 +1,6 @@
 import { createWithdrawRequest } from "@/lib/api/withdraw-api";
 import useAuthStore from "@/store/use-auth-store";
-import { Form, Input, InputNumber, message, Modal } from "antd";
+import { Form, InputNumber, message, Modal } from "antd";
 import { useState } from "react";
 
 interface AddCreateWithdrawRequestModalProps {

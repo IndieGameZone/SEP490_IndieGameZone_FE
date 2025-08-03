@@ -2,13 +2,16 @@
 import { formatDateTime } from "@/lib/date-n-time";
 import { Withdraw } from "@/types/withdraw-request";
 import { ColumnsType } from "antd/es/table";
-import { Tag } from "antd";
+import { Image, Tag } from "antd";
 
 export const withdrawRequestColumns: ColumnsType<Withdraw> = [
   {
-    title: "Withdraw Request ID",
-    dataIndex: "id",
-    key: "id",
+    title: "No",
+    dataIndex: "no",
+    key: "no",
+
+    width: 100,
+    render: (_, __, index) => index + 1,
   },
   {
     title: "Amount",
@@ -24,11 +27,13 @@ export const withdrawRequestColumns: ColumnsType<Withdraw> = [
     title: "Image Proof",
     dataIndex: "imageProof",
     key: "imageProof",
+    render: (imageProof: string) =>
+      imageProof ? <Image src={imageProof} alt="Proof" style={{ width: 100, height: 100 }} /> : <span>No image</span>,
   },
   {
-    title: "Transfer Status",
-    dataIndex: "isTransfered",
-    key: "isTransfered",
+    title: " Status",
+    dataIndex: "status",
+    key: "status",
     render: (status) => (
       <Tag
         color={
@@ -40,9 +45,10 @@ export const withdrawRequestColumns: ColumnsType<Withdraw> = [
     ),
   },
   {
-    title: "Message",
-    dataIndex: "message",
-    key: "message",
+    title: "Reject Reason",
+    dataIndex: "rejectReason",
+    key: "rejectReason",
+    render: (rejectReason: string) => rejectReason || "-",
   },
 
   {
@@ -57,5 +63,4 @@ export const withdrawRequestColumns: ColumnsType<Withdraw> = [
     key: "handledAt",
     render: (text) => formatDateTime(new Date(text)),
   },
-  
 ];
