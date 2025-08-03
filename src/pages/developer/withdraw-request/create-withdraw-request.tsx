@@ -10,8 +10,7 @@ interface AddCreateWithdrawRequestModalProps {
 }
 
 interface CreateWithdrawRequestForm {
-  amount: number;
-  description: string;
+  Amount: number;
 }
 
 const CreateWithdrawRequest = ({ open, onClose, onSuccess }: AddCreateWithdrawRequestModalProps) => {
@@ -27,7 +26,7 @@ const CreateWithdrawRequest = ({ open, onClose, onSuccess }: AddCreateWithdrawRe
         try {
             setLoading(true);
             const result = await createWithdrawRequest(profile?.id, {
-                amount: values.amount,
+                Amount: values.Amount,
             });
             
             if (result.success) {
@@ -65,7 +64,7 @@ const CreateWithdrawRequest = ({ open, onClose, onSuccess }: AddCreateWithdrawRe
         <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
           <Form.Item
             label="Amount"
-            name="amount"
+            name="Amount"
             rules={[
               { required: true, message: "Please input the amount!" },
               { type: "number", min: 1000, message: "Amount must be at least 1000!" },
@@ -81,15 +80,7 @@ const CreateWithdrawRequest = ({ open, onClose, onSuccess }: AddCreateWithdrawRe
               parser={(value) => (value ? parseInt(value.replace(/\./g, ""), 10) : 0)}
             />
           </Form.Item>
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[
-              { max: 500, message: "Description cannot be longer than 500 characters!" },
-            ]}
-          >
-            <Input.TextArea placeholder="Enter description" rows={4} showCount maxLength={500} />
-          </Form.Item>
+        
         </Form>
       </Modal>
     </div>

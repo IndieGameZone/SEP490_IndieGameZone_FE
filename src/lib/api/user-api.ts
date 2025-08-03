@@ -140,3 +140,23 @@ export const ping = async () => {
     return handleApiError(error);
   }
 };
+
+
+export type UpdateBankInfoData = {
+  bankName: string; 
+  bankAccountName: string;
+  bankAccountNumber: string;
+  bankCode: string;
+  bankBin: string;
+  bankShortName: string;
+};
+
+export const updateBankInfo = async (userId: string, updateBankInfoData: UpdateBankInfoData) => {
+  try {
+    const { data } = await axiosClient.patch(`/api/users/${userId}/bank-info`, updateBankInfoData);
+    return { error: null, data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+ 

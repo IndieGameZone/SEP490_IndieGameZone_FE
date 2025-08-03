@@ -20,9 +20,9 @@ export type User = {
   facebookLink?: string;
   youtubeChannelLink?: string;
   balance: number;
-  bankAccountName?: string;
   bankAccountNumber?: string;
-  bank: BankInfo;
+  bankAccountName?: string;
+  bankInfo: BankInfo;
   role: {
     name: string;
   };

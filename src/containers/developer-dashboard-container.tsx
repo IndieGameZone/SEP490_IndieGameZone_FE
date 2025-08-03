@@ -18,6 +18,7 @@ const UploadProcessPage = lazy(() => import("@/pages/developer/upload-game/uploa
 const NotFoundPage = lazy(() => import("@/pages/errors/simple-not-found-page"));
 const WithdrawalRequestsPage = lazy(() => import("@/pages/developer/withdraw-request/manage-withdraw-requests-page"));
 const BankInformationPage = lazy(() => import("@/pages/developer/bank-information"));
+const ManageReceivedReportPage = lazy(() => import("@/pages/developer/manage-received-report/manage-received-report"));
 const DeveloperDashboardContainer = () => {
   return (
     <HomeLayout>
@@ -31,6 +32,7 @@ const DeveloperDashboardContainer = () => {
             <Route path="/game/:gameId" element={<DevGameDetailsPage />} />
             <Route path="/bank-information" element={<BankInformationPage />} />
             <Route path="/commercial-packages" element={<DevCommercialPackagePage />} />
+            <Route path="/manage-received-report" element={<ManageReceivedReportPage />} />
             <Route path="/commercial-package/:packageId" element={<CommericalPackageDetailsPage />} />
             <Route path="/upload-game/preview" element={<PreviewUploadPage />} />
             <Route path="/upload-game/upload" element={<UploadProcessPage />} />
