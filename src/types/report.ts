@@ -9,6 +9,7 @@ export interface ReportItem {
   reportReason: ReportReason;
   message: string;
   status:string; 
+  reviewMessage: string;
   game: Game;
   isResolved: boolean;
   createdAt: string;

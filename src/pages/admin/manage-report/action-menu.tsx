@@ -1,9 +1,10 @@
 import { Button, Dropdown } from "antd";
 import { useState } from "react";
 import { FcApproval, FcCancel } from "react-icons/fc";
+import { FaEye, FaEllipsisV } from "react-icons/fa";
 import { ReportItem } from "@/types/report";
 import ReplyReportModal from "./reply-report-modal";
-import { FaEllipsisV } from "react-icons/fa";
+import ViewDetailReportModal from "./view-detail-report-modal";
 
 interface ActionMenuProps {
   record: ReportItem;
@@ -11,44 +12,59 @@ interface ActionMenuProps {
 }
 
 const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
- const [actionType, setActionType] = useState<"approve" | "reject">("approve");
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [actionType, setActionType] = useState<"approve" | "reject">("approve");
 
   const handleMenuClick = (key: string) => {
-    if (key === "approve") {
-      setActionType("approve");
-    } else if (key === "reject") {
-      setActionType("reject");
+    if (key === "view") {
+      setIsViewModalOpen(true);
+    } else {
+      setActionType(key as "approve" | "reject");
+      setIsReplyModalOpen(true);
     }
-    setIsModalOpen(true);
   };
 
-  const handleModalCancel = () => {
-    setIsModalOpen(false);
+  const handleReplyModalCancel = () => {
+    setIsReplyModalOpen(false);
+  };
+
+  const handleViewModalCancel = () => {
+    setIsViewModalOpen(false);
   };
 
   const handleModalSuccess = () => {
-    setIsModalOpen(false);
+    setIsReplyModalOpen(false);
     onSuccess?.();
   };
 
   return (
     <>
-        <Dropdown
+      <Dropdown
         menu={{
           items: [
             {
-              key: "approve",
-              label: <span className="text-green-400">Approval</span>,
-              icon: <FcApproval />,
-              onClick: () => handleMenuClick("approve"),
+              key: "view",
+              label: <span className="text-blue-400">View Details</span>,
+              icon: <FaEye />,
+              onClick: () => handleMenuClick("view"),
             },
-            {
-              key: "reject",
-              label: <span className="text-red-400">Rejection</span>,
-              icon: <FcCancel />,
-              onClick: () => handleMenuClick("reject"),
-            },
+            ...(record.status === "Pending"
+              ? [
+                  {
+                    key: "approve",
+                    label: <span className="text-green-400">Approval</span>,
+                    icon: <FcApproval />,
+                    onClick: () => handleMenuClick("approve"),
+                  },
+                  {
+                    key: "reject",
+                    label: <span className="text-red-400">Rejection</span>,
+                    icon: <FcCancel />,
+                    onClick: () => handleMenuClick("reject"),
+                  },
+                ]
+              : []),
           ],
         }}
         trigger={["click"]}
@@ -56,16 +72,15 @@ const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
         <Button type="text" icon={<FaEllipsisV />} />
       </Dropdown>
 
-    <div className="flex gap-2">
-
       <ReplyReportModal
-        open={isModalOpen}
+        open={isReplyModalOpen}
         actionType={actionType}
         record={record}
-        onCancel={handleModalCancel}
+        onCancel={handleReplyModalCancel}
         onSuccess={handleModalSuccess}
       />
-    </div>
+
+      <ViewDetailReportModal open={isViewModalOpen} record={record} onCancel={handleViewModalCancel} />
     </>
   );
 };

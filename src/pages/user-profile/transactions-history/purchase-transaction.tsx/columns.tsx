@@ -27,6 +27,14 @@ export const columns: TableProps<Transaction>["columns"] = [
     ),
   },
   {
+    title: "Order Code",
+    dataIndex: "orderCode",
+    key: "orderCode",
+    render: (orderCode: string) => (
+      <span className="font-mono text-blue-400">OD-{orderCode}</span>
+    ),  
+  },
+  {
     title: "Type",
     dataIndex: "type",
     key: "type",
