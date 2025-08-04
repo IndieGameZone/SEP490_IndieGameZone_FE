@@ -21,6 +21,7 @@ import useAuthStore from "@/store/use-auth-store";
 import { getPostReactionByPostId, reactPost } from "@/lib/api/game-post-api";
 import { useGlobalMessage } from "@/components/message-provider";
 import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
+import usePostStore from "@/store/use-game-post-store";
 
 interface PostCardProps {
   post: GamePost;
@@ -32,9 +33,8 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [reportPostModalOpen, setReportPostModalOpen] = useState(false);
-  const [numOfLikes, setNumOfLikes] = useState(post.numberOfLikes);
-  const [liked, setLiked] = useState(false);
   const [isSubmittingLike, setIsSubmittingLike] = useState(false);
+  const { setLikePost, toggleLikePost } = usePostStore();
   const messageApi = useGlobalMessage();
   const { copyLink } = useCopyCurrentLink();
   const { profile } = useAuthStore();
@@ -96,7 +96,7 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
       if (!profile || !post) return;
       const result = await getPostReactionByPostId(profile.id, post.id);
       if (!result.error) {
-        setLiked(result.data);
+        setLikePost(post.id, result.data);
       }
     })();
   }, [profile]);
@@ -114,26 +114,13 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
     }
     if (!post) return;
     setIsSubmittingLike(true);
-    setLiked((prev) => !prev);
-    setNumOfLikes((prev) => {
-      if (liked) {
-        return prev - 1;
-      } else {
-        return prev + 1;
-      }
-    });
+
     const result = await reactPost(profile.id, post.id);
     setIsSubmittingLike(false);
     if (result.error) {
       messageApi.error("Failed to like post. Please try again!");
-      setLiked((prev) => !prev);
-      setNumOfLikes((prev) => {
-        if (liked) {
-          return prev + 1;
-        } else {
-          return prev - 1;
-        }
-      });
+    } else {
+      toggleLikePost(post.id);
     }
   };
 
@@ -222,7 +209,7 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
           <div className="flex items-center gap-3 mt-2">
             <Button
               icon={
-                liked ? (
+                post.liked ? (
                   <FaHeart className="fill-rose-600" />
                 ) : (
                   <FaRegHeart className="fill-gray-400" />
@@ -233,7 +220,7 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
               loading={isSubmittingLike}
               onClick={handleReact}
             >
-              <span>{numOfLikes}</span>
+              <span>{post.numberOfLikes}</span>
             </Button>
 
             <Button
