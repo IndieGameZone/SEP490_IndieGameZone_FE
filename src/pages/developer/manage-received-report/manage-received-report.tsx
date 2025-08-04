@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Table, Typography, Spin } from "antd";
+import { Table, Typography } from "antd";
 import { ReportItem } from "@/types/report";
 import { reportColumns } from "./columns";
 import { useGlobalMessage } from "@/components/message-provider";

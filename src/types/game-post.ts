@@ -14,6 +14,7 @@ export type GamePost = {
   numberOfLikes: number;
   createdAt: string;
   user: User;
+  liked?: boolean
 };
 
 export type PostComment = {

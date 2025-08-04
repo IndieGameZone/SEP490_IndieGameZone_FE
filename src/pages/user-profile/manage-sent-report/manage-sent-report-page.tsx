@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Table, Typography, Spin } from "antd";
+import { Table, Typography } from "antd";
 import { ReportItem } from "@/types/report";
 import { reportColumns } from "./columns";
 import { useGlobalMessage } from "@/components/message-provider";
-import { getReportByReported, getReportByReporting } from "@/lib/api/report-api";
+import { getReportByReporting } from "@/lib/api/report-api";
 import useAuthStore from "@/store/use-auth-store";
 
 const { Title } = Typography;

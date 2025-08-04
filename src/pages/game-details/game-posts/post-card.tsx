@@ -17,7 +17,6 @@ import { IoMdMore } from "react-icons/io";
 import Lightbox from "yet-another-react-lightbox";
 import ReportPostModal from "@/components/report-modal/report-post-modal";
 import { timeAgo } from "@/lib/date-n-time";
-import useGamePostStore from "@/store/use-game-post-store";
 import useAuthStore from "@/store/use-auth-store";
 import { getPostReactionByPostId, reactPost } from "@/lib/api/game-post-api";
 import { useGlobalMessage } from "@/components/message-provider";
@@ -37,7 +36,6 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
   const [liked, setLiked] = useState(false);
   const [isSubmittingLike, setIsSubmittingLike] = useState(false);
   const messageApi = useGlobalMessage();
-  const { fetchPostComments } = useGamePostStore();
   const { copyLink } = useCopyCurrentLink();
   const { profile } = useAuthStore();
 
@@ -105,7 +103,6 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
 
   const handleViewPostDetail = async () => {
     if (onViewPostDetail) {
-      await fetchPostComments(post.id);
       onViewPostDetail(post.id);
     }
   };

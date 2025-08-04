@@ -21,6 +21,7 @@ import { useRerender } from "@/hooks/use-rerender";
 import { getGamePosts } from "@/lib/api/game-post-api";
 import { GamePost } from "@/types/game-post";
 import notFoundIcon from "@/assets/not-found-icon.svg";
+import usePostStore from "@/store/use-game-post-store";
 
 const SORT_TABS = ["Hot & Trending", "Most popular", "Best", "Latest"];
 const PAGE_SIZE = 4;
@@ -39,7 +40,8 @@ const GameForum = () => {
   const [selectedSortOption, setSelectedSortOption] = useState(SORT_TABS[0]);
   const [messageApi, contextHolder] = message.useMessage();
 
-  const [posts, setPosts] = useState<GamePost[]>([]);
+  const { posts, setPosts } = usePostStore();
+
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -113,9 +115,7 @@ const GameForum = () => {
       const paginationHeader = result.data.headers["x-pagination"];
       const pagination = paginationHeader ? JSON.parse(paginationHeader) : null;
 
-      setPosts((prev) =>
-        currentPage === 1 ? newPosts : [...prev, ...newPosts]
-      );
+      setPosts(currentPage === 1 ? newPosts : [...posts, ...newPosts]);
       setHasMore(pagination?.HasNext ?? false);
       setPage(currentPage + 1);
     }
@@ -145,12 +145,12 @@ const GameForum = () => {
     <div className="grid grid-cols-12 gap-3">
       {contextHolder}
 
-      <PostDetailModal
+      {/* <PostDetailModal
         open={postDetailOpen}
         postId={selectedPost.current}
         handleCancel={handleCancelDetail}
         onDelete={handleSetPostToDelete}
-      />
+      /> */}
 
       <DeletePostConfirmationModal
         postId={postToDelete.current}

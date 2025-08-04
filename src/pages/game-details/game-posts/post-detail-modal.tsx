@@ -24,12 +24,12 @@ import {
 } from "@/lib/api/game-post-api";
 import { useGlobalMessage } from "@/components/message-provider";
 import Loader from "@/components/loader";
-import useGamePostStore from "@/store/use-game-post-store";
 import useAuthStore from "@/store/use-auth-store";
 import ReportCommentModal from "@/components/report-modal/report-comment-modal";
 import PostCommentCard from "./post-comment-card";
 import { Link } from "react-router-dom";
 import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
+import usePostStore from "@/store/use-game-post-store";
 interface PostDetailModalProps {
   postId: string | null;
   open: boolean;
@@ -53,7 +53,7 @@ const PostDetailModal = ({
     postComments,
     loading: commentsLoading,
     fetchPostComments,
-  } = useGamePostStore();
+  } = usePostStore();
   const { profile } = useAuthStore();
   const { copyLink } = useCopyCurrentLink();
 
