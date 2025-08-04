@@ -9,10 +9,12 @@ export const getWithdrawRequestColumns = (
   onRefresh?: () => void
 ): ColumnsType<Withdraw> => [
   {
-    title: "ID",
-    dataIndex: "id",
-    key: "id",
+    title: "No",
+    dataIndex: "no",
+    key: "no",
+
     width: 100,
+    render: (_, __, index) => index + 1,
   },
   {
     title: "Requester ",

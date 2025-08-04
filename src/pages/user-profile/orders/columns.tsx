@@ -12,9 +12,17 @@ export interface ReportItem {
 
 export const reportColumns: ColumnsType<ReportItem> = [
   {
-    title: "Order ID",
-    dataIndex: "id",
-    key: "id",
+    title: "No",
+    dataIndex: "no",
+    key: "no",
+    width: 50,
+    render: (_, __, index) => index + 1,
+  },
+  {
+    title: "Order Code",
+    dataIndex: "orderCode",
+    key: "orderCode",
+    render: (orderCode: string) => <span className="font-mono text-blue-400">OD-{orderCode}</span>,
   },
   {
     title: "Game name",
@@ -26,7 +34,7 @@ export const reportColumns: ColumnsType<ReportItem> = [
     dataIndex: "type",
     key: "type",
   },
-  
+
   {
     title: "Price",
     dataIndex: "price",
@@ -63,7 +71,7 @@ export const reportColumns: ColumnsType<ReportItem> = [
     dataIndex: "status",
     key: "status",
   },
-  
+
   {
     title: "Created At",
     dataIndex: "createdAt",

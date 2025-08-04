@@ -1,43 +1,55 @@
 import { Button, Dropdown } from "antd";
 import { useState } from "react";
-import { FaEllipsisV } from "react-icons/fa";
 import { FcApproval, FcCancel } from "react-icons/fc";
-import { Withdraw } from "@/types/withdraw-request";
-import WithdrawActionModal from "./withdraw-modal";
+import { FaEye, FaEllipsisV } from "react-icons/fa";
+import { ReportItem } from "@/types/report";
+import ReplyReportModal from "./reply-report-modal";
+import ViewDetailReportModal from "./view-detail-report-modal";
 
 interface ActionMenuProps {
-  record: Withdraw;
+  record: ReportItem;
   onSuccess?: () => void;
 }
 
 const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"approve" | "reject">("approve");
 
   const handleMenuClick = (key: string) => {
-    if (key === "approve") {
-      setActionType("approve");
-    } else if (key === "reject") {
-      setActionType("reject");
+    if (key === "view") {
+      setIsViewModalOpen(true);
+    } else {
+      setActionType(key as "approve" | "reject");
+      setIsReplyModalOpen(true);
     }
-    setIsModalOpen(true);
   };
 
-  const handleModalCancel = () => {
-    setIsModalOpen(false);
+  const handleReplyModalCancel = () => {
+    setIsReplyModalOpen(false);
+  };
+
+  const handleViewModalCancel = () => {
+    setIsViewModalOpen(false);
   };
 
   const handleModalSuccess = () => {
-    setIsModalOpen(false);
+    setIsReplyModalOpen(false);
     onSuccess?.();
   };
 
   return (
-    <div>
-       <Dropdown
+    <>
+      <Dropdown
         menu={{
-          items: 
-            record.status === "Pending"
+          items: [
+            {
+              key: "view",
+              label: <span className="text-blue-400">View Details</span>,
+              icon: <FaEye />,
+              onClick: () => handleMenuClick("view"),
+            },
+            ...(record.status === "Pending"
               ? [
                   {
                     key: "approve",
@@ -52,21 +64,24 @@ const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
                     onClick: () => handleMenuClick("reject"),
                   },
                 ]
-              : [],
+              : []),
+          ],
         }}
         trigger={["click"]}
       >
         <Button type="text" icon={<FaEllipsisV />} />
       </Dropdown>
 
-      <WithdrawActionModal
-        open={isModalOpen}
+      <ReplyReportModal
+        open={isReplyModalOpen}
         actionType={actionType}
         record={record}
-        onCancel={handleModalCancel}
+        onCancel={handleReplyModalCancel}
         onSuccess={handleModalSuccess}
       />
-    </div>
+
+      <ViewDetailReportModal open={isViewModalOpen} record={record} onCancel={handleViewModalCancel} />
+    </>
   );
 };
 

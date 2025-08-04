@@ -1,12 +1,11 @@
 import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { Menu, MenuProps } from "antd";
 import { ReactNode } from "react";
-import { CiBank } from "react-icons/ci";
 import { FaChartLine, FaGamepad, FaTags } from "react-icons/fa";
 import { LuPackage } from "react-icons/lu";
-import { PiHandWithdraw } from "react-icons/pi";
-import { TbCoin } from "react-icons/tb";
 import { useLocation, useNavigate } from "react-router-dom";
+import { HiMiniBanknotes } from "react-icons/hi2";
+import { TbMessageReport } from "react-icons/tb";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -31,43 +30,28 @@ const DeveloperDashboardLayout = ({ children }: { children: ReactNode }) => {
       },
     },
     {
-      label: "Earnings",
-      key: "/dev/earnings",
-      icon: <TbCoin />,
+      label: "Payout Information",
+      key: "/dev/payout-information",
+      icon: <HiMiniBanknotes />,
       onClick: () => {
-        navigate("/dev/earnings");
+        navigate("/dev/payout-information");
       },
     },
-    {
-      label: "Bank Information",
-      key: "/dev/bank-information",
-      icon: <CiBank />,
-      onClick: () => {
-        navigate("/dev/bank-information");
-      },
-    },
-    {
-      label: "Withdrawal Requests",
-      key: "/dev/withdrawal-requests",
-      icon: <PiHandWithdraw />,
-      onClick: () => {
-        navigate("/dev/withdrawal-requests");
-      },
-    },
+
     {
       label: "Manage Received Report",
       key: "/dev/manage-received-report",
-      icon: <FaTags />,
+      icon: <TbMessageReport />,
       onClick: () => {
         navigate("/dev/manage-received-report");
       },
     },
     {
       label: "Commercial Packages",
-      key: "/dev/commercial-packages",
+      key: "/dev/manage-commercial-package",
       icon: <LuPackage />,
       onClick: () => {
-        navigate("/dev/commercial-packages");
+        navigate("/dev/manage-commercial-package");
       },
     },
   ];

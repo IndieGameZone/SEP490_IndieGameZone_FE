@@ -168,3 +168,12 @@ export const getReportByReported = async (reportedUserId: string ) => {
         return handleApiError(error);
     }
 };
+
+export const updateStatusReport = async (id: string, UpdatedStatus: "Approved" | "Rejected" | "Pending", reviewMessage: string) => {
+    try {
+        const { data } = await axiosClient.patch(`/api/reports/${id}/resolve-status?updatedStatus=${UpdatedStatus}`, { reviewMessage });
+        return { error: null, data: data, success: true };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};

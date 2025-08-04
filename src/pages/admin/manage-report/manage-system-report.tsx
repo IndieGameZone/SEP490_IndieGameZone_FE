@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Table, Typography, message } from "antd";
 import { getAllReport } from "@/lib/api/report-api";
 import { ReportItem } from "@/types/report";
-import { createReportColumns } from "./columns";
+import { getAllReportColumns } from "./columns";
 
 const { Title } = Typography;
 
@@ -31,7 +31,6 @@ const ManageSystemReport: React.FC = () => {
     fetchReports();
   }, [fetchReports]);
 
-  const columns = createReportColumns(messageApi, fetchReports);
 
   return (
     <>
@@ -43,10 +42,11 @@ const ManageSystemReport: React.FC = () => {
         
           <Table
             dataSource={reports}
-            columns={columns}
+            columns={getAllReportColumns(fetchReports)}
             rowKey="id"
             loading={loading}
              bordered
+             scroll={{ x: "max-content" }}
             pagination={{
               pageSize: 10,
               showSizeChanger: true,

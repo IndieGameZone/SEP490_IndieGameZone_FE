@@ -73,3 +73,20 @@ export const getAllCommercialPackagesRegistrations = async () => {
     return handleApiError(error);
   }
 };
+
+export const getCommercialPackagesRegistrationsByUserId = async (userId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/commercial-packages/registrations?userId=${userId}`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+export const cancelCommercialPackageRegistration = async (registrationId: string) => {
+  try {
+    const { data } = await axiosClient.delete(`/api/commercial-packages/${registrationId}`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
