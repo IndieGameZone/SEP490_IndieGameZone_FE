@@ -145,12 +145,12 @@ const GameForum = () => {
     <div className="grid grid-cols-12 gap-3">
       {contextHolder}
 
-      {/* <PostDetailModal
+      <PostDetailModal
         open={postDetailOpen}
         postId={selectedPost.current}
         handleCancel={handleCancelDetail}
         onDelete={handleSetPostToDelete}
-      /> */}
+      />
 
       <DeletePostConfirmationModal
         postId={postToDelete.current}
