@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export type Transaction = {
     id: string;
     orderCode: number;
@@ -16,6 +18,7 @@ export type Transaction = {
     | "PurchaseCommercialPackageRevenue"
     | "DonationRevenue";
     createdAt: string;
+    user:User
 }
 
 export function getReadableTransactionType(type: Transaction["type"]): string {
