@@ -13,6 +13,7 @@ type PostStore = {
   updatePostById: (id: string, updatedFields: Partial<GamePost>) => void;
   deletePost: (id: string) => void;
   toggleLikePost: (id: string) => void;
+  setLikePost: (id: string, value: boolean) => void;
 
   getComments: (postId: string) => PostComment[];
   setComments: (postId: string, comments: PostComment[]) => void;
@@ -58,6 +59,14 @@ const usePostStore = create<PostStore>()(
         if (post) {
           post.numberOfLikes += post.liked ? -1 : 1;
           post.liked = !post.liked;
+        }
+      }),
+
+    setLikePost: (id, value) =>
+      set((state: PostStore) => {
+        const post = state.posts.find((p) => p.id === id);
+        if (post) {
+          post.liked = value;
         }
       }),
 

@@ -8,7 +8,6 @@ import { createPostComment } from "@/lib/api/game-post-api";
 import useAuthStore from "@/store/use-auth-store";
 import { useGlobalMessage } from "@/components/message-provider";
 import { Link } from "react-router-dom";
-import useGamePostStore from "@/store/use-game-post-store";
 
 type FieldType = {
   comment?: string;
@@ -17,14 +16,18 @@ type FieldType = {
 interface PostCommentFormProps {
   postId: string | null;
   onSubmit: () => void;
+  fetchPostComments: () => void;
 }
 
-const PostCommentForm = ({ onSubmit, postId }: PostCommentFormProps) => {
+const PostCommentForm = ({
+  onSubmit,
+  postId,
+  fetchPostComments,
+}: PostCommentFormProps) => {
   const [form] = Form.useForm<FieldType>();
   const [showPicker, setShowPicker] = useState(false);
   const { profile } = useAuthStore();
   const messageApi = useGlobalMessage();
-  const { fetchPostComments } = useGamePostStore();
 
   const handleEmojiSelect = (emoji: any) => {
     form.setFieldValue("comment", form.getFieldValue("comment") + emoji);
@@ -38,7 +41,7 @@ const PostCommentForm = ({ onSubmit, postId }: PostCommentFormProps) => {
     } else {
       form.resetFields();
       setTimeout(async () => {
-        await fetchPostComments(postId);
+        fetchPostComments();
       }, 1000);
       messageApi.success("Comment posted successfully!");
       onSubmit();
