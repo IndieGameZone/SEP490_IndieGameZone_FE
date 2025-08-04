@@ -19,6 +19,9 @@ const ManageTags = lazy(() => import("@/pages/admin/manage-tags/manage-tags"));
 const AdminNotFoundPage = lazy(() => import("@/pages/errors/simple-not-found-page"));
 const ManageReportReason = lazy(() => import("@/pages/admin/manage-report-reason/manage-report-reason"));
 const ManageReport = lazy(() => import("@/pages/admin/manage-report/manage-system-report"));
+const ManageAllTransaction = lazy(
+  () => import("@/pages/admin/manage-all-transaction/manage-all-transaction")
+);
 const AdminWithdrawalRequestsPage = lazy(
   () => import("@/pages/admin/manage-withdraw-request/manage-admin-withdraw-requests-page")
 );
@@ -36,6 +39,7 @@ const AdminContainer = () => {
           <Route path="/manage-withdraw-requests" element={<AdminWithdrawalRequestsPage />} />
           <Route path="/manage-games" element={<ManageGames />} />
           <Route path="/manage-accounts" element={<ManageAccounts />} />
+          <Route path="/manage-transactions" element={<ManageAllTransaction />} />
           <Route path="/manage-categories" element={<ManageCategories />} />
           <Route path="/manage-report-reason" element={<ManageReportReason />} />
           <Route path="/detail-user/:id" element={<DetailUser />} />
