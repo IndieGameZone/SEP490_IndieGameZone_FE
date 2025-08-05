@@ -81,6 +81,8 @@ const SearchPage = () => {
     const languages = parseStringArray(searchParams.get("languages"));
     const platforms = parseStringArray(searchParams.get("platforms"));
     const category = searchParams.get("category") ?? "";
+    const sortBy = searchParams.get("sortBy") ?? undefined;
+    const sortDesc = searchParams.get("sortDesc") ?? undefined;
 
     setIsLoading(true);
     const result = await searchGames({
@@ -92,6 +94,8 @@ const SearchPage = () => {
       Tags: tags,
       searchTerm: query,
       Category: category,
+      sortBy: sortBy,
+      sortDescending: sortDesc,
     });
     if (result.error) {
       messageApi.error("Failed to fetch games");
@@ -201,7 +205,7 @@ const SearchPage = () => {
               {games.length > 0 &&
                 games.map((game) => (
                   <div key={game.id}>
-                    <GameCard game={game} variant="masonry"/>
+                    <GameCard game={game} variant="masonry" />
                   </div>
                 ))}
             </Masonry>
