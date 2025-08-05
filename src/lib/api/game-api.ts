@@ -124,6 +124,8 @@ type GameSearchParams = {
   Languages?: string[];
   Platforms?: string[];
   Category?: string;
+  sortBy?: string;
+  sortDescending?: string;
 };
 
 export const searchGames = async (params: GameSearchParams = {}) => {
@@ -139,6 +141,8 @@ export const searchGames = async (params: GameSearchParams = {}) => {
     if (params.Platforms && params.Platforms.length > 0)
       params.Platforms.forEach((id) => searchParams.append("Platforms", id));
     if (params.Category) searchParams.append("Category", params.Category);
+    if (params?.sortBy !== undefined) searchParams.append("SortBy", params.sortBy);
+    if (params?.sortDescending !== undefined) searchParams.append("SortDescending", params.sortDescending);
 
     const queryString = searchParams.toString();
     const url = queryString ? `/api/active-games?${queryString}` : "/api/active-games";

@@ -57,7 +57,8 @@ const BankInformationPage = () => {
         bankName: foundBank ? foundBank.code : "",
         code: profile.bankInfo?.bankCode || "",
         bin: profile.bankInfo?.bankBin || "",
-        shortName: profile.bankInfo?.bankShortName || foundBank?.shortName || "",
+        shortName:
+          profile.bankInfo?.bankShortName || foundBank?.shortName || "",
         bankAccountNumber: profile.bankAccountNumber || "",
         accountName: profile.bankAccountName || "",
       });
@@ -118,23 +119,30 @@ const BankInformationPage = () => {
     <>
       <div className="min-h-screen  p-4 flex items-center justify-center">
         <Card
-          className="w-full max-w-lg  border-gray-700"
+          className="w-full max-w-lg  border-zinc-700"
           styles={{
             body: { padding: "2rem" },
           }}
         >
           <div className="text-center mb-8">
             <BsBank2 className="text-4xl text-blue-400 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-white mb-2">Bank Information</h1>
-            <p className="text-gray-400">Enter your banking details securely</p>
+            <h1 className="text-2xl font-bold text-white mb-2">
+              Bank Information
+            </h1>
+            <p className="text-zinc-400">Enter your banking details securely</p>
           </div>
 
-          <div className="mb-4 p-2 bg-gray-900 rounded text-xs text-gray-300 flex items-center justify-center">
+          {/* <div className="mb-4 p-2 bg-zinc-900 rounded text-xs text-zinc-300 flex items-center justify-center">
             <span>Only </span>
             {banks.length} Banks Supported Here{" "}
-          </div>
+          </div> */}
 
-          <Form form={form} layout="vertical" onFinish={onFinish} className="space-y-4">
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            className="space-y-4"
+          >
             <Form.Item
               name="bankName"
               label={<span className="text-white font-medium">Bank Name</span>}
@@ -157,7 +165,13 @@ const BankInformationPage = () => {
                   key: bank.code,
                 }))}
                 notFoundContent={
-                  loadingBanks ? <Spin size="small" /> : banks.length === 0 ? "No banks loaded" : "No banks found"
+                  loadingBanks ? (
+                    <Spin size="small" />
+                  ) : banks.length === 0 ? (
+                    "No banks loaded"
+                  ) : (
+                    "No banks found"
+                  )
                 }
               />
             </Form.Item>
@@ -165,13 +179,14 @@ const BankInformationPage = () => {
             <div className="grid grid-cols-3 gap-4">
               <Form.Item
                 name="code"
-                label={<span className="text-white font-medium">Bank Code</span>}
+                label={
+                  <span className="text-white font-medium">Bank Code</span>
+                }
                 rules={[{ required: true, message: "Bank code is required" }]}
               >
                 <Input
-                  prefix={<BsHash className="text-gray-400" />}
+                  prefix={<BsHash className="text-zinc-400" />}
                   placeholder="Bank code"
-                  className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 hover:border-blue-400 focus:border-blue-400"
                   size="large"
                   readOnly
                 />
@@ -183,9 +198,8 @@ const BankInformationPage = () => {
                 rules={[{ required: true, message: "BIN is required" }]}
               >
                 <Input
-                  prefix={<BsHash className="text-gray-400" />}
+                  prefix={<BsHash className="text-zinc-400" />}
                   placeholder="BIN"
-                  className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 hover:border-blue-400 focus:border-blue-400"
                   size="large"
                   readOnly
                 />
@@ -193,21 +207,22 @@ const BankInformationPage = () => {
 
               <Form.Item
                 name="shortName"
-                label={<span className="text-white font-medium">Short Name</span>}
+                label={
+                  <span className="text-white font-medium">Short Name</span>
+                }
                 rules={[{ required: true, message: "Short name is required" }]}
               >
-                <Input
-                  placeholder="Short name"
-                  className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 hover:border-blue-400 focus:border-blue-400"
-                  size="large"
-                  readOnly
-                />
+                <Input placeholder="Short name" size="large" readOnly />
               </Form.Item>
             </div>
 
             <Form.Item
               name="bankAccountNumber"
-              label={<span className="text-white font-medium">Bank Account Number</span>}
+              label={
+                <span className="text-white font-medium">
+                  Bank Account Number
+                </span>
+              }
               rules={[
                 { required: true, message: "Please enter bank account number" },
                 {
@@ -217,9 +232,8 @@ const BankInformationPage = () => {
               ]}
             >
               <Input
-                prefix={<BsCreditCard2Front className="text-gray-400" />}
+                prefix={<BsCreditCard2Front className="text-zinc-400" />}
                 placeholder="Enter account number"
-                className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 hover:border-blue-400 focus:border-blue-400"
                 size="large"
                 maxLength={20}
               />
@@ -227,16 +241,20 @@ const BankInformationPage = () => {
 
             <Form.Item
               name="accountName"
-              label={<span className="text-white font-medium">Account Name</span>}
+              label={
+                <span className="text-white font-medium">Account Name</span>
+              }
               rules={[
                 { required: true, message: "Please enter account name" },
-                { min: 2, message: "Account name must be at least 2 characters" },
+                {
+                  min: 2,
+                  message: "Account name must be at least 2 characters",
+                },
               ]}
             >
               <Input
-                prefix={<BsPerson className="text-gray-400" />}
+                prefix={<BsPerson className="text-zinc-400" />}
                 placeholder="Enter account name"
-                className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 hover:border-blue-400 focus:border-blue-400"
                 size="large"
                 style={{ textTransform: "uppercase" }}
                 onChange={(e) => {
@@ -251,7 +269,7 @@ const BankInformationPage = () => {
                 type="primary"
                 htmlType="submit"
                 loading={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 border-blue-600 hover:border-blue-700 h-12 text-lg font-medium"
+                className="w-full h-12 text-lg font-medium"
                 size="large"
               >
                 {loading ? "Saving..." : "Save Bank Information"}
@@ -259,7 +277,7 @@ const BankInformationPage = () => {
             </Form.Item>
           </Form>
 
-          <div className="mt-6 p-4 bg-gray-800 rounded-lg border border-gray-700">
+          <div className="mt-6 p-4 bg-zinc-800 rounded-lg border border-zinc-700">
             <div className="flex items-center gap-2 text-yellow-400 mb-2">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path
@@ -270,9 +288,10 @@ const BankInformationPage = () => {
               </svg>
               <span className="text-sm font-medium">Attention</span>
             </div>
-            <p className="text-gray-300 text-sm">
-              We will rely on this information to transfer money. You need to write your account information correctly.
-              If there is any error, we will not be responsible.
+            <p className="text-zinc-300 text-sm">
+              We will rely on this information to transfer money. You need to
+              write your account information correctly. If there is any error,
+              we will not be responsible.
             </p>
           </div>
         </Card>
