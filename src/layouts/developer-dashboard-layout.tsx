@@ -1,7 +1,7 @@
 import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { Menu, MenuProps } from "antd";
 import { ReactNode } from "react";
-import { FaChartLine, FaGamepad, FaTags } from "react-icons/fa";
+import { FaChartLine, FaGamepad } from "react-icons/fa";
 import { LuPackage } from "react-icons/lu";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HiMiniBanknotes } from "react-icons/hi2";
@@ -30,11 +30,11 @@ const DeveloperDashboardLayout = ({ children }: { children: ReactNode }) => {
       },
     },
     {
-      label: "Payout Information",
-      key: "/dev/payout-information",
+      label: "Earnings",
+      key: "/dev/earnings",
       icon: <HiMiniBanknotes />,
       onClick: () => {
-        navigate("/dev/payout-information");
+        navigate("/dev/earnings");
       },
     },
 
@@ -59,7 +59,11 @@ const DeveloperDashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
     <MaxWidthWrapper className="py-5">
       <div className="bg-zinc-900/50 rounded border overflow-hidden border-zinc-800">
-        <Menu mode="horizontal" items={items} selectedKeys={[location.pathname]} />
+        <Menu
+          mode="horizontal"
+          items={items}
+          selectedKeys={[location.pathname]}
+        />
         <div>{children}</div>
       </div>
     </MaxWidthWrapper>

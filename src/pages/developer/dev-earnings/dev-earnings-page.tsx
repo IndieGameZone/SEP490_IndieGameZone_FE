@@ -4,11 +4,7 @@ import { CiBank } from "react-icons/ci";
 import { PiHandWithdraw } from "react-icons/pi";
 import ManageWithdrawRequestsPage from "./withdraw-request/manage-withdraw-requests-page";
 
-const DevPayoutInfo = () => {
-  const onChange = (key: string) => {
-    console.log(key);
-  };
-
+const DevEarningsPage = () => {
   const items: TabsProps["items"] = [
     {
       key: "Bank Information",
@@ -36,7 +32,6 @@ const DevPayoutInfo = () => {
       <Tabs
         defaultActiveKey="1"
         items={items}
-        onChange={onChange}
         centered
         tabBarStyle={{ background: "#18181b", marginBottom: 0 }}
       />
@@ -44,4 +39,4 @@ const DevPayoutInfo = () => {
   );
 };
 
-export default DevPayoutInfo;
+export default DevEarningsPage;

@@ -14,7 +14,7 @@ const PreviewUploadPage = lazy(() => import("@/pages/developer/upload-game/previ
 const UploadProcessPage = lazy(() => import("@/pages/developer/upload-game/upload-process-page"));
 const NotFoundPage = lazy(() => import("@/pages/errors/simple-not-found-page"));
 const ManageReceivedReportPage = lazy(() => import("@/pages/developer/manage-received-report/manage-received-report"));
-import DevPayoutInfo from "@/pages/developer/dev-payout-info/dev-payout-info";
+import DevEarningsPage from "@/pages/developer/dev-earnings/dev-earnings-page";
 const DeveloperDashboardContainer = () => {
   return (
     <HomeLayout>
@@ -26,7 +26,7 @@ const DeveloperDashboardContainer = () => {
             <Route path="/upload-game" element={<DevUploadGamePage />} />
             <Route path="/game/:gameId" element={<DevGameDetailsPage />} />
             <Route path="/manage-commercial-package" element={<DevManageCommercialPackage />} />
-            <Route path="/payout-information" element={<DevPayoutInfo />} />
+            <Route path="/earnings" element={<DevEarningsPage />} />
             <Route path="/manage-received-report" element={<ManageReceivedReportPage />} />
             <Route path="/commercial-package/:packageId" element={<CommericalPackageDetailsPage />} />
             <Route path="/upload-game/preview" element={<PreviewUploadPage />} />
