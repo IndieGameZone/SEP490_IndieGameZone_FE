@@ -1,42 +1,44 @@
 import { useGlobalMessage } from "@/components/message-provider";
-import { deletePost } from "@/lib/api/game-post-api";
+import { deleteComment } from "@/lib/api/game-post-api";
 import useAuthStore from "@/store/use-auth-store";
 import usePostStore from "@/store/use-game-post-store";
 import { Button, Modal } from "antd";
 import { useState } from "react";
 
-interface DeletePostConfirmationModalProps {
+interface DeleteCommentConfirmationModalProps {
   open: boolean;
-  postId: string | null;
+  postId: string;
+  commentId: string | null;
   onCancel: () => void;
   onDeleteFinish: () => void;
 }
-const DeletePostConfirmationModal = ({
+const DeleteCommentConfirmationModal = ({
   open,
   postId,
+  commentId,
   onCancel,
   onDeleteFinish,
-}: DeletePostConfirmationModalProps) => {
+}: DeleteCommentConfirmationModalProps) => {
   const { profile } = useAuthStore();
   const messageApi = useGlobalMessage();
   const [loading, setLoading] = useState(false);
-  const { deletePost: deleteStoredPost } = usePostStore();
-  const handleDeletePost = async () => {
-    if (!profile || !postId) return;
+  const { deleteComment: deleteStoredComment } = usePostStore();
+  const handleDeleteComment = async () => {
+    if (!profile || !commentId) return;
     setLoading(true);
-    const result = await deletePost(profile.id, postId);
+    const result = await deleteComment(profile.id, commentId);
     setLoading(false);
     if (result.error) {
-      messageApi.error("Failed to delete post. Please try again!");
+      messageApi.error("Failed to delete comment. Please try again!");
     } else {
-      messageApi.success("Post deleted successfully!");
+      messageApi.success("Comment deleted successfully!");
       onDeleteFinish();
-      deleteStoredPost(postId);
+      deleteStoredComment(postId, commentId);
     }
   };
   return (
     <Modal
-      title="Delete Post"
+      title="Delete comment"
       open={open}
       onCancel={onCancel}
       zIndex={9999}
@@ -47,7 +49,7 @@ const DeletePostConfirmationModal = ({
         <Button
           key="submit"
           type="default"
-          onClick={handleDeletePost}
+          onClick={handleDeleteComment}
           loading={loading}
           danger
         >
@@ -55,9 +57,9 @@ const DeletePostConfirmationModal = ({
         </Button>,
       ]}
     >
-      <p>Are you sure you want to delete this post?</p>
+      <p>Are you sure you want to delete this comment?</p>
     </Modal>
   );
 };
 
-export default DeletePostConfirmationModal;
+export default DeleteCommentConfirmationModal;

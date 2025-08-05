@@ -157,7 +157,6 @@ const GameForum = () => {
         onCancel={handleCancelDelete}
         onDeleteFinish={handleDeleteFinish}
         open={deleteConfirmOpen}
-        rerender={rerender}
       />
 
       {/* Left Panel */}

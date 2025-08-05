@@ -10,11 +10,13 @@ import { Link } from "react-router-dom";
 interface PostCommentCardProps {
   comment: PostComment;
   onReportComment: (commentId: string) => void;
+  onDeleteComment: (commentId: string) => void;
 }
 
 const PostCommentCard = ({
   comment,
   onReportComment,
+  onDeleteComment,
 }: PostCommentCardProps) => {
   const { profile } = useAuthStore();
   const moreOptionItems: MenuProps["items"] = useMemo(() => {
@@ -25,7 +27,9 @@ const PostCommentCard = ({
         label: <div>Delete comment</div>,
         key: "delete",
         icon: <FaTrash />,
-        onClick: () => {},
+        onClick: () => {
+          onDeleteComment(comment.id);
+        },
         danger: true,
       });
     } else {

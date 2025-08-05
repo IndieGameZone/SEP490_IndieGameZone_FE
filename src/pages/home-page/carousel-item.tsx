@@ -70,7 +70,7 @@ const CarouselItem = ({ game }: CarouselItemProps) => {
           </div>
 
           <div className="md:grid grid-cols-2 gap-3 hidden">
-            {gameImages.slice(0, 3).map((image: any, index: number) => {
+            {gameImages.slice(0, 4).map((image: any, index: number) => {
               return (
                 <div
                   className="h-[150px]"

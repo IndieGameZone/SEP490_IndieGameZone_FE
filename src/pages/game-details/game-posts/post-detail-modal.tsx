@@ -30,6 +30,7 @@ import PostCommentCard from "./post-comment-card";
 import { Link } from "react-router-dom";
 import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
 import usePostStore from "@/store/use-game-post-store";
+import DeleteCommentConfirmationModal from "./delete-comment-confirmation-modal";
 interface PostDetailModalProps {
   postId: string | null;
   open: boolean;
@@ -65,7 +66,26 @@ const PostDetailModal = ({
   const [reportCommentModalOpen, setReportCommentModalOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string>("");
   const [isSubmittingLike, setIsSubmittingLike] = useState(false);
+  const [deleteCommentConfirmOpen, setDeleteCommentConfirmOpen] =
+    useState(false);
+
   const commentSectionRef = useRef<HTMLDivElement>(null);
+  const commentToDelete = useRef<string | null>(null);
+
+  const handleSetCommentToDelete = (postId: string) => {
+    commentToDelete.current = postId;
+    setDeleteCommentConfirmOpen(true);
+  };
+
+  const handleCancelDelete = () => {
+    commentToDelete.current = null;
+    setDeleteCommentConfirmOpen(false);
+  };
+
+  const handleDeleteFinish = () => {
+    commentToDelete.current = null;
+    setDeleteCommentConfirmOpen(false);
+  };
 
   const fetchPost = async () => {
     if (!postId) return;
@@ -217,6 +237,13 @@ const PostDetailModal = ({
 
   return (
     <>
+      <DeleteCommentConfirmationModal
+        postId={postId}
+        onCancel={handleCancelDelete}
+        onDeleteFinish={handleDeleteFinish}
+        open={deleteCommentConfirmOpen}
+        commentId={commentToDelete.current}
+      />
       <Modal
         closable
         open={open}
@@ -282,7 +309,10 @@ const PostDetailModal = ({
             )}
           </div>
 
-          <div className="flex flex-col border-l border-zinc-700 max-h-[95vh] overflow-auto" ref={commentSectionRef}>
+          <div
+            className="flex flex-col border-l border-zinc-700 max-h-[95vh] overflow-auto"
+            ref={commentSectionRef}
+          >
             <div className="p-3 border-b border-zinc-700 pe-10">
               <div className="flex items-center gap-3">
                 <Link className="mt-1" to={`/profile/${post?.user.id}`}>
@@ -315,6 +345,7 @@ const PostDetailModal = ({
                     comment={comment}
                     key={comment.id}
                     onReportComment={handleReportComment}
+                    onDeleteComment={handleSetCommentToDelete}
                   />
                 ))}
               </div>
