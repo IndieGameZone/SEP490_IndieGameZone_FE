@@ -1,5 +1,5 @@
 import { Avatar, Button, Dropdown, MenuProps, Modal } from "antd";
-import { MouseEvent, useEffect, useMemo, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   FaChevronLeft,
   FaChevronRight,
@@ -56,6 +56,7 @@ const PostDetailModal = ({
     setComments,
     setLikePost,
     toggleLikePost,
+    comments,
     posts,
   } = usePostStore();
   const { profile } = useAuthStore();
@@ -64,6 +65,7 @@ const PostDetailModal = ({
   const [reportCommentModalOpen, setReportCommentModalOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string>("");
   const [isSubmittingLike, setIsSubmittingLike] = useState(false);
+  const commentSectionRef = useRef<HTMLDivElement>(null);
 
   const fetchPost = async () => {
     if (!postId) return;
@@ -95,6 +97,7 @@ const PostDetailModal = ({
         );
         return;
       }
+      commentSectionRef.current?.scrollTo({ top: 0, behavior: "smooth" });
       setComments(postId, result.data);
     } catch (error) {
       messageApi.error("An error occurred while fetching data!");
@@ -120,8 +123,9 @@ const PostDetailModal = ({
 
   const postComments = useMemo(() => {
     if (!postId) return [];
-    return getComments(postId);
-  }, [posts]);
+    const comments = getComments(postId);
+    return comments;
+  }, [comments]);
 
   const post = useMemo(() => {
     if (!postId) return;
@@ -186,7 +190,9 @@ const PostDetailModal = ({
   }, [profile, post]);
 
   const onSubmitComment = () => {
-    fetchPost();
+    setTimeout(() => {
+      fetchPostComments();
+    }, 1000);
   };
 
   const handleReact = async () => {
@@ -276,7 +282,7 @@ const PostDetailModal = ({
             )}
           </div>
 
-          <div className="flex flex-col border-l border-zinc-700 max-h-[95vh] overflow-auto">
+          <div className="flex flex-col border-l border-zinc-700 max-h-[95vh] overflow-auto" ref={commentSectionRef}>
             <div className="p-3 border-b border-zinc-700 pe-10">
               <div className="flex items-center gap-3">
                 <Link className="mt-1" to={`/profile/${post?.user.id}`}>
@@ -315,7 +321,6 @@ const PostDetailModal = ({
             )}
             <PostCommentForm
               onSubmit={onSubmitComment}
-              fetchPostComments={fetchPostComments}
               postId={post?.id ?? null}
             />
             <div className="flex justify-between mt-2 border-t border-zinc-700 p-3">

@@ -16,18 +16,14 @@ type FieldType = {
 interface PostCommentFormProps {
   postId: string | null;
   onSubmit: () => void;
-  fetchPostComments: () => void;
 }
 
-const PostCommentForm = ({
-  onSubmit,
-  postId,
-  fetchPostComments,
-}: PostCommentFormProps) => {
+const PostCommentForm = ({ onSubmit, postId }: PostCommentFormProps) => {
   const [form] = Form.useForm<FieldType>();
   const [showPicker, setShowPicker] = useState(false);
   const { profile } = useAuthStore();
   const messageApi = useGlobalMessage();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleEmojiSelect = (emoji: any) => {
     form.setFieldValue("comment", form.getFieldValue("comment") + emoji);
@@ -35,14 +31,13 @@ const PostCommentForm = ({
 
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     if (!postId || !profile || !values.comment) return;
+    setIsSubmitting(true);
     const result = await createPostComment(profile.id, postId, values.comment);
+    setIsSubmitting(false);
     if (result.error) {
       messageApi.error("Failed to post comment! Please try again.");
     } else {
       form.resetFields();
-      setTimeout(async () => {
-        fetchPostComments();
-      }, 1000);
       messageApi.success("Comment posted successfully!");
       onSubmit();
     }
@@ -113,6 +108,7 @@ const PostCommentForm = ({
               type="primary"
               size="large"
               disabled={postId == null || !currentComment}
+              loading={isSubmitting}
             />
           </Form.Item>
         </div>
