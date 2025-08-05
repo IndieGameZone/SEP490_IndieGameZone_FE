@@ -1,25 +1,11 @@
 import Loader from "@/components/loader";
 import ScrollToTop from "@/components/scroll-to-top";
 import useGameStore from "@/store/use-game-store";
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  MenuProps,
-  Tabs,
-  TabsProps,
-  Tag,
-  Tooltip,
-} from "antd";
+import { Avatar, Button, Dropdown, MenuProps, message, Tabs, TabsProps, Tag, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
 import { FaFlag, FaInfoCircle, FaLink, FaStar } from "react-icons/fa";
-import {
-  Link,
-  Navigate,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import Lightbox from "yet-another-react-lightbox";
 import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
@@ -39,6 +25,7 @@ import AddToWishlistButton from "@/components/buttons/add-to-wishlist-button";
 import { formatDuration } from "@/lib/date-n-time";
 import ReportGameModal from "@/components/report-modal/report-game-modal";
 import { useHashState } from "@/hooks/use-hash-state";
+import useFollowStore from "@/store/use-follow-store";
 
 const GameDetailsPage = () => {
   const { gameId } = useParams();
@@ -50,6 +37,7 @@ const GameDetailsPage = () => {
   const [index, setIndex] = useState(-1);
   const [activeTab, setActiveTab] = useHashState("overview");
   const [reportGameModalOpen, setReportGameModalOpen] = useState(false);
+  const { followDeveloper, checkIsFollowed, isFollowed, loading: followLoading } = useFollowStore();
 
   const tabItems: TabsProps["items"] = [
     {
@@ -97,6 +85,15 @@ const GameDetailsPage = () => {
       disabled: profile?.id === game?.developer.id,
     },
   ];
+  useEffect(() => {
+    const checkFollow = async () => {
+      if (profile?.id && game?.developer?.id) {
+        await checkIsFollowed(profile.id, game.developer.id);
+      }
+    };
+
+    checkFollow();
+  }, [profile?.id, game?.developer?.id]);
 
   useEffect(() => {
     if (profile) {
@@ -112,6 +109,15 @@ const GameDetailsPage = () => {
       navigate("/");
     }
   }, [gameId, fetchGameById, fetchPlatforms, navigate]);
+  const handleFollowClick = async () => {
+    if (!profile?.id) {
+      message.error("Please login to follow developers");
+      return;
+    }
+    if (!game?.developer?.id) return;
+
+    await followDeveloper(profile.id, game.developer.id);
+  };
 
   if (!gameId) {
     return <Navigate to={`/`} />;
@@ -124,10 +130,7 @@ const GameDetailsPage = () => {
   }
   if (!game) return null;
 
-  const slides = [
-    { src: game.coverImage },
-    ...game.gameImages.map((image) => ({ src: image.image })),
-  ];
+  const slides = [{ src: game.coverImage }, ...game.gameImages.map((image) => ({ src: image.image }))];
 
   return (
     <MaxWidthWrapper className="py-5">
@@ -154,11 +157,7 @@ const GameDetailsPage = () => {
                   <Button shape="circle" icon={<FaLink />}></Button>
                 </Tooltip>
                 <Tooltip title="Report game">
-                  <Button
-                    shape="circle"
-                    icon={<FaFlag />}
-                    onClick={() => setReportGameModalOpen(true)}
-                  ></Button>
+                  <Button shape="circle" icon={<FaFlag />} onClick={() => setReportGameModalOpen(true)}></Button>
                 </Tooltip>
 
                 <ReportGameModal
@@ -170,32 +169,25 @@ const GameDetailsPage = () => {
               </div>
             </div>
             <p className="text-zinc-500">{game.shortDescription}</p>
-            <Link
-              to={`/search?category=${game.category.id}`}
-              className="font-semibold text-orange-200 hover:underline"
-            >
+            <Link to={`/search?category=${game.category.id}`} className="font-semibold text-orange-200 hover:underline">
               {game.category?.name}
             </Link>
           </div>
           {/* DEVELOPER INFORMATION */}
           <div className="my-2 flex gap-3 items-center justify-between bg-zinc-900 drop-shadow rounded-lg p-2">
-            <Link
-              to={`/profile/${game.developer.id}`}
-              className="flex items-center gap-3"
-            >
-              {game.developer.avatar ? (
-                <Avatar src={game.developer.avatar} />
-              ) : (
-                <Avatar icon={<CiUser />} />
-              )}
+            <Link to={`/profile/${game.developer.id}`} className="flex items-center gap-3">
+              {game.developer.avatar ? <Avatar src={game.developer.avatar} /> : <Avatar icon={<CiUser />} />}
               <p className="font-semibold">{game.developer.userName}</p>
             </Link>
             <div>
               <Button
                 style={{ width: 150 }}
+                type={isFollowed ? "default" : "primary"}
+                onClick={handleFollowClick}
+                loading={followLoading}
                 disabled={profile?.id === game.developer.id}
               >
-                Follow
+                {isFollowed ? "Following" : "Follow"}
               </Button>
               <Dropdown menu={{ items: devProfileItems }} trigger={["click"]}>
                 <Button icon={<IoMdMore />}></Button>
@@ -214,21 +206,16 @@ const GameDetailsPage = () => {
             <span className="uppercase text-zinc-400 text-xs">Languages:</span>
             {game.gameLanguages.map((language, index: number) => (
               <span className="text-orange-200" key={`game-language-${index}`}>
-                {language.language.name}{" "}
-                {index !== game.gameLanguages.length - 1 && ", "}
+                {language.language.name} {index !== game.gameLanguages.length - 1 && ", "}
               </span>
             ))}
           </div>
           <div className="flex gap-2 text-sm items-end">
-            <span className="uppercase text-zinc-400 text-xs">
-              Average time:
-            </span>
+            <span className="uppercase text-zinc-400 text-xs">Average time:</span>
             <span>{formatDuration(game.averageSession)}</span>
           </div>
           <div className="flex gap-2 text-sm items-end">
-            <span className="uppercase text-zinc-400 text-xs">
-              Average rating:
-            </span>
+            <span className="uppercase text-zinc-400 text-xs">Average rating:</span>
             {game.numberOfReviews > 0 ? (
               <div className="flex items-center gap-2">
                 <span>
