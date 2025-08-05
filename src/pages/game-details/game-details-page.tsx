@@ -26,6 +26,7 @@ import { formatDuration } from "@/lib/date-n-time";
 import ReportGameModal from "@/components/report-modal/report-game-modal";
 import { useHashState } from "@/hooks/use-hash-state";
 import useFollowStore from "@/store/use-follow-store";
+import { useGlobalMessage } from "@/components/message-provider";
 
 const GameDetailsPage = () => {
   const { gameId } = useParams();
@@ -38,6 +39,7 @@ const GameDetailsPage = () => {
   const [activeTab, setActiveTab] = useHashState("overview");
   const [reportGameModalOpen, setReportGameModalOpen] = useState(false);
   const { followDeveloper, checkIsFollowed, isFollowed, loading: followLoading } = useFollowStore();
+  const messageApi = useGlobalMessage();
 
   const tabItems: TabsProps["items"] = [
     {
@@ -111,7 +113,7 @@ const GameDetailsPage = () => {
   }, [gameId, fetchGameById, fetchPlatforms, navigate]);
   const handleFollowClick = async () => {
     if (!profile?.id) {
-      message.error("Please login to follow developers");
+      messageApi.error("Please login to follow developers");
       return;
     }
     if (!game?.developer?.id) return;

@@ -13,13 +13,15 @@ import ViewUserGames from "./view-user-games";
 import { BsFileEarmarkPost } from "react-icons/bs";
 import useAuthStore from "@/store/use-auth-store";
 import useFollowStore from "@/store/use-follow-store";
+import { useGlobalMessage } from "@/components/message-provider";
 
 const ViewProfilePage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const { fetchUserById, loading, error, user } = useUserStore();
   const { profile } = useAuthStore();
-  const { followDeveloper, checkIsFollowed, isFollowed, loading: followLoading } = useFollowStore();
+const { followDeveloper, checkIsFollowed, getFollowerCount, isFollowed, loading: followLoading, followers } = useFollowStore();
+  const messageApi = useGlobalMessage();
 
   const tabItems: TabsProps["items"] = [
     {
@@ -60,6 +62,12 @@ const ViewProfilePage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (userId) {
+      getFollowerCount(userId);
+    }
+  }, [userId]);
+
   const items: MenuProps["items"] = [
     {
       label: <div>Copy link to user</div>,
@@ -74,7 +82,7 @@ const ViewProfilePage = () => {
   ];
   const handleFollowClick = async () => {
     if (!profile?.id) {
-      message.error("Please login to follow developers");
+      messageApi.error("Please login to follow developers");
       return;
     }
     if (!userId) return;
@@ -129,7 +137,7 @@ const ViewProfilePage = () => {
             </div>
 
             <div className="flex flex-col items-center">
-              <p className="text-2xl font-bold">0</p>
+              <p className="text-2xl font-bold">{followers}</p>
               <p className="text-sm text-zinc-500">Followers</p>
             </div>
 
@@ -171,7 +179,7 @@ const ViewProfilePage = () => {
             </div>
           ) : (
             <div className="flex  gap-2 mt-3">
-                <Button
+              <Button
                 style={{ width: 250 }}
                 type={isFollowed ? "default" : "primary"}
                 onClick={handleFollowClick}
