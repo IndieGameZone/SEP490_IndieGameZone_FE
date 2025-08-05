@@ -39,11 +39,11 @@ const DeveloperDashboardLayout = ({ children }: { children: ReactNode }) => {
     },
 
     {
-      label: "Manage Received Report",
-      key: "/dev/manage-received-report",
+      label: "Received Reports",
+      key: "/dev/received-reports",
       icon: <TbMessageReport />,
       onClick: () => {
-        navigate("/dev/manage-received-report");
+        navigate("/dev/received-reports");
       },
     },
     {

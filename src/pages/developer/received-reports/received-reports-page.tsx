@@ -8,7 +8,7 @@ import useAuthStore from "@/store/use-auth-store";
 
 const { Title } = Typography;
 
-const ManageReceivedReportPage: React.FC = () => {
+const ReceivedReportsPage: React.FC = () => {
   const [reports, setReports] = useState<ReportItem[]>([]);
 
   const { profile } = useAuthStore();
@@ -55,4 +55,4 @@ const ManageReceivedReportPage: React.FC = () => {
   );
 };
 
-export default ManageReceivedReportPage;
+export default ReceivedReportsPage;

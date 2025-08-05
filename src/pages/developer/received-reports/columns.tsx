@@ -10,13 +10,13 @@ export const reportColumns: ColumnsType<ReportItem> = [
     key: "no",
     render: (_, __, index) => index + 1,
   },
-  {
-    title: "Reporter",
-    dataIndex: "reportingUser",
-    key: "reportingUser.userName",
-    render: (reportingUser: { userName: string }) => reportingUser.userName || "N/A",
-  },
-  {},
+  // Note: Hide reporters for privacy reasons
+  // {
+  //   title: "Reporter",
+  //   dataIndex: "reportingUser",
+  //   key: "reportingUser.userName",
+  //   render: (reportingUser: { userName: string }) => reportingUser.userName || "N/A",
+  // },
   {
     title: "Report Reason",
     dataIndex: "reportReason",
@@ -48,7 +48,13 @@ export const reportColumns: ColumnsType<ReportItem> = [
     render: (status: string) => (
       <Tag
         color={
-          status === "Approved" ? "green" : status === "Rejected" ? "red" : status === "Pending" ? "gold" : "default"
+          status === "Approved"
+            ? "green"
+            : status === "Rejected"
+            ? "red"
+            : status === "Pending"
+            ? "gold"
+            : "default"
         }
       >
         {status || "Unknown"}

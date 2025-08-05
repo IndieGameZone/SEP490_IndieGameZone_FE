@@ -5,15 +5,34 @@ import CommericalPackageDetailsPage from "@/pages/developer/commerical-package-d
 import DevUpdateGamePage from "@/pages/developer/update-game/dev-update-game-page";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
-const DevManageCommercialPackage = lazy(() => import("@/pages/developer/dev-manage-commericial-package/dev-manage-commericial-package"));
-const DevDashBoardPage = lazy(() => import("@/pages/developer/dev-dashboard-page"));
-const DevGameDetailsPage = lazy(() => import("@/pages/developer/game-details/dev-game-details-page"));
-const DevManageGamesPage = lazy(() => import("@/pages/developer/manage-games/dev-manage-games-page"));
-const DevUploadGamePage = lazy(() => import("@/pages/developer/upload-game/dev-upload-game-page"));
-const PreviewUploadPage = lazy(() => import("@/pages/developer/upload-game/preview-upload-page"));
-const UploadProcessPage = lazy(() => import("@/pages/developer/upload-game/upload-process-page"));
+const DevManageCommercialPackage = lazy(
+  () =>
+    import(
+      "@/pages/developer/dev-manage-commericial-package/dev-manage-commericial-package"
+    )
+);
+const DevDashBoardPage = lazy(
+  () => import("@/pages/developer/dev-dashboard-page")
+);
+const DevGameDetailsPage = lazy(
+  () => import("@/pages/developer/game-details/dev-game-details-page")
+);
+const DevManageGamesPage = lazy(
+  () => import("@/pages/developer/manage-games/dev-manage-games-page")
+);
+const DevUploadGamePage = lazy(
+  () => import("@/pages/developer/upload-game/dev-upload-game-page")
+);
+const PreviewUploadPage = lazy(
+  () => import("@/pages/developer/upload-game/preview-upload-page")
+);
+const UploadProcessPage = lazy(
+  () => import("@/pages/developer/upload-game/upload-process-page")
+);
 const NotFoundPage = lazy(() => import("@/pages/errors/simple-not-found-page"));
-const ManageReceivedReportPage = lazy(() => import("@/pages/developer/manage-received-report/manage-received-report"));
+const ReceivedReportsPage = lazy(
+  () => import("@/pages/developer/received-reports/received-reports-page")
+);
 import DevEarningsPage from "@/pages/developer/dev-earnings/dev-earnings-page";
 const DeveloperDashboardContainer = () => {
   return (
@@ -25,14 +44,29 @@ const DeveloperDashboardContainer = () => {
             <Route path="/dashboard" element={<DevDashBoardPage />} />
             <Route path="/upload-game" element={<DevUploadGamePage />} />
             <Route path="/game/:gameId" element={<DevGameDetailsPage />} />
-            <Route path="/manage-commercial-package" element={<DevManageCommercialPackage />} />
+            <Route
+              path="/manage-commercial-package"
+              element={<DevManageCommercialPackage />}
+            />
             <Route path="/earnings" element={<DevEarningsPage />} />
-            <Route path="/manage-received-report" element={<ManageReceivedReportPage />} />
-            <Route path="/commercial-package/:packageId" element={<CommericalPackageDetailsPage />} />
-            <Route path="/upload-game/preview" element={<PreviewUploadPage />} />
+            <Route
+              path="/received-reports"
+              element={<ReceivedReportsPage />}
+            />
+            <Route
+              path="/commercial-package/:packageId"
+              element={<CommericalPackageDetailsPage />}
+            />
+            <Route
+              path="/upload-game/preview"
+              element={<PreviewUploadPage />}
+            />
             <Route path="/upload-game/upload" element={<UploadProcessPage />} />
             <Route path="/manage-games" element={<DevManageGamesPage />} />
-            <Route path="/update-game/:gameId" element={<DevUpdateGamePage />} />
+            <Route
+              path="/update-game/:gameId"
+              element={<DevUpdateGamePage />}
+            />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
