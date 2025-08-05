@@ -138,3 +138,11 @@ export const getOrderByUserId = async (userId : string ) => {
         return handleApiError(error);
     }
 };
+export const getAllTransactions = async () => {
+  try {
+    const { data } = await axiosClient.get(`/api/transactions`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
