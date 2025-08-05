@@ -10,11 +10,36 @@ export const handleApiError = (error: any): { error: string | null; data: any; s
   }
 };
 
-export const createFollow= async (playerId: string,developerId: string) => {
+export const createFollow= async (followerId: string,followeeId: string) => {
   try {
-    const { data } = await axiosClient.post(`/api/players/${playerId}/developerId${developerId}/user-follows`);
+    const { data } = await axiosClient.post(`/api/followers/${followerId}/followees/${followeeId}/user-follows`);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
   }
+};
+
+export const getNumberofFollowers = async (followeeId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/followees/${followeeId}/number-of-followers`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+export const getNumberofFollowees = async (followerId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/followers/${followerId}/number-of-followees`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+export const checkIfFollowed = async (followerId: string, followeeId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/followers/${followerId}/followees/${followeeId}/user-follows`);   
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  } 
 };
