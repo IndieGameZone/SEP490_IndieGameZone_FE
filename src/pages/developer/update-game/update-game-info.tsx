@@ -64,7 +64,7 @@ const UpdateGameInfo = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { ageRestrictions, loading: loadingAgeRestrictions } =
     useAgeRestrictionStore();
-  const initalValues = useRef<FieldType>(null);
+  const initialValuesRef = useRef<FieldType>(null);
   const { languages, loading: loadingLanguages } = useLanguageStore();
   const [loading, setLoading] = useState(false);
   const [hasChanged, setHasChanged] = useState(false);
@@ -100,6 +100,7 @@ const UpdateGameInfo = () => {
       }, 1000);
     }
   };
+
   useEffect(() => {
     if (game) {
       setIsFree(game.price == 0);
@@ -122,12 +123,12 @@ const UpdateGameInfo = () => {
         videoLink: game.videoLink,
         visibility: game.visibility,
       });
-      initalValues.current = form.getFieldsValue();
+      initialValuesRef.current = form.getFieldsValue();
     }
   }, []);
 
   const handleValuesChange = (_: any, allValues: FieldType) => {
-    const changed = !deepEqual(initalValues.current, allValues);
+    const changed = !deepEqual(initialValuesRef.current, allValues);
     setHasChanged(changed);
   };
 
