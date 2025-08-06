@@ -1,15 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Table, Typography } from "antd";
-import { withdrawRequestColumns } from "./columns";
+import { Button, Table } from "antd";
+import { withdrawRequestColumns } from "./withdraw-request/columns";
 import useAuthStore from "@/store/use-auth-store";
 import { Withdraw } from "@/types/withdraw-request";
 import { getWithdrawRequestById } from "@/lib/api/withdraw-api";
-import CreateWithdrawRequest from "./create-withdraw-request";
-import CoinIcon from "@/components/coin-icon";
+import CreateWithdrawRequest from "./withdraw-request/create-withdraw-request";
+import { PiHandWithdraw } from "react-icons/pi";
+import DevWallet from "./wallet/dev-wallet";
 
-const { Title } = Typography;
-
-const ManageWithdrawRequestsPage: React.FC = () => {
+const DevWalletPage: React.FC = () => {
   const [withdrawRequests, setWithdrawRequests] = useState<Withdraw[]>([]);
   const { profile } = useAuthStore();
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -34,22 +33,21 @@ const ManageWithdrawRequestsPage: React.FC = () => {
   useEffect(() => {
     fetchWithdrawRequests();
   }, [fetchWithdrawRequests]);
+
   return (
-    <>
-      <div className="flex justify-center py-5">
-        <Title level={2}>Manage Withdraw Requests</Title>
-      </div>
+    <div className="bg-zinc-900">
+      <DevWallet />
       <div className="flex justify-between items-center m-4">
         <div className="flex items-center gap-2">
-          <p className="font-semibold text-2xl">Your Balance: </p>
-          <div className="flex items-center gap-2" >
-            <span className="font-sans text-2xl">{profile?.balance?.toLocaleString("vi-VN") ?? 0}</span>
-            <CoinIcon  size="size-6"/>
-          </div>
+          <p className="font-semibold text-2xl"> Withdraw Request History</p>
         </div>
 
-        <Button type="primary" onClick={() => setAddModalOpen(true)}>
-          Withdraw Request
+        <Button
+          type="primary"
+          onClick={() => setAddModalOpen(true)}
+          icon={<PiHandWithdraw />}
+        >
+          Request Withdraw
         </Button>
       </div>
       <CreateWithdrawRequest
@@ -68,14 +66,15 @@ const ManageWithdrawRequestsPage: React.FC = () => {
             pageSize: 10,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} Orders`,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} Orders`,
           }}
           scroll={{ x: "max-content" }}
           bordered
         />
       </div>
-    </>
+    </div>
   );
 };
 
-export default ManageWithdrawRequestsPage;
+export default DevWalletPage;

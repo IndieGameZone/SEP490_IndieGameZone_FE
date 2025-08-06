@@ -5,7 +5,7 @@ import CoinIcon from "@/components/coin-icon";
 import { useEffect } from "react";
 import useAuthStore from "@/store/use-auth-store";
 
-const UserWallet = () => {
+const DevWallet = () => {
   const { profile, fetchProfile, loading, error } = useAuthStore();
 
   useEffect(() => {
@@ -52,4 +52,4 @@ const UserWallet = () => {
   );
 };
 
-export default UserWallet;
+export default DevWallet;

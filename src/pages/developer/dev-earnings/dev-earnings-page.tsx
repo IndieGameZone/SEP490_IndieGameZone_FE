@@ -1,17 +1,17 @@
 import { Menu, MenuProps, theme } from "antd";
 import BankInformationPage from "./bank-information";
 import { CiBank } from "react-icons/ci";
-import { PiHandWithdraw } from "react-icons/pi";
-import ManageWithdrawRequestsPage from "./withdraw-request/manage-withdraw-requests-page";
+import DevWalletPage from "./dev-wallet-page";
 import { useHashState } from "@/hooks/use-hash-state";
+import { FaWallet } from "react-icons/fa";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 const items: MenuItem[] = [
   {
-    key: "withdrawal-requests",
-    label: "Withdrawal Requests",
-    icon: <PiHandWithdraw />,
+    key: "wallet",
+    label: "Wallet",
+    icon: <FaWallet />,
   },
   {
     key: "bank-information",
@@ -22,7 +22,7 @@ const items: MenuItem[] = [
 const { useToken } = theme;
 
 const DevEarningsPage = () => {
-  const [selectedKey, setSelectedKey] = useHashState("withdrawal-requests");
+  const [selectedKey, setSelectedKey] = useHashState("wallet");
   const { token } = useToken();
 
   return (
@@ -40,9 +40,7 @@ const DevEarningsPage = () => {
           />
         </div>
         <div className="col-span-9">
-          {selectedKey === "withdrawal-requests" && (
-            <ManageWithdrawRequestsPage />
-          )}
+          {selectedKey === "wallet" && <DevWalletPage />}
           {selectedKey === "bank-information" && <BankInformationPage />}
         </div>
       </div>
