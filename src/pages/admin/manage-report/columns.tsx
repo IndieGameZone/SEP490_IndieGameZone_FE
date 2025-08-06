@@ -2,11 +2,13 @@ import { formatDateTime } from "@/lib/date-n-time";
 import { ReportItem } from "@/types/report";
 import { ReportReason } from "@/types/report-reason";
 import { User } from "@/types/user";
-import { Select, Tag } from "antd";
+import { Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
 import ActionMenu from "./action-menu";
 
-export const getAllReportColumns = (onRefresh?: () => void): ColumnsType<ReportItem> => [
+export const getAllReportColumns = (
+  onRefresh?: () => void
+): ColumnsType<ReportItem> => [
   {
     title: "No",
     dataIndex: "no",
@@ -18,14 +20,16 @@ export const getAllReportColumns = (onRefresh?: () => void): ColumnsType<ReportI
     title: "Reporter",
     dataIndex: "reportingUser",
     key: "reportingUser",
-    render: (reportingUser: User | undefined) => reportingUser?.userName ?? "N/A",
+    render: (reportingUser: User | undefined) =>
+      reportingUser?.userName ?? "N/A",
     width: 120,
   },
   {
     title: "Report Reason",
     dataIndex: "reportReason",
     key: "reportReason",
-    render: (reportReason: ReportReason | undefined) => reportReason?.name ?? "N/A",
+    render: (reportReason: ReportReason | undefined) =>
+      reportReason?.name ?? "N/A",
     width: 150,
   },
   {
@@ -38,7 +42,8 @@ export const getAllReportColumns = (onRefresh?: () => void): ColumnsType<ReportI
     title: "Report Type",
     dataIndex: "reportReason",
     key: "reportReason.type",
-    render: (reportReason: { type: string } | undefined) => reportReason?.type ?? "N/A",
+    render: (reportReason: { type: string } | undefined) =>
+      reportReason?.type ?? "N/A",
     width: 120,
   },
   {
@@ -54,7 +59,13 @@ export const getAllReportColumns = (onRefresh?: () => void): ColumnsType<ReportI
     render: (status: string) => (
       <Tag
         color={
-          status === "Approved" ? "green" : status === "Rejected" ? "red" : status === "Pending" ? "gold" : "default"
+          status === "Approved"
+            ? "green"
+            : status === "Rejected"
+            ? "red"
+            : status === "Pending"
+            ? "gold"
+            : "default"
         }
       >
         {status || "Unknown"}
@@ -72,18 +83,28 @@ export const getAllReportColumns = (onRefresh?: () => void): ColumnsType<ReportI
     dataIndex: "createdAt",
     key: "createdAt",
     width: 150,
-    render: (date: string) => <div className="text-sm text-gray-600">{formatDateTime(new Date(date))}</div>,
+    render: (date: string) => (
+      <div className="text-sm text-gray-600">
+        {formatDateTime(new Date(date))}
+      </div>
+    ),
   },
   {
     title: "Updated At",
     dataIndex: "updatedAt",
     key: "updatedAt",
     width: 150,
-    render: (date: string) => <div className="text-sm text-gray-600">{formatDateTime(new Date(date))}</div>,
+    render: (date: string) => (
+      <div className="text-sm text-gray-600">
+        {formatDateTime(new Date(date))}
+      </div>
+    ),
   },
   {
     title: "Action",
     key: "action",
-    render: (_, record: ReportItem) => <ActionMenu record={record} onSuccess={onRefresh} />,
+    render: (_, record: ReportItem) => (
+      <ActionMenu record={record} onSuccess={onRefresh} />
+    ),
   },
 ];

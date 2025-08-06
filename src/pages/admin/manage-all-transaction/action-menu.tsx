@@ -1,6 +1,5 @@
 import { Button, Dropdown } from "antd";
 import { useState } from "react";
-import { FcApproval, FcCancel } from "react-icons/fc";
 import { FaEye, FaEllipsisV } from "react-icons/fa";
 import { Transaction } from "@/types/transaction";
 import ViewDetailTransactionsModal from "./transaction-detail-modal";
@@ -10,7 +9,7 @@ interface ActionMenuProps {
   onSuccess?: () => void;
 }
 
-const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
+const ActionMenu = ({ record }: ActionMenuProps) => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const handleMenuClick = (key: string) => {
@@ -19,37 +18,34 @@ const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
     }
   };
 
-  
-
   const handleViewModalCancel = () => {
     setIsViewModalOpen(false);
   };
 
-  
   return (
     <>
-         <Dropdown
-      menu={{
-        items: [
-          {
-            key: "view",
-            label: <span className="text-blue-400">View Details</span>,
-            icon: <FaEye />,
-            onClick: () => handleMenuClick("view"),
-          },
-        ],
-      }}
-      trigger={["click"]}
-    >
-      <Button type="text" icon={<FaEllipsisV />} />
-    </Dropdown>
+      <Dropdown
+        menu={{
+          items: [
+            {
+              key: "view",
+              label: <span className="text-blue-400">View Details</span>,
+              icon: <FaEye />,
+              onClick: () => handleMenuClick("view"),
+            },
+          ],
+        }}
+        trigger={["click"]}
+      >
+        <Button type="text" icon={<FaEllipsisV />} />
+      </Dropdown>
 
-    <ViewDetailTransactionsModal
-      open={isViewModalOpen}
-      record={record}
-      onCancel={handleViewModalCancel}
-    />
-  </>
+      <ViewDetailTransactionsModal
+        open={isViewModalOpen}
+        record={record}
+        onCancel={handleViewModalCancel}
+      />
+    </>
   );
 };
 
