@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 import { message } from "antd";
-import PurchaseTransactionHistory from "./transactions-history/purchase-transaction/transactions-history";
+import PurchaseTransactionHistory from "./transactions-history/transactions-history";
 
 const TransactionHistoryPage = () => {
   const [messageApi, contextHolder] = message.useMessage();

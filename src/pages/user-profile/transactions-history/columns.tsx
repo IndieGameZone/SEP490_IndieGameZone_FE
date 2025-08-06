@@ -109,34 +109,33 @@ export const columns: TableProps<Transaction>["columns"] = [
       );
     },
   },
+  // {
+  //   title: "Game Price",
+  //   dataIndex: "gamePrice",
+  //   key: "gamePrice",
+  //   width: 150,
+  //   render: (value: number, record: Transaction) => {
+  //     const type = record.type;
+  //     const isPurchase = type === "PurchaseGame";
+  //     const isWallet = record.paymentMethod === "Wallet";
+  //     const isPayOS = record.paymentMethod === "PayOS";
 
-  {
-    title: "Game Price",
-    dataIndex: "gamePrice",
-    key: "gamePrice",
-    width: 150,
-    render: (value: number, record: Transaction) => {
-      const type = record.type;
-      const isPurchase = type === "PurchaseGame";
-      const isWallet = record.paymentMethod === "Wallet";
-      const isPayOS = record.paymentMethod === "PayOS";
+  //     if (isPurchase) {
+  //       return (
+  //         <span className="font-semibold text-red-500">
+  //           -{value.toLocaleString("vi-VN")}
+  //           {isWallet ? (
+  //             <CoinIcon className="inline size-3 ms-1 mb-1" />
+  //           ) : isPayOS ? (
+  //             <span className="ms-1">₫</span>
+  //           ) : null}
+  //         </span>
+  //       );
+  //     }
 
-      if (isPurchase) {
-        return (
-          <span className="font-semibold text-red-500">
-            -{value.toLocaleString("vi-VN")}
-            {isWallet ? (
-              <CoinIcon className="inline size-3 ms-1 mb-1" />
-            ) : isPayOS ? (
-              <span className="ms-1">₫</span>
-            ) : null}
-          </span>
-        );
-      }
-
-      return;
-    },
-  },
+  //     return;
+  //   },
+  // },
   {
     title: "Donation",
     dataIndex: "donation",
@@ -169,7 +168,6 @@ export const columns: TableProps<Transaction>["columns"] = [
     title: "Description",
     dataIndex: "description",
     key: "description",
-    width: 400,
   },
   {
     title: "Status",
