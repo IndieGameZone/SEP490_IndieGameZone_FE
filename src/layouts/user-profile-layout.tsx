@@ -71,17 +71,17 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
       type: "group",
       children: [
         {
-          key: "/account/wallet-and-transactions",
-          label: "Wallet & Transactions",
-          onClick: () => {
-            navigate("/account/wallet-and-transactions");
-          },
-        },
-        {
           key: "/account/orders",
           label: "Orders",
           onClick: () => {
             navigate("/account/orders");
+          },
+        },
+        {
+          key: "/account/transaction-history",
+          label: "Transaction History",
+          onClick: () => {
+            navigate("/account/transaction-history");
           },
         },
       ],
@@ -147,8 +147,15 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
           <h1 className="font-bold text-2xl">My Account</h1>
         </div>
         <div className="grid grid-cols-12">
-          <div className="col-span-2 min-h-72" style={{ background: colorBgContainer }}>
-            <Menu selectedKeys={[location.pathname]} mode="inline" items={items} />
+          <div
+            className="col-span-2 min-h-72"
+            style={{ background: colorBgContainer }}
+          >
+            <Menu
+              selectedKeys={[location.pathname]}
+              mode="inline"
+              items={items}
+            />
           </div>
           <div className="col-span-10" style={{ background: colorBgContainer }}>
             {children}

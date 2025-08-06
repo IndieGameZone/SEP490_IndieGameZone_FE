@@ -1,10 +1,9 @@
 import { useEffect } from "react";
-import UserWallet from "./wallet/user-wallet";
 import Cookies from "js-cookie";
 import { message } from "antd";
 import TransactionHistoryTab from "./transactions-history/transaction-history-tab";
 
-const WalletAndTransactionsPage = () => {
+const TransactionHistoryPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
   useEffect(() => {
     const transactionType = Cookies.get("pendingTransaction");
@@ -23,12 +22,16 @@ const WalletAndTransactionsPage = () => {
   }, []);
 
   return (
-    <div>
+    <div className="p-5">
       {contextHolder}
-      <UserWallet />
+      <h2 className="text-xl font-semibold">Transaction History</h2>
+      <p className="text-sm text-zinc-400">
+        Track completed transactions, check payment statuses, and manage your
+        spending history in one convenient place.
+      </p>
       <TransactionHistoryTab />
     </div>
   );
 };
 
-export default WalletAndTransactionsPage;
+export default TransactionHistoryPage;

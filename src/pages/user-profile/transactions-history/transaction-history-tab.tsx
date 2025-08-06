@@ -40,8 +40,12 @@ const TransactionHistoryTab = () => {
   ];
 
   return (
-    <div className="px-5 bg-zinc-900 rounded mt-2 pb-5">
-      <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+    <div className="bg-zinc-900 rounded mt-2">
+      <Tabs
+        defaultActiveKey="1"
+        items={items}
+        onChange={onChange}
+      />
     </div>
   );
 };

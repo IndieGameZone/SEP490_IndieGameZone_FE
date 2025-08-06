@@ -1,6 +1,4 @@
 import { Tabs, TabsProps } from "antd";
-import { CiBank } from "react-icons/ci";
-import { PiHandWithdraw } from "react-icons/pi";
 import DevCommercialPackagePage from "./commercial-packages/dev-commercial-package-page";
 import DevCommercialPackageRegistrations from "./manage-commercial-package-registrations/dev-commercial-package-registrations";
 import { TbPackages } from "react-icons/tb";

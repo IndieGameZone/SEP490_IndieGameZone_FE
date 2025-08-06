@@ -32,6 +32,7 @@ const PurchaseTransactionHistory = () => {
                 description: item.description,
                 createdAt: item.createdAt,
                 status: item.status,
+                user: item.user,
               };
             }
           );

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Table, Typography } from "antd";
+import { Table } from "antd";
 import type { ReportItem } from "./columns";
 import { reportColumns } from "./columns";
 import { getOrderByUserId } from "@/lib/api/payment-api";
 import useAuthStore from "@/store/use-auth-store";
-
-const { Title } = Typography;
 
 const UserOrdersPage: React.FC = () => {
   const [orders, setReports] = useState<ReportItem[]>([]);
@@ -33,11 +31,13 @@ const UserOrdersPage: React.FC = () => {
   }, [profile]);
 
   return (
-    <>
-      <div className="flex justify-center py-5">
-        <Title level={2}>Manage Orders</Title>
-      </div>
-      <div className="container mx-auto px-4">
+    <div className="p-5">
+      <h2 className="text-xl font-semibold">Order History</h2>
+      <p className="text-sm text-zinc-400">
+        Browse your full order history including digital purchases and
+        donations.
+      </p>
+      <div className="mt-5">
         <Table
           dataSource={orders}
           columns={reportColumns}
@@ -54,7 +54,7 @@ const UserOrdersPage: React.FC = () => {
           bordered
         />
       </div>
-    </>
+    </div>
   );
 };
 

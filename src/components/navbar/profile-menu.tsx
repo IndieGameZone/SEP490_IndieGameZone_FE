@@ -4,10 +4,11 @@ import React from "react";
 import { CiUser } from "react-icons/ci";
 import {
   FaDoorOpen,
+  FaHistory,
   FaLightbulb,
+  FaShoppingBasket,
   FaStar,
   FaUserAlt,
-  FaWallet,
 } from "react-icons/fa";
 import { PiListHeartDuotone } from "react-icons/pi";
 import { RiBookShelfLine } from "react-icons/ri";
@@ -52,10 +53,16 @@ const ProfileMenu = () => {
       onClick: () => navigate("/account/ratings-and-reviews"),
     },
     {
-      key: "wallet-and-transactions",
-      label: "Wallet & Transactions",
-      icon: <FaWallet />,
-      onClick: () => navigate("/account/wallet-and-transactions"),
+      key: "orders",
+      label: "Your Orders",
+      icon: <FaShoppingBasket />,
+      onClick: () => navigate("/account/orders"),
+    },
+    {
+      key: "transaction-history",
+      label: "Transaction History",
+      icon: <FaHistory />,
+      onClick: () => navigate("/account/transaction-history"),
     },
     {
       key: "5",
