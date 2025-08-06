@@ -52,28 +52,10 @@ export const columns: TableProps<Transaction>["columns"] = [
     key: "amount",
     width: 120,
     align: "right" as const,
-    render: (amount: number, record: Transaction) => (
-      <span
-        className={`font-semibold ${
-          record.status === "Pending"
-            ? "text-orange-500"
-            : record.type === "Deposit"
-            ? "text-green-500"
-            : "text-red-500"
-        }`}
-      >
-        {record.type === "Deposit" ? "+" : "-"}
-        {record.type === "Deposit" ? (
-          <>
-            {amount.toLocaleString("vi-VN")}
-            <CoinIcon className="inline size-3 ms-1 mb-1" />
-          </>
-        ) : (
-          <>
-            {amount.toLocaleString("vi-VN")}
-            <CoinIcon className="inline size-3 ms-1 mb-1" />
-          </>
-        )}
+    render: (amount: number) => (
+      <span className={`font-semibold text-green-500`}>
+        +{amount.toLocaleString("vi-VN")}
+        <CoinIcon className="inline size-3 ms-1 mb-1" />
       </span>
     ),
   },

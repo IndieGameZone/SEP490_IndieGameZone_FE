@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button, Table } from "antd";
 import { withdrawRequestColumns } from "./withdraw-request/columns";
 import useAuthStore from "@/store/use-auth-store";
@@ -8,7 +8,7 @@ import CreateWithdrawRequest from "./withdraw-request/create-withdraw-request";
 import { PiHandWithdraw } from "react-icons/pi";
 import DevWallet from "./wallet/dev-wallet";
 
-const DevWalletPage: React.FC = () => {
+const DevWalletPage = () => {
   const [withdrawRequests, setWithdrawRequests] = useState<Withdraw[]>([]);
   const { profile } = useAuthStore();
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -35,7 +35,7 @@ const DevWalletPage: React.FC = () => {
   }, [fetchWithdrawRequests]);
 
   return (
-    <div className="bg-zinc-900">
+    <div className="bg-zinc-900 pb-5">
       <DevWallet />
       <div className="flex justify-between items-center m-4">
         <div className="flex items-center gap-2">

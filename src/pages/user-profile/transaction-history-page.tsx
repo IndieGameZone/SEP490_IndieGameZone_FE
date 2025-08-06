@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 import { message } from "antd";
-import TransactionHistoryTab from "./transactions-history/transaction-history-tab";
+import PurchaseTransactionHistory from "./transactions-history/purchase-transaction/transactions-history";
 
 const TransactionHistoryPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -25,11 +25,11 @@ const TransactionHistoryPage = () => {
     <div className="p-5">
       {contextHolder}
       <h2 className="text-xl font-semibold">Transaction History</h2>
-      <p className="text-sm text-zinc-400">
+      <p className="text-sm text-zinc-400 mb-5">
         Track completed transactions, check payment statuses, and manage your
         spending history in one convenient place.
       </p>
-      <TransactionHistoryTab />
+      <PurchaseTransactionHistory />
     </div>
   );
 };

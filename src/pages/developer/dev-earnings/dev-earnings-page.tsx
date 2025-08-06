@@ -4,6 +4,8 @@ import { CiBank } from "react-icons/ci";
 import DevWalletPage from "./dev-wallet-page";
 import { useHashState } from "@/hooks/use-hash-state";
 import { FaWallet } from "react-icons/fa";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import EarningTransactionsPage from "./earning-transactions-page";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -12,6 +14,11 @@ const items: MenuItem[] = [
     key: "wallet",
     label: "Wallet",
     icon: <FaWallet />,
+  },
+  {
+    key: "earning-transactions",
+    label: "Earning Transactions",
+    icon: <FaMoneyBillTrendUp />,
   },
   {
     key: "bank-information",
@@ -41,6 +48,9 @@ const DevEarningsPage = () => {
         </div>
         <div className="col-span-9">
           {selectedKey === "wallet" && <DevWalletPage />}
+          {selectedKey === "earning-transactions" && (
+            <EarningTransactionsPage />
+          )}
           {selectedKey === "bank-information" && <BankInformationPage />}
         </div>
       </div>
