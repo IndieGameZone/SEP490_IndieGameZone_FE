@@ -23,6 +23,7 @@ export const createReview = async (userId: string, gameId: string, reviewData: R
     return handleApiError(error);
   }
 };
+
 export const getReviewByGameId = async (gameId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/games/${gameId}/reviews`);
@@ -31,9 +32,19 @@ export const getReviewByGameId = async (gameId: string) => {
     return handleApiError(error);
   }
 };
+
 export const getSummaryReview = async (gameId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/games/${gameId}/reviews-summary`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const getReviewStatistic = async (gameId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/games/${gameId}/reviews-statistic`);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);

@@ -351,6 +351,7 @@ export const getRecommendedGames = async (userId: string) => {
     return handleApiError(error);
   }
 };
+
 export const getDevActiveGames = async (developerId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/users/${developerId}/active-games`);

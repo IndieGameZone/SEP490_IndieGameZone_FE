@@ -77,18 +77,18 @@ const UpdateGameInfo = () => {
       allowDonation: values.allowDonation,
       averageSession: values.averageSession,
       categoryId: values.categoryId,
-      coverImage: form.getFieldValue("coverImage"),
+      coverImage: game.coverImage,
       description: values.description,
-      installInstruction: values.installInstruction,
+      installInstruction: game.installInstruction,
       languageIds: values.languageIds,
       name: values.name,
-      price: values.price,
+      price: values.pricingOption == "Free" ? 0 : values.price,
       shortDescription: values.shortDescription,
       status: values.releaseStatus,
       tagIds: values.tagIds,
-      videoLink: values.videoLink,
+      videoLink: game.videoLink,
       visibility: values.visibility,
-      versionDescription: game.versionDescription
+      versionDescription: game.versionDescription,
     });
     setLoading(false);
     if (result.error) {
@@ -336,7 +336,6 @@ const UpdateGameInfo = () => {
               form.setFieldValue("pricingOption", e.target.value);
               setIsFree(e.target.value == "Free");
             }}
-            disabled
           />
         </Form.Item>
         <Form.Item<FieldType>
@@ -357,7 +356,6 @@ const UpdateGameInfo = () => {
             parser={(value) =>
               value?.replace(/₫|\s|,/g, "") as unknown as number
             }
-            disabled
           />
         </Form.Item>
         <Form.Item<FieldType>

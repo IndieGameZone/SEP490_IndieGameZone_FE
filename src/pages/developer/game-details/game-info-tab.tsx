@@ -22,7 +22,7 @@ import {
   VisibilityStatus,
 } from "@/components/status-tags";
 import GameNotFound from "@/pages/errors/game-not-found";
-import { CiWarning } from "react-icons/ci";
+import { CiClock1, CiWarning } from "react-icons/ci";
 import ViewCensorLogButton from "../../../components/buttons/view-censor-log-button";
 import { GameCensorLog } from "@/types/game";
 import ViewAllVersionButton from "@/components/buttons/view-all-version-button";
@@ -350,13 +350,30 @@ const GameInfoTab = () => {
       <div className="col-span-8 bg-zinc-800 p-3 rounded">
         {game.censorStatus == "PendingManualReview" && (
           <div className="bg-orange-900 p-3 rounded mb-2 border-orange-500 border flex gap-3 items-center">
-            <CiWarning className="size-9" />
+            <CiClock1 className="size-10" />
             <div>
-              Your game content has been flagged as {" "}
-              <span className="font-bold">not safe/appropriate</span> by AI.
-              <br />
-              Our moderation team will examine your game to ensure it is safe
-              before it is made public.
+              <p className="font-semibold">
+                Right now, your game going through a review process.
+              </p>
+              <p className="text-sm">
+                We're just doing the final checks, so it'll be available to the
+                public soon!
+              </p>
+            </div>
+          </div>
+        )}
+        {game.censorStatus == "Rejected" && (
+          <div className="bg-red-900 p-3 rounded mb-2 border-red-500 border flex gap-3 items-center">
+            <CiWarning className="size-10" />
+            <div>
+              <p className="font-semibold">
+                We've completed the review, and unfortunately, your game hasn't
+                been approved.
+              </p>
+              <p className="text-sm">
+                Please check the review notes, make the necessary changes, and
+                feel free to submit again when you're ready!
+              </p>
             </div>
           </div>
         )}
