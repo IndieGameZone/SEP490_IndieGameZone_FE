@@ -141,10 +141,11 @@ const GameDetailsPage = () => {
   if (loading) {
     return <Loader />;
   }
-  if (error) {
+  if (!game) return null;
+
+  if (error || game.censorStatus != "Approved" || game.visibility != "Public") {
     return <GameNotFound />;
   }
-  if (!game) return null;
 
   const slides = [
     { src: game.coverImage },
