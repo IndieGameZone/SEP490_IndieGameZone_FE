@@ -20,11 +20,15 @@ import { BsFileEarmarkPost } from "react-icons/bs";
 import useAuthStore from "@/store/use-auth-store";
 import useFollowStore from "@/store/use-follow-store";
 import { useGlobalMessage } from "@/components/message-provider";
+import { useHashState } from "@/hooks/use-hash-state";
+import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
 
 const ViewProfilePage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const { fetchUserById, loading, error, user } = useUserStore();
+  const [selectedTab, setSelectedTab] = useHashState("posts");
+  const { copyLink } = useCopyCurrentLink();
   const { profile } = useAuthStore();
   const {
     followDeveloper,
@@ -38,7 +42,7 @@ const ViewProfilePage = () => {
 
   const tabItems: TabsProps["items"] = [
     {
-      key: "1",
+      key: "posts",
       label: (
         <div className="flex gap-2 items-center">
           <BsFileEarmarkPost />
@@ -48,7 +52,7 @@ const ViewProfilePage = () => {
       children: <ViewUserPosts />,
     },
     {
-      key: "2",
+      key: "games",
       label: (
         <div className="flex gap-2 items-center">
           <FaGamepad />
@@ -86,6 +90,7 @@ const ViewProfilePage = () => {
       label: <div>Copy link to user</div>,
       icon: <FaLink />,
       key: "0",
+      onClick: () => copyLink(),
     },
     {
       label: <div>Report user</div>,
@@ -123,106 +128,115 @@ const ViewProfilePage = () => {
   }
   return (
     <MaxWidthWrapper className="py-5">
-      <div className="grid grid-cols-12 gap-3">
-        <div className="col-span-4 bg-zinc-900 border border-zinc-700 flex flex-col items-center py-5 px-10 rounded hover:border-orange-500 duration-300">
-          <div className="relative">
-            {user?.avatar ? (
-              <img
-                src={user?.avatar}
-                alt=""
-                className="bg-zinc-700 size-36 rounded-full object-cover border-2 border-white"
-              />
-            ) : (
-              <div className="bg-zinc-700 size-36 rounded-full flex justify-center items-center border-2 border-white">
-                <CiUser className="size-16" />
+      <div className="md:grid grid-cols-12 gap-3">
+        <div className="col-span-4">
+          <div className="bg-zinc-900 border border-zinc-700 flex flex-col items-center py-5 px-10 rounded hover:border-orange-500 duration-300">
+            <div className="relative">
+              {user?.avatar ? (
+                <img
+                  src={user?.avatar}
+                  alt=""
+                  className="bg-zinc-700 size-36 rounded-full object-cover border-2 border-white"
+                />
+              ) : (
+                <div className="bg-zinc-700 size-36 rounded-full flex justify-center items-center border-2 border-white">
+                  <CiUser className="size-16" />
+                </div>
+              )}
+              {user?.role.name == "Developer" && (
+                <div className="absolute right-1/2 translate-x-1/2 bottom-2 bg-orange-600 text-sm px-2 rounded drop-shadow">
+                  Dev
+                </div>
+              )}
+            </div>
+            <div className="text-xl font-semibold mt-2">{user?.userName}</div>
+            <div className="text-sm text-zinc-500">{user?.email}</div>
+            <div className="flex justify-center mt-2 gap-5">
+              <div className="flex flex-col items-center">
+                <p className="text-2xl font-bold">0</p>
+                <p className="text-sm text-zinc-500">Following</p>
               </div>
-            )}
-            {user?.role.name == "Developer" && (
-              <div className="absolute right-1/2 translate-x-1/2 bottom-2 bg-orange-600 text-sm px-2 rounded drop-shadow">
-                Dev
+
+              <div className="flex flex-col items-center">
+                <p className="text-2xl font-bold">{followers}</p>
+                <p className="text-sm text-zinc-500">Followers</p>
               </div>
+
+              <div className="flex flex-col items-center">
+                <p className="text-2xl font-bold">0</p>
+                <p className="text-sm text-zinc-500">Posts</p>
+              </div>
+            </div>
+
+            {user?.bio && (
+              <>
+                <hr className="border-zinc-600 my-3 w-full" />
+                <TiptapView value={user?.bio} />
+              </>
             )}
-          </div>
-          <div className="text-xl font-semibold mt-2">{user?.userName}</div>
-          <div className="text-sm text-zinc-500">{user?.email}</div>
-          <div className="flex justify-center mt-2 gap-5">
-            <div className="flex flex-col items-center">
-              <p className="text-2xl font-bold">0</p>
-              <p className="text-sm text-zinc-500">Following</p>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <p className="text-2xl font-bold">{followers}</p>
-              <p className="text-sm text-zinc-500">Followers</p>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <p className="text-2xl font-bold">0</p>
-              <p className="text-sm text-zinc-500">Posts</p>
-            </div>
-          </div>
-
-          {user?.bio && (
-            <>
+            {(user?.facebookLink || user?.youtubeChannelLink) && (
               <hr className="border-zinc-600 my-3 w-full" />
-              <TiptapView value={user?.bio} />
-            </>
-          )}
-          {(user?.facebookLink || user?.youtubeChannelLink) && (
-            <hr className="border-zinc-600 my-3 w-full" />
-          )}
-          {user?.facebookLink && (
-            <Link
-              to={user.facebookLink}
-              className="flex items-center w-full gap-2"
-            >
-              <FaFacebook />
-              <p className="hover:underline">
-                {user.facebookLink.split("/").pop()}
-              </p>
-            </Link>
-          )}
-          {user?.youtubeChannelLink && (
-            <Link
-              to={user.youtubeChannelLink}
-              className="flex items-center w-full gap-2"
-            >
-              <FaYoutube />
-              <p className="hover:underline">
-                {user.youtubeChannelLink.split("/").pop()}
-              </p>
-            </Link>
-          )}
-          {profile?.id == userId ? (
-            <div className="flex w-full mt-3">
-              <Button
-                className="flex-1"
-                onClick={() => {
-                  navigate("/account/profile");
-                }}
+            )}
+            {user?.facebookLink && (
+              <Link
+                to={user.facebookLink}
+                className="flex items-center w-full gap-2"
               >
-                Edit profile
-              </Button>
-            </div>
-          ) : (
-            <div className="flex  gap-2 mt-3">
-              <Button
-                style={{ width: 250 }}
-                type={isFollowed ? "default" : "primary"}
-                onClick={handleFollowClick}
-                loading={followLoading}
-                disabled={profile?.id === userId}
+                <FaFacebook />
+                <p className="hover:underline">
+                  {user.facebookLink.split("/").pop()}
+                </p>
+              </Link>
+            )}
+            {user?.youtubeChannelLink && (
+              <Link
+                to={user.youtubeChannelLink}
+                className="flex items-center w-full gap-2"
               >
-                {isFollowed ? "Following" : "Follow"}
-              </Button>
-              <Dropdown menu={{ items }}>
-                <Button icon={<IoMdMore />}></Button>
-              </Dropdown>
-            </div>
-          )}
+                <FaYoutube />
+                <p className="hover:underline">
+                  {user.youtubeChannelLink.split("/").pop()}
+                </p>
+              </Link>
+            )}
+            {profile?.id == userId ? (
+              <div className="flex w-full mt-3">
+                <Button
+                  className="flex-1"
+                  onClick={() => {
+                    navigate("/account/profile");
+                  }}
+                >
+                  Edit profile
+                </Button>
+              </div>
+            ) : (
+              <div className="flex  gap-2 mt-3">
+                <Button
+                  style={{ width: 250 }}
+                  type={isFollowed ? "default" : "primary"}
+                  onClick={handleFollowClick}
+                  loading={followLoading}
+                  disabled={profile?.id === userId}
+                >
+                  {isFollowed ? "Following" : "Follow"}
+                </Button>
+                <Dropdown menu={{ items }}>
+                  <Button icon={<IoMdMore />}></Button>
+                </Dropdown>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="col-span-8">
-          <Tabs type="card" items={tabItems} />
+
+        <div className="col-span-8 mt-3 md:mt-0">
+          <Tabs
+            type="card"
+            items={tabItems}
+            activeKey={selectedTab}
+            onChange={(value) => setSelectedTab(value)}
+            tabBarStyle={{ margin: 0 }}
+          />
         </div>
       </div>
     </MaxWidthWrapper>

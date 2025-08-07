@@ -150,6 +150,7 @@ const FilterPanel = () => {
               mode="multiple"
               allowClear
               placeholder="Search for other tags"
+              optionFilterProp="label"
               onChange={(val) => setTags(val)}
               value={tags}
               options={tagOptions}
@@ -181,6 +182,7 @@ const FilterPanel = () => {
             <Select
               mode="multiple"
               allowClear
+              optionFilterProp="label"
               placeholder="Search for other languages"
               onChange={(val) => setLanguages(val)}
               value={languages}
