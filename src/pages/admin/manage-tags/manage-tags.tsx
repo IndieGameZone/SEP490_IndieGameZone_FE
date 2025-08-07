@@ -1,5 +1,14 @@
 import { Tag } from "@/types/tag";
-import { Button, Input, InputRef, Space, Table, TableColumnType, TableProps, Tabs } from "antd";
+import {
+  Button,
+  Input,
+  InputRef,
+  Space,
+  Table,
+  TableColumnType,
+  TableProps,
+  Tabs,
+} from "antd";
 import { useEffect, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteForever } from "react-icons/md";
@@ -9,12 +18,14 @@ import DeleteTag from "./delete-tags";
 import useTagStore from "@/store/use-tag-store";
 import { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
-import { FaSearch } from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
 
 type DataIndex = keyof Tag;
 const ManageTags = () => {
+  const [activeLetter, setActiveLetter] = useState<string | null>(null);
   const searchInput = useRef<InputRef>(null);
-  const { loading, fetchPostTags, fetchGameTags, postTags, gameTags } = useTagStore();
+  const { loading, fetchPostTags, fetchGameTags, postTags, gameTags } =
+    useTagStore();
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -36,11 +47,17 @@ const ManageTags = () => {
     fetchGameTags();
     fetchPostTags();
   };
+
   useEffect(() => {
     fetchGameTags();
     fetchPostTags();
   }, []);
-  const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
+
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: FilterDropdownProps["confirm"],
+    dataIndex: DataIndex
+  ) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -51,28 +68,80 @@ const ManageTags = () => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Tag> => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+  const filterTagsByLetter = (tags: Tag[]) => {
+    if (!activeLetter) return tags;
+    return tags.filter((tag) =>
+      tag.name.toLowerCase().startsWith(activeLetter.toLowerCase())
+    );
+  };
+
+  const renderLetterFilter = () => {
+    const alphabet = Array.from({ length: 26 }, (_, i) =>
+      String.fromCharCode(65 + i)
+    );
+    return (
+      <div className="flex flex-wrap gap-2">
+        <Button
+          size="small"
+          type={!activeLetter ? "primary" : "default"}
+          onClick={() => setActiveLetter(null)}
+        >
+          All
+        </Button>
+        {alphabet.map((letter) => (
+          <Button
+            key={letter}
+            size="small"
+            type={activeLetter === letter ? "primary" : "default"}
+            onClick={() => setActiveLetter(letter)}
+          >
+            {letter}
+          </Button>
+        ))}
+      </div>
+    );
+  };
+
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): TableColumnType<Tag> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
             icon={<FaSearch />}
             size="small"
             style={{ width: 90 }}
           >
             Search
           </Button>
-          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
             Reset
           </Button>
           <Button
@@ -98,7 +167,12 @@ const ManageTags = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => <FaSearch style={{ color: filtered ? "#FF6600" : undefined }} className="w-5" />,
+    filterIcon: (filtered: boolean) => (
+      <FaSearch
+        style={{ color: filtered ? "#FF6600" : undefined }}
+        className="w-5"
+      />
+    ),
     onFilter: (value, record) =>
       record[dataIndex]
         .toString()
@@ -153,8 +227,15 @@ const ManageTags = () => {
       key: "game",
       label: "Game Tags",
       children: (
-        <div>
-          <Table<Tag> columns={columns} dataSource={gameTags} loading={loading} bordered rowKey={(x) => x.name} />
+        <div className="bg-white">
+          <div className="p-3">{renderLetterFilter()}</div>
+          <Table<Tag>
+            columns={columns}
+            dataSource={filterTagsByLetter(gameTags)}
+            loading={loading}
+            bordered
+            rowKey={(x) => x.name}
+          />
         </div>
       ),
     },
@@ -162,8 +243,15 @@ const ManageTags = () => {
       key: "post",
       label: "Post Tags",
       children: (
-        <div>
-          <Table<Tag> columns={columns} dataSource={postTags} loading={loading} bordered rowKey={(x) => x.name} />
+        <div className="bg-white">
+          <div className="p-3">{renderLetterFilter()}</div>
+          <Table<Tag>
+            columns={columns}
+            dataSource={filterTagsByLetter(postTags)}
+            loading={loading}
+            bordered
+            rowKey={(x) => x.name}
+          />
         </div>
       ),
     },
@@ -172,14 +260,27 @@ const ManageTags = () => {
   return (
     <div className="px-5">
       <div className="mb-3 flex justify-between py-3">
-        <h1 className="text-3xl font-bold mb-5">Manage Tags</h1>
-        <Button type="primary" onClick={() => setAddModalOpen(true)}>
+        <h1 className="text-3xl font-bold">Manage Tags</h1>
+        <Button
+          type="primary"
+          onClick={() => setAddModalOpen(true)}
+          icon={<FaPlus />}
+        >
           Add New Tags
         </Button>
       </div>
-      <Tabs defaultActiveKey="game" items={items} />
+      <Tabs
+        type="card"
+        defaultActiveKey="game"
+        items={items}
+        tabBarStyle={{ margin: 0 }}
+      />
 
-      <AddTag open={addModalOpen} onClose={() => setAddModalOpen(false)} onSuccess={handleRefresh} />
+      <AddTag
+        open={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        onSuccess={handleRefresh}
+      />
 
       <EditTag
         open={editModalOpen}

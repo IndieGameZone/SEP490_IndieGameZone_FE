@@ -8,6 +8,7 @@ import useReviewStore from "@/store/use-review-store";
 import { useEffect, useState } from "react";
 import Loader from "@/components/loader";
 import { checkGameOwnership } from "@/lib/api/game-api";
+import { getReviewStatistic } from "@/lib/api/review-api";
 
 const filterOptions = [
   {
@@ -54,9 +55,15 @@ const GameReviews = () => {
   const { reviews, fetchReviewsByGameId, loading, renderKey } =
     useReviewStore();
 
+  const fetchReviewStatistic = async (gameId: string) => {
+    const result = await getReviewStatistic(gameId);
+    console.log(result);
+  };
+
   useEffect(() => {
     if (game?.id) {
       fetchReviewsByGameId(game.id);
+      fetchReviewStatistic(game.id);
     }
   }, [renderKey]);
 
