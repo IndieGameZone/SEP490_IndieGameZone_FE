@@ -69,7 +69,9 @@ export const addGame = async (developerId: string, request: AddGameRequest) => {
   const formData = new FormData();
   formData.append("Name", request.name);
   formData.append("CoverImage", request.coverImage);
-  formData.append("VideoLink", request.videoLink);
+  if (request.videoLink) {
+    formData.append("VideoLink", request.videoLink);
+  }
   formData.append("ShortDescription", request.shortDescription);
   formData.append("InstallInstruction", request.installInstruction);
   formData.append("Description", request.description);

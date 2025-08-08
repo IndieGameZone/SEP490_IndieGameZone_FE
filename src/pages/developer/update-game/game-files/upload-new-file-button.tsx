@@ -52,6 +52,8 @@ const UploadNewFileButton = () => {
   const messageApi = useGlobalMessage();
   const [formDataCache, setFormDataCache] = useState<FieldType | null>(null);
   const { game, rerender, gameFiles } = useGameStore();
+  const [isScanning, setIsScanning] = useState(false);
+
   const platformsOptions = useMemo(() => {
     return platforms.map((x) => ({ value: x.id, label: x.name }));
   }, [platforms]);
@@ -133,25 +135,29 @@ const UploadNewFileButton = () => {
             (progressEvent.loaded * 100) / (progressEvent.total || 1)
           );
           setUploadProgress(percent);
+
+          if (percent === 100) {
+            setIsScanning(true);
+          }
         },
       });
+      setIsScanning(false);
       return response.data;
     } catch (error: any) {
+      setIsScanning(false);
       if (
         error.response?.status === 400 &&
         error.response?.data?.detail ===
           "File scan failed. Please ensure the file is safe and appropriate."
       ) {
-        const message =
-          "The file couldn't be uploaded because it didn't pass our safety check. Please make sure the file is safe and try again.";
-        messageApi.error(message);
-        setErrorMessage(message);
+        throw new Error(
+          "The file couldn't be uploaded because it didn't pass our safety check. Please make sure the file is safe and try again."
+        );
       } else {
-        messageApi.error("Upload failed! Please try again.");
-        setErrorMessage("Upload failed! Please try again.");
+        throw new Error(
+          "The file couldn't be uploaded because it didn't pass our safety check. Please make sure the file is safe and try again."
+        );
       }
-
-      throw error;
     }
   };
 
@@ -199,8 +205,10 @@ const UploadNewFileButton = () => {
       }, 1000);
     } catch (err: any) {
       setFormDataCache(values);
-      messageApi.error("Something went wrong! Please try again.");
-      setErrorMessage("Something went wrong! Please try again.");
+      messageApi.error(
+        err.message || "Something went wrong! Please try again."
+      );
+      setErrorMessage(err.message || "Something went wrong! Please try again.");
     } finally {
       setLoading(false);
       setUploadProgress(0);
@@ -365,6 +373,14 @@ const UploadNewFileButton = () => {
           <Alert
             message={errorMessage}
             type="error"
+            showIcon
+            style={{ marginBottom: 16 }}
+          />
+        )}
+        {loading && isScanning && (
+          <Alert
+            message="Upload complete, scanning file on server..."
+            type="info"
             showIcon
             style={{ marginBottom: 16 }}
           />
