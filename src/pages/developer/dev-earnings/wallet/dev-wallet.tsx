@@ -1,5 +1,4 @@
 import { FaRegQuestionCircle, FaWallet } from "react-icons/fa";
-import TopUpButton from "./top-up-button";
 import { Link } from "react-router-dom";
 import CoinIcon from "@/components/coin-icon";
 import { useEffect } from "react";
@@ -46,7 +45,6 @@ const DevWallet = () => {
             </p>
           </div>
         </div>
-        <TopUpButton userId={profile.id} balance={profile.balance} />
       </div>
     </div>
   );
