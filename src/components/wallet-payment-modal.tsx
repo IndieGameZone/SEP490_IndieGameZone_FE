@@ -12,7 +12,7 @@ interface WalletPaymentModalProps {
   title?: string;
   itemName: string;
   userBalance: number;
-  onConfirm: () => Promise<boolean>; 
+  onConfirm: () => Promise<boolean>;
   onCancel: () => void;
 }
 
@@ -37,7 +37,7 @@ const WalletPaymentModal = ({
     setIsLoading(true);
     const success = await onConfirm();
     setIsLoading(false);
-    if (success) onCancel(); 
+    if (success) onCancel();
   };
 
   return (
@@ -50,38 +50,28 @@ const WalletPaymentModal = ({
     >
       <div>
         <p className="text-lg">
-          You're about to use <strong>{amount.toLocaleString("vi-VN")}</strong>{" "}
-          <CoinIcon className="inline mb-1" /> to buy{" "}
-          <strong>'{itemName}'</strong>.
+          You're about to use <strong>{amount.toLocaleString("vi-VN")}</strong> <CoinIcon className="inline mb-1" /> to
+          buy <strong>'{itemName}'</strong>.
         </p>
         <div className="mt-5 flex justify-center items-center bg-zinc-900 border border-zinc-700 gap-5 py-3 px-5 rounded">
           <div className="text-2xl">
-            {userBalance.toLocaleString("vi-VN")}{" "}
-            <CoinIcon className="inline mb-1" size="size-6" />
+            {userBalance.toLocaleString("vi-VN")} <CoinIcon className="inline mb-1" size="size-6" />
           </div>
           <FaArrowRight className="size-6" />
           <div className="text-2xl text-red-500">
-            {hasSufficientBalance
-              ? `${(userBalance - amount).toLocaleString("vi-VN")} `
-              : "Insufficient"}{" "}
+            {hasSufficientBalance ? `${(userBalance - amount).toLocaleString("vi-VN")} ` : "Insufficient"}{" "}
             <CoinIcon className="inline mb-1" size="size-6" />
           </div>
         </div>
-        <p className="text-center text-sm text-zinc-400 italic mb-5">
-          Exchange rate: 1 point = 1 VND
-        </p>
+        <p className="text-center text-sm text-zinc-400 italic mb-5">Exchange rate: 1 point = 1 VND</p>
         <div className="mb-4 text-sm">
           <p>
-            <span className="font-semibold">
-              Current Balance: {userBalance.toLocaleString("vi-VN")}
-            </span>{" "}
+            <span className="font-semibold">Current Balance: {userBalance.toLocaleString("vi-VN")}</span>{" "}
             <CoinIcon className="inline mb-1" />
           </p>
           <p className="mt-1">
             <span className="font-semibold">Remaining After Payment:</span>{" "}
-            {hasSufficientBalance
-              ? `${(userBalance - amount).toLocaleString("vi-VN")}`
-              : "Insufficient"}{" "}
+            {hasSufficientBalance ? `${(userBalance - amount).toLocaleString("vi-VN")}` : "Insufficient"}{" "}
             <CoinIcon className="inline mb-1" />
           </p>
         </div>
@@ -89,12 +79,7 @@ const WalletPaymentModal = ({
           <Button onClick={onCancel} disabled={isLoading}>
             Cancel
           </Button>
-          <Button
-            type="primary"
-            onClick={handleOk}
-            loading={isLoading}
-            disabled={!hasSufficientBalance}
-          >
+          <Button type="primary" onClick={handleOk} loading={isLoading} disabled={!hasSufficientBalance}>
             Confirm Purchase
           </Button>
         </div>

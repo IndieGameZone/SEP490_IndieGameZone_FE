@@ -2,21 +2,21 @@ import { formatDateTime } from "@/lib/date-n-time";
 import { ReportItem } from "@/types/report";
 import { Tag } from "antd";
 import { ColumnsType } from "antd/es/table";
+import ActionMenu from "./action-menu";
 
-export const reportColumns: ColumnsType<ReportItem> = [
+export const getReceivedReportColumns = (onRefresh?: () => void): ColumnsType<ReportItem> => [
   {
     title: "NO",
     dataIndex: "no",
     key: "no",
     render: (_, __, index) => index + 1,
   },
-  // Note: Hide reporters for privacy reasons
-  // {
-  //   title: "Reporter",
-  //   dataIndex: "reportingUser",
-  //   key: "reportingUser.userName",
-  //   render: (reportingUser: { userName: string }) => reportingUser.userName || "N/A",
-  // },
+  {
+    title: "Reporter",
+    dataIndex: "reportingUser",
+    key: "reportingUser.userName",
+    render: (reportingUser: { userName: string }) => reportingUser.userName || "N/A",
+  },
   {
     title: "Report Reason",
     dataIndex: "reportReason",
@@ -48,13 +48,7 @@ export const reportColumns: ColumnsType<ReportItem> = [
     render: (status: string) => (
       <Tag
         color={
-          status === "Approved"
-            ? "green"
-            : status === "Rejected"
-            ? "red"
-            : status === "Pending"
-            ? "gold"
-            : "default"
+          status === "Approved" ? "green" : status === "Rejected" ? "red" : status === "Pending" ? "gold" : "default"
         }
       >
         {status || "Unknown"}
@@ -72,5 +66,16 @@ export const reportColumns: ColumnsType<ReportItem> = [
     dataIndex: "createdAt",
     key: "createdAt",
     render: (text: string) => formatDateTime(new Date(text)),
+  },
+  {
+    title: "Handle Date",
+    dataIndex: "updatedAt",
+    key: "updatedAt",
+    render: (text: string) => formatDateTime(new Date(text)),
+  },
+  {
+    title: "Action",
+    key: "action",
+    render: (_, record: ReportItem) => <ActionMenu record={record} onSuccess={onRefresh} />,
   },
 ];

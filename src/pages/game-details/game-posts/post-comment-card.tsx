@@ -9,15 +9,12 @@ import { Link } from "react-router-dom";
 
 interface PostCommentCardProps {
   comment: PostComment;
+  postId: string;
   onReportComment: (commentId: string) => void;
   onDeleteComment: (commentId: string) => void;
 }
 
-const PostCommentCard = ({
-  comment,
-  onReportComment,
-  onDeleteComment,
-}: PostCommentCardProps) => {
+const PostCommentCard = ({ comment, onReportComment, onDeleteComment }: PostCommentCardProps) => {
   const { profile } = useAuthStore();
   const moreOptionItems: MenuProps["items"] = useMemo(() => {
     const items: MenuProps["items"] = [];
@@ -38,7 +35,7 @@ const PostCommentCard = ({
         key: "report",
         icon: <FaFlag />,
         onClick: () => {
-          onReportComment(comment.id);
+          onReportComment(comment.id); 
         },
       });
     }
@@ -59,9 +56,7 @@ const PostCommentCard = ({
                 <Link className="mt-1" to={`/profile/${comment.user.id}`}>
                   {comment.user?.userName}{" "}
                 </Link>
-                <span className="text-xs text-gray-400 ">
-                  • {timeAgo(comment.createdAt)}
-                </span>
+                <span className="text-xs text-gray-400 ">• {timeAgo(comment.createdAt)}</span>
               </div>
 
               <Dropdown menu={{ items: moreOptionItems }} trigger={["click"]}>

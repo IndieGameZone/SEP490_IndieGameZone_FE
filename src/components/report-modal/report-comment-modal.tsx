@@ -3,11 +3,13 @@ import useReportReasonStore from "@/store/use-report-reason-store";
 import useAuthStore from "@/store/use-auth-store";
 import { Form, Input, Modal, Select, message } from "antd";
 import { useEffect } from "react";
+import useGameStore from "@/store/use-game-store";
 
 interface ReportCommentModalProps {
   open: boolean;
   onClose: () => void;
   commentId: string;
+  postId: string;
 }
 
 interface ReportCommentForm {
@@ -15,11 +17,12 @@ interface ReportCommentForm {
   message: string;
 }
 
-const ReportCommentModal = ({ open, onClose, commentId }: ReportCommentModalProps) => {
+const ReportCommentModal = ({ open, onClose, commentId, postId }: ReportCommentModalProps) => {
   const [form] = Form.useForm<ReportCommentForm>();
   const { profile } = useAuthStore();
   const { commentReportReasons, fetchCommentReportReasons, loading } = useReportReasonStore();
   const [messageApi, contextHolder] = message.useMessage();
+  const { game } = useGameStore();
 
   useEffect(() => {
     if (open) {
@@ -37,6 +40,8 @@ const ReportCommentModal = ({ open, onClose, commentId }: ReportCommentModalProp
       const result = await createReportComment(profile.id, {
         ...values,
         commentId,
+        gameId: game?.id || "",
+        postId: postId,
       });
 
       if (result.success) {

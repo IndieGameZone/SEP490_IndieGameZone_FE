@@ -10,12 +10,13 @@ export interface ReportItem {
   message: string;
   status:string; 
   reviewMessage: string;
-  game: Game;
+  gameName: string;
   isResolved: boolean;
   createdAt: string;
   updatedAt: string;
   reportingUser: User;
   postComment:PostComment;
   post:GamePost
+  postTitle: string;
 }
 

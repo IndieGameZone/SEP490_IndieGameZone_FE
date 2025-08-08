@@ -3,6 +3,7 @@ import useReportReasonStore from "@/store/use-report-reason-store";
 import useAuthStore from "@/store/use-auth-store";
 import { Form, Input, Modal, Select, message } from "antd";
 import { useEffect } from "react";
+import useGameStore from "@/store/use-game-store";
 
 interface ReportPostModalProps {
   open: boolean;
@@ -20,6 +21,7 @@ const ReportPostModal = ({ open, onClose, postId }: ReportPostModalProps) => {
   const { profile } = useAuthStore();
   const { postReportReasons, fetchPostReportReasons, loading } = useReportReasonStore();
   const [messageApi, contextHolder] = message.useMessage();
+  const { game } = useGameStore();
 
   useEffect(() => {
     if (open) {
@@ -37,6 +39,8 @@ const ReportPostModal = ({ open, onClose, postId }: ReportPostModalProps) => {
       const result = await createReportPost(profile.id, {
         ...values,
         postId,
+        gameId: game?.id || "",
+
       });
 
       if (result.success) {
