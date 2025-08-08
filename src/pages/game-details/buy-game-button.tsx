@@ -5,14 +5,13 @@ import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
 import { Button, InputNumber, message, Modal, Tooltip } from "antd";
 import Cookies from "js-cookie";
-import { CSSProperties, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FaApple,
   FaFileArchive,
   FaLinux,
   FaRegHeart,
   FaShoppingCart,
-  FaWallet,
   FaWindows,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -20,11 +19,6 @@ import PayWithWalletButton from "./pay-with-wallet-button";
 import { formatMegabytes } from "@/lib/file";
 import { purchaseGame } from "@/lib/api/payment-api";
 import { useGlobalMessage } from "@/components/message-provider";
-
-const addPriceButtonStyle: CSSProperties = {
-  background: "oklch(71.2% 0.194 13.428)",
-  fontWeight: "bold",
-};
 
 const BuyGameButton = () => {
   const { game } = useGameStore();
@@ -66,13 +60,6 @@ const BuyGameButton = () => {
   if (!game) return null;
 
   const defaultPlatforms = getDefaultPlatforms();
-  const handleAddPrice = (value: number) => {
-    setPrice((prev) =>
-      prev + value > game.price + MAX_DONATION
-        ? game.price + MAX_DONATION
-        : prev + value
-    );
-  };
   const handleGoToDownloadPage = () => {
     if (game) navigate(`/download/${game.id}`);
   };
@@ -138,8 +125,8 @@ const BuyGameButton = () => {
       >
         <p>
           Download this game by purchasing it for{" "}
-          <span className="font-semibold">{formatCurrencyVND(game.price)}</span>{" "}
-          or more.
+          <span className="font-semibold">{formatCurrencyVND(game.price)}</span>
+          .
         </p>
         <InputNumber
           size="large"
@@ -152,16 +139,8 @@ const BuyGameButton = () => {
             `${value}  ₫`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
           }
           style={{ width: "100%", marginTop: "0.5rem" }}
+          disabled
         />
-        {price > game.price && (
-          <p className="text-sm mt-1">
-            You will donate{" "}
-            <span className="font-semibold text-rose-400">
-              {formatCurrencyVND(price - game.price)}
-            </span>{" "}
-            to <span className="font-semibold">{game.developer.userName}</span>
-          </p>
-        )}
         {activeFiles.length > 0 && (
           <>
             <hr className="my-3 border-zinc-700" />
@@ -194,88 +173,40 @@ const BuyGameButton = () => {
         )}
         <hr className="my-3 border-zinc-700" />
         <div className="flex items-center gap-2 text-rose-400 font-semibold">
-          <FaRegHeart className="inline" /> Support the developer with an
-          additional contribution
-        </div>
-        <div className="mt-3">
-          <div className="mt-3">
-            <Button
-              type="primary"
-              size="small"
-              className="me-2"
-              onClick={() => handleAddPrice(10_000)}
-              style={addPriceButtonStyle}
-            >
-              +10.000₫
-            </Button>
-            <Button
-              type="primary"
-              size="small"
-              className="me-2"
-              onClick={() => handleAddPrice(25_000)}
-              style={addPriceButtonStyle}
-            >
-              +25.000₫
-            </Button>
-            <Button
-              type="primary"
-              size="small"
-              className="me-2"
-              onClick={() => handleAddPrice(50_000)}
-              style={addPriceButtonStyle}
-            >
-              +50.000₫
-            </Button>
-            <Button
-              type="primary"
-              size="small"
-              onClick={() => handleAddPrice(100_000)}
-              style={addPriceButtonStyle}
-            >
-              +100.000₫
-            </Button>
-          </div>
+          <FaRegHeart className="inline" />
+          You can support the developer with an additional contribution after
+          purchase
         </div>
         {accessToken ? (
-          <>
+          <div className="mt-2">
             <Button
               size="large"
-              style={{ marginTop: "1.5rem", marginRight: "0.5rem" }}
+              style={{ marginRight: "0.5rem" }}
               type="primary"
               onClick={handleBuyGameWithPayos}
               loading={loading}
             >
               Pay with <span className="font-bold">PayOS</span>
             </Button>
-            <PayWithWalletButton
-              amount={price}
-              userId={userId}
-              gameId={gameId}
-            />
-          </>
+            {profile?.role.name == "Developer" && (
+              <PayWithWalletButton
+                amount={price}
+                userId={userId}
+                gameId={gameId}
+              />
+            )}
+          </div>
         ) : (
           <>
-            <div onClick={handleGoToLogin} className="inline">
+            <div onClick={handleGoToLogin} className="inline mt-2">
               <Tooltip title="Log in to continue">
                 <Button
                   size="large"
-                  style={{ marginTop: "1.5rem", marginRight: "0.5rem" }}
+                  style={{ marginRight: "0.5rem" }}
                   type="primary"
                   disabled
                 >
                   Pay with <span className="font-bold">PayOS</span>
-                </Button>
-              </Tooltip>
-            </div>
-            <div onClick={handleGoToLogin} className="inline">
-              <Tooltip title="Log in to continue">
-                <Button
-                  size="large"
-                  style={{ marginTop: "1.5rem" }}
-                  icon={<FaWallet />}
-                  disabled
-                >
-                  Pay with wallet
                 </Button>
               </Tooltip>
             </div>

@@ -67,12 +67,7 @@ const PayWithWalletButton = ({
 
   return (
     <>
-      <Button
-        size="large"
-        style={{ marginTop: "1.5rem" }}
-        icon={<FaWallet />}
-        onClick={handleOpenModal}
-      >
+      <Button size="large" icon={<FaWallet />} onClick={handleOpenModal}>
         Pay with wallet
       </Button>
       <WalletPaymentModal
