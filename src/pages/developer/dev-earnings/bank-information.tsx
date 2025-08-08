@@ -17,8 +17,7 @@ const getBankFormValues = (bank?: BankInfo, profileBankInfo?: any) => ({
   bankName: bank?.code || profileBankInfo?.bankCode || "",
   code: bank?.code || profileBankInfo?.bankCode || "",
   bin: bank?.bin || profileBankInfo?.bankBin || "",
-  shortName:
-    bank?.shortName || bank?.short_name || profileBankInfo?.bankShortName || "",
+  shortName: bank?.shortName || bank?.short_name || profileBankInfo?.bankShortName || "",
   bankAccountNumber: profileBankInfo?.bankAccountNumber || "",
   accountName: profileBankInfo?.bankAccountName || "",
 });
@@ -57,14 +56,13 @@ const BankInformationPage = () => {
     const profileBankInfo = {
       bankCode: profile.bankInfo?.bankCode,
       bankBin: profile.bankInfo?.bankBin,
+      bankName: profile.bankInfo?.bankName,
       bankShortName: profile.bankInfo?.bankShortName,
       bankAccountNumber: profile.bankAccountNumber,
       bankAccountName: profile.bankAccountName,
     };
 
-    const matchedBank = banks.find(
-      (b) => b.code === profile.bankInfo?.bankCode
-    );
+    const matchedBank = banks.find((b) => b.code === profile.bankInfo?.bankCode);
 
     const values = getBankFormValues(matchedBank, profileBankInfo);
 
@@ -91,8 +89,10 @@ const BankInformationPage = () => {
 
     setLoading(true);
     try {
+      const selectedBank = banks.find((bank) => bank.code === values.code);
+
       const bankInfoData = {
-        bankName: values?.name || "",
+        bankName: selectedBank?.name || "",
         bankAccountName: values.accountName,
         bankAccountNumber: values.bankAccountNumber,
         bankCode: values.code,
@@ -161,13 +161,7 @@ const BankInformationPage = () => {
                 key: bank.code,
               }))}
               notFoundContent={
-                loadingBanks ? (
-                  <Spin size="small" />
-                ) : banks.length === 0 ? (
-                  "No banks loaded"
-                ) : (
-                  "No banks found"
-                )
+                loadingBanks ? <Spin size="small" /> : banks.length === 0 ? "No banks loaded" : "No banks found"
               }
             />
           </Form.Item>
@@ -178,12 +172,7 @@ const BankInformationPage = () => {
               label={<span className="text-white font-medium">Bank Code</span>}
               rules={[{ required: true, message: "Bank code is required" }]}
             >
-              <Input
-                prefix={<BsHash className="text-zinc-400" />}
-                placeholder="Bank code"
-                size="large"
-                readOnly
-              />
+              <Input prefix={<BsHash className="text-zinc-400" />} placeholder="Bank code" size="large" readOnly />
             </Form.Item>
 
             <Form.Item
@@ -191,12 +180,7 @@ const BankInformationPage = () => {
               label={<span className="text-white font-medium">BIN</span>}
               rules={[{ required: true, message: "BIN is required" }]}
             >
-              <Input
-                prefix={<BsHash className="text-zinc-400" />}
-                placeholder="BIN"
-                size="large"
-                readOnly
-              />
+              <Input prefix={<BsHash className="text-zinc-400" />} placeholder="BIN" size="large" readOnly />
             </Form.Item>
 
             <Form.Item
@@ -210,11 +194,7 @@ const BankInformationPage = () => {
 
           <Form.Item
             name="bankAccountNumber"
-            label={
-              <span className="text-white font-medium">
-                Bank Account Number
-              </span>
-            }
+            label={<span className="text-white font-medium">Bank Account Number</span>}
             rules={[
               { required: true, message: "Please enter bank account number" },
               {
@@ -278,9 +258,8 @@ const BankInformationPage = () => {
             <span className="text-sm font-medium">Attention</span>
           </div>
           <p className="text-zinc-300 text-sm">
-            We will rely on this information to transfer money. You need to
-            write your account information correctly. If there is any error, we
-            will not be responsible.
+            We will rely on this information to transfer money. You need to write your account information correctly. If
+            there is any error, we will not be responsible.
           </p>
         </div>
       </div>

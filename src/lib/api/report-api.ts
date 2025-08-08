@@ -91,6 +91,9 @@ export interface ReportCommentData {
   message: string;
   reportReasonId: string;
   commentId: string;
+  postId: string;
+
+  gameId: string;
 }
 
 export const createReportComment = async (userId: string, reportCommentData: ReportCommentData) => {
@@ -102,7 +105,6 @@ export const createReportComment = async (userId: string, reportCommentData: Rep
     return handleApiError(error);
   }
 };
-
 
 export interface ReportGameData {
   message: string;
@@ -124,6 +126,7 @@ export interface ReportPostData {
   message: string;
   reportReasonId: string;
   postId: string;
+  gameId: string;
 }
 
 export const createReportPost = async (userId: string, reportPostData: ReportPostData) => {
@@ -136,44 +139,50 @@ export const createReportPost = async (userId: string, reportPostData: ReportPos
   }
 };
 export const getAllReport = async () => {
-    try {
-        const { data } = await axiosClient.get(`/api/reports`);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+  try {
+    const { data } = await axiosClient.get(`/api/reports`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 };
 export const changeStatusReport = async (id: string, status: "true" | "false") => {
-    try {
-        const { data } = await axiosClient.put(`/api/reports/${id}/resolve-status`, { status });
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+  try {
+    const { data } = await axiosClient.put(`/api/reports/${id}/resolve-status`, { status });
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 };
 
-export const getReportByReporting = async (reportingUserId: string ) => {
-    try {
-        const { data } = await axiosClient.get(`/api/reporting-users/${reportingUserId}/reports`);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+export const getReportByReporting = async (reportingUserId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/reporting-users/${reportingUserId}/reports`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 };
-export const getReportByReported = async (reportedUserId: string ) => {
-    try {
-        const { data } = await axiosClient.get(`/api/reported-users/${reportedUserId}/reports`);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+export const getReportByReported = async (reportedUserId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/reported-users/${reportedUserId}/reports`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 };
 
-export const updateStatusReport = async (id: string, UpdatedStatus: "Approved" | "Rejected" | "Pending", reviewMessage: string) => {
-    try {
-        const { data } = await axiosClient.patch(`/api/reports/${id}/resolve-status?updatedStatus=${UpdatedStatus}`, { reviewMessage });
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+export const updateStatusReport = async (
+  id: string,
+  UpdatedStatus: "Approved" | "Rejected" | "Pending",
+  reviewMessage: string
+) => {
+  try {
+    const { data } = await axiosClient.patch(`/api/reports/${id}/resolve-status?updatedStatus=${UpdatedStatus}`, {
+      reviewMessage,
+    });
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 };
