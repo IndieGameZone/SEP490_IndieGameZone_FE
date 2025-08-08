@@ -176,7 +176,7 @@ const UploadProcessPage = () => {
           setGamePlatforms((prev) => [
             ...prev,
             {
-              file: gameFiles.files[1].file,
+              file: gameFiles.files[i].file,
               fileUrl: uploadResult.data,
               platformId: gameFiles.files[i].platformId,
               version: gameFiles.files[i].version,

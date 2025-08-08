@@ -57,6 +57,19 @@ const GameInfoTab = () => {
     }
   }, []);
 
+  const slides = useMemo(() => {
+    return game
+      ? [
+          { src: game.coverImage },
+          ...game.gameImages.map((image) => ({ src: image.image })),
+        ]
+      : [];
+  }, [game]);
+
+  const activeFiles = useMemo(() => {
+    return gameFiles.filter((x) => x.isActive);
+  }, [gameFiles]);
+
   if (!game) return;
   if (error) {
     return <GameNotFound />;
@@ -239,19 +252,6 @@ const GameInfoTab = () => {
       ),
     },
   ];
-
-  const slides = useMemo(() => {
-    return game
-      ? [
-          { src: game.coverImage },
-          ...game.gameImages.map((image) => ({ src: image.image })),
-        ]
-      : [];
-  }, [game]);
-
-  const activeFiles = useMemo(() => {
-    return gameFiles.filter((x) => x.isActive);
-  }, [gameFiles]);
 
   if (game.censorReason) {
     infoItems.push({
