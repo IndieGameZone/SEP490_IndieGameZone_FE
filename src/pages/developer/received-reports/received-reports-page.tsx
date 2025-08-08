@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Table, Typography } from "antd";
 import { ReportItem } from "@/types/report";
-import { reportColumns } from "./columns";
+import { getReceivedReportColumns } from "./columns";
 import { useGlobalMessage } from "@/components/message-provider";
 import { getReportByReported } from "@/lib/api/report-api";
 import useAuthStore from "@/store/use-auth-store";
@@ -44,7 +44,7 @@ const ReceivedReportsPage: React.FC = () => {
       <div className="container mx-auto md:px-4">
         <Table
           dataSource={reports}
-          columns={reportColumns}
+          columns={getReceivedReportColumns(fetchReceivedReports)}
           scroll={{ x: "max-content" }}
           loading={loading}
           rowKey="id"
