@@ -4,6 +4,7 @@ import type { MenuProps } from "antd";
 import { Layout, Menu } from "antd";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import logo from "@/assets/indiegamezone-logo.svg";
+import icon from "@/assets/igz_ic.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MdCategory, MdOutlineReport, MdSpaceDashboard } from "react-icons/md";
 import { BiMoneyWithdraw, BiSolidUserAccount } from "react-icons/bi";
@@ -218,8 +219,12 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             style={siderStyle}
             width={256}
           >
-            <div className="p-3 my-3">
-              <img src={logo} alt="indiegamezone logo" className="w-40" />
+            <div className={`p-3 flex ${collapsed ? "justify-center" : ""}`}>
+              {collapsed ? (
+                <img src={icon} alt="indiegamezone logo" className="max-w-6" />
+              ) : (
+                <img src={logo} alt="indiegamezone logo" className="w-40" />
+              )}
             </div>
             <Menu
               theme="dark"
@@ -233,7 +238,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             title={<img src={logo} alt="indiegamezone logo" className="w-32" />}
             placement="left"
             onClose={() => setDrawerOpen(false)}
-            closeIcon={<FaTimes className="text-zinc-200"/>}
+            closeIcon={<FaTimes className="text-zinc-200" />}
             open={drawerOpen}
             styles={{
               body: { padding: 0, background: darkToken.colorBgContainer },

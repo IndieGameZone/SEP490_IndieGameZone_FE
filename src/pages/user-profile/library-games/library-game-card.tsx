@@ -28,7 +28,7 @@ const LibraryGameCard: React.FC<LibraryGameCardProps> = ({ item }) => {
         <FaultTolerantImage
           src={item.game.coverImage}
           alt={`${item.game.name} cover image`}
-          className="w-full h-48 object-cover cursor-pointer"
+          className="w-full h-48 object-contain cursor-pointer bg-zinc-950"
           onClick={handleClickCard}
         />
       </div>

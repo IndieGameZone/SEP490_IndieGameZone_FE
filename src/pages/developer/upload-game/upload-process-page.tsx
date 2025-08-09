@@ -299,7 +299,7 @@ const UploadProcessPage = () => {
         gameInfo.pricingOption == "Free" ? gameInfo.allowDonate : true,
       averageSession: gameInfo.averageSession,
       categoryId: gameInfo.categoryId,
-      coverImage: coverImageUrl,
+      coverImage: coverImageUrl,  
       description: gameInfo.description,
       gameImages: imageUrls,
       installInstruction: gameFiles.installInstruction,

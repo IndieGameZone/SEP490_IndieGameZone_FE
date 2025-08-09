@@ -25,7 +25,7 @@ const WishlistGameCard: React.FC<WishlistGameCardProps> = ({ game }) => {
         <FaultTolerantImage
           src={game.game.coverImage}
           alt={`${game.game.name} cover image`}
-          className="w-full h-48 object-cover cursor-pointer"
+          className="w-full h-48 object-contain cursor-pointer bg-zinc-950"
           onClick={handleClickCard}
         />
         <div className="absolute top-2 right-2">

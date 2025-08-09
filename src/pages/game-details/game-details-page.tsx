@@ -161,7 +161,7 @@ const GameDetailsPage = () => {
           <FaultTolerantImage
             src={game.coverImage}
             alt="game cover image"
-            className="aspect-video object-contain rounded h-full highlight-hover cursor-pointer"
+            className="aspect-video object-contain rounded h-full highlight-hover cursor-pointer bg-zinc-950"
             onClick={() => setIndex(0)}
           />
         ) : (
