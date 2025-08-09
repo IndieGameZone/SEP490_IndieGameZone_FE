@@ -14,11 +14,7 @@ interface PayWithWalletButtonProps {
   selectedDate: string;
 }
 
-const PayWithWalletButton = ({
-  gameId,
-  commercialPackage,
-  selectedDate,
-}: PayWithWalletButtonProps) => {
+const PayWithWalletButton = ({ gameId, commercialPackage, selectedDate }: PayWithWalletButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { profile, fetchProfile } = useAuthStore();
   const messageApi = useGlobalMessage();
@@ -35,7 +31,7 @@ const PayWithWalletButton = ({
     if (result.success) {
       messageApi.success("Purchase successful!");
       setTimeout(() => {
-        navigate(`/dev/commercial-packages`);
+        navigate(`/dev/manage-commercial-package`);
       }, 1000);
       return true;
     } else {
@@ -44,21 +40,16 @@ const PayWithWalletButton = ({
     }
   };
 
-const handleOpenModal = () => {
-  fetchProfile();
-  setIsModalOpen(true);
-};
+  const handleOpenModal = () => {
+    fetchProfile();
+    setIsModalOpen(true);
+  };
 
   if (!profile) return null;
 
   return (
     <>
-      <Button
-        size="large"
-        style={{ marginTop: "1rem", width: "100%" }}
-        icon={<FaWallet />}
-        onClick={handleOpenModal}
-      >
+      <Button size="large" style={{ marginTop: "1rem", width: "100%" }} icon={<FaWallet />} onClick={handleOpenModal}>
         Pay with wallet
       </Button>
       <WalletPaymentModal

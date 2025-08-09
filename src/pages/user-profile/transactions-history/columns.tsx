@@ -4,10 +4,7 @@ import { Transaction, getReadableTransactionType } from "@/types/transaction";
 import { TableProps, Tag } from "antd";
 
 const getStatusTag = (status: Transaction["status"]) => {
-  const statusConfig: Record<
-    Transaction["status"],
-    { color: string; text: string }
-  > = {
+  const statusConfig: Record<Transaction["status"], { color: string; text: string }> = {
     Success: { color: "green", text: "Success" },
     Pending: { color: "orange", text: "Pending" },
     Failed: { color: "red", text: "Failed" },
@@ -22,27 +19,19 @@ export const columns: TableProps<Transaction>["columns"] = [
     dataIndex: "orderCode",
     key: "orderCode",
     width: 120,
-    render: (orderCode: string) => (
-      <span className="font-mono text-blue-400">TS-{orderCode}</span>
-    ),
+    render: (orderCode: string) => <span className="font-mono text-blue-400">TS-{orderCode}</span>,
   },
   {
     title: "Order Code",
     dataIndex: "orderCode",
     key: "orderCode",
-    render: (orderCode: string) => (
-      <span className="font-mono text-blue-400">OD-{orderCode}</span>
-    ),  
+    render: (orderCode: string) => <span className="font-mono text-blue-400">OD-{orderCode}</span>,
   },
   {
     title: "Type",
     dataIndex: "type",
     key: "type",
-    render: (type) => (
-      <span className="font-mono text-blue-400">
-        {getReadableTransactionType(type)}
-      </span>
-    ),
+    render: (type) => <span className="font-mono text-blue-400">{getReadableTransactionType(type)}</span>,
     width: 150,
   },
   {
@@ -50,9 +39,7 @@ export const columns: TableProps<Transaction>["columns"] = [
     dataIndex: "paymentMethod",
     key: "paymentMethod",
     width: 150,
-    render: (paymentMethod: string) => (
-      <span className="font-mono text-blue-400">{paymentMethod}</span>
-    ),
+    render: (paymentMethod: string) => <span className="font-mono text-blue-400">{paymentMethod}</span>,
   },
   {
     title: "Amount",
@@ -64,6 +51,7 @@ export const columns: TableProps<Transaction>["columns"] = [
       const isDeposit = type === "deposit";
       const isPurchase = type === "purchasegame";
       const isCommercial = type === "purchasecommercialpackage";
+      const isWithdraw = type === "withdraw";
       const isWallet = record.paymentMethod === "Wallet";
       const isPayOS = record.paymentMethod === "PayOS";
 
@@ -104,9 +92,16 @@ export const columns: TableProps<Transaction>["columns"] = [
         );
       }
 
-      return (
-        <span className="font-semibold text-gray-500">{formattedAmount}</span>
-      );
+      if (isWithdraw) {
+        return (
+          <span className="font-semibold text-red-500">
+            -{formattedAmount}
+            <CoinIcon className="inline size-3 ms-1 mb-1" />
+          </span>
+        );
+      }
+
+      return <span className="font-semibold text-gray-500">{formattedAmount}</span>;
     },
   },
   // {

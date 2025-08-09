@@ -24,10 +24,16 @@ export const depositTransaction = async (userId: string, amount: number, descrip
     return handleApiError(error);
   }
 };
-export const danateGame = async (userId: string, amount: number, gameId: string): Promise<ApiResponse> => {
+export const danateGame = async (
+  userId: string,
+  amount: number,
+  paymentMethod: "Wallet" | "PayOS",
+  gameId: string
+): Promise<ApiResponse> => {
   try {
     const response = await axiosClient.post(`/api/users/${userId}/games/${gameId}/transactions/donation`, {
       amount,
+      paymentMethod,
     });
     return { error: null, data: response.data, success: true };
   } catch (error) {
@@ -40,6 +46,7 @@ export const getTransactionsPurchase = async (userId: string) => {
     params.append("TransactionTypes", "Deposit");
     params.append("TransactionTypes", "PurchaseGame");
     params.append("TransactionTypes", "Donation");
+    params.append("TransactionTypes", "Withdraw");
     params.append("TransactionTypes", "PurchaseCommercialPackage");
     params.append("PageNumber", "1");
     params.append("PageSize", "10");
@@ -130,13 +137,13 @@ export const purchaseCommercialPackage = async (
   }
 };
 
-export const getOrderByUserId = async (userId : string ) => {
-    try {
-        const { data } = await axiosClient.get(`/api/users/${userId}/orders`);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+export const getOrderByUserId = async (userId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/users/${userId}/orders`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 };
 export const getAllTransactions = async () => {
   try {

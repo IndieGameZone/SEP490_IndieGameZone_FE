@@ -84,7 +84,7 @@ export const getCommercialPackagesRegistrationsByUserId = async (userId: string)
 };
 export const cancelCommercialPackageRegistration = async (registrationId: string) => {
   try {
-    const { data } = await axiosClient.delete(`/api/commercial-packages/${registrationId}`);
+    const { data } = await axiosClient.delete(`/api/commercial-packages/registrations/${registrationId}`);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
