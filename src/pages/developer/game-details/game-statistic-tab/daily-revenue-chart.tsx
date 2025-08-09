@@ -1,7 +1,8 @@
+import { formatCurrencyVND } from "@/lib/currency";
 import {
-  VictoryAxis,
   VictoryChart,
   VictoryLine,
+  VictoryAxis,
   VictoryTheme,
   VictoryTooltip,
   VictoryVoronoiContainer,
@@ -9,15 +10,15 @@ import {
 
 export interface GameData {
   day: number;
-  downloadCount: number;
+  revenue: number;
 }
 
 interface Props {
   data: GameData[];
 }
 
-const GameDownloadChart = ({ data }: Props) => {
-  const yValues = data.map((d) => d.downloadCount);
+const DailyRevenueChart = ({ data }: Props) => {
+  const yValues = data.map((d) => d.revenue);
   const yMax = Math.max(...yValues);
 
   return (
@@ -26,11 +27,11 @@ const GameDownloadChart = ({ data }: Props) => {
       height={300}
       theme={VictoryTheme.material}
       domainPadding={20}
-      domain={yMax == 0 ? { y: [0, 10] } : undefined}
+      domain={yMax == 0 ? { y: [0, 100000] } : undefined}
       containerComponent={
         <VictoryVoronoiContainer
           labels={({ datum }) =>
-            `Day ${datum.day}: ${datum.downloadCount} download(s)`
+            `Day ${datum.day}: ${formatCurrencyVND(datum.revenue)}`
           }
           labelComponent={<VictoryTooltip cornerRadius={4} flyoutPadding={8} />}
         />
@@ -49,7 +50,7 @@ const GameDownloadChart = ({ data }: Props) => {
 
       <VictoryAxis
         dependentAxis
-        label="Num of downloads"
+        label="Revenue (₫)"
         style={{
           grid: {
             stroke: "#3f3f46",
@@ -57,21 +58,21 @@ const GameDownloadChart = ({ data }: Props) => {
             strokeDasharray: "0",
           },
           axisLabel: { padding: 50, fill: "white" },
-          tickLabels: { fill: "white" },
+          tickLabels: { fill: "white", angle: -45, textAnchor: "end" },
         }}
       />
 
       <VictoryLine
         data={data}
         x="day"
-        y="downloadCount"
+        y="revenue"
         interpolation="monotoneX"
         style={{
-          data: { stroke: "#67e8f9", strokeWidth: 3 },
+          data: { stroke: "#fcd34d", strokeWidth: 3 },
         }}
       />
     </VictoryChart>
   );
 };
 
-export default GameDownloadChart;
+export default DailyRevenueChart;

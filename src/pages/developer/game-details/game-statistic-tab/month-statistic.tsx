@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { getGameMonthlyStatistic } from "@/lib/api/dev-dashboard-api";
-import GameRevenueChart from "./game-revenue-chart";
-import GameDownloadChart from "./game-download-chart";
+import { getGameMonthStatistic } from "@/lib/api/dev-dashboard-api";
+import DailyRevenueChart from "./daily-revenue-chart";
+import DailyDownloadChart from "./daily-download-chart";
 import dayjs, { Dayjs } from "dayjs";
 import { DatePicker, Form } from "antd";
 
-type MonthlyStatisticProps = {
+type MonthStatisticProps = {
   gameId: string;
 };
 
@@ -15,8 +15,8 @@ type ChartData = {
   revenue: number;
 };
 
-const MonthlyStatistic = ({ gameId }: MonthlyStatisticProps) => {
-  const [gameMonthlyStatistic, setGameMonthlyStatistic] = useState<ChartData[]>(
+const MonthStatistic = ({ gameId }: MonthStatisticProps) => {
+  const [gameMonthStatistic, setGameMonthStatistic] = useState<ChartData[]>(
     []
   );
   const [selectedMonth, setSelectedMonth] = useState<Dayjs>(dayjs());
@@ -26,16 +26,17 @@ const MonthlyStatistic = ({ gameId }: MonthlyStatisticProps) => {
   }, [selectedMonth]);
 
   const fetchData = async (month: number, year: number) => {
-    const result = await getGameMonthlyStatistic(gameId, month, year);
+    const result = await getGameMonthStatistic(gameId, month, year);
     if (!result.error) {
-      setGameMonthlyStatistic(result.data);
+      setGameMonthStatistic(result.data);
     }
   };
 
+  const monthStr = selectedMonth.format("MMMM YYYY");
   return (
-    <div>
+    <div className="mt-5">
       <div className="flex justify-between">
-        <h2 className="text-xl font-bold">Game's Monthly Statistics</h2>
+        <h2 className="text-xl font-bold">Game's Daily Statistics</h2>
         <Form layout="inline" className="mb-4">
           <Form.Item label="Select Month">
             <DatePicker
@@ -51,18 +52,18 @@ const MonthlyStatistic = ({ gameId }: MonthlyStatisticProps) => {
       </div>
       <div className="bg-zinc-900 rounded mt-2">
         <h3 className="pt-3 -mb-3 text-center text-xl font-semibold">
-          Monthly Earnings Trend
+          Earnings Trend ({monthStr})
         </h3>
-        <GameRevenueChart data={gameMonthlyStatistic} />
+        <DailyRevenueChart data={gameMonthStatistic} />
       </div>
       <div className="bg-zinc-900 rounded mt-2">
         <h3 className="pt-3 -mb-3 text-center text-xl font-semibold">
-          Download Trends
+          Download Trends ({monthStr})
         </h3>
-        <GameDownloadChart data={gameMonthlyStatistic} />
+        <DailyDownloadChart data={gameMonthStatistic} />
       </div>
     </div>
   );
 };
 
-export default MonthlyStatistic;
+export default MonthStatistic;

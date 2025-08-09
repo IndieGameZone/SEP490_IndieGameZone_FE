@@ -15,9 +15,20 @@ export const handleApiError = (error: any): ApiResponse => {
     }
 };
 
-export const getGameMonthlyStatistic = async (gameId: string, month: number, year: number) => {
+export const getGameMonthStatistic = async (gameId: string, month: number, year: number) => {
     try {
         const { data } = await axiosClient.get(`/api/dashboard/games/${gameId}/monthly-stats?month=${month}&year=${year}`);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
+
+export const getGameSummaryStatistic = async (gameId: string) => {
+    try {
+        const { data } = await axiosClient.get(`/api/dashboard/games/${gameId}/summary`);
         return {
             error: null, data: data, success: true
         };
