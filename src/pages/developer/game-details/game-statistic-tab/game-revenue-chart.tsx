@@ -18,7 +18,7 @@ interface Props {
 }
 
 const GameRevenueChart = ({ data }: Props) => {
-  const yValues = data.map((d) => d.day);
+  const yValues = data.map((d) => d.revenue);
   const yMax = Math.max(...yValues);
 
   return (
@@ -42,6 +42,7 @@ const GameRevenueChart = ({ data }: Props) => {
         label="Day of Month"
         tickFormat={(t) => `${t}`}
         style={{
+          grid: { stroke: "transparent" },
           axisLabel: { padding: 30, fill: "white" },
           tickLabels: { fill: "white" },
         }}
@@ -51,6 +52,11 @@ const GameRevenueChart = ({ data }: Props) => {
         dependentAxis
         label="Revenue (₫)"
         style={{
+          grid: {
+            stroke: "#3f3f46",
+            strokeWidth: 1,
+            strokeDasharray: "0",
+          },
           axisLabel: { padding: 50, fill: "white" },
           tickLabels: { fill: "white", angle: -45, textAnchor: "end" },
         }}

@@ -19,7 +19,7 @@ interface Props {
 const GameDownloadChart = ({ data }: Props) => {
   const yValues = data.map((d) => d.downloadCount);
   const yMax = Math.max(...yValues);
-  
+
   return (
     <VictoryChart
       width={900}
@@ -41,6 +41,7 @@ const GameDownloadChart = ({ data }: Props) => {
         label="Day of Month"
         tickFormat={(t) => `${t}`}
         style={{
+          grid: { stroke: "transparent" },
           axisLabel: { padding: 30, fill: "white" },
           tickLabels: { fill: "white" },
         }}
@@ -48,8 +49,13 @@ const GameDownloadChart = ({ data }: Props) => {
 
       <VictoryAxis
         dependentAxis
-        label="Num of Downloads"
+        label="Num of downloads"
         style={{
+          grid: {
+            stroke: "#3f3f46",
+            strokeWidth: 1,
+            strokeDasharray: "0",
+          },
           axisLabel: { padding: 50, fill: "white" },
           tickLabels: { fill: "white" },
         }}
