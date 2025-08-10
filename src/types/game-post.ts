@@ -1,3 +1,4 @@
+import { Game } from "./game";
 import { Tag } from "./tag";
 import { User } from "./user";
 
@@ -13,8 +14,9 @@ export type GamePost = {
   numberOfComments: number;
   numberOfLikes: number;
   createdAt: string;
+  game: Game;
   user: User;
-  liked?: boolean
+  liked?: boolean;
 };
 
 export type PostComment = {
@@ -23,4 +25,4 @@ export type PostComment = {
   content: string;
   updatedAt?: string;
   user: User;
-}
+};
