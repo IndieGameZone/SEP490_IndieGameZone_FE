@@ -1,10 +1,10 @@
 import { useGlobalMessage } from "@/components/message-provider";
 import { MAX_DONATION } from "@/constants/game";
-import { danateGame } from "@/lib/api/payment-api";
+import { donateGame } from "@/lib/api/payment-api";
 import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
-import { Button, InputNumber, Modal, Tooltip, message } from "antd";
+import { Button, InputNumber, Modal, Tooltip } from "antd";
 import Cookies from "js-cookie";
 import { CSSProperties, useState } from "react";
 import {
@@ -17,7 +17,7 @@ import {
   FaWallet,
   FaWindows,
 } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const addPriceButtonStyle: CSSProperties = {
   background: "oklch(71.2% 0.194 13.428)",
@@ -26,12 +26,12 @@ const addPriceButtonStyle: CSSProperties = {
 
 const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [price, setPrice] = useState(10000); // Default donation amount
+  const [price, setPrice] = useState(10000); 
   const { game } = useGameStore();
   const { getDefaultPlatforms } = usePlatformStore();
   const navigate = useNavigate();
   const { loading: loadingProfile, profile } = useAuthStore();
-  const [loading, setLoading] = useState(false); // Add loading state for donation button
+  const [loading, setLoading] = useState(false);
   const accessToken = localStorage.getItem("accessToken");
   const messageApi = useGlobalMessage();
 
@@ -93,10 +93,11 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
 
     setLoading(true);
     try {
-      const response = await danateGame(profile.id, price, "Wallet", game.id);
+      const response = await donateGame(profile.id, game.id, { Amount: price, PaymentMethod: "Wallet" });
       if (response.success) {
         messageApi.success("Donation successful!");
-        handleGoToDownloadPage();
+        <Navigate to={"/account/transaction-history"} />;
+        handleCancel();
       } else {
         messageApi.error(response.error || "Failed to process donation.");
       }
@@ -115,10 +116,15 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
 
     setLoading(true);
     try {
-      const response = await danateGame(profile.id, price, "PayOS", game.id);
+      const response = await donateGame(profile.id, game.id, { Amount: price, PaymentMethod: "PayOS" });
       if (response.success) {
-        messageApi.success("Redirecting to payment page...");
-        window.open(response.data);
+        if (response.data) {
+          window.open(response.data, "_blank");
+          messageApi.success("Redirecting to payment page...");
+          <Navigate to={"/account/transaction-history"} />;
+        } else {
+          messageApi.error("Payment URL not received");
+        }
       } else {
         messageApi.error(response.error || "Failed to process donation.");
       }

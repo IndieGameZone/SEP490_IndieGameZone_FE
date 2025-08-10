@@ -49,6 +49,7 @@ const DevCommercialPackageRegistrations: React.FC = () => {
           columns={getCommercialRegistrationColumns(fetchCommercialPackagesByUserId)}
           rowKey="id"
           loading={loading}
+          scroll={{ x: "max-content" }}
           pagination={{ pageSize: 5 }}
         />
       </div>

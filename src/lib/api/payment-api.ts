@@ -1,3 +1,4 @@
+import { toFormData } from "../object";
 import { axiosClient } from "./config/axios-client";
 
 export interface ApiResponse {
@@ -24,17 +25,17 @@ export const depositTransaction = async (userId: string, amount: number, descrip
     return handleApiError(error);
   }
 };
-export const danateGame = async (
-  userId: string,
-  amount: number,
-  paymentMethod: "Wallet" | "PayOS",
-  gameId: string
-): Promise<ApiResponse> => {
+
+interface DonateGameData {
+  Amount: number;
+  PaymentMethod: "Wallet" | "PayOS";
+}
+export const donateGame = async (userId: string, gameId: string, donationGame: DonateGameData) => {
   try {
-    const response = await axiosClient.post(`/api/users/${userId}/games/${gameId}/transactions/donation`, {
-      amount,
-      paymentMethod,
-    });
+    const response = await axiosClient.post(
+      `/api/users/${userId}/games/${gameId}/transactions/donation`,
+      toFormData(donationGame)
+    );
     return { error: null, data: response.data, success: true };
   } catch (error) {
     return handleApiError(error);
