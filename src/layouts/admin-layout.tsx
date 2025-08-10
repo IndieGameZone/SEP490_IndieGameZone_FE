@@ -16,7 +16,7 @@ import useProfileStore from "@/store/use-auth-store";
 import { CgGames } from "react-icons/cg";
 import styles from "@/styles/admin-layout.module.css";
 import { GoReport } from "react-icons/go";
-import { GrTransaction } from "react-icons/gr";
+import { GrAchievement, GrTransaction } from "react-icons/gr";
 import AppTheme from "@/components/app-theme";
 import DownloadProcessesButton from "@/components/navbar/download-processes-button";
 import { RiAdvertisementLine } from "react-icons/ri";
@@ -119,6 +119,14 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       label: "Manage Categories",
       onClick: () => {
         navigate("/admin/manage-categories");
+      },
+    },
+    {
+      key: "/admin/manage-achievements",
+      icon: <GrAchievement />,
+      label: "Manage Achievements",
+      onClick: () => {
+        navigate("/admin/manage-achievements");
       },
     },
     {
