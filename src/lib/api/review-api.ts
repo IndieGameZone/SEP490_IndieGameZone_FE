@@ -50,3 +50,11 @@ export const getReviewStatistic = async (gameId: string) => {
     return handleApiError(error);
   }
 };
+export const getReviewByUserId = async (userId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/users/${userId}/reviews`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
