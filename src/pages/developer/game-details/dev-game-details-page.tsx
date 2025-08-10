@@ -6,7 +6,7 @@ import GameNotFound from "@/pages/errors/game-not-found";
 import { Tabs, TabsProps } from "antd";
 import { FaChartBar, FaInfoCircle } from "react-icons/fa";
 import GameInfoTab from "./game-info-tab";
-import GameStatisticsTab from "./game-statistics-tab";
+import GameStatisticsTab from "./game-statistic-tab/game-statistics-tab";
 import { IoIosChatboxes } from "react-icons/io";
 import GameReviewTab from "./game-review-tab/game-reviews-tab";
 import { useHashState } from "@/hooks/use-hash-state";

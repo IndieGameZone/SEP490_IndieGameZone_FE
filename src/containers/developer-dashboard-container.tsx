@@ -12,7 +12,7 @@ const DevManageCommercialPackage = lazy(
     )
 );
 const DevDashBoardPage = lazy(
-  () => import("@/pages/developer/dev-dashboard-page")
+  () => import("@/pages/developer/dashboard/dev-dashboard-page")
 );
 const DevGameDetailsPage = lazy(
   () => import("@/pages/developer/game-details/dev-game-details-page")

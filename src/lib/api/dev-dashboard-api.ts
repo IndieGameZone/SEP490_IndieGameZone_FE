@@ -36,3 +36,25 @@ export const getGameSummaryStatistic = async (gameId: string) => {
         return handleApiError(error);
     }
 };
+
+export const getDevMonthStatistic = async (developerId: string, month: number, year: number) => {
+    try {
+        const { data } = await axiosClient.get(`/api/dashboard/developers/${developerId}/monthly-stats?month=${month}&year=${year}`);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
+
+export const getDevSummaryStatistic = async (developerId: string) => {
+    try {
+        const { data } = await axiosClient.get(`/api/dashboard/developers/${developerId}/summary`);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
