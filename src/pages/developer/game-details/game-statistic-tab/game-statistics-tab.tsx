@@ -38,7 +38,7 @@ const GameStatisticsTab = () => {
   return (
     <div className="p-5">
       <h2 className="text-3xl text-center">Statistic reports for "{game?.name}"</h2>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-3">
         <div className="bg-zinc-900 p-5">
           <h3 className="text-lg font-semibold">Total Revenue (All Time)</h3>
           <p className="text-3xl text-orange-500">

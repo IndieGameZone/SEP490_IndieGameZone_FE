@@ -14,9 +14,16 @@ type RevenueData = {
 interface Props {
   revenueByMonth: RevenueData;
   year: number;
+  width?: number;
+  height?: number;
 }
 
-const MonthlyRevenueChart = ({ revenueByMonth, year }: Props) => {
+const MonthlyRevenueChart = ({
+  revenueByMonth,
+  year,
+  width = 900,
+  height = 350,
+}: Props) => {
   const monthNames = [
     "Jan",
     "Feb",
@@ -50,8 +57,8 @@ const MonthlyRevenueChart = ({ revenueByMonth, year }: Props) => {
     <VictoryChart
       theme={VictoryTheme.material}
       domainPadding={20}
-      width={900}
-      height={350}
+      width={width}
+      height={height}
       padding={{ top: 20, bottom: 70, left: 70, right: 70 }}
       domain={yMax == 0 ? { y: [0, 100000] } : undefined}
     >

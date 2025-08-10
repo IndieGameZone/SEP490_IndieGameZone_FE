@@ -45,7 +45,7 @@ const CarouselItem = ({ game }: CarouselItemProps) => {
           onClick={() => setIndex(0)}
         />
         <div className="flex flex-col gap-3">
-          <div className="flex-1">
+          <div>
             <div className="flex justify-between">
               <Link to={`/game/${game.id}`}>
                 <h2 className="font-bold text-2xl">{game.name}</h2>
