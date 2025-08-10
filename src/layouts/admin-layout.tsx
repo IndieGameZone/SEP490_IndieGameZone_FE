@@ -138,11 +138,11 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
       },
     },
     {
-      key: "/admin/manage-transactions",
+      key: "/admin/manage-system-transaction-admin-wallet",
       icon: <GrTransaction />,
-      label: "Manage Transactions",
+      label: "Manage Transactions and Wallet",
       onClick: () => {
-        navigate("/admin/manage-transactions");
+        navigate("/admin/manage-system-transaction-admin-wallet");
       },
     },
     {
@@ -220,13 +220,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
     <AppTheme theme="light">
       <Layout hasSider className={styles.lightTable}>
         {!isMobile ? (
-          <Sider
-            trigger={null}
-            collapsible
-            collapsed={collapsed}
-            style={siderStyle}
-            width={256}
-          >
+          <Sider trigger={null} collapsible collapsed={collapsed} style={siderStyle} width={256}>
             <div className={`p-3 flex ${collapsed ? "justify-center" : ""}`}>
               {collapsed ? (
                 <img src={icon} alt="indiegamezone logo" className="max-w-6" />
@@ -234,12 +228,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
                 <img src={logo} alt="indiegamezone logo" className="w-40" />
               )}
             </div>
-            <Menu
-              theme="dark"
-              mode="inline"
-              selectedKeys={[location.pathname]}
-              items={fullMenuItems}
-            />
+            <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} items={fullMenuItems} />
           </Sider>
         ) : (
           <Drawer
@@ -253,12 +242,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
               header: { background: darkToken.colorBgContainer },
             }}
           >
-            <Menu
-              theme="dark"
-              mode="inline"
-              selectedKeys={[location.pathname]}
-              items={mobileMenuItems}
-            />
+            <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} items={mobileMenuItems} />
           </Drawer>
         )}
         <Layout>
@@ -293,9 +277,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             </div>
           </div>
           <div style={{ margin: "24px 16px 0" }}>{children}</div>
-          <Footer style={{ textAlign: "center" }}>
-            Ant Design ©{new Date().getFullYear()} Created by Ant UED
-          </Footer>
+          <Footer style={{ textAlign: "center" }}>Ant Design ©{new Date().getFullYear()} Created by Ant UED</Footer>
         </Layout>
       </Layout>
     </AppTheme>
