@@ -6,15 +6,23 @@ import {
   VictoryLabel,
 } from "victory";
 
-const ratingData = [
-  { rating: "1", percentage: 5 },
-  { rating: "2", percentage: 10 },
-  { rating: "3", percentage: 20 },
-  { rating: "4", percentage: 35 },
-  { rating: "5", percentage: 30 },
-];
+export type RatingChartData = {
+  rating: number;
+  percentage: number;
+};
 
-const RatingChart = () => {
+type RatingChartProps = {
+  data: RatingChartData[];
+};
+
+const RatingChart = ({ data }: RatingChartProps) => {
+  var maxPercentage = 0;
+  data.forEach((rating) => {
+    if (rating.percentage > maxPercentage) {
+      maxPercentage = rating.percentage;
+    }
+  });
+
   return (
     <div className="p-2 bg-zinc-800 rounded">
       <h4 className="text-lg font-bold mb-4 text-center">
@@ -25,6 +33,7 @@ const RatingChart = () => {
           theme={VictoryTheme.clean}
           domainPadding={20}
           height={300}
+          domain={maxPercentage == 0 ? { y: [0, 30] } : undefined}
         >
           <VictoryAxis
             tickValues={["1", "2", "3", "4", "5"]}
@@ -43,12 +52,12 @@ const RatingChart = () => {
             style={{ tickLabels: { fill: "#fff" } }}
           />
           <VictoryBar
-            data={ratingData}
+            data={data}
             x="rating"
             y="percentage"
             horizontal
             barWidth={20}
-            labels={({ datum }) => `${datum.percentage}%`}
+            labels={({ datum }) => `${datum.percentage.toFixed(1)}%`}
             labelComponent={<VictoryLabel />}
             style={{
               data: { fill: "#FF4F0F" },

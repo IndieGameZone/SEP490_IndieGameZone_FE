@@ -2,11 +2,12 @@ import { Pagination, Radio, Select } from "antd";
 import useGameStore from "@/store/use-game-store";
 import useAuthStore from "@/store/use-auth-store";
 import useReviewStore from "@/store/use-review-store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Loader from "@/components/loader";
-import RatingChart from "@/pages/game-details/rating-chart";
+import RatingChart, { RatingChartData } from "@/components/charts/rating-chart";
 import ReviewCard from "@/pages/game-details/review-card";
 import GameSummaryReview from "./game-summary-review";
+import { getReviewStatistic } from "@/lib/api/review-api";
 
 const filterOptions = [
   {
@@ -48,10 +49,20 @@ const sortOptions = [
 const GameReviewTab = () => {
   const { game } = useGameStore();
   const { profile } = useAuthStore();
-  const { reviews, fetchReviewsByGameId, loading, renderKey } = useReviewStore();
+  const { reviews, fetchReviewsByGameId, loading, renderKey } =
+    useReviewStore();
+  const [ratingChartData, setRatingChartData] = useState<RatingChartData[]>([]);
+
+  const fetchReviewStatistic = async (gameId: string) => {
+    const result = await getReviewStatistic(gameId);
+    if (!result.error) {
+      setRatingChartData(result.data);
+    }
+  };
 
   useEffect(() => {
     if (game?.id) {
+      fetchReviewStatistic(game.id);
       fetchReviewsByGameId(game.id);
     }
   }, [renderKey]);
@@ -64,20 +75,32 @@ const GameReviewTab = () => {
       {profile && <GameSummaryReview />}
       <div className="py-3">
         <div>
-          <h3 className="text-xl font-semibold">Players reviews for {game?.name}</h3>
+          <h3 className="text-xl font-semibold">
+            Players reviews for {game?.name}
+          </h3>
           <hr className="my-1 border-zinc-600" />
           <div className="p-3 bg-zinc-800 rounded">
             <p className="text-sm text-zinc-500 mb-1">Star ratings</p>
-            <Radio.Group block options={filterOptions} defaultValue="all" optionType="button" buttonStyle="solid" />
+            <Radio.Group
+              block
+              options={filterOptions}
+              defaultValue="all"
+              optionType="button"
+              buttonStyle="solid"
+            />
           </div>
           <div className="grid grid-cols-12 mt-3 gap-3">
             <div className="col-span-4">
-              <RatingChart />
+              <RatingChart data={ratingChartData}/>
             </div>
             <div className="col-span-8">
               <div className="flex items-center mb-2 gap-2 justify-end">
                 <p className="text-sm text-zinc-500">sort by </p>
-                <Select defaultValue="latest" style={{ width: 150 }} options={sortOptions} />
+                <Select
+                  defaultValue="latest"
+                  style={{ width: 150 }}
+                  options={sortOptions}
+                />
               </div>
               {reviews.length > 0 ? (
                 reviews.map((review) => {
@@ -85,7 +108,8 @@ const GameReviewTab = () => {
                 })
               ) : (
                 <div className="p-5 rounded bg-zinc-800 mb-3 text-center text-zinc-400">
-                  No reviews yet for {game?.name || "this game"}. Be the first to share your thoughts!
+                  No reviews yet for {game?.name || "this game"}. Be the first
+                  to share your thoughts!
                 </div>
               )}
               <div>

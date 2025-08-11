@@ -1,7 +1,7 @@
 import { Pagination, Radio, Select } from "antd";
 import ReviewGameForm from "./review-game-form";
 import useGameStore from "@/store/use-game-store";
-import RatingChart from "./rating-chart";
+import RatingChart, { RatingChartData } from "@/components/charts/rating-chart";
 import useAuthStore from "@/store/use-auth-store";
 import ReviewCard from "./review-card";
 import useReviewStore from "@/store/use-review-store";
@@ -54,10 +54,13 @@ const GameReviews = () => {
   const [isGameOwned, setIsGameOwned] = useState(false);
   const { reviews, fetchReviewsByGameId, loading, renderKey } =
     useReviewStore();
+  const [ratingChartData, setRatingChartData] = useState<RatingChartData[]>([]);
 
   const fetchReviewStatistic = async (gameId: string) => {
     const result = await getReviewStatistic(gameId);
-    console.log(result);
+    if (!result.error) {
+      setRatingChartData(result.data);
+    }
   };
 
   useEffect(() => {
@@ -111,7 +114,7 @@ const GameReviews = () => {
           </div>
           <div className="grid grid-cols-12 mt-3 gap-3">
             <div className="col-span-4">
-              <RatingChart />
+              <RatingChart data={ratingChartData}/>
             </div>
             <div className="col-span-8">
               <div className="flex items-center mb-2 gap-2 justify-end">
