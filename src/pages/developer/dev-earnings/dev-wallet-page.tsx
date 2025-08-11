@@ -6,7 +6,7 @@ import { Withdraw } from "@/types/withdraw-request";
 import { getWithdrawRequestById } from "@/lib/api/withdraw-api";
 import CreateWithdrawRequest from "./withdraw-request/create-withdraw-request";
 import { PiHandWithdraw } from "react-icons/pi";
-import DevWallet from "./wallet/dev-wallet";
+import DevWallet from "@/components/wallet/dev-wallet";
 
 const DevWalletPage = () => {
   const [withdrawRequests, setWithdrawRequests] = useState<Withdraw[]>([]);

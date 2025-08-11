@@ -4,7 +4,10 @@ import { Transaction, getReadableTransactionType } from "@/types/transaction";
 import { TableProps, Tag } from "antd";
 
 const getStatusTag = (status: Transaction["status"]) => {
-  const statusConfig: Record<Transaction["status"], { color: string; text: string }> = {
+  const statusConfig: Record<
+    Transaction["status"],
+    { color: string; text: string }
+  > = {
     Success: { color: "green", text: "Success" },
     Pending: { color: "orange", text: "Pending" },
     Failed: { color: "red", text: "Failed" },
@@ -19,19 +22,27 @@ export const columns: TableProps<Transaction>["columns"] = [
     dataIndex: "orderCode",
     key: "orderCode",
     width: 120,
-    render: (orderCode: string) => <span className="font-mono text-blue-400">TS-{orderCode}</span>,
+    render: (orderCode: string) => (
+      <span className="font-mono text-blue-400">TS-{orderCode}</span>
+    ),
   },
   {
     title: "Order Code",
     dataIndex: "orderCode",
     key: "orderCode",
-    render: (orderCode: string) => <span className="font-mono text-blue-400">OD-{orderCode}</span>,
+    render: (orderCode: string) => (
+      <span className="font-mono text-blue-400">OD-{orderCode}</span>
+    ),
   },
   {
     title: "Type",
     dataIndex: "type",
     key: "type",
-    render: (type) => <span className="font-mono text-blue-400">{getReadableTransactionType(type)}</span>,
+    render: (type) => (
+      <span className="font-mono text-blue-400">
+        {getReadableTransactionType(type)}
+      </span>
+    ),
     width: 150,
   },
   {
@@ -39,7 +50,9 @@ export const columns: TableProps<Transaction>["columns"] = [
     dataIndex: "paymentMethod",
     key: "paymentMethod",
     width: 150,
-    render: (paymentMethod: string) => <span className="font-mono text-blue-400">{paymentMethod}</span>,
+    render: (paymentMethod: string) => (
+      <span className="font-mono text-blue-400">{paymentMethod}</span>
+    ),
   },
   {
     title: "Amount",
@@ -49,13 +62,21 @@ export const columns: TableProps<Transaction>["columns"] = [
     render: (amount: number = 0, record: Transaction) => {
       const type = record.type.toLowerCase();
       const isDeposit = type === "deposit";
-      const isPurchase = type === "purchasegame";
-      const isCommercial = type === "purchasecommercialpackage";
       const isWithdraw = type === "withdraw";
+      const isPurchase =
+        type === "purchasegame" ||
+        type === "purchasecommercialpackage" ||
+        type === "donation";
       const isWallet = record.paymentMethod === "Wallet";
       const isPayOS = record.paymentMethod === "PayOS";
 
       const formattedAmount = (amount ?? 0).toLocaleString("vi-VN");
+
+      const renderSuffix = () => {
+        if (isWallet) return <CoinIcon className="inline size-3 ms-1 mb-1" />;
+        if (isPayOS) return <span className="ms-1">₫</span>;
+        return null;
+      };
 
       if (isDeposit) {
         return (
@@ -70,24 +91,7 @@ export const columns: TableProps<Transaction>["columns"] = [
         return (
           <span className="font-semibold text-red-500">
             -{formattedAmount}
-            {isWallet ? (
-              <CoinIcon className="inline size-3 ms-1 mb-1" />
-            ) : isPayOS ? (
-              <span className="ms-1">₫</span>
-            ) : null}
-          </span>
-        );
-      }
-
-      if (isCommercial) {
-        return (
-          <span className="font-semibold text-red-500">
-            -{formattedAmount}
-            {isWallet ? (
-              <CoinIcon className="inline size-3 ms-1 mb-1" />
-            ) : isPayOS ? (
-              <span className="ms-1">₫</span>
-            ) : null}
+            {renderSuffix()}
           </span>
         );
       }
@@ -101,64 +105,11 @@ export const columns: TableProps<Transaction>["columns"] = [
         );
       }
 
-      return <span className="font-semibold text-gray-500">{formattedAmount}</span>;
+      return (
+        <span className="font-semibold text-gray-500">{formattedAmount}</span>
+      );
     },
   },
-  // {
-  //   title: "Game Price",
-  //   dataIndex: "gamePrice",
-  //   key: "gamePrice",
-  //   width: 150,
-  //   render: (value: number, record: Transaction) => {
-  //     const type = record.type;
-  //     const isPurchase = type === "PurchaseGame";
-  //     const isWallet = record.paymentMethod === "Wallet";
-  //     const isPayOS = record.paymentMethod === "PayOS";
-
-  //     if (isPurchase) {
-  //       return (
-  //         <span className="font-semibold text-red-500">
-  //           -{value.toLocaleString("vi-VN")}
-  //           {isWallet ? (
-  //             <CoinIcon className="inline size-3 ms-1 mb-1" />
-  //           ) : isPayOS ? (
-  //             <span className="ms-1">₫</span>
-  //           ) : null}
-  //         </span>
-  //       );
-  //     }
-
-  //     return;
-  //   },
-  // },
-  {
-    title: "Donation",
-    dataIndex: "donation",
-    key: "donation",
-    width: 150,
-    render: (value: number, record: Transaction) => {
-      const type = record.type;
-      const isPurchase = type === "PurchaseGame";
-      const isWallet = record.paymentMethod === "Wallet";
-      const isPayOS = record.paymentMethod === "PayOS";
-
-      if (isPurchase && value > 0) {
-        return (
-          <span className="font-semibold text-red-500">
-            -{value.toLocaleString("vi-VN")}
-            {isWallet ? (
-              <CoinIcon className="inline size-3 ms-1 mb-1" />
-            ) : isPayOS ? (
-              <span className="ms-1">₫</span>
-            ) : null}
-          </span>
-        );
-      }
-
-      return;
-    },
-  },
-
   {
     title: "Description",
     dataIndex: "description",
