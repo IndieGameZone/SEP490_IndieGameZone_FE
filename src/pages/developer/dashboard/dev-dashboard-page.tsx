@@ -7,9 +7,11 @@ import { useEffect, useState } from "react";
 import MonthStatistic from "./month-statistic";
 import { formatCurrencyVND } from "@/lib/currency";
 import { Link } from "react-router-dom";
+import FaultTolerantImage from "@/components/fault-tolerant-image";
 
 type SummaryData = {
   totalRevenueAllTime: number;
+  totalDonationAllTime: number;
   revenueByMonth: {
     [key: string]: number;
   };
@@ -19,6 +21,7 @@ const DevDashBoardPage = () => {
   const { profile } = useAuthStore();
   const [summaryData, setSummaryData] = useState<SummaryData>({
     totalRevenueAllTime: 0,
+    totalDonationAllTime: 0,
     revenueByMonth: {},
     top5BestSellingGames: [],
   });
@@ -43,27 +46,31 @@ const DevDashBoardPage = () => {
     <div className="p-5">
       <h2 className="text-3xl text-center">Overall Statistic Reports</h2>
       <div className="grid grid-cols-3 gap-3">
-        <div>
+        <div className=" grid grid-cols-2 gap-3 col-span-2">
           <div className="bg-zinc-900 p-5">
             <h3 className="text-lg font-semibold">Total Revenue (All Time)</h3>
-            <p className="text-3xl text-orange-500">
+            <p className="text-3xl text-orange-400">
               {formatCurrencyVND(summaryData.totalRevenueAllTime)}
             </p>
           </div>
+          <div className="bg-zinc-900 p-5">
+            <h3 className="text-lg font-semibold">Total Donation (All Time)</h3>
+            <p className="text-3xl text-green-400">
+              {formatCurrencyVND(summaryData.totalDonationAllTime)}
+            </p>
+          </div>
+          <div className="bg-zinc-900 rounded col-span-2 pb-5">
+            <h3 className="pt-3 -mb-3 text-center text-xl font-semibold">
+              Monthly Revenue Chart ({currentYear})
+            </h3>
+            <MonthlyRevenueChart
+              revenueByMonth={summaryData.revenueByMonth}
+              year={currentYear}
+              width={700}
+            />
+          </div>
         </div>
-      </div>
-      <div className="grid grid-cols-12 mt-5 gap-3">
-        <div className="bg-zinc-900 rounded col-span-8 pb-5">
-          <h3 className="pt-3 -mb-3 text-center text-xl font-semibold">
-            Monthly Revenue Chart ({currentYear})
-          </h3>
-          <MonthlyRevenueChart
-            revenueByMonth={summaryData.revenueByMonth}
-            year={currentYear}
-            width={700}
-          />
-        </div>
-        <div className="col-span-4">
+        <div className="col-span-1">
           <h3 className="text-xl font-semibold">Top best selling games</h3>
           {summaryData.top5BestSellingGames
             .sort((a, b) => b.purchaseCount - a.purchaseCount)
@@ -74,7 +81,7 @@ const DevDashBoardPage = () => {
                   key={entry.game.id}
                 >
                   <Link to={`/dev/game/${entry.game.id}`}>
-                    <img
+                    <FaultTolerantImage
                       src={entry.game.coverImage}
                       alt=""
                       className="w-[150px] bg-zinc-900 aspect-video object-contain"
@@ -92,7 +99,6 @@ const DevDashBoardPage = () => {
             })}
         </div>
       </div>
-
       <MonthStatistic />
     </div>
   );

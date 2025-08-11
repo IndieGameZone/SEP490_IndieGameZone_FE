@@ -8,6 +8,7 @@ import useGameStore from "@/store/use-game-store";
 
 type Revenue = {
   totalRevenueAllTime: number;
+  totalDonationAllTime: number;
   revenueByMonth: {
     [key: string]: number;
   };
@@ -16,6 +17,7 @@ type Revenue = {
 const GameStatisticsTab = () => {
   const [revenueData, setRevenueData] = useState<Revenue>({
     totalRevenueAllTime: 0,
+    totalDonationAllTime: 0,
     revenueByMonth: {},
   });
   const { gameId } = useParams();
@@ -37,12 +39,20 @@ const GameStatisticsTab = () => {
   const currentYear = new Date().getFullYear();
   return (
     <div className="p-5">
-      <h2 className="text-3xl text-center">Statistic reports for "{game?.name}"</h2>
+      <h2 className="text-3xl text-center">
+        Statistic reports for "{game?.name}"
+      </h2>
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-zinc-900 p-5">
           <h3 className="text-lg font-semibold">Total Revenue (All Time)</h3>
-          <p className="text-3xl text-orange-500">
+          <p className="text-3xl text-orange-400">
             {formatCurrencyVND(revenueData.totalRevenueAllTime)}
+          </p>
+        </div>
+        <div className="bg-zinc-900 p-5">
+          <h3 className="text-lg font-semibold">Total Donation (All Time)</h3>
+          <p className="text-3xl text-green-400">
+            {formatCurrencyVND(revenueData.totalDonationAllTime)}
           </p>
         </div>
       </div>

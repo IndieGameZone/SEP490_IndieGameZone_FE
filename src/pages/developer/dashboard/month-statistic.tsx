@@ -8,6 +8,7 @@ import useAuthStore from "@/store/use-auth-store";
 type ChartData = {
   day: number;
   revenue: number;
+  donation: number;
 };
 
 const MonthStatistic = () => {
