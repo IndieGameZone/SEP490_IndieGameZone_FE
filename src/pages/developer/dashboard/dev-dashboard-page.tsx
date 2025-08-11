@@ -1,4 +1,4 @@
-import MonthlyRevenueChart from "@/components/charts/monthly-revenue-chart";
+import MonthlyRevenueChart from "@/components/charts/dev/monthly-revenue-chart";
 import { useGlobalMessage } from "@/components/message-provider";
 import { getDevSummaryStatistic } from "@/lib/api/dev-dashboard-api";
 import useAuthStore from "@/store/use-auth-store";

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import MonthStatistic from "./month-statistic";
-import MonthlyRevenueChart from "../../../../components/charts/monthly-revenue-chart";
+import MonthlyRevenueChart from "../../../../components/charts/dev/monthly-revenue-chart";
 import { useEffect, useState } from "react";
 import { getGameSummaryStatistic } from "@/lib/api/dev-dashboard-api";
 import { formatCurrencyVND } from "@/lib/currency";

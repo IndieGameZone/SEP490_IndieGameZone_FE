@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getDevMonthStatistic } from "@/lib/api/dev-dashboard-api";
 import dayjs, { Dayjs } from "dayjs";
 import { DatePicker, Form } from "antd";
-import DailyRevenueChart from "@/components/charts/daily-revenue-chart";
+import DailyRevenueChart from "@/components/charts/dev/daily-revenue-chart";
 import useAuthStore from "@/store/use-auth-store";
 
 type ChartData = {

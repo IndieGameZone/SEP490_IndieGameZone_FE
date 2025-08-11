@@ -4,7 +4,7 @@ import useAuthStore from "@/store/use-auth-store";
 import useReviewStore from "@/store/use-review-store";
 import { useEffect, useState } from "react";
 import Loader from "@/components/loader";
-import RatingChart, { RatingChartData } from "@/components/charts/rating-chart";
+import RatingChart, { RatingChartData } from "@/components/charts/dev/rating-chart";
 import ReviewCard from "@/pages/game-details/review-card";
 import GameSummaryReview from "./game-summary-review";
 import { getReviewStatistic } from "@/lib/api/review-api";

@@ -11,12 +11,12 @@ export const getAdminWalletColumns = (): ColumnsType<Transaction> => [
     key: "no",
     render: (_, __, index) => index + 1,
   },
-  {
-    title: "User",
-    dataIndex: "user",
-    key: "user.userName",
-    render: (user) => user?.userName || "N/A",
-  },
+  // {
+  //   title: "User",
+  //   dataIndex: "user",
+  //   key: "user.userName",
+  //   render: (user) => user?.userName || "N/A",
+  // },
   {
     title: "Amount",
     dataIndex: "amount",

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Table } from "antd";
 import { useGlobalMessage } from "@/components/message-provider";
 import useAuthStore from "@/store/use-auth-store";
@@ -6,8 +6,9 @@ import { getAdminWallet } from "@/lib/api/payment-api";
 import { Transaction } from "@/types/transaction";
 import { getAdminWalletColumns } from "./columns";
 import AdminWallet from "./admin-wallet";
+import DashboardSummary from "./dashboard-summary";
 
-const ManageAdminWallet: React.FC = () => {
+const ManageAdminWallet = () => {
   const [reports, setReports] = useState<Transaction[]>([]);
 
   const { profile } = useAuthStore();
@@ -37,10 +38,9 @@ const ManageAdminWallet: React.FC = () => {
 
   return (
     <div className="py-5">
-      <div className="px-4">
-        <AdminWallet />
-      </div>
-      <div className="container mx-auto md:px-4">
+      <DashboardSummary />
+      <AdminWallet />
+      <div className="container">
         <Table
           dataSource={reports}
           columns={getAdminWalletColumns()}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getGameMonthStatistic } from "@/lib/api/dev-dashboard-api";
-import DailyRevenueChart from "../../../../components/charts/daily-revenue-chart";
-import DailyDownloadChart from "../../../../components/charts/daily-download-chart";
+import DailyRevenueChart from "../../../../components/charts/dev/daily-revenue-chart";
+import DailyDownloadChart from "../../../../components/charts/dev/daily-download-chart";
 import dayjs, { Dayjs } from "dayjs";
 import { DatePicker, Form } from "antd";
 

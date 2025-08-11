@@ -1,7 +1,7 @@
 import { Pagination, Radio, Select } from "antd";
 import ReviewGameForm from "./review-game-form";
 import useGameStore from "@/store/use-game-store";
-import RatingChart, { RatingChartData } from "@/components/charts/rating-chart";
+import RatingChart, { RatingChartData } from "@/components/charts/dev/rating-chart";
 import useAuthStore from "@/store/use-auth-store";
 import ReviewCard from "./review-card";
 import useReviewStore from "@/store/use-review-store";
