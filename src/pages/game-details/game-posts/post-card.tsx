@@ -22,6 +22,7 @@ import { getPostReactionByPostId, reactPost } from "@/lib/api/game-post-api";
 import { useGlobalMessage } from "@/components/message-provider";
 import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
 import usePostStore from "@/store/use-game-post-store";
+import { Link } from "react-router-dom";
 
 interface PostCardProps {
   post: GamePost;
@@ -132,12 +133,17 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
         open={lightboxIndex >= 0}
         close={() => setLightboxIndex(-1)}
       />
-      <div className="bg-zinc-800 w-full p-3 rounded">
+      <div className="bg-zinc-800 w-full p-3 rounded border border-zinc-700 hover:border-orange-500 duration-300">
         <div className="flex justify-between items-center gap-3">
           <div className="flex items-center gap-3">
-            <Avatar src={post.user.avatar} />
+            <Link to={`/profile/${post.user.id}#posts`}>
+              <Avatar src={post.user.avatar} />
+            </Link>
             <div>
-              <div className="font-semibold">{post.user.userName}</div>
+              <Link to={`/profile/${post.user.id}#posts`}>
+                <div className="font-semibold">{post.user.userName}</div>
+              </Link>
+
               <div className="text-xs text-gray-400">
                 {timeAgo(post.createdAt)}
               </div>

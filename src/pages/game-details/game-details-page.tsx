@@ -203,7 +203,7 @@ const GameDetailsPage = () => {
           {/* DEVELOPER INFORMATION */}
           <div className="my-2 flex gap-3 items-center justify-between bg-zinc-900 drop-shadow rounded-lg p-2">
             <Link
-              to={`/profile/${game.developer.id}`}
+              to={`/profile/${game.developer.id}#games`}
               className="flex items-center gap-3"
             >
               {game.developer.avatar ? (

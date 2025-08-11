@@ -8,7 +8,7 @@ interface UserState {
   loading: boolean;
   userBanHistory: UserBanHistory[];
   error: string | null;
-  fetchUserById: (id: string) => Promise<void>;
+  fetchUserById: (id: string) => Promise<User | undefined>;
   fetchAllAccounts: () => void;
   fetchBanHistory: (userId: string) => void;
   renderKey: number;
@@ -39,7 +39,7 @@ const useUserStore = create<UserState>((set) => ({
       set({ loading: false, error: error.message });
     }
   },
-  
+
   fetchBanHistory: async (userId) => {
     set({ loading: true, error: null });
     try {
@@ -59,6 +59,7 @@ const useUserStore = create<UserState>((set) => ({
       const response = await getUserById(id);
       if (!response.error) {
         set({ user: response.data, loading: false });
+        return response.data;
       } else {
         set({ loading: false, error: response.error });
       }

@@ -46,7 +46,7 @@ const ViewUserPosts = () => {
 
   const handleDeleteFinish = () => {
     setPostToDelete(null);
-    fetchUserPosts(); 
+    fetchUserPosts();
   };
 
   if (loading) {
@@ -58,9 +58,12 @@ const ViewUserPosts = () => {
   }
 
   return (
-    <div className="space-y-4 p-5">
+    <div className="space-y-4 bg-zinc-900 border border-zinc-700 p-3 rounded">
       {posts.length === 0 ? (
-        <Empty description="No posts yet" className="bg-zinc-800 p-8 rounded-lg border border-zinc-700" />
+        <Empty
+          description="This user has posts yet"
+          className="p-8 rounded"
+        />
       ) : (
         posts.map((post) => (
           <PostCard
