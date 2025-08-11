@@ -16,7 +16,12 @@ import TiptapView from "@/components/tiptap/tiptap-view";
 import Lightbox from "yet-another-react-lightbox";
 import PostCommentForm from "./post-comment-form";
 import chatEmptyImg from "@/assets/chat-empty.png";
-import { getGamePostById, getPostCommentsByPostId, getPostReactionByPostId, reactPost } from "@/lib/api/game-post-api";
+import {
+  getGamePostById,
+  getPostCommentsByPostId,
+  getPostReactionByPostId,
+  reactPost,
+} from "@/lib/api/game-post-api";
 import { useGlobalMessage } from "@/components/message-provider";
 import Loader from "@/components/loader";
 import useAuthStore from "@/store/use-auth-store";
@@ -33,22 +38,36 @@ interface PostDetailModalProps {
   onDelete: (postId: string) => void;
 }
 
-const PostDetailModal = ({ postId, open, handleCancel, onDelete }: PostDetailModalProps) => {
+const PostDetailModal = ({
+  postId,
+  open,
+  handleCancel,
+  onDelete,
+}: PostDetailModalProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
 
   const messageApi = useGlobalMessage();
-  const { updatePostById, getPostById, getComments, setComments, setLikePost, toggleLikePost, comments, posts } =
-    usePostStore();
+  const {
+    updatePostById,
+    getPostById,
+    getComments,
+    setComments,
+    setLikePost,
+    toggleLikePost,
+    comments,
+    posts,
+  } = usePostStore();
   const { profile } = useAuthStore();
   const { copyLink } = useCopyCurrentLink();
 
   const [reportCommentModalOpen, setReportCommentModalOpen] = useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string>("");
   const [isSubmittingLike, setIsSubmittingLike] = useState(false);
-  const [deleteCommentConfirmOpen, setDeleteCommentConfirmOpen] = useState(false);
+  const [deleteCommentConfirmOpen, setDeleteCommentConfirmOpen] =
+    useState(false);
 
   const commentSectionRef = useRef<HTMLDivElement>(null);
   const commentToDelete = useRef<string | null>(null);
@@ -93,7 +112,9 @@ const PostDetailModal = ({ postId, open, handleCancel, onDelete }: PostDetailMod
       const result = await getPostCommentsByPostId(postId);
       setIsLoadingComments(false);
       if (result.error) {
-        messageApi.error("Failed to fetch post comments! Please try again later.");
+        messageApi.error(
+          "Failed to fetch post comments! Please try again later."
+        );
         return;
       }
       commentSectionRef.current?.scrollTo({ top: 0, behavior: "smooth" });
@@ -140,7 +161,10 @@ const PostDetailModal = ({ postId, open, handleCancel, onDelete }: PostDetailMod
     return post?.postImages ? post.postImages.map((image) => image.image) : [];
   }, [post]);
 
-  const slides = useMemo(() => images.map((image) => ({ src: image })), [images]);
+  const slides = useMemo(
+    () => images.map((image) => ({ src: image })),
+    [images]
+  );
 
   const handlePrev = () => {
     setCurrentImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -207,19 +231,29 @@ const PostDetailModal = ({ postId, open, handleCancel, onDelete }: PostDetailMod
     }
   };
 
-  if (!postId) {
-    return;
-  }
-
   return (
     <>
-      <DeleteCommentConfirmationModal
-        postId={postId}
-        onCancel={handleCancelDelete}
-        onDeleteFinish={handleDeleteFinish}
-        open={deleteCommentConfirmOpen}
-        commentId={commentToDelete.current}
-      />
+      {postId && (
+        <>
+          <DeleteCommentConfirmationModal
+            postId={postId}
+            onCancel={handleCancelDelete}
+            onDeleteFinish={handleDeleteFinish}
+            open={deleteCommentConfirmOpen}
+            commentId={commentToDelete.current}
+          />
+          <ReportCommentModal
+            open={reportCommentModalOpen}
+            onClose={() => {
+              setReportCommentModalOpen(false);
+              setSelectedCommentId("");
+            }}
+            postId={postId}
+            commentId={selectedCommentId}
+          />
+        </>
+      )}
+
       <Modal
         closable
         open={open}
@@ -235,7 +269,12 @@ const PostDetailModal = ({ postId, open, handleCancel, onDelete }: PostDetailMod
         }}
         styles={{ content: { padding: "0" } }}
       >
-        <Lightbox index={currentImage} slides={slides} open={lightboxIndex >= 0} close={() => setLightboxIndex(-1)} />
+        <Lightbox
+          index={currentImage}
+          slides={slides}
+          open={lightboxIndex >= 0}
+          close={() => setLightboxIndex(-1)}
+        />
         <div className="grid grid-cols-2">
           <div className="p-3 max-h-[95vh] overflow-auto pb-10">
             {!isLoading ? (
@@ -280,7 +319,10 @@ const PostDetailModal = ({ postId, open, handleCancel, onDelete }: PostDetailMod
             )}
           </div>
 
-          <div className="flex flex-col border-l border-zinc-700 max-h-[95vh] overflow-auto" ref={commentSectionRef}>
+          <div
+            className="flex flex-col border-l border-zinc-700 max-h-[95vh] overflow-auto"
+            ref={commentSectionRef}
+          >
             <div className="p-3 border-b border-zinc-700 pe-10">
               <div className="flex items-center gap-3">
                 <Link className="mt-1" to={`/profile/${post?.user.id}`}>
@@ -290,7 +332,9 @@ const PostDetailModal = ({ postId, open, handleCancel, onDelete }: PostDetailMod
                   <Link className="mt-1" to={`/profile/${post?.user.id}`}>
                     <div className="font-semibold">{post?.user.userName}</div>
                   </Link>
-                  <div className="text-xs text-gray-400">{post?.createdAt && timeAgo(post.createdAt)}</div>
+                  <div className="text-xs text-gray-400">
+                    {post?.createdAt && timeAgo(post.createdAt)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -306,22 +350,32 @@ const PostDetailModal = ({ postId, open, handleCancel, onDelete }: PostDetailMod
               </div>
             ) : (
               <div className="flex-1 overflow-y-auto">
-                {postComments.map((comment) => (
-                  <PostCommentCard
-                    key={comment.id}
-                    comment={comment}
-                    postId={postId}
-                    onReportComment={handleReportComment}
-                    onDeleteComment={handleSetCommentToDelete}
-                  />
-                ))}
+                {postId &&
+                  postComments.map((comment) => (
+                    <PostCommentCard
+                      key={comment.id}
+                      comment={comment}
+                      postId={postId}
+                      onReportComment={handleReportComment}
+                      onDeleteComment={handleSetCommentToDelete}
+                    />
+                  ))}
               </div>
             )}
-            <PostCommentForm onSubmit={onSubmitComment} postId={post?.id ?? null} />
+            <PostCommentForm
+              onSubmit={onSubmitComment}
+              postId={post?.id ?? null}
+            />
             <div className="flex justify-between mt-2 border-t border-zinc-700 p-3">
               <div className="flex items-center gap-3 ">
                 <Button
-                  icon={post?.liked ? <FaHeart className="fill-rose-600" /> : <FaRegHeart className="fill-gray-400" />}
+                  icon={
+                    post?.liked ? (
+                      <FaHeart className="fill-rose-600" />
+                    ) : (
+                      <FaRegHeart className="fill-gray-400" />
+                    )
+                  }
                   shape="round"
                   type="text"
                   loading={isSubmittingLike}
@@ -330,7 +384,13 @@ const PostDetailModal = ({ postId, open, handleCancel, onDelete }: PostDetailMod
                   <span>{post?.numberOfLikes}</span>
                 </Button>
 
-                <Button icon={<FaRegComment className="text-gray-400 cursor-pointer" />} shape="round" type="text">
+                <Button
+                  icon={
+                    <FaRegComment className="text-gray-400 cursor-pointer" />
+                  }
+                  shape="round"
+                  type="text"
+                >
                   <span>{post?.numberOfComments}</span>
                 </Button>
 
@@ -347,15 +407,6 @@ const PostDetailModal = ({ postId, open, handleCancel, onDelete }: PostDetailMod
           </div>
         </div>
       </Modal>
-      <ReportCommentModal
-        open={reportCommentModalOpen}
-        onClose={() => {
-          setReportCommentModalOpen(false);
-          setSelectedCommentId("");
-        }}
-        postId={postId}
-        commentId={selectedCommentId}
-      />
     </>
   );
 };

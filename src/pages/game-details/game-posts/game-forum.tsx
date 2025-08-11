@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button, Dropdown, Input, Tag, message } from "antd";
 import { FaSearch } from "react-icons/fa";
 import { MdOutlineSort } from "react-icons/md";
@@ -22,6 +17,7 @@ import { getGamePosts } from "@/lib/api/game-post-api";
 import { GamePost } from "@/types/game-post";
 import notFoundIcon from "@/assets/not-found-icon.svg";
 import usePostStore from "@/store/use-game-post-store";
+import { usePostDetail } from "@/hooks/use-post-detail";
 
 const SORT_TABS = ["Hot & Trending", "Most popular", "Best", "Latest"];
 const PAGE_SIZE = 4;
@@ -33,9 +29,8 @@ const GameForum = () => {
   const { gameId } = useParams();
   const { renderKey, rerender } = useRerender();
 
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { postDetailOpen, selectedPostId, openPostDetail, closePostDetail } =
+    usePostDetail();
 
   const [selectedSortOption, setSelectedSortOption] = useState(SORT_TABS[0]);
   const [messageApi, contextHolder] = message.useMessage();
@@ -46,41 +41,11 @@ const GameForum = () => {
   const [hasMore, setHasMore] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  const [postDetailOpen, setPostDetailOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const postToDelete = useRef<string | null>(null);
-  const selectedPost = useRef<string | null>(null);
 
   const handleSortSelect = ({ key }: { key: string }) => {
     setSelectedSortOption(key);
-  };
-
-  const handleViewPostDetail = (postId: string) => {
-    selectedPost.current = postId;
-    setPostDetailOpen(true);
-
-    const params = new URLSearchParams(location.search);
-    params.set("postId", postId);
-
-    navigate({
-      pathname: location.pathname,
-      search: params.toString(),
-      hash: location.hash,
-    });
-  };
-
-  const handleCancelDetail = () => {
-    selectedPost.current = null;
-    setPostDetailOpen(false);
-
-    const params = new URLSearchParams(location.search);
-    params.delete("postId");
-
-    navigate({
-      pathname: location.pathname,
-      search: params.toString(),
-      hash: location.hash,
-    });
   };
 
   const handleSetPostToDelete = (postId: string) => {
@@ -133,22 +98,14 @@ const GameForum = () => {
     fetchPosts(1);
   }, [gameId, renderKey]);
 
-  useEffect(() => {
-    const postId = searchParams.get("postId");
-    if (postId) {
-      selectedPost.current = postId;
-      setPostDetailOpen(true);
-    }
-  }, [searchParams]);
-
   return (
     <div className="grid grid-cols-12 gap-3">
       {contextHolder}
 
       <PostDetailModal
         open={postDetailOpen}
-        postId={selectedPost.current}
-        handleCancel={handleCancelDetail}
+        postId={selectedPostId}
+        handleCancel={closePostDetail}
         onDelete={handleSetPostToDelete}
       />
 
@@ -227,7 +184,7 @@ const GameForum = () => {
               <PostCard
                 key={`post-${index}`}
                 post={post}
-                onViewPostDetail={handleViewPostDetail}
+                onViewPostDetail={openPostDetail}
                 onDelete={handleSetPostToDelete}
               />
             ))}
