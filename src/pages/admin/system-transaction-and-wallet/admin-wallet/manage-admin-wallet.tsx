@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Table, Typography } from "antd";
+import { Table } from "antd";
 import { useGlobalMessage } from "@/components/message-provider";
 import useAuthStore from "@/store/use-auth-store";
 import { getAdminWallet } from "@/lib/api/payment-api";
 import { Transaction } from "@/types/transaction";
 import { getAdminWalletColumns } from "./columns";
-import Wallet from "@/pages/developer/dev-earnings/wallet/dev-wallet";
 import AdminWallet from "./admin-wallet";
 
 const ManageAdminWallet: React.FC = () => {

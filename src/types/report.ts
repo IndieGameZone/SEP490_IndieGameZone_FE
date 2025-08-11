@@ -1,4 +1,3 @@
-import { Game } from "./game";
 import { GamePost, PostComment } from "./game-post";
 import { ReportReason } from "./report-reason";
 import { User } from "./user";

@@ -1,7 +1,7 @@
 import { useGlobalMessage } from "@/components/message-provider";
 import { getReviewByUserId } from "@/lib/api/review-api";
 import { Review } from "@/types/review";
-import { Empty, Spin } from "antd";
+import { Empty } from "antd";
 import { useEffect, useState } from "react";
 import ReviewCard from "../game-details/review-card";
 import useAuthStore from "@/store/use-auth-store";
@@ -40,7 +40,10 @@ const ViewUserReviews = () => {
   return (
     <div className="space-y-4 p-5">
       {reviews.length === 0 ? (
-        <Empty description="No reviews yet" className="bg-zinc-800 p-8 rounded-lg border border-zinc-700" />
+        <Empty
+          description="No reviews yet"
+          className="bg-zinc-800 p-8 rounded-lg border border-zinc-700"
+        />
       ) : (
         reviews.map((review) => <ReviewCard key={review.id} review={review} />)
       )}

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "antd";
-import type { ReportItem } from "./columns";
 import { reportColumns } from "./columns";
 import { getOrderByUserId } from "@/lib/api/payment-api";
 import useAuthStore from "@/store/use-auth-store";
+import { Order } from "@/types/order";
 
 const UserOrdersPage: React.FC = () => {
-  const [orders, setReports] = useState<ReportItem[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const { profile } = useAuthStore();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -16,7 +16,7 @@ const UserOrdersPage: React.FC = () => {
         if (!profile) return;
         const response = await getOrderByUserId(profile.id);
         if (response.success) {
-          setReports(response.data);
+          setOrders(response.data);
         } else {
           console.error("Failed to fetch orders:", response.error);
         }
