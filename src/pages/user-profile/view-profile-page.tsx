@@ -3,15 +3,9 @@ import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import useUserStore from "@/store/use-user-store";
 import { Button, Dropdown, MenuProps, Tabs, TabsProps } from "antd";
-import { useEffect } from "react";
+import { use, useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
-import {
-  FaFacebook,
-  FaFlag,
-  FaGamepad,
-  FaLink,
-  FaYoutube,
-} from "react-icons/fa";
+import { FaFacebook, FaFlag, FaGamepad, FaLink, FaYoutube } from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import ViewUserPosts from "./view-user-posts";
@@ -22,6 +16,8 @@ import useFollowStore from "@/store/use-follow-store";
 import { useGlobalMessage } from "@/components/message-provider";
 import { useHashState } from "@/hooks/use-hash-state";
 import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
+import { getUserObtainedAchievements } from "@/lib/api/achievements";
+import { Achievement } from "@/types/achievements";
 
 const ViewProfilePage = () => {
   const { userId } = useParams();
@@ -30,6 +26,8 @@ const ViewProfilePage = () => {
   const [selectedTab, setSelectedTab] = useHashState("posts");
   const { copyLink } = useCopyCurrentLink();
   const { profile } = useAuthStore();
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [loadingAchievements, setLoadingAchievements] = useState(false);
   const {
     followDeveloper,
     checkIsFollowed,
@@ -62,6 +60,27 @@ const ViewProfilePage = () => {
       children: <ViewUserGames />,
     },
   ];
+  useEffect(() => {
+    const loadAchievements = async () => {
+      if (!userId) return;
+
+      setLoadingAchievements(true);
+      try {
+        const response = await getUserObtainedAchievements(userId);
+        if (response.success) {
+          setAchievements(response.data);
+        } else {
+          console.error("Failed to fetch achievements:", response.error);
+        }
+      } catch (error) {
+        console.error("Failed to fetch achievements:", error);
+      } finally {
+        setLoadingAchievements(false);
+      }
+    };
+
+    loadAchievements();
+  }, [userId]);
   useEffect(() => {
     const checkFollow = async () => {
       if (profile?.id && userId) {
@@ -117,15 +136,14 @@ const ViewProfilePage = () => {
     return (
       <div className="min-h-[70vh] flex items-center justify-center px-4">
         <div className="bg-zinc-800 shadow-xl rounded-2xl p-8 max-w-md text-center border border-orange-500">
-          <h1 className="text-3xl font-bold text-red-600 mb-4">
-            User Not Found
-          </h1>
+          <h1 className="text-3xl font-bold text-red-600 mb-4">User Not Found</h1>
           <p className="mb-6">We couldn't find the user you're looking for.</p>
           <Button onClick={() => navigate(-1)}>Go Back</Button>
         </div>
       </div>
     );
   }
+
   return (
     <MaxWidthWrapper className="py-5">
       <div className="md:grid grid-cols-12 gap-3">
@@ -174,29 +192,17 @@ const ViewProfilePage = () => {
                 <TiptapView value={user?.bio} />
               </>
             )}
-            {(user?.facebookLink || user?.youtubeChannelLink) && (
-              <hr className="border-zinc-600 my-3 w-full" />
-            )}
+            {(user?.facebookLink || user?.youtubeChannelLink) && <hr className="border-zinc-600 my-3 w-full" />}
             {user?.facebookLink && (
-              <Link
-                to={user.facebookLink}
-                className="flex items-center w-full gap-2"
-              >
+              <Link to={user.facebookLink} className="flex items-center w-full gap-2">
                 <FaFacebook />
-                <p className="hover:underline">
-                  {user.facebookLink.split("/").pop()}
-                </p>
+                <p className="hover:underline">{user.facebookLink.split("/").pop()}</p>
               </Link>
             )}
             {user?.youtubeChannelLink && (
-              <Link
-                to={user.youtubeChannelLink}
-                className="flex items-center w-full gap-2"
-              >
+              <Link to={user.youtubeChannelLink} className="flex items-center w-full gap-2">
                 <FaYoutube />
-                <p className="hover:underline">
-                  {user.youtubeChannelLink.split("/").pop()}
-                </p>
+                <p className="hover:underline">{user.youtubeChannelLink.split("/").pop()}</p>
               </Link>
             )}
             {profile?.id == userId ? (
@@ -226,6 +232,35 @@ const ViewProfilePage = () => {
                 </Dropdown>
               </div>
             )}
+            <div>
+              <div>
+                <div className="py-5">
+                  <span className="font-bold text-2xl">Achievements</span>
+                </div>
+                <div className="mt-4 space-y-2">
+                  {loadingAchievements ? (
+                    <div className="flex justify-center">
+                      <Loader />
+                    </div>
+                  ) : achievements.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-2">
+                      {achievements.map((achievement) => (
+                        <div
+                          key={achievement.id}
+                          className="bg-zinc-800 p-3 rounded-lg border border-zinc-700 hover:border-orange-500 duration-300"
+                        >
+                          <span className="font-medium">{achievement.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-4 bg-zinc-800 rounded-lg border border-zinc-700">
+                      <p className="text-zinc-500">No achievements yet</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

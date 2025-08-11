@@ -3,6 +3,7 @@ import { formatDateTime } from "@/lib/date-n-time";
 import { Withdraw } from "@/types/withdraw-request";
 import { ColumnsType } from "antd/es/table";
 import { Image, Tag } from "antd";
+import CoinIcon from "@/components/coin-icon";
 
 export const withdrawRequestColumns: ColumnsType<Withdraw> = [
   {
@@ -17,6 +18,13 @@ export const withdrawRequestColumns: ColumnsType<Withdraw> = [
     title: "Amount",
     dataIndex: "amount",
     key: "amount",
+    align: "right",
+    render: (amount: number) => (
+      <div className="flex items-center gap-1">
+        {(amount ?? 0).toLocaleString("vi-VN")}
+        <CoinIcon size="size-4" />
+      </div>
+    ),
   },
   {
     title: "Description",

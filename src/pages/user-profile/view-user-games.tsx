@@ -12,10 +12,10 @@ const ViewUserGames = () => {
   const [loading, setLoading] = useState(false);
   const messageApi = useGlobalMessage();
   useEffect(() => {
-    fetchRecommendedGames();
+    fetchUserGames();
   }, [userId]);
 
-  const fetchRecommendedGames = async () => {
+  const fetchUserGames = async () => {
     if (!userId) return;
     setLoading(true);
     const result = await getDevActiveGames(userId);

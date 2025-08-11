@@ -29,10 +29,10 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
           },
         },
         {
-          key: "/account/ratings-and-reviews",
+          key: "/account/rating-and-reviews-history",
           label: "Ratings & Reviews",
           onClick: () => {
-            navigate("/account/ratings-and-reviews");
+            navigate("/account/rating-and-reviews-history");
           },
         },
         {
@@ -147,15 +147,8 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
           <h1 className="font-bold text-2xl">My Account</h1>
         </div>
         <div className="grid grid-cols-12">
-          <div
-            className="col-span-2 min-h-72"
-            style={{ background: colorBgContainer }}
-          >
-            <Menu
-              selectedKeys={[location.pathname]}
-              mode="inline"
-              items={items}
-            />
+          <div className="col-span-2 min-h-72" style={{ background: colorBgContainer }}>
+            <Menu selectedKeys={[location.pathname]} mode="inline" items={items} />
           </div>
           <div className="col-span-10" style={{ background: colorBgContainer }}>
             {children}

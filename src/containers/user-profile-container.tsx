@@ -4,28 +4,14 @@ import UserProfileLayout from "@/layouts/user-profile-layout";
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
-const UserProfilePage = lazy(
-  () => import("@/pages/user-profile/user-profile-page")
-);
-const TransactionHistoryPage = lazy(
-  () => import("@/pages/user-profile/transaction-history-page")
-);
-const UserWishlistPage = lazy(
-  () => import("@/pages/user-profile/wish-list/view-user-wishlist")
-);
-const UserLibraryPage = lazy(
-  () => import("@/pages/user-profile/library-games/view-user-library-game")
-);
-const GameRecommendationsPage = lazy(
-  () => import("@/pages/user-profile/game-recommendations-page")
-);
-const UserOrdersPage = lazy(
-  () => import("@/pages/user-profile/orders/user-orders-page")
-);
-const UserManageSentReportPage = lazy(
-  () =>
-    import("@/pages/user-profile/manage-sent-report/manage-sent-report-page")
-);
+const UserProfilePage = lazy(() => import("@/pages/user-profile/user-profile-page"));
+const ViewUserReviews = lazy(() => import("@/pages/user-profile/rating-and-reviews-history"));
+const TransactionHistoryPage = lazy(() => import("@/pages/user-profile/transaction-history-page"));
+const UserWishlistPage = lazy(() => import("@/pages/user-profile/wish-list/view-user-wishlist"));
+const UserLibraryPage = lazy(() => import("@/pages/user-profile/library-games/view-user-library-game"));
+const GameRecommendationsPage = lazy(() => import("@/pages/user-profile/game-recommendations-page"));
+const UserOrdersPage = lazy(() => import("@/pages/user-profile/orders/user-orders-page"));
+const UserManageSentReportPage = lazy(() => import("@/pages/user-profile/manage-sent-report/manage-sent-report-page"));
 const UserProfileContainer = () => {
   return (
     <HomeLayout>
@@ -33,20 +19,12 @@ const UserProfileContainer = () => {
         <Suspense fallback={<SuspenseFallback />}>
           <Routes>
             <Route path="/profile" element={<UserProfilePage />} />
-            <Route
-              path="/transaction-history"
-              element={<TransactionHistoryPage />}
-            />
+            <Route path="/transaction-history" element={<TransactionHistoryPage />} />
             <Route path="/wishlist" element={<UserWishlistPage />} />
             <Route path="/library" element={<UserLibraryPage />} />
-            <Route
-              path="/recommendations"
-              element={<GameRecommendationsPage />}
-            />
-            <Route
-              path="/manage-sent-reports"
-              element={<UserManageSentReportPage />}
-            />
+            <Route path="/recommendations" element={<GameRecommendationsPage />} />
+            <Route path="/rating-and-reviews-history" element={<ViewUserReviews />} />
+            <Route path="/manage-sent-reports" element={<UserManageSentReportPage />} />
             <Route path="/orders" element={<UserOrdersPage />} />
           </Routes>
         </Suspense>

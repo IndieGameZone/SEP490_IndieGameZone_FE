@@ -154,3 +154,11 @@ export const getAllTransactions = async () => {
     return handleApiError(error);
   }
 };
+export const getAdminWallet = async (userId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/users/${userId}/transactions`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
