@@ -10,7 +10,7 @@ import {
   Popover,
   Skeleton,
 } from "antd";
-import { IoIosNotifications, IoMdMore } from "react-icons/io";
+import { IoMdMore } from "react-icons/io";
 import {
   FaBook,
   FaFacebookSquare,
@@ -23,6 +23,7 @@ import { MdOutlineInsertChart } from "react-icons/md";
 import useProfileStore from "@/store/use-auth-store";
 import { SearchProps } from "antd/es/input";
 import DownloadProcessesButton from "./download-processes-button";
+import ViewNotificationsButton from "./view-notifications-button";
 
 type MenuItem = GetProp<MenuProps, "items">[number];
 
@@ -147,7 +148,7 @@ const Navbar = () => {
 
           {!isLoadingProfile && profile && (
             <>
-              <Button shape="circle" icon={<IoIosNotifications />}></Button>
+              <ViewNotificationsButton />
               <ProfileMenu />
             </>
           )}

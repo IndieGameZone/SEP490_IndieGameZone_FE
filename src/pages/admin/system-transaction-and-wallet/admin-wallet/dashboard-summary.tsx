@@ -1,6 +1,5 @@
 import CoinIcon from "@/components/coin-icon";
 import { getDashboardSummary } from "@/lib/api/admin-dashboard-api";
-import { formatCurrencyVND } from "@/lib/currency";
 import { useEffect, useState } from "react";
 import { VictoryPie, VictoryLabel } from "victory";
 
