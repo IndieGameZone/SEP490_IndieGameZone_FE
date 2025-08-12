@@ -2,7 +2,6 @@ import { timeAgo } from "@/lib/date-n-time";
 import { Avatar, Button, message, Rate, Tooltip } from "antd";
 import { CiUser } from "react-icons/ci";
 import { FaFlag } from "react-icons/fa";
-import { AiFillDislike, AiFillLike } from "react-icons/ai";
 import { Review } from "@/types/review";
 
 
@@ -32,7 +31,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
             <Rate disabled value={review.rating || 0} />
           </div>
           <p className="text-white">{review.comment || "No comment provided"}</p>
-          <div className="mt-1">
+          {/* <div className="mt-1">
             <p className="text-xs text-zinc-500">Was this review helpful?</p>
             <div className="flex gap-3 mt-1 items-center">
               <div className="flex gap-1 items-center">
@@ -54,7 +53,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

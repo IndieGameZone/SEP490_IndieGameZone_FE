@@ -6,6 +6,7 @@ import {
   Button,
   Dropdown,
   MenuProps,
+  Rate,
   Tabs,
   TabsProps,
   Tag,
@@ -192,7 +193,7 @@ const GameDetailsPage = () => {
                 <AddToWishlistButton game={game} />
               </div>
             </div>
-            <p className="text-zinc-500">{game.shortDescription}</p>
+            <p className="text-zinc-400">{game.shortDescription}</p>
             <Link
               to={`/search?category=${game.category.id}`}
               className="font-semibold text-orange-200 hover:underline"
@@ -251,16 +252,23 @@ const GameDetailsPage = () => {
             </span>
             <span>{formatDuration(game.averageSession)}</span>
           </div>
-          <div className="flex gap-2 text-sm items-end">
-            <span className="uppercase text-zinc-400 text-xs">
-              Average rating:
-            </span>
+          <hr className="border-zinc-700 my-3"/>
+          <div className="gap-2 text-sm">
+            <p className="uppercase text-zinc-400 text-xs">Average rating:</p>
             {game.numberOfReviews > 0 ? (
-              <div className="flex items-center gap-2">
-                <span>
-                  {game.averageRating} ({game.numberOfReviews})
-                </span>
-                <FaStar />
+              <div>
+                <p className="text-2xl">
+                  {game.averageRating.toFixed(1)}
+                  <span className="text-sm text-zinc-400">
+                    {" "}
+                    ({game.numberOfReviews} reviews)
+                  </span>
+                </p>
+                <Rate
+                  disabled
+                  defaultValue={game.averageRating}
+                  style={{ fontSize: 16 }}
+                />
               </div>
             ) : (
               <p className="text-zinc-400">No rating</p>

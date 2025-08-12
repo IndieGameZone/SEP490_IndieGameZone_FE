@@ -50,9 +50,9 @@ const LibraryGameCard: React.FC<LibraryGameCardProps> = ({ item }) => {
                 : formatCurrencyVND(item.game.price)}
             </p>
             {item.game.numberOfReviews > 0 ? (
-              <div className="flex items-center justify-end gap-2">
-                <span>{item.game.averageRating}</span>
-                <FaStar />
+              <div className="flex items-center justify-end gap-1">
+                <span>{item.game.averageRating.toFixed(1)}</span>
+                <FaStar className="text-yellow-400 text-xs" />
               </div>
             ) : (
               <p className="text-zinc-400 text-xs text-end">No rating</p>

@@ -54,9 +54,9 @@ const WishlistGameCard: React.FC<WishlistGameCardProps> = ({ game }) => {
               {game.game.price === 0 ? "Free" : formatCurrencyVND(game.game.price)}
             </p>
             {game.game.numberOfReviews > 0 ? (
-              <div className="flex items-center justify-end gap-2">
-                <span>{game.game.averageRating}</span>
-                <FaStar />
+              <div className="flex items-center justify-end gap-1">
+                <span>{game.game.averageRating.toFixed(1)}</span>
+                <FaStar className="text-yellow-400 text-xs" />
               </div>
             ) : (
               <p className="text-zinc-400 text-xs text-end">No rating</p>

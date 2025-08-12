@@ -28,7 +28,12 @@ const CommercialPackageCalendar = ({
     unavailableDates.some((d) => d.isSame(date, "day"));
 
   const handleSelect = (date: Dayjs) => {
-    if (isUnavailable(date) || date.isBefore(dayjs(), "day")) return;
+    if (
+      isUnavailable(date) ||
+      date.isBefore(dayjs(), "day") ||
+      date.isSame(dayjs(), "day")
+    )
+      return;
 
     const conflicts: Dayjs[] = [];
     for (let i = 0; i < duration; i++) {
@@ -85,6 +90,7 @@ const CommercialPackageCalendar = ({
       }}
       fullCellRender={(date) => {
         const isPast = date.isBefore(dayjs(), "day");
+        const isToday = date.isSame(dayjs(), "day");
         const isSelected = isStartDate(date);
         const inRange = isWithinDuration(date);
         const unavailable = isUnavailable(date);
@@ -93,7 +99,7 @@ const CommercialPackageCalendar = ({
         let cellStyle =
           "border-zinc-600 hover:border-zinc-400 hover:bg-orange-900 cursor-pointer";
 
-        if (isPast) {
+        if (isPast || isToday) {
           cellStyle =
             "border-zinc-800 bg-zinc-900 text-zinc-500 cursor-not-allowed";
         } else if (conflict) {
@@ -111,7 +117,9 @@ const CommercialPackageCalendar = ({
             onClick={() => handleSelect(date)}
             className={`relative flex items-center flex-col justify-center border duration-300 min-h-20 ${cellStyle}`}
           >
-            <p className="font-medium absolute p-1 top-0 right-0">{date.date()}</p>
+            <p className="font-medium absolute p-1 top-0 right-0">
+              {date.date()}
+            </p>
             {isSelected && (
               <>
                 <p className="text-center">

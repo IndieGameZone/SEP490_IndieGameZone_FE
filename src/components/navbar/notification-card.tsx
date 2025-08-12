@@ -39,7 +39,7 @@ const NotificationCard = ({ notification }: NotificationCardProps) => {
               shape="circle"
               type="text"
               onClick={() => handleMarkNotification(notification.id)}
-              loading={isLoading}
+              disabled={isLoading}
             >
               <FaCheck />
             </Button>

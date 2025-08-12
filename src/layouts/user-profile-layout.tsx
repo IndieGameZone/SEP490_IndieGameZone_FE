@@ -29,10 +29,10 @@ const UserProfileLayout = ({ children }: { children: ReactNode }) => {
           },
         },
         {
-          key: "/account/rating-and-reviews-history",
+          key: "/account/ratings-and-reviews",
           label: "Ratings & Reviews",
           onClick: () => {
-            navigate("/account/rating-and-reviews-history");
+            navigate("/account/ratings-and-reviews");
           },
         },
         {
