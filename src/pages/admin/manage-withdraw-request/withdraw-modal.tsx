@@ -1,4 +1,4 @@
-import { Modal, Input, Form, Upload, Image, Button, message } from "antd";
+import { Modal, Input, Form, Upload, Image, Button, message, Tag } from "antd";
 import { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { FcApproval, FcCancel } from "react-icons/fc";
@@ -25,7 +25,18 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
   const [uploadLoading, setUploadLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>("");
   const [form] = Form.useForm();
-
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Pending":
+        return "orange";
+      case "Approved":
+        return "green";
+      case "Rejected":
+        return "red";
+      default:
+        return "default";
+    }
+  };
   const beforeUpload = (file: RcFile) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
@@ -152,10 +163,21 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
                 <span className="font-medium">Amount:</span> {record.amount?.toLocaleString()} VND
               </div>
               <div>
-                <span className="font-medium">Requester:</span> {record.requester?.userName || "N/A"}
+                <span className="font-medium">Requester:</span> {record.user?.userName || "N/A"}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-medium">Avatar:</span>
+                <Image src={record.user?.avatar || "N/A"} width={25} />
               </div>
               <div>
-                <span className="font-medium">Status:</span> {record.status}
+                <span className="font-medium">Bank Account Name:</span> {record.user.bankAccountName || "N/A"}
+              </div>
+              <div>
+                <span className="font-medium">Bank Account Number:</span> {record.user.bankAccountNumber || "N/A"}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-medium">Status:</span>
+                <Tag color={getStatusColor(record.status)}>{record.status}</Tag>
               </div>
             </div>
           </div>
@@ -256,11 +278,7 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
                 type="primary"
                 htmlType="submit"
                 loading={loading}
-                className={
-                  actionType === "approve"
-                    ? "bg-green-600 hover:bg-green-700"
-                    : "bg-red-600 hover:bg-red-700"
-                }
+                className={actionType === "approve" ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
               >
                 {loading ? "Processing..." : actionType === "approve" ? "Approve Request" : "Reject Request"}
               </Button>
