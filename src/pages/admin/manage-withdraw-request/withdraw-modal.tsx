@@ -251,15 +251,16 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
             )}
 
             <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
-              <Button size="large" onClick={handleCancel}>
-                Cancel
-              </Button>
+              <Button onClick={handleCancel}>Cancel</Button>
               <Button
                 type="primary"
                 htmlType="submit"
                 loading={loading}
-                size="large"
-                className={actionType === "approve" ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
+                className={
+                  actionType === "approve"
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-red-600 hover:bg-red-700"
+                }
               >
                 {loading ? "Processing..." : actionType === "approve" ? "Approve Request" : "Reject Request"}
               </Button>

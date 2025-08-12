@@ -1,4 +1,4 @@
-import { deleteAchievement } from "@/lib/api/achievements";
+import { deleteAchievement } from "@/lib/api/achievements-api";
 import { Achievement } from "@/types/achievements";
 import { Modal, message } from "antd";
 import { useState } from "react";

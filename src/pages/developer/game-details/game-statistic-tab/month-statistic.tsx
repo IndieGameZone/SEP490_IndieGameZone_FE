@@ -13,6 +13,7 @@ type ChartData = {
   day: number;
   downloadCount: number;
   revenue: number;
+  donation: number;
 };
 
 const MonthStatistic = ({ gameId }: MonthStatisticProps) => {

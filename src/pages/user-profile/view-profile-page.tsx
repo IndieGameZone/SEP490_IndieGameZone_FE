@@ -22,7 +22,7 @@ import useFollowStore from "@/store/use-follow-store";
 import { useGlobalMessage } from "@/components/message-provider";
 import { useHashState } from "@/hooks/use-hash-state";
 import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
-import { getUserObtainedAchievements } from "@/lib/api/achievements";
+import { getUserObtainedAchievements } from "@/lib/api/achievements-api";
 import { Achievement } from "@/types/achievements";
 import trophyImage from "@/assets/trophy.png";
 import { seededColor } from "@/lib/color";

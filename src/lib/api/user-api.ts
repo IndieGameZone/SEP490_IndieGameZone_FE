@@ -5,6 +5,7 @@ export interface ApiResponse {
   data: any;
   success: boolean;
 }
+
 export const handleApiError = (error: any): ApiResponse => {
   try {
     const errorMessage = error.response?.data.message || error?.message || "An unexpected error occurred.";
@@ -13,6 +14,7 @@ export const handleApiError = (error: any): ApiResponse => {
     return { error: "An unexpected error occurred.", data: null, success: false };
   }
 };
+
 export const getAllAccounts = async () => {
   try {
     const { data } = await axiosClient.get(`/api/users`);
@@ -77,6 +79,7 @@ export const getBanHistoryById = async (userId: string) => {
     return handleApiError(error);
   }
 };
+
 type CreateBanHistoryRequest = {
   unbanDate?: string;
   reason: string;

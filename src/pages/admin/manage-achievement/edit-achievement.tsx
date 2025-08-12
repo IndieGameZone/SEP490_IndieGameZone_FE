@@ -1,4 +1,4 @@
-import { updateAchievement } from "@/lib/api/achievements";
+import { updateAchievement } from "@/lib/api/achievements-api";
 import { Achievement } from "@/types/achievements";
 import { Form, Input, Modal, message } from "antd";
 import { useEffect, useState } from "react";

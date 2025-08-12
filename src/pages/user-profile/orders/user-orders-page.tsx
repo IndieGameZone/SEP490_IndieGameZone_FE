@@ -1,14 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Table } from "antd";
-import { reportColumns } from "./columns";
-import { getOrderByUserId } from "@/lib/api/payment-api";
 import useAuthStore from "@/store/use-auth-store";
 import { Order } from "@/types/order";
+import { getOrderByUserId } from "@/lib/api/order-api";
+import OrderDetailsModal from "./order-details-modal";
+import { getColumns } from "./columns";
 
 const UserOrdersPage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const { profile } = useAuthStore();
   const [loading, setLoading] = useState(true);
+  const selectedOrder = useRef<string | null>(null);
+  const [orderDetailsOpen, setOrderDetailsOpen] = useState(false);
+
+  const openOrderDetail = (orderId: string) => {
+    selectedOrder.current = orderId;
+    setOrderDetailsOpen(true);
+  };
+
+  const closeOrderDetail = () => {
+    selectedOrder.current = null;
+    setOrderDetailsOpen(false);
+  };
+
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
@@ -32,6 +46,11 @@ const UserOrdersPage: React.FC = () => {
 
   return (
     <div className="p-5">
+      <OrderDetailsModal
+        open={orderDetailsOpen}
+        orderId={selectedOrder.current}
+        handleCancel={closeOrderDetail}
+      />
       <h2 className="text-xl font-semibold">Order History</h2>
       <p className="text-sm text-zinc-400">
         Browse your full order history including digital purchases and
@@ -40,7 +59,7 @@ const UserOrdersPage: React.FC = () => {
       <div className="mt-5">
         <Table
           dataSource={orders}
-          columns={reportColumns}
+          columns={getColumns(openOrderDetail)}
           loading={loading}
           rowKey="id"
           pagination={{

@@ -1,15 +1,14 @@
+import { CommercialPackage } from "./commercial-package";
+import { Game } from "./game";
+import { Transaction } from "./transaction";
+
 export type Order = {
     id: string;
     amount: number;
     commercialRegistrationStartDate?: string;
     commercialRegistrationEndDate?: string;
     createdAt: string;
-    game: {
-        id: string;
-        name: string;
-    },
-    commercialPackage?: {
-        id: string;
-        name: string;
-    }
+    game: Game,
+    commercialPackage?: CommercialPackage
+    transaction: Transaction
 }

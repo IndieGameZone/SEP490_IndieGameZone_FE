@@ -6,6 +6,7 @@ export interface ApiResponse {
   data: any;
   success: boolean;
 }
+
 export const handleApiError = (error: any): ApiResponse => {
   try {
     const errorMessage = error.response?.data.message || error?.message || "An unexpected error occurred.";
@@ -14,6 +15,7 @@ export const handleApiError = (error: any): ApiResponse => {
     return { error: "An unexpected error occurred.", data: null, success: false };
   }
 };
+
 export const depositTransaction = async (userId: string, amount: number, description: string): Promise<ApiResponse> => {
   try {
     const response = await axiosClient.post(`/api/users/${userId}/transactions/deposit`, {
@@ -30,6 +32,7 @@ interface DonateGameData {
   Amount: number;
   PaymentMethod: "Wallet" | "PayOS";
 }
+
 export const donateGame = async (userId: string, gameId: string, donationGame: DonateGameData) => {
   try {
     const response = await axiosClient.post(
@@ -41,6 +44,7 @@ export const donateGame = async (userId: string, gameId: string, donationGame: D
     return handleApiError(error);
   }
 };
+
 export const getTransactionsPurchase = async (userId: string) => {
   try {
     const params = new URLSearchParams();
@@ -112,6 +116,7 @@ export const purchaseGame = async (
     return handleApiError(error);
   }
 };
+
 type CommercialPaymentMethod = "Wallet" | "PayOS";
 
 export const purchaseCommercialPackage = async (
@@ -138,14 +143,6 @@ export const purchaseCommercialPackage = async (
   }
 };
 
-export const getOrderByUserId = async (userId: string) => {
-  try {
-    const { data } = await axiosClient.get(`/api/users/${userId}/orders`);
-    return { error: null, data: data, success: true };
-  } catch (error) {
-    return handleApiError(error);
-  }
-};
 interface GetAllTransactionsParams {
   PageNumber?: number;
   PageSize?: number;
@@ -166,6 +163,7 @@ export const getAllTransactions = async (params?: GetAllTransactionsParams) => {
     return handleApiError(error);
   }
 };
+
 export const getAdminWallet = async (userId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/users/${userId}/transactions`);
