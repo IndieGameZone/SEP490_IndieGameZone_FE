@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { IoIosNotifications } from "react-icons/io";
 import NotificationsList from "./notifications-list";
 import * as signalR from "@microsoft/signalr";
-import { Notification } from "@/types/notification";
 import useAuthStore from "@/store/use-auth-store";
 import { getNotification } from "@/lib/api/notification-api";
+import useNotificationStore from "@/store/use-notification-store";
 const BASE_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 const ViewNotificationsButton = () => {
@@ -13,7 +13,7 @@ const ViewNotificationsButton = () => {
   const [connection, setConnection] = useState<signalR.HubConnection | null>(
     null
   );
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { setNotifications, notifications } = useNotificationStore();
   const { profile } = useAuthStore();
 
   const fetchNotifications = async () => {
@@ -51,8 +51,6 @@ const ViewNotificationsButton = () => {
       connection
         .start()
         .then(() => {
-          // console.log("Connected to Notification Hub");
-
           connection.on("SendNotification", () => {
             fetchNotifications();
           });

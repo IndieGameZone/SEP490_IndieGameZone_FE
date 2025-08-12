@@ -1,9 +1,11 @@
 import { Notification } from "@/types/notification";
 import { Button, Empty } from "antd";
+import NotificationCard from "./notification-card";
 
-type NotificationsListProps = {
+interface NotificationsListProps {
   notifications: Notification[];
-};
+}
+
 const NotificationsList = ({ notifications }: NotificationsListProps) => {
   return (
     <div>
@@ -16,17 +18,8 @@ const NotificationsList = ({ notifications }: NotificationsListProps) => {
           <ul>
             {notifications.map((n) => {
               return (
-                <li
-                  key={n.id}
-                  className={`p-2 hover:bg-zinc-800 rounded duration-300`}
-                >
-                  <p className={`${n.isRead ? "" : "font-bold"}`}>
-                    {n.message}
-                  </p>
-                  <em className="text-zinc-400">
-                    {new Date().toLocaleTimeString()} -{" "}
-                    {new Date().toLocaleDateString()}
-                  </em>
+                <li key={n.id}>
+                  <NotificationCard notification={n} />
                 </li>
               );
             })}
