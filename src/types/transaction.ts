@@ -21,7 +21,7 @@ export type Transaction = {
     | "DonationRevenue";
     createdAt: string;
     user:User
-    purchaseUser: User;
+    purchaseUser?: User;
 }
 
 export function getReadableTransactionType(type: Transaction["type"]): string {
