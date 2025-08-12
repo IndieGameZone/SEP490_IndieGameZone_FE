@@ -24,7 +24,7 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import MaxWidthWrapper from "@/components/wrappers/max-width-wrapper";
 import { IoIosChatboxes, IoMdMore } from "react-icons/io";
 import GameOverView from "./game-overview";
-import GameReviews from "./game-reviews";
+import GameReviews from "./game-reviews/game-reviews";
 import GameForum from "./game-posts/game-forum";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 import useAuthStore from "@/store/use-auth-store";

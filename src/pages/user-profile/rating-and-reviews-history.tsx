@@ -3,7 +3,7 @@ import { getReviewByUserId } from "@/lib/api/review-api";
 import { Review } from "@/types/review";
 import { Empty } from "antd";
 import { useEffect, useState } from "react";
-import ReviewCard from "../game-details/review-card";
+import ReviewCard from "../game-details/game-reviews/review-card";
 import useAuthStore from "@/store/use-auth-store";
 import Loader from "@/components/loader";
 

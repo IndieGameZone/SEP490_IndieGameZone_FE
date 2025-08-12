@@ -40,7 +40,13 @@ const NotificationCard = ({ notification }: NotificationCardProps) => {
         if (message.includes("game")) return "/dev/manage-games";
         if (message.includes("withdraw request")) return "/dev/earnings";
       }
-      if (message.includes("report")) return "/account/manage-sent-reports";
+      if (message.includes("report")) {
+        if (role.name == "Admin" || role.name == "Moderator") {
+          return "/admin/manage-report";
+        } else {
+          return "/account/manage-sent-reports";
+        }
+      }
       if (message.includes("achievement")) return `/profile/${profile.id}`;
 
       return null;

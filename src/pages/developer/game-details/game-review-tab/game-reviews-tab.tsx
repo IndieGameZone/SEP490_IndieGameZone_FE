@@ -6,7 +6,7 @@ import Loader from "@/components/loader";
 import RatingChart, {
   RatingChartData,
 } from "@/components/charts/dev/rating-chart";
-import ReviewCard from "@/pages/game-details/review-card";
+import ReviewCard from "@/pages/game-details/game-reviews/review-card";
 import GameSummaryReview from "./game-summary-review";
 import { getReviewStatistic } from "@/lib/api/review-api";
 import { FaStar } from "react-icons/fa";
