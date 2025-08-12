@@ -50,30 +50,43 @@ export const getAllTransactionColumns = (onRefresh?: () => void): ColumnsType<Tr
     key: "amount",
     width: 120,
     align: "right" as const,
-    render: (amount: number, record: Transaction) => (
-      <span
-        className={`font-semibold ${
-          record.status === "Pending"
-            ? "text-orange-500"
-            : record.type === "Deposit"
-            ? "text-green-500"
-            : "text-red-500"
-        }`}
-      >
-        {record.type === "Deposit" ? "+" : "-"}
-        {record.type === "Deposit" ? (
-          <>
-            {amount.toLocaleString("vi-VN")}
-            <CoinIcon className="inline size-3 ms-1 mb-1" />
-          </>
-        ) : (
-          <>
-            {amount.toLocaleString("vi-VN")}
-            <CoinIcon className="inline size-3 ms-1 mb-1" />
-          </>
-        )}
-      </span>
-    ),
+    render: (amount: number, record: Transaction) => {
+      const positiveTypes: Transaction["type"][] = [
+        "Deposit",
+        "PurchaseGameRevenue",
+        "PurchaseCommercialPackageRevenue",
+        "DonationRevenue",
+        "RefundRevenue",
+      ];
+
+      const negativeTypes: Transaction["type"][] = [
+        "Withdraw",
+        "PurchaseGame",
+        "PurchaseCommercialPackage",
+        "Donation",
+        "Refund",
+      ];
+
+      const isPositive = positiveTypes.includes(record.type);
+      const isNegative = negativeTypes.includes(record.type);
+
+      let textColor = "";
+      if (record.status === "Pending") {
+        textColor = "text-orange-500";
+      } else if (isPositive) {
+        textColor = "text-green-500";
+      } else if (isNegative) {
+        textColor = "text-red-500";
+      }
+
+      return (
+        <span className={`font-semibold ${textColor}`}>
+          {isPositive ? "+" : "-"}
+          {amount.toLocaleString("vi-VN")}
+          <CoinIcon className="inline size-3 ms-1 mb-1" />
+        </span>
+      );
+    },
   },
   {
     title: "Description",

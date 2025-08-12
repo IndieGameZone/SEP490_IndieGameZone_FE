@@ -80,11 +80,21 @@ const ViewDetailTransactionsModal = ({ open, record, onCancel }: ViewDetailTrans
         <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow">
           <div className="flex items-center gap-2 mb-4">
             <FaUser className="text-lg text-purple-500" />
-            <h3 className="text-lg font-semibold">User Information</h3>
+            <h3 className="text-lg font-semibold">Receiver User Information</h3>
           </div>
           <Descriptions column={1} bordered size="small">
             <Descriptions.Item label="User">{record.user?.userName || "N/A"}</Descriptions.Item>
             <Descriptions.Item label="Email">{record.user?.email || "N/A"}</Descriptions.Item>
+          </Descriptions>
+        </div>
+        <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg shadow">
+          <div className="flex items-center gap-2 mb-4">
+            <FaUser className="text-lg text-purple-500" />
+            <h3 className="text-lg font-semibold">Purchase User Information</h3>
+          </div>
+          <Descriptions column={1} bordered size="small">
+            <Descriptions.Item label="User">{record.purchaseUser?.userName || "N/A"}</Descriptions.Item>
+            <Descriptions.Item label="Email">{record.purchaseUser?.email || "N/A"}</Descriptions.Item>
           </Descriptions>
         </div>
 

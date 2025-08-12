@@ -39,7 +39,7 @@ const ManageSentReportPage: React.FC = () => {
   return (
     <>
       <div className="flex justify-center py-5">
-        <Title level={2}>Manage Received Reports</Title>
+        <Title level={2}>Manage Sent Reports</Title>
       </div>
       <div className="container mx-auto md:px-4">
         <Table

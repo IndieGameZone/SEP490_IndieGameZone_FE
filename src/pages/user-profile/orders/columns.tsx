@@ -13,14 +13,14 @@ export const reportColumns: ColumnsType<Order> = [
     width: 50,
     render: (_, __, index) => index + 1,
   },
-  {
-    title: "Order Code",
-    dataIndex: "orderCode",
-    key: "orderCode",
-    render: (_, __, index) => (
-      <span className="font-mono text-blue-400">OD-{index}</span>
-    ),
-  },
+  // {
+  //   title: "Order Code",
+  //   dataIndex: "orderCode",
+  //   key: "orderCode",
+  //   render: (_, __, index) => (
+  //     <span className="font-mono text-blue-400">OD-{index}</span>
+  //   ),
+  // },
   {
     title: "Description",
     key: "description",

@@ -146,9 +146,21 @@ export const getOrderByUserId = async (userId: string) => {
     return handleApiError(error);
   }
 };
-export const getAllTransactions = async () => {
+interface GetAllTransactionsParams {
+  PageNumber?: number;
+  PageSize?: number;
+  TransactionTypes?: string[];
+}
+
+export const getAllTransactions = async (params?: GetAllTransactionsParams) => {
   try {
-    const { data } = await axiosClient.get(`/api/transactions`);
+    const { data } = await axiosClient.get(`/api/transactions`, {
+      params: {
+        PageNumber: params?.PageNumber || 1,
+        PageSize: params?.PageSize || 30,
+        TransactionTypes: params?.TransactionTypes,
+      },
+    });
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
