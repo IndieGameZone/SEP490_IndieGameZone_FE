@@ -19,20 +19,19 @@ const getStatusTag = (status: Transaction["status"]) => {
 export const columns: TableProps<Transaction>["columns"] = [
   {
     title: "Transaction ID",
-    dataIndex: "orderCode",
-    key: "orderCode",
+    dataIndex: "id",
+    key: "id",
     width: 120,
-    render: (orderCode: string) => (
-      <span className="font-mono text-blue-400">TS-{orderCode}</span>
-    ),
+    render: (value) => <span className="font-mono text-blue-400">{value}</span>,
   },
   {
     title: "Order Code",
     dataIndex: "orderCode",
     key: "orderCode",
-    render: (orderCode: string) => (
-      <span className="font-mono text-blue-400">OD-{orderCode}</span>
-    ),
+    render: (orderCode: string) =>
+      orderCode ? (
+        <span className="font-mono text-blue-400">{orderCode}</span>
+      ) : null,
   },
   {
     title: "Type",

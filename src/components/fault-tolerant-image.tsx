@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import imagePlaceholder from "@/assets/image_placeholder.svg";
 import imagePlaceholderLight from "@/assets/image_placeholder_light.svg";
 
@@ -17,12 +17,25 @@ const FaultTolerantImage = ({
   darkTheme?: boolean;
   onClick?: () => void;
 }) => {
-  const [imageSrc, setImageSrc] = useState(src);
+  const getFallback = () =>
+    fallback ?? (darkTheme ? imagePlaceholder : imagePlaceholderLight);
+
+  const [imageSrc, setImageSrc] = useState(
+    src && src.trim() !== "" ? src : getFallback()
+  );
+
   const handleError = () => {
-    setImageSrc(
-      fallback ?? darkTheme ? imagePlaceholder : imagePlaceholderLight
-    );
+    setImageSrc(getFallback());
   };
+
+  useEffect(() => {
+    if (!src || src.trim() === "") {
+      setImageSrc(getFallback());
+    } else {
+      setImageSrc(src);
+    }
+  }, [src]);
+
   return (
     <img
       src={imageSrc}

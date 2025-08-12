@@ -6,7 +6,7 @@ import { FilterDropdownProps } from "antd/es/table/interface";
 import Highlighter from "react-highlight-words";
 import { FaSearch } from "react-icons/fa";
 import { Achievement } from "@/types/achievements";
-import { getAllAchievements } from "@/lib/api/achievements";
+import { getAllAchievements } from "@/lib/api/achievements-api";
 import EditAchievement from "./edit-achievement";
 import DeleteAchievement from "./delete-achievement";
 
