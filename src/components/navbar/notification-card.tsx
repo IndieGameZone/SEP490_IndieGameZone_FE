@@ -56,6 +56,8 @@ const NotificationCard = ({ notification }: NotificationCardProps) => {
     if (path) navigate(path);
   };
 
+  const createdDate = new Date(notification.createdAt);
+
   return (
     <div
       className={`p-2 hover:bg-zinc-800 rounded duration-300 cursor-pointer`}
@@ -68,7 +70,8 @@ const NotificationCard = ({ notification }: NotificationCardProps) => {
       </p>
       <div className="flex justify-between">
         <em className="text-zinc-400">
-          {new Date().toLocaleTimeString()} - {new Date().toLocaleDateString()}
+          {createdDate.toLocaleTimeString()} -{" "}
+          {createdDate.toLocaleDateString()}
         </em>
         <div>
           {!notification.isRead && (

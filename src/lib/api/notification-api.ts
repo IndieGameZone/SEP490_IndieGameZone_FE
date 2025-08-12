@@ -37,3 +37,13 @@ export const markNotification = async (notifId: string) => {
     }
 };
 
+export const markAllNotification = async (userId: string) => {
+    try {
+        const { data } = await axiosClient.put(`/api/users/${userId}/notifications`);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
