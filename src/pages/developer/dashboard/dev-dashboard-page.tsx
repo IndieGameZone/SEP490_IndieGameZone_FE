@@ -8,6 +8,7 @@ import MonthStatistic from "./month-statistic";
 import { formatCurrencyVND } from "@/lib/currency";
 import { Link } from "react-router-dom";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
+import { FaDownload } from "react-icons/fa";
 
 type SummaryData = {
   totalRevenueAllTime: number;
@@ -15,7 +16,7 @@ type SummaryData = {
   revenueByMonth: {
     [key: string]: number;
   };
-  top5BestSellingGames: { game: Game; purchaseCount: number }[];
+  top5BestDownloadedGames: { game: Game; numberOfDownloads: number }[];
 };
 const DevDashBoardPage = () => {
   const { profile } = useAuthStore();
@@ -23,7 +24,7 @@ const DevDashBoardPage = () => {
     totalRevenueAllTime: 0,
     totalDonationAllTime: 0,
     revenueByMonth: {},
-    top5BestSellingGames: [],
+    top5BestDownloadedGames: [],
   });
   const messageApi = useGlobalMessage();
 
@@ -71,9 +72,9 @@ const DevDashBoardPage = () => {
           </div>
         </div>
         <div className="col-span-1">
-          <h3 className="text-xl font-semibold">Top best selling games</h3>
-          {summaryData.top5BestSellingGames
-            .sort((a, b) => b.purchaseCount - a.purchaseCount)
+          <h3 className="text-xl font-semibold">Most downloaded games</h3>
+          {summaryData.top5BestDownloadedGames
+            .sort((a, b) => b.numberOfDownloads - a.numberOfDownloads)
             .map((entry) => {
               return (
                 <div
@@ -91,8 +92,11 @@ const DevDashBoardPage = () => {
                     <Link to={`/dev/game/${entry.game.id}`}>
                       <h4 className="font-bold text-lg">{entry.game.name}</h4>
                     </Link>
+                    <p className="text-sm text-zinc-400">{entry.game.category.name}</p>
 
-                    <p>Purchases: {entry.purchaseCount}</p>
+                    <p className="flex items-center gap-1">
+                      <FaDownload />: {entry.numberOfDownloads}
+                    </p>
                   </div>
                 </div>
               );
