@@ -19,13 +19,7 @@ interface WithdrawActionModalProps {
   onSuccess: () => void;
 }
 
-const WithdrawActionModal = ({
-  open,
-  actionType,
-  record,
-  onCancel,
-  onSuccess,
-}: WithdrawActionModalProps) => {
+const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: WithdrawActionModalProps) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
@@ -69,9 +63,7 @@ const WithdrawActionModal = ({
     }
   };
 
-  const handleUploadChange: UploadProps["onChange"] = (
-    info: UploadChangeParam<UploadFile>
-  ) => {
+  const handleUploadChange: UploadProps["onChange"] = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.status === "uploading") {
       setUploadLoading(true);
       return;
@@ -92,7 +84,7 @@ const WithdrawActionModal = ({
   };
 
   const handleSubmit = async (values: any) => {
-    if (!imageUrl) {
+    if (actionType === "approve" && !imageUrl) {
       messageApi.error("Please upload proof image!");
       return;
     }
@@ -100,8 +92,7 @@ const WithdrawActionModal = ({
     setLoading(true);
     try {
       const status = actionType === "approve" ? "Approved" : "Rejected";
-      const rejectReason =
-        actionType === "reject" ? values.rejectReason : undefined;
+      const rejectReason = actionType === "reject" ? values.rejectReason : undefined;
 
       const result = await updateWithdrawRequestStatus(record.id, {
         ImageProof: imageUrl,
@@ -114,11 +105,7 @@ const WithdrawActionModal = ({
         return;
       }
 
-      messageApi.success(
-        `Withdraw request ${
-          actionType === "approve" ? "approved" : "rejected"
-        } successfully!`
-      );
+      messageApi.success(`Withdraw request ${actionType === "approve" ? "approved" : "rejected"} successfully!`);
       handleCancel();
       onSuccess();
     } catch (error) {
@@ -152,7 +139,7 @@ const WithdrawActionModal = ({
         onCancel={handleCancel}
         footer={null}
         width={700}
-        destroyOnHidden 
+        destroyOnHidden
       >
         <div className="mt-4">
           <div className="bg-gray-50 p-4 rounded-lg mb-6">
@@ -162,12 +149,10 @@ const WithdrawActionModal = ({
                 <span className="font-medium">ID:</span> {record.id}
               </div>
               <div>
-                <span className="font-medium">Amount:</span>{" "}
-                {record.amount?.toLocaleString()} VND
+                <span className="font-medium">Amount:</span> {record.amount?.toLocaleString()} VND
               </div>
               <div>
-                <span className="font-medium">Requester:</span>{" "}
-                {record.requester?.userName || "N/A"}
+                <span className="font-medium">Requester:</span> {record.requester?.userName || "N/A"}
               </div>
               <div>
                 <span className="font-medium">Status:</span> {record.status}
@@ -178,7 +163,7 @@ const WithdrawActionModal = ({
           <Form form={form} layout="vertical" onFinish={handleSubmit}>
             <Form.Item
               label="Proof Image"
-              required
+              required={actionType === "approve"}
               extra="Upload proof of bank transfer completion (JPG, PNG - Max: 5MB)"
               style={{ width: "100%" }}
             >
@@ -200,13 +185,9 @@ const WithdrawActionModal = ({
                         <PlusOutlined className="text-2xl text-gray-400 mb-2" />
                       )}
                       <div className="text-sm text-gray-500">
-                        {uploadLoading
-                          ? "Uploading..."
-                          : "Click or drag file to upload"}
+                        {uploadLoading ? "Uploading..." : "Click or drag file to upload"}
                       </div>
-                      <div className="text-xs text-gray-400 mt-1">
-                        JPG, PNG (Max: 5MB)
-                      </div>
+                      <div className="text-xs text-gray-400 mt-1">JPG, PNG (Max: 5MB)</div>
                     </div>
                   </div>
                 </Upload>
@@ -223,11 +204,7 @@ const WithdrawActionModal = ({
                         objectFit: "contain",
                       }}
                       preview={{
-                        mask: (
-                          <div className="text-white text-sm">
-                            Click to preview
-                          </div>
-                        ),
+                        mask: <div className="text-white text-sm">Click to preview</div>,
                       }}
                     />
                     <div className="absolute top-2 right-2 flex gap-1">
@@ -243,9 +220,7 @@ const WithdrawActionModal = ({
                       </Button>
                     </div>
                   </div>
-                  <div className="mt-2 text-xs text-gray-500">
-                    Click the image to preview in full size
-                  </div>
+                  <div className="mt-2 text-xs text-gray-500">Click the image to preview in full size</div>
                 </div>
               )}
             </Form.Item>
@@ -284,17 +259,9 @@ const WithdrawActionModal = ({
                 htmlType="submit"
                 loading={loading}
                 size="large"
-                className={
-                  actionType === "approve"
-                    ? "bg-green-600 hover:bg-green-700"
-                    : "bg-red-600 hover:bg-red-700"
-                }
+                className={actionType === "approve" ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
               >
-                {loading
-                  ? "Processing..."
-                  : actionType === "approve"
-                  ? "Approve Request"
-                  : "Reject Request"}
+                {loading ? "Processing..." : actionType === "approve" ? "Approve Request" : "Reject Request"}
               </Button>
             </div>
           </Form>

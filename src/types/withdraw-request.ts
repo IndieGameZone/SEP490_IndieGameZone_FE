@@ -7,6 +7,7 @@ export type Withdraw = {
   status: string;
   createdAt: string;
   updatedAt: string;
+  ImageProof?: string;
   handledAt: string;
   reason?: string;
 };

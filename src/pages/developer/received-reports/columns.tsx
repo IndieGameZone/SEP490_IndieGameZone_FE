@@ -34,12 +34,12 @@ export const getReceivedReportColumns = (onRefresh?: () => void): ColumnsType<Re
     dataIndex: "message",
     key: "message",
   },
-  //   {
-  //     title: "Game Name",
-  //     dataIndex: "game",
-  //     key: "game.name",
-  //     render: (game: { name: string }) => game.name || "N/A",
-  //   },
+  {
+    title: "Game Name",
+    dataIndex: "game",
+    key: "game.name",
+    render: (game?: { name: string }) => game?.name || "N/A",
+  },
 
   {
     title: "Status",
