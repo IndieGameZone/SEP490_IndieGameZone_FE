@@ -12,6 +12,7 @@ type Revenue = {
   revenueByMonth: {
     [key: string]: number;
   };
+  totalDownloadsAllTime: number;
 };
 
 const GameStatisticsTab = () => {
@@ -19,6 +20,7 @@ const GameStatisticsTab = () => {
     totalRevenueAllTime: 0,
     totalDonationAllTime: 0,
     revenueByMonth: {},
+    totalDownloadsAllTime: 0,
   });
   const { gameId } = useParams();
   const { game } = useGameStore();
@@ -53,6 +55,12 @@ const GameStatisticsTab = () => {
           <h3 className="text-lg font-semibold">Total Donation (All Time)</h3>
           <p className="text-3xl text-green-400">
             {formatCurrencyVND(revenueData.totalDonationAllTime)}
+          </p>
+        </div>
+        <div className="bg-zinc-900 p-5">
+          <h3 className="text-lg font-semibold">Total Downloads (All Time)</h3>
+          <p className="text-3xl text-blue-400">
+            {revenueData.totalDownloadsAllTime}
           </p>
         </div>
       </div>

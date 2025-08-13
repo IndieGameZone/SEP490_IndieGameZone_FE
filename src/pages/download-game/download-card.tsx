@@ -77,7 +77,7 @@ const DownloadCard = ({
         </div>
         <p className="text-xs">
           {file.version} • <FaRegClock className="inline mb-0.5 me-1" />
-          {timeAgo(new Date(Date.now() - 24 * 60 * 60 * 1000))}
+          {timeAgo(new Date(file.createdAt))}
         </p>
       </div>
     </div>
