@@ -6,6 +6,7 @@ import { ReportItem } from "@/types/report";
 import ReplyReportModal from "@/pages/admin/manage-report/reply-report-modal";
 import ViewDetailReportModal from "./view-detail-report-modal";
 
+
 interface ActionMenuProps {
   record: ReportItem;
   onSuccess?: () => void;

@@ -1,4 +1,4 @@
-import { Modal, Input, Form, Upload, Image, Button, message } from "antd";
+import { Modal, Input, Form, Upload, Image, Button, message, Tag } from "antd";
 import { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { FcApproval, FcCancel } from "react-icons/fc";
@@ -19,19 +19,24 @@ interface WithdrawActionModalProps {
   onSuccess: () => void;
 }
 
-const WithdrawActionModal = ({
-  open,
-  actionType,
-  record,
-  onCancel,
-  onSuccess,
-}: WithdrawActionModalProps) => {
+const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: WithdrawActionModalProps) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>("");
   const [form] = Form.useForm();
-
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Pending":
+        return "orange";
+      case "Approved":
+        return "green";
+      case "Rejected":
+        return "red";
+      default:
+        return "default";
+    }
+  };
   const beforeUpload = (file: RcFile) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
@@ -69,9 +74,7 @@ const WithdrawActionModal = ({
     }
   };
 
-  const handleUploadChange: UploadProps["onChange"] = (
-    info: UploadChangeParam<UploadFile>
-  ) => {
+  const handleUploadChange: UploadProps["onChange"] = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.status === "uploading") {
       setUploadLoading(true);
       return;
@@ -92,7 +95,7 @@ const WithdrawActionModal = ({
   };
 
   const handleSubmit = async (values: any) => {
-    if (!imageUrl) {
+    if (actionType === "approve" && !imageUrl) {
       messageApi.error("Please upload proof image!");
       return;
     }
@@ -100,8 +103,7 @@ const WithdrawActionModal = ({
     setLoading(true);
     try {
       const status = actionType === "approve" ? "Approved" : "Rejected";
-      const rejectReason =
-        actionType === "reject" ? values.rejectReason : undefined;
+      const rejectReason = actionType === "reject" ? values.rejectReason : undefined;
 
       const result = await updateWithdrawRequestStatus(record.id, {
         ImageProof: imageUrl,
@@ -114,11 +116,7 @@ const WithdrawActionModal = ({
         return;
       }
 
-      messageApi.success(
-        `Withdraw request ${
-          actionType === "approve" ? "approved" : "rejected"
-        } successfully!`
-      );
+      messageApi.success(`Withdraw request ${actionType === "approve" ? "approved" : "rejected"} successfully!`);
       handleCancel();
       onSuccess();
     } catch (error) {
@@ -162,15 +160,24 @@ const WithdrawActionModal = ({
                 <span className="font-medium">ID:</span> {record.id}
               </div>
               <div>
-                <span className="font-medium">Amount:</span>{" "}
-                {record.amount?.toLocaleString()} VND
+                <span className="font-medium">Amount:</span> {record.amount?.toLocaleString()} VND
               </div>
               <div>
-                <span className="font-medium">Requester:</span>{" "}
-                {record.requester?.userName || "N/A"}
+                <span className="font-medium">Requester:</span> {record.user?.userName || "N/A"}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-medium">Avatar:</span>
+                <Image src={record.user?.avatar || "N/A"} width={25} />
               </div>
               <div>
-                <span className="font-medium">Status:</span> {record.status}
+                <span className="font-medium">Bank Account Name:</span> {record.user.bankAccountName || "N/A"}
+              </div>
+              <div>
+                <span className="font-medium">Bank Account Number:</span> {record.user.bankAccountNumber || "N/A"}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-medium">Status:</span>
+                <Tag color={getStatusColor(record.status)}>{record.status}</Tag>
               </div>
             </div>
           </div>
@@ -178,7 +185,7 @@ const WithdrawActionModal = ({
           <Form form={form} layout="vertical" onFinish={handleSubmit}>
             <Form.Item
               label="Proof Image"
-              required
+              required={actionType === "approve"}
               extra="Upload proof of bank transfer completion (JPG, PNG - Max: 5MB)"
               style={{ width: "100%" }}
             >
@@ -200,13 +207,9 @@ const WithdrawActionModal = ({
                         <PlusOutlined className="text-2xl text-gray-400 mb-2" />
                       )}
                       <div className="text-sm text-gray-500">
-                        {uploadLoading
-                          ? "Uploading..."
-                          : "Click or drag file to upload"}
+                        {uploadLoading ? "Uploading..." : "Click or drag file to upload"}
                       </div>
-                      <div className="text-xs text-gray-400 mt-1">
-                        JPG, PNG (Max: 5MB)
-                      </div>
+                      <div className="text-xs text-gray-400 mt-1">JPG, PNG (Max: 5MB)</div>
                     </div>
                   </div>
                 </Upload>
@@ -223,11 +226,7 @@ const WithdrawActionModal = ({
                         objectFit: "contain",
                       }}
                       preview={{
-                        mask: (
-                          <div className="text-white text-sm">
-                            Click to preview
-                          </div>
-                        ),
+                        mask: <div className="text-white text-sm">Click to preview</div>,
                       }}
                     />
                     <div className="absolute top-2 right-2 flex gap-1">
@@ -243,9 +242,7 @@ const WithdrawActionModal = ({
                       </Button>
                     </div>
                   </div>
-                  <div className="mt-2 text-xs text-gray-500">
-                    Click the image to preview in full size
-                  </div>
+                  <div className="mt-2 text-xs text-gray-500">Click the image to preview in full size</div>
                 </div>
               )}
             </Form.Item>
@@ -281,17 +278,9 @@ const WithdrawActionModal = ({
                 type="primary"
                 htmlType="submit"
                 loading={loading}
-                className={
-                  actionType === "approve"
-                    ? "bg-green-600 hover:bg-green-700"
-                    : "bg-red-600 hover:bg-red-700"
-                }
+                className={actionType === "approve" ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}
               >
-                {loading
-                  ? "Processing..."
-                  : actionType === "approve"
-                  ? "Approve Request"
-                  : "Reject Request"}
+                {loading ? "Processing..." : actionType === "approve" ? "Approve Request" : "Reject Request"}
               </Button>
             </div>
           </Form>

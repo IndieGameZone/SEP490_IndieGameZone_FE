@@ -1,3 +1,4 @@
+import { Game } from "./game";
 import { GamePost, PostComment } from "./game-post";
 import { ReportReason } from "./report-reason";
 import { User } from "./user";
@@ -9,7 +10,7 @@ export interface ReportItem {
   message: string;
   status:string; 
   reviewMessage: string;
-  gameName: string;
+  game: Game;
   isResolved: boolean;
   createdAt: string;
   updatedAt: string;
