@@ -42,7 +42,7 @@ const GoogleProfileModal = ({ open, onClose, token, onSuccess }: Props) => {
       onCancel={onClose}
       footer={null}
     >
-      <p className="mb-4 text-gray-600">
+      <p className="mb-4 text-zinc-400">
         Please provide additional information to complete your registration.
       </p>
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
@@ -66,7 +66,6 @@ const GoogleProfileModal = ({ open, onClose, token, onSuccess }: Props) => {
         >
           <Select
             placeholder="Select your role"
-            style={{ paddingBlock: 10 }}
             options={[
               { value: "Player", label: "Player" },
               { value: "Developer", label: "Developer" },
