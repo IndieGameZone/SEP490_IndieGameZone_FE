@@ -38,6 +38,12 @@ export const getColumns = (
       render: (_, { platform }) => <span>{platform.name}</span>,
     },
     {
+      title: "Created at",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (value) => <span>{new Date(value).toLocaleString()}</span>,
+    },
+    {
       title: "Visibility",
       key: "isActive",
       dataIndex: "isActive",

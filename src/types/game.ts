@@ -135,6 +135,7 @@ export type GameFile = {
     file: string;
     isActive: boolean;
     version: string;
+    createdAt: string;
 }
 
 export type GameCensorLog = {
