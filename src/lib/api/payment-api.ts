@@ -53,6 +53,7 @@ export const getTransactionsPurchase = async (userId: string) => {
     params.append("TransactionTypes", "Donation");
     params.append("TransactionTypes", "Withdraw");
     params.append("TransactionTypes", "PurchaseCommercialPackage");
+    params.append("TransactionTypes", "RefundRevenue");
     params.append("PageNumber", "1");
     params.append("PageSize", "10");
 
