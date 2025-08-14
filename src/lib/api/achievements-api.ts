@@ -19,27 +19,27 @@ export const getUserObtainedAchievements = async (userId: string) => {
   }
 };
 export const getAllAchievements = async () => {
-    try {
-        const { data } = await axiosClient.get(`/api/achievements`);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+  try {
+    const { data } = await axiosClient.get(`/api/achievements`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 };
-export const updateAchievement = async (id: string, achievementData: { name: string }) => {
-    try {
-        const { data } = await axiosClient.put(`/api/achievements/${id}`, achievementData);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+export const updateAchievement = async (id: string, achievementData: { name: string; image: string }) => {
+  try {
+    const { data } = await axiosClient.put(`/api/achievements/${id}`, achievementData);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 };
 
 export const deleteAchievement = async (id: string) => {
-    try {
-        const { data } = await axiosClient.delete(`/api/achievements/${id}`);
-        return { error: null, data: data, success: true };
-    } catch (error) {
-        return handleApiError(error);
-    }
+  try {
+    const { data } = await axiosClient.delete(`/api/achievements/${id}`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
 };

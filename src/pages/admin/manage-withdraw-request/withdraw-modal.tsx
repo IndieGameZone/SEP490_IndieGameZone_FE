@@ -120,7 +120,7 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
       handleCancel();
       onSuccess();
     } catch (error) {
-      console.error("Update error:", error); // Debug log
+      console.error("Update error:", error); 
       messageApi.error("An error occurred while processing the request");
     } finally {
       setLoading(false);

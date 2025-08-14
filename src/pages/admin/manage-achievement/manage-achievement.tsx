@@ -1,4 +1,4 @@
-import { Button, Input, InputRef, Space, Table, TableColumnType, TableProps, message } from "antd";
+import { Button, Image, Input, InputRef, Space, Table, TableColumnType, TableProps, message } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { MdOutlineDeleteForever } from "react-icons/md";
@@ -143,6 +143,11 @@ const ManageAchievement = () => {
       key: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
       ...getColumnSearchProps("name"),
+    },
+    {
+      title: "Image",
+      dataIndex: "image",
+      render: (image) => <Image src={image} alt="Achievement Image" width={50} />,
     },
     {
       title: "Action",
