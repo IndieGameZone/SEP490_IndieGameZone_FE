@@ -34,9 +34,7 @@ const LoginForm = () => {
       <Form.Item
         label={<span className="font-bold">Email or username</span>}
         name="userNameOrEmail"
-        rules={[
-          { required: true, message: "Please enter your email or username" },
-        ]}
+        rules={[{ required: true, message: "Please enter your email or username" }]}
       >
         <Input placeholder="Enter your email" style={{ paddingBlock: 10 }} />
       </Form.Item>
@@ -46,14 +44,11 @@ const LoginForm = () => {
         name="password"
         rules={[{ required: true, message: "Please enter your password" }]}
       >
-        <Input.Password
-          placeholder="Enter your password"
-          style={{ paddingBlock: 10 }}
-        />
+        <Input.Password placeholder="Enter your password" style={{ paddingBlock: 10 }} />
       </Form.Item>
 
       <div className="flex justify-end mb-1">
-        <Link to="/recover-password" className="text-xs text-zinc-700">
+        <Link to="/forgot-password/send-mail-otp" className="text-xs text-zinc-700">
           Forgot your password?
         </Link>
       </div>

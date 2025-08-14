@@ -1,4 +1,5 @@
 import { axiosClient } from "./config/axios-client";
+import { toFormData } from "../object";
 
 export interface ApiResponse {
   error: string | null;
@@ -125,4 +126,33 @@ export const prepareCheckFirstData = (idToken: string) => {
   return {
     idToken: idToken,
   };
+};
+export type SendOtpData = {
+  email: string;
+};
+export const sendOtpResetPassword = async (sendOtpData: SendOtpData) => {
+  try {
+    const formData = toFormData(sendOtpData);
+
+    const result = await axiosClient.post(`/api/authentications/password-reset-request`, formData);
+    return { error: null, data: result.data, success: true };
+  } catch (error: any) {
+    return handleApiError(error);
+  }
+};
+
+export type ResetPasswordType = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  otp: string;
+};
+
+export const resetPassword = async (data: ResetPasswordType) => {
+  try {
+    const result = await axiosClient.put(`/api/authentications/reset-password`, data);
+    return { error: null, data: result.data, success: true };
+  } catch (error: any) {
+    return handleApiError(error);
+  }
 };

@@ -15,7 +15,8 @@ const ViewProfilePage = lazy(
 const GameDetailsPage = lazy(
   () => import("@/pages/game-details/game-details-page")
 );
-
+const SendMailOtpPage = lazy(() => import("@/pages/user-profile/forgot-password/send-mail-otp-page"));
+const ResetPasswordPage = lazy(() => import("@/pages/user-profile/forgot-password/reset-password-page"));
 const HomeContainer = () => {
   return (
     <HomeLayout>
@@ -23,6 +24,8 @@ const HomeContainer = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/forgot-password/send-mail-otp" element={<SendMailOtpPage />} />
+          <Route path="/forgot-password/reset-password" element={<ResetPasswordPage />} />
           <Route path="/about-us" element={<AboutUsPage />} />
           <Route path="/profile/:userId" element={<ViewProfilePage />} />
           <Route path="/search/*" element={<SearchPage />} />
