@@ -150,7 +150,7 @@ export type ResetPasswordType = {
 
 export const resetPassword = async (data: ResetPasswordType) => {
   try {
-    const result = await axiosClient.put(`/api/authentications/reset-password`, data);
+    const result = await axiosClient.put(`/api/authentications/password-reset`, data);
     return { error: null, data: result.data, success: true };
   } catch (error: any) {
     return handleApiError(error);

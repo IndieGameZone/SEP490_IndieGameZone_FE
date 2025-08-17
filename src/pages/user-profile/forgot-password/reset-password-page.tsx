@@ -2,23 +2,21 @@ import { Button, Form, Input } from "antd";
 import { MdEmail, MdLock } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { IoMdArrowBack } from "react-icons/io";
-import { Link } from "react-router-dom";
-import { AiOutlineNumber } from "react-icons/ai";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { OTPProps } from "antd/es/input/OTP";
-
-type ResetPasswordType = {
-  email?: string;
-  otp?: string;
-  password?: string;
-  confirmPassword?: string;
-};
+import { useState } from "react";
+import { useGlobalMessage } from "@/components/message-provider";
+import { resetPassword } from "@/lib/api/auth-api";
+import { ForgetPassword } from "@/types/auth";
 
 const ResetPasswordPage = () => {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const messageApi = useGlobalMessage();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email") || "";
 
-  const onFinish = (values: ResetPasswordType) => {
-    console.log("Received values:", values);
-  };
   const onChange: OTPProps["onChange"] = (text) => {
     console.log("onChange:", text);
   };
@@ -30,7 +28,28 @@ const ResetPasswordPage = () => {
     onChange,
     onInput,
   };
+  const onFinish = async (values: ForgetPassword) => {
+    try {
+      setLoading(true);
+      const result = await resetPassword({
+        email: values.email ?? "",
+        password: values.password ?? "",
+        confirmPassword: values.confirmPassword ?? "",
+        otp: values.otp ?? "",
+      });
 
+      if (result.success) {
+        messageApi.success("Password reset successfully!");
+        navigate("/log-in");
+      } else {
+        messageApi.error(result.error || "Failed to reset password");
+      }
+    } catch (error) {
+      messageApi.error("An error occurred while resetting password");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="min-h-screen  flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-zinc-800 rounded-lg shadow-lg p-8">
@@ -47,8 +66,15 @@ const ResetPasswordPage = () => {
           <p className="text-zinc-400">Please enter the OTP sent to your email and create a new password.</p>
         </div>
 
-        <Form form={form} layout="vertical" onFinish={onFinish} requiredMark={false} className="space-y-4">
-          <Form.Item<ResetPasswordType>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          requiredMark={false}
+          initialValues={{ email }}
+          className="space-y-4"
+        >
+          <Form.Item<ForgetPassword>
             label={<span className="text-white">Email Address</span>}
             name="email"
             rules={[
@@ -64,7 +90,7 @@ const ResetPasswordPage = () => {
             />
           </Form.Item>
 
-          <Form.Item<ResetPasswordType>
+          <Form.Item<ForgetPassword>
             label={<span className="text-white">OTP Code</span>}
             name="otp"
             rules={[
@@ -75,7 +101,7 @@ const ResetPasswordPage = () => {
             <Input.OTP formatter={(str) => str.toUpperCase()} {...sharedProps} />
           </Form.Item>
 
-          <Form.Item<ResetPasswordType>
+          <Form.Item<ForgetPassword>
             label={<span className="text-white">New Password</span>}
             name="password"
             rules={[
@@ -91,7 +117,7 @@ const ResetPasswordPage = () => {
             />
           </Form.Item>
 
-          <Form.Item<ResetPasswordType>
+          <Form.Item<ForgetPassword>
             label={<span className="text-white">Confirm Password</span>}
             name="confirmPassword"
             dependencies={["password"]}
@@ -119,6 +145,7 @@ const ResetPasswordPage = () => {
             <Button
               type="primary"
               htmlType="submit"
+              loading={loading}
               size="large"
               className="w-full bg-indigo-600 hover:bg-indigo-700 transition-colors"
             >
