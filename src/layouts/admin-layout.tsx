@@ -6,17 +6,23 @@ import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import logo from "@/assets/indiegamezone-logo.svg";
 import icon from "@/assets/igz_ic.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-import { MdCategory, MdOutlineReport, MdSpaceDashboard } from "react-icons/md";
+import { MdCategory, MdSpaceDashboard } from "react-icons/md";
 import { BiMoneyWithdraw, BiSolidUserAccount } from "react-icons/bi";
 import { LiaLanguageSolid } from "react-icons/lia";
-import { FaDoorOpen, FaTags, FaTimes, FaWindows } from "react-icons/fa";
+import {
+  FaDoorOpen,
+  FaMoneyBill,
+  FaTags,
+  FaTimes,
+  FaWindows,
+} from "react-icons/fa";
 import { CiUser } from "react-icons/ci";
 import { TbCancel } from "react-icons/tb";
 import useProfileStore from "@/store/use-auth-store";
 import { CgGames } from "react-icons/cg";
 import styles from "@/styles/admin-layout.module.css";
 import { GoReport } from "react-icons/go";
-import { GrAchievement, GrTransaction } from "react-icons/gr";
+import { GrAchievement } from "react-icons/gr";
 import AppTheme from "@/components/app-theme";
 import DownloadProcessesButton from "@/components/navbar/download-processes-button";
 import { RiAdvertisementLine } from "react-icons/ri";
@@ -66,125 +72,112 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
 
   const fullMenuItems: MenuProps["items"] = [
     {
-      key: "/admin/dashboard",
+      key: "dashboard",
       icon: <MdSpaceDashboard />,
       label: "Dashboard",
-      onClick: () => {
-        navigate("/admin/dashboard");
-      },
+      onClick: () => navigate("/admin/dashboard"),
     },
     {
       key: "/admin/manage-accounts",
       icon: <BiSolidUserAccount />,
       label: "Manage Accounts",
-      onClick: () => {
-        navigate("/admin/manage-accounts");
-      },
+      onClick: () => navigate("/admin/manage-accounts"),
     },
     {
-      key: "/admin/manage-games",
-      icon: <CgGames />,
-      label: "Manage Games",
-      onClick: () => {
-        navigate("/admin/manage-games");
-      },
-    },
-    {
-      key: "/admin/manage-languages",
-      icon: <LiaLanguageSolid />,
-      label: "Manage Languages",
-      onClick: () => {
-        navigate("/admin/manage-languages");
-      },
-    },
-    {
-      key: "/admin/manage-tags",
-      icon: <FaTags />,
-      label: "Manage Tags",
-      onClick: () => {
-        navigate("/admin/manage-tags");
-      },
-    },
-
-    {
-      key: "/admin/manage-report",
-      icon: <MdOutlineReport />,
-      label: "Manage Reports",
-      onClick: () => {
-        navigate("/admin/manage-report");
-      },
-    },
-    {
-      key: "/admin/manage-categories",
-      icon: <MdCategory />,
-      label: "Manage Categories",
-      onClick: () => {
-        navigate("/admin/manage-categories");
-      },
-    },
-    {
-      key: "/admin/manage-achievements",
-      icon: <GrAchievement />,
-      label: "Manage Achievements",
-      onClick: () => {
-        navigate("/admin/manage-achievements");
-      },
-    },
-    {
-      key: "/admin/manage-report-reason",
+      key: "report-management",
+      label: "Report management",
       icon: <GoReport />,
-      label: "Manage Report Reasons",
-      onClick: () => {
-        navigate("/admin/manage-report-reason");
-      },
+      children: [
+        {
+          key: "/admin/manage-report",
+          label: "Manage Reports",
+          onClick: () => navigate("/admin/manage-report"),
+        },
+        {
+          key: "/admin/manage-report-reason",
+          label: "Manage Report Reasons",
+          onClick: () => navigate("/admin/manage-report-reason"),
+        },
+      ],
     },
     {
-      key: "/admin/manage-system-transaction-admin-wallet",
-      icon: <GrTransaction />,
-      label: "Manage Transactions and Wallet",
-      onClick: () => {
-        navigate("/admin/manage-system-transaction-admin-wallet");
-      },
+      key: "game-management",
+      label: "Game Management",
+      icon: <CgGames />,
+      children: [
+        {
+          key: "/admin/manage-games",
+          icon: <CgGames />,
+          label: "Manage Games",
+          onClick: () => navigate("/admin/manage-games"),
+        },
+        {
+          key: "/admin/manage-tags",
+          icon: <FaTags />,
+          label: "Manage Tags",
+          onClick: () => navigate("/admin/manage-tags"),
+        },
+        {
+          key: "/admin/manage-categories",
+          icon: <MdCategory />,
+          label: "Manage Categories",
+          onClick: () => navigate("/admin/manage-categories"),
+        },
+        {
+          key: "/admin/manage-achievements",
+          icon: <GrAchievement />,
+          label: "Manage Achievements",
+          onClick: () => navigate("/admin/manage-achievements"),
+        },
+        {
+          key: "/admin/manage-age-restrictions",
+          icon: <TbCancel />,
+          label: "Manage Age Restrictions",
+          onClick: () => navigate("/admin/manage-age-restrictions"),
+        },
+        {
+          key: "/admin/manage-platforms",
+          icon: <FaWindows />,
+          label: "Manage Platforms",
+          onClick: () => navigate("/admin/manage-platforms"),
+        },
+        {
+          key: "/admin/manage-languages",
+          icon: <LiaLanguageSolid />,
+          label: "Manage Languages",
+          onClick: () => navigate("/admin/manage-languages"),
+        },
+      ],
     },
     {
-      key: "/admin/manage-withdraw-requests",
-      icon: <BiMoneyWithdraw />,
-      label: "Manage Withdraw Requests",
-      onClick: () => {
-        navigate("/admin/manage-withdraw-requests");
-      },
+      key: "finance-management",
+      label: "Finance & Commercial",
+      icon: <FaMoneyBill />,
+      children: [
+        {
+          key: "/admin/manage-system-transaction-admin-wallet",
+          label: "Manage Transactions & Wallet",
+          onClick: () =>
+            navigate("/admin/manage-system-transaction-admin-wallet"),
+        },
+        {
+          key: "/admin/manage-withdraw-requests",
+          label: "Manage Withdraw Requests",
+          onClick: () => navigate("/admin/manage-withdraw-requests"),
+        },
+      ],
     },
     {
       key: "/admin/manage-commercial-package",
       icon: <RiAdvertisementLine />,
-      label: "Manage Commercial Package",
-      onClick: () => {
-        navigate("/admin/manage-commercial-package");
-      },
-    },
-    {
-      key: "/admin/manage-age-restrictions",
-      icon: <TbCancel />,
-      label: "Manage Age Restrictions",
-      onClick: () => {
-        navigate("/admin/manage-age-restrictions");
-      },
-    },
-    {
-      key: "/admin/manage-patforms",
-      icon: <FaWindows />,
-      label: "Manage Platforms",
-      onClick: () => {
-        navigate("/admin/manage-platforms");
-      },
+      label: "Commercial Packages",
+      onClick: () => navigate("/admin/manage-commercial-package"),
     },
     {
       key: "log-out",
       icon: <FaDoorOpen />,
       label: "Log out",
-      onClick: () => {
-        handleLogout();
-      },
+      onClick: () => handleLogout(),
       danger: true,
     },
   ];

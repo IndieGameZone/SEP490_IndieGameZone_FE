@@ -38,7 +38,7 @@ const CarouselItem = ({ game }: CarouselItemProps) => {
         close={() => setIndex(-1)}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 h-[280px] lg:h-[400px] gap-3">
-        <img
+        <FaultTolerantImage
           src={game.coverImage}
           alt=""
           className="w-full h-[280px] lg:h-[400px] object-contain rounded cursor-zoom-in border-2 border-black hover:border-orange-500 duration-300 bg-zinc-950"
