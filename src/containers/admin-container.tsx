@@ -19,9 +19,8 @@ const ManageTags = lazy(() => import("@/pages/admin/manage-tags/manage-tags"));
 const AdminNotFoundPage = lazy(() => import("@/pages/errors/simple-not-found-page"));
 const ManageReportReason = lazy(() => import("@/pages/admin/manage-report-reason/manage-report-reason"));
 const ManageReport = lazy(() => import("@/pages/admin/manage-report/manage-system-report"));
-const ManageSystemTransactionAdminWallet = lazy(
-  () => import("@/pages/admin/system-transaction-and-wallet/system-transaction-and-wallet")
-);
+const ManageAllTransaction = lazy(() => import("@/pages/admin/manage-all-transaction/manage-all-transaction"));
+const ManageAdminWallet = lazy(() => import("@/pages/admin/admin-wallet/manage-admin-wallet"));
 const AdminWithdrawalRequestsPage = lazy(
   () => import("@/pages/admin/manage-withdraw-request/manage-admin-withdraw-requests-page")
 );
@@ -37,7 +36,8 @@ const AdminContainer = () => {
           <Route path="/manage-languages" element={<ManageLanguages />} />
           <Route path="/manage-tags" element={<ManageTags />} />
           <Route path="/manage-report" element={<ManageReport />} />
-          <Route path="/manage-system-transaction-admin-wallet" element={<ManageSystemTransactionAdminWallet />} />
+          <Route path="/manage-system-transaction" element={<ManageAllTransaction />} />
+          <Route path="/wallet" element={<ManageAdminWallet />} />
           <Route path="/manage-withdraw-requests" element={<AdminWithdrawalRequestsPage />} />
           <Route path="/manage-achievements" element={<ManageAchievement />} />
           <Route path="/manage-games" element={<ManageGames />} />

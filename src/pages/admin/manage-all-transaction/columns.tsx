@@ -6,7 +6,10 @@ import ActionMenu from "./action-menu";
 import { ColumnsType } from "antd/es/table";
 
 const getStatusTag = (status: Transaction["status"]) => {
-  const statusConfig: Record<Transaction["status"], { color: string; text: string }> = {
+  const statusConfig: Record<
+    Transaction["status"],
+    { color: string; text: string }
+  > = {
     Success: { color: "green", text: "Success" },
     Pending: { color: "orange", text: "Pending" },
     Failed: { color: "red", text: "Failed" },
@@ -15,34 +18,35 @@ const getStatusTag = (status: Transaction["status"]) => {
   return <Tag color={config.color}>{config.text}</Tag>;
 };
 
-export const getAllTransactionColumns = (onRefresh?: () => void): ColumnsType<Transaction> => [
+export const getAllTransactionColumns = (
+  onRefresh?: () => void
+): ColumnsType<Transaction> => [
   {
-    title: "Transaction ID",
-    dataIndex: "orderCode",
-    key: "orderCode",
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
     width: 120,
-    render: (orderCode: string) => <span className="font-mono text-blue-400">TS-{orderCode}</span>,
-  },
-  {
-    title: "Order Code",
-    dataIndex: "orderCode",
-    key: "orderCode",
-    width: 150,
-    render: (orderCode: string) => <span className="font-mono text-blue-400">ORD-{orderCode}</span>,
+    render: (value) => <span className="font-mono text-blue-400">{value}</span>,
   },
   {
     title: "Type",
     dataIndex: "type",
     key: "type",
     width: 150,
-    render: (type) => <span className="font-mono text-blue-400">{getReadableTransactionType(type)}</span>,
+    render: (type) => (
+      <span className="font-mono text-blue-400">
+        {getReadableTransactionType(type)}
+      </span>
+    ),
   },
   {
     title: "Payment Method",
     dataIndex: "paymentMethod",
     key: "paymentMethod",
     width: 150,
-    render: (paymentMethod: string) => <span className="font-mono text-blue-400">{paymentMethod}</span>,
+    render: (paymentMethod: string) => (
+      <span className="font-mono text-blue-400">{paymentMethod}</span>
+    ),
   },
   {
     title: "Amount",
@@ -117,6 +121,8 @@ export const getAllTransactionColumns = (onRefresh?: () => void): ColumnsType<Tr
   {
     title: "Action",
     key: "action",
-    render: (_, record: Transaction) => <ActionMenu record={record} onSuccess={onRefresh} />,
+    render: (_, record: Transaction) => (
+      <ActionMenu record={record} onSuccess={onRefresh} />
+    ),
   },
 ];

@@ -37,7 +37,7 @@ const AdminWithdrawalRequestsPage: React.FC = () => {
 
   return (
     <>
-      <div className="flex justify-center py-5">
+      <div className="flex justify-center">
         <Title level={2}>Manage All Withdraw Requests</Title>
       </div>
 

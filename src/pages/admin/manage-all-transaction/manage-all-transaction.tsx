@@ -5,6 +5,7 @@ import { getAllTransactions } from "@/lib/api/payment-api";
 import { getAllTransactionColumns } from "./columns";
 import { SearchOutlined, ClearOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { IoRefresh } from "react-icons/io5";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -15,10 +16,16 @@ const ManageAllTransaction = () => {
   const [loading, setLoading] = useState(true);
 
   const [searchText, setSearchText] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(
+    undefined
+  );
   const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
-  const [paymentMethodFilter, setPaymentMethodFilter] = useState<string | undefined>(undefined);
-  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(null);
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState<
+    string | undefined
+  >(undefined);
+  const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchAllTransactions = async () => {
@@ -42,29 +49,54 @@ const ManageAllTransaction = () => {
       const searchMatch =
         !searchText ||
         transaction.orderCode?.toString().includes(searchText.toLowerCase()) ||
-        transaction.description?.toLowerCase().includes(searchText.toLowerCase()) ||
-        transaction.user?.userName?.toLowerCase().includes(searchText.toLowerCase()) ||
-        transaction.user?.email?.toLowerCase().includes(searchText.toLowerCase()) ||
-        transaction.paymentMethod?.toLowerCase().includes(searchText.toLowerCase());
+        transaction.description
+          ?.toLowerCase()
+          .includes(searchText.toLowerCase()) ||
+        transaction.user?.userName
+          ?.toLowerCase()
+          .includes(searchText.toLowerCase()) ||
+        transaction.user?.email
+          ?.toLowerCase()
+          .includes(searchText.toLowerCase()) ||
+        transaction.paymentMethod
+          ?.toLowerCase()
+          .includes(searchText.toLowerCase());
 
       const statusMatch = !statusFilter || transaction.status === statusFilter;
 
       const typeMatch = !typeFilter || transaction.type === typeFilter;
 
-      const paymentMethodMatch = !paymentMethodFilter || transaction.paymentMethod === paymentMethodFilter;
+      const paymentMethodMatch =
+        !paymentMethodFilter ||
+        transaction.paymentMethod === paymentMethodFilter;
 
       const dateMatch =
         !dateRange ||
         (dayjs(transaction.createdAt).isAfter(dateRange[0].startOf("day")) &&
           dayjs(transaction.createdAt).isBefore(dateRange[1].endOf("day")));
 
-      return searchMatch && statusMatch && typeMatch && paymentMethodMatch && dateMatch;
+      return (
+        searchMatch &&
+        statusMatch &&
+        typeMatch &&
+        paymentMethodMatch &&
+        dateMatch
+      );
     });
-  }, [transactions, searchText, statusFilter, typeFilter, paymentMethodFilter, dateRange]);
+  }, [
+    transactions,
+    searchText,
+    statusFilter,
+    typeFilter,
+    paymentMethodFilter,
+    dateRange,
+  ]);
 
   const uniqueStatuses = [...new Set(transactions.map((t) => t.status))];
   const uniqueTypes = [...new Set(transactions.map((t) => t.type))];
-  const uniquePaymentMethods = [...new Set(transactions.map((t) => t.paymentMethod))];
+  const uniquePaymentMethods = [
+    ...new Set(transactions.map((t) => t.paymentMethod)),
+  ];
 
   const handleClearFilters = () => {
     setSearchText("");
@@ -89,7 +121,10 @@ const ManageAllTransaction = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div>
+      <h1 className="text-center text-3xl font-semibold mb-5">
+        Manage System Transactions
+      </h1>
       <Card>
         <div className="space-y-4">
           <div className="flex flex-col lg:flex-row gap-4">
@@ -161,22 +196,31 @@ const ManageAllTransaction = () => {
               placeholder={["Start Date", "End Date"]}
             />
 
-            <Button icon={<ClearOutlined />} onClick={handleClearFilters} style={{ width: "100%" }}>
+            <Button
+              icon={<ClearOutlined />}
+              onClick={handleClearFilters}
+              style={{ width: "100%" }}
+            >
               Clear Filters
             </Button>
           </div>
 
           <div className="flex justify-between items-center text-sm text-gray-600">
             <span>
-              Showing {filteredTransactions.length} of {transactions.length} transactions
+              Showing {filteredTransactions.length} of {transactions.length}{" "}
+              transactions
             </span>
-            <Button type="text" onClick={refreshData} loading={loading}>
+            <Button
+              icon={<IoRefresh />}
+              onClick={refreshData}
+              loading={loading}
+            >
               Refresh Data
             </Button>
           </div>
         </div>
       </Card>
-      <div >
+      <div>
         <Table
           dataSource={filteredTransactions}
           columns={getAllTransactionColumns(refreshData)}
@@ -188,10 +232,10 @@ const ManageAllTransaction = () => {
             pageSize: 10,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} items`,
             pageSizeOptions: ["10", "20", "50", "100"],
           }}
-          size="small"
         />
       </div>
     </div>

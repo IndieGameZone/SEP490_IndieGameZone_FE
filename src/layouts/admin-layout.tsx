@@ -151,14 +151,20 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
     },
     {
       key: "finance-management",
-      label: "Finance & Commercial",
+      label: "Finance Management",
       icon: <FaMoneyBill />,
       children: [
         {
-          key: "/admin/manage-system-transaction-admin-wallet",
-          label: "Manage Transactions & Wallet",
+          key: "/admin/wallet",
+          label: "Admin Wallet",
           onClick: () =>
-            navigate("/admin/manage-system-transaction-admin-wallet"),
+            navigate("/admin/wallet"),
+        },
+        {
+          key: "/admin/manage-system-transaction",
+          label: "Manage Transactions",
+          onClick: () =>
+            navigate("/admin/manage-system-transaction"),
         },
         {
           key: "/admin/manage-withdraw-requests",

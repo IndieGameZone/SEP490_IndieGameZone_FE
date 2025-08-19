@@ -37,7 +37,10 @@ const ManageAdminWallet = () => {
   }, [fetchAdminTransactions]);
 
   return (
-    <div className="py-5">
+    <div>
+      <h1 className="text-center text-3xl font-semibold mb-5">
+        Admin Wallet
+      </h1>
       <DashboardSummary />
       <AdminWallet />
       <div className="container">
