@@ -128,6 +128,7 @@ type GameSearchParams = {
   Category?: string;
   sortBy?: string;
   sortDescending?: string;
+  HasDiscount?: boolean;
 };
 
 export const searchGames = async (params: GameSearchParams = {}) => {
@@ -145,6 +146,7 @@ export const searchGames = async (params: GameSearchParams = {}) => {
     if (params.Category) searchParams.append("Category", params.Category);
     if (params?.sortBy !== undefined) searchParams.append("SortBy", params.sortBy);
     if (params?.sortDescending !== undefined) searchParams.append("SortDescending", params.sortDescending);
+    if (params?.HasDiscount !== undefined) searchParams.append("HasDiscount", "true");
 
     const queryString = searchParams.toString();
     const url = queryString ? `/api/active-games?${queryString}` : "/api/active-games";

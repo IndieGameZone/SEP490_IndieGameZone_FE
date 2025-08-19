@@ -83,6 +83,7 @@ const SearchPage = () => {
     const category = searchParams.get("category") ?? "";
     const sortBy = searchParams.get("sortBy") ?? undefined;
     const sortDesc = searchParams.get("sortDesc") ?? undefined;
+    const special = searchParams.get("special") ?? undefined;
 
     setIsLoading(true);
     const result = await searchGames({
@@ -96,6 +97,7 @@ const SearchPage = () => {
       Category: category,
       sortBy: sortBy,
       sortDescending: sortDesc,
+      HasDiscount: special ? special == "true" : undefined,
     });
     if (result.error) {
       messageApi.error("Failed to fetch games");
