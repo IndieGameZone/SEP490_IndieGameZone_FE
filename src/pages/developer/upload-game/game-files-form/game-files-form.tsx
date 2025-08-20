@@ -6,14 +6,19 @@ import { useFileValidation } from "./use-file-validation";
 import { handleBeforeUploadFactory } from "./file-upload-helpers";
 import GameFileItem from "./game-file-item";
 import { FaPlus } from "react-icons/fa";
-import { GameFilesFieldType } from "@/types/game";
+import { GameFilesFieldType, GameVisibility } from "@/types/game";
 
 type FieldType = GameFilesFieldType;
 
-const GameFilesForm = ({ form }: { form: FormInstance<FieldType> }) => {
+interface GameFilesForm {
+  form: FormInstance<FieldType>;
+  visibility: GameVisibility;
+}
+
+const GameFilesForm = ({ form, visibility }: GameFilesForm) => {
   const { fetchPlatforms, platforms, loading, getDefaultPlatforms } =
     usePlatformStore();
-  const { filesValidator, filesError } = useFileValidation();
+  const { filesValidator, filesError } = useFileValidation(visibility);
 
   useEffect(() => {
     fetchPlatforms();

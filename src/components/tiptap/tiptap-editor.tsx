@@ -23,7 +23,11 @@ const TiptapEditor = ({
     content: value,
     editable: true,
     onUpdate({ editor }) {
-      onChange(editor.getHTML());
+      if (editor.isEmpty) {
+        onChange("");
+      } else {
+        onChange(editor.getHTML());
+      }
     },
     editorProps: {
       attributes: {

@@ -1,9 +1,15 @@
+import { GameVisibility } from "@/types/game";
 import { useState } from "react";
 
-export const useFileValidation = () => {
+export const useFileValidation = (visibility: GameVisibility) => {
     const [filesError, setFilesError] = useState("");
 
     const filesValidator = async (_: any, files: any) => {
+        if (visibility === "Draft" && (!files || files.length < 1)) {
+            setFilesError("");
+            return Promise.resolve();
+          }
+
         if (!files || files.length < 1) {
             setFilesError("At least one file is required");
             return Promise.reject(new Error("At least one file is required"));

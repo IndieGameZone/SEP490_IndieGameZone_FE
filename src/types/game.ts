@@ -25,6 +25,7 @@ export type GameInfoFieldType = {
     allowDonate: boolean;
     pricingOption: "Free" | "Paid";
     visibility: GameVisibility,
+    requireActivationKey: boolean;
 };
 
 export type GameMediaAssetsFieldType = {
@@ -86,6 +87,7 @@ export type Game = {
     censorReason?: string;
     hasCommercial: boolean;
     versionDescription: string;
+    requireActivationKey: boolean;
 }
 
 export type GameStatus = "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";

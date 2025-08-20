@@ -366,17 +366,23 @@ const PreviewUploadPage = () => {
           <hr className="border-zinc-700" />
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <h3 className="font-semibold mb-1">
-                Download and install instructions from {profile?.userName}:
-              </h3>
+              <h3 className="font-semibold mb-1">Install instructions:</h3>
               <div className="bg-zinc-800 p-3 font-mono">
-                <TiptapView value={gameFiles.installInstruction} />
+                {gameFiles.installInstruction ? (
+                  <TiptapView value={gameFiles.installInstruction} />
+                ) : (
+                  <span className="text-zinc-400">None</span>
+                )}
               </div>
             </div>
             <div>
               <h3 className="font-semibold mb-1">Version notes:</h3>
               <div className="bg-zinc-800 p-3 font-mono">
-                <TiptapView value={gameFiles.versionDescription} />
+                {gameFiles.versionDescription ? (
+                  <TiptapView value={gameFiles.versionDescription} />
+                ) : (
+                  <span className="text-zinc-400">None</span>
+                )}
               </div>
             </div>
           </div>

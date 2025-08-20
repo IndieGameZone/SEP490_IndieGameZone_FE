@@ -150,6 +150,11 @@ const UploadProcessPage = () => {
   const handleUploadFiles = async () => {
     // console.log("HANDLE UPLOAD FILE");
     if (isUploading) return;
+    if (gameFiles.files.length === 0) {
+      setCurrentTask(5);
+      setIsFinished(true);
+      return;
+    }
     setIsUploading(true);
     setTotalItems(gameFiles.files.length);
     setUploadProgress(0);
@@ -201,22 +206,26 @@ const UploadProcessPage = () => {
     setTotalItems(gamePlatforms.length);
     setUploadProgress(0);
     setcurrentTaskMessage2(`Attaching game files.`);
-    const addFilesResult = await addGameFiles(
-      gameId,
-      gamePlatforms.map((file) => {
-        return {
-          displayName: file.displayName,
-          file: file.fileUrl,
-          platformId: file.platformId,
-          version: file.version,
-        };
-      })
-    );
-    if (addFilesResult.error) {
-      setErrorMessage(`Failed to attach game files Please try again.`);
-      setIsUploading(false);
-      return;
+
+    if (gameFiles.files.length > 0) {
+      const addFilesResult = await addGameFiles(
+        gameId,
+        gamePlatforms.map((file) => {
+          return {
+            displayName: file.displayName,
+            file: file.fileUrl,
+            platformId: file.platformId,
+            version: file.version,
+          };
+        })
+      );
+      if (addFilesResult.error) {
+        setErrorMessage(`Failed to attach game files Please try again.`);
+        setIsUploading(false);
+        return;
+      }
     }
+
     setUploadProgress(100);
     setIsUploading(false);
     setCurrentTask(5);
@@ -299,7 +308,7 @@ const UploadProcessPage = () => {
         gameInfo.pricingOption == "Free" ? gameInfo.allowDonate : true,
       averageSession: gameInfo.averageSession,
       categoryId: gameInfo.categoryId,
-      coverImage: coverImageUrl,  
+      coverImage: coverImageUrl,
       description: gameInfo.description,
       gameImages: imageUrls,
       installInstruction: gameFiles.installInstruction,
@@ -312,6 +321,10 @@ const UploadProcessPage = () => {
       videoLink: gameMediaAssets.videoLink,
       visibility: gameInfo.visibility,
       versionDescription: gameFiles.versionDescription,
+      requireActivationKey:
+        gameInfo.pricingOption == "Free"
+          ? false
+          : gameInfo.requireActivationKey,
     });
     if (uploadResult.error) {
       setErrorMessage(`Failed to upload game information Please try again.`);

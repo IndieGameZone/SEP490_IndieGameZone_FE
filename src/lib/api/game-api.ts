@@ -63,9 +63,11 @@ type AddGameRequest = {
   tagIds: string[];
   gameImages: string[];
   versionDescription: string;
+  requireActivationKey: boolean;
 };
 
 export const addGame = async (developerId: string, request: AddGameRequest) => {
+  console.log("Add game request: ", request);
   const formData = new FormData();
   formData.append("Name", request.name);
   formData.append("CoverImage", request.coverImage);
@@ -73,7 +75,7 @@ export const addGame = async (developerId: string, request: AddGameRequest) => {
     formData.append("VideoLink", request.videoLink);
   }
   formData.append("ShortDescription", request.shortDescription);
-  formData.append("InstallInstruction", request.installInstruction);
+  formData.append("InstallInstruction", request.installInstruction ?? "None");
   formData.append("Description", request.description);
   formData.append("AllowDonation", request.allowDonation ? "true" : "false");
   formData.append("Status", request.status);
@@ -82,7 +84,8 @@ export const addGame = async (developerId: string, request: AddGameRequest) => {
   formData.append("Price", request.price + "");
   formData.append("AverageSession", request.averageSession + "");
   formData.append("AgeRestrictionId", request.ageRestrictionId);
-  formData.append("VersionDescription", request.versionDescription);
+  formData.append("VersionDescription", request.versionDescription ?? "");
+  formData.append("RequireActivationKey ", request.requireActivationKey ? "true" : "false");
   request.languageIds.forEach((x) => formData.append("LanguageIds", x));
   request.tagIds.forEach((x) => formData.append("TagIds", x));
   request.gameImages.forEach((x) => formData.append("GameImages", x));

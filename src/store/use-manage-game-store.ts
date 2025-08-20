@@ -33,7 +33,8 @@ const initState: GameFieldTypes = {
         price: 0,
         allowDonate: false,
         pricingOption: "Free",
-        visibility: "Public"
+        visibility: "Public",
+        requireActivationKey: false
     },
     gameMediaAssets: {
         coverImage: [],
@@ -66,11 +67,14 @@ const useManageGameStore = create<ManageGameState>((set, get) => ({
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
             const parsed = JSON.parse(stored);
-            console.log(parsed);
             set({
                 gameInfo: parsed.info,
                 gameMediaAssets: parsed.mediaAssets,
-                gameFiles: parsed.files
+                gameFiles: {
+                    files: parsed.files.files ?? [],
+                    installInstruction: parsed.installInstruction,
+                    versionDescription: parsed.versionDescription
+                }
             });
             set({ isLoaded: true })
             return true;

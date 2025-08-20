@@ -22,6 +22,8 @@ import { CheckboxGroupProps } from "antd/es/checkbox";
 import TextArea from "antd/es/input/TextArea";
 import Paragraph from "antd/es/typography/Paragraph";
 import { useEffect, useState } from "react";
+import { FaKey } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 type FieldType = GameInfoFieldType;
 
@@ -29,6 +31,7 @@ const pricingOptions: CheckboxGroupProps<string>["options"] = [
   { label: "Free", value: "Free" },
   { label: "Paid", value: "Paid" },
 ];
+
 const releaseStatusOptions = GAME_REALEASE_STATUS;
 const visibilityStatusOptions = GAME_VISIBILITY_STATUS;
 const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
@@ -234,7 +237,6 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
           )}
         />
       </Form.Item>
-
       <Form.Item<FieldType>
         name="description"
         label={<span className="font-bold">Description</span>}
@@ -262,6 +264,7 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
         rules={[{ required: true, message: "Please a price" }]}
         hidden={isFree}
         extra="Minimum price to pay to get download access to game"
+        style={{ marginBottom: 10 }}
       >
         <InputNumber<number>
           min={1000}
@@ -293,6 +296,20 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
           Allow donation
         </Checkbox>
       </Form.Item>
+      <Form.Item<FieldType>
+        name="requireActivationKey"
+        valuePropName="checked"
+        hidden={isFree}
+        extra="Our platform provide API to validate player purchases. This will protect your game from piracy."
+        style={{ marginBottom: 0 }}
+      >
+        <Checkbox>
+          Use IndieGameZone activation key <FaKey className="inline ms-1" />
+        </Checkbox>
+      </Form.Item>
+      <Link to={`/dev/api`} className={isFree ? "hidden" : ""}>
+        <p className="mb-2 text-blue-400 underline">Learn more</p>
+      </Link>
       <h2 className="text-2xl mb-3">Visibility & Access</h2>
       <Form.Item<FieldType>
         name={"visibility"}
