@@ -18,8 +18,6 @@ import { useHashState } from "@/hooks/use-hash-state";
 import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
 import { getUserObtainedAchievements } from "@/lib/api/achievements-api";
 import { Achievement } from "@/types/achievements";
-import trophyImage from "@/assets/trophy.png";
-import { seededColor } from "@/lib/color";
 
 const ViewProfilePage = () => {
   const { userId } = useParams();
@@ -255,11 +253,11 @@ const ViewProfilePage = () => {
                   <>
                     <hr className="border-zinc-600 my-3 w-full" />
                     <h4 className="font-semibold">Achievements</h4>
-                    <div className="grid grid-cols-3 gap-2 mt-2">
+                    <div className="grid grid-cols-4 gap-2 mt-2">
                       {achievements.map((achievement) => (
                         <div key={achievement.id}>
                           <Tooltip placement="bottom" title={achievement.name}>
-                            <img src={achievement.image} alt="" className="w-16 h-16 rounded-full object-cover" />
+                            <img src={achievement.image} alt="" className="w-16 h-16 rounded-full object-cover border-2" />
                           </Tooltip>
                         </div>
                       ))}
