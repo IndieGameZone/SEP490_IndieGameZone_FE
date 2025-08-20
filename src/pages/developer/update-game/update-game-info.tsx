@@ -26,7 +26,8 @@ import Checkbox, { CheckboxGroupProps } from "antd/es/checkbox";
 import TextArea from "antd/es/input/TextArea";
 import Paragraph from "antd/es/typography/Paragraph";
 import { useEffect, useRef, useState } from "react";
-import { FaSave } from "react-icons/fa";
+import { FaKey, FaSave } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 type FieldType = {
   name: string;
@@ -45,6 +46,7 @@ type FieldType = {
   languageIds: string[];
   tagIds: string[];
   pricingOption: "Free" | "Paid";
+  requireActivationKey: boolean;
 };
 const releaseStatusOptions = GAME_REALEASE_STATUS;
 const visibilityStatusOptions = GAME_VISIBILITY_STATUS;
@@ -89,6 +91,7 @@ const UpdateGameInfo = () => {
       videoLink: game.videoLink,
       visibility: values.visibility,
       versionDescription: game.versionDescription,
+      requireActivationKey: values.requireActivationKey,
     });
     setLoading(false);
     if (result.error) {
@@ -122,6 +125,7 @@ const UpdateGameInfo = () => {
         tagIds: game.gameTags.map((x) => x.tag.id),
         videoLink: game.videoLink,
         visibility: game.visibility,
+        requireActivationKey: game.requireActivationKey,
       });
       initialValuesRef.current = form.getFieldsValue();
     }
@@ -403,6 +407,20 @@ const UpdateGameInfo = () => {
             </Space>
           </Radio.Group>
         </Form.Item>
+        <Form.Item<FieldType>
+          name="requireActivationKey"
+          valuePropName="checked"
+          hidden={isFree}
+          extra="Our platform provide API to validate player purchases. This will protect your game from piracy."
+          style={{ marginBottom: 0 }}
+        >
+          <Checkbox>
+            Use IndieGameZone activation key <FaKey className="inline ms-1" />
+          </Checkbox>
+        </Form.Item>
+        <Link to={`/dev/api`} className={isFree ? "hidden" : ""}>
+          <p className="mb-2 text-blue-400 underline">Learn more</p>
+        </Link>
         <Form.Item label={null}>
           <Tooltip title={hasChanged ? null : "You didn't change anything!"}>
             <Button

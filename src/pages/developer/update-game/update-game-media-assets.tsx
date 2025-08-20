@@ -84,6 +84,7 @@ const UpdateGameMediaAssets = () => {
       videoLink: form.getFieldValue("videoLink"),
       visibility: form.getFieldValue("visibility"),
       versionDescription: game.versionDescription,
+      requireActivationKey: game.requireActivationKey,
     });
     if (result.error) {
       messageApi.error("Failed to update cover image");

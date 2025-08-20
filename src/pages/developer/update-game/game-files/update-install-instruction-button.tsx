@@ -57,6 +57,7 @@ const UpdateInstallInstructionButton = () => {
       videoLink: game.videoLink,
       visibility: game.visibility,
       versionDescription: game.versionDescription,
+      requireActivationKey: game.requireActivationKey,
     });
     if (result.error) {
       messageApi.error("Failed to update install instructions");

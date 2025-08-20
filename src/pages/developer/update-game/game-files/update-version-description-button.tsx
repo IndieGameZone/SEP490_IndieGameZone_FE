@@ -57,6 +57,7 @@ const UpdateVersionDescription = () => {
       videoLink: game.videoLink,
       visibility: game.visibility,
       versionDescription: values.versionDescription,
+      requireActivationKey: game.requireActivationKey,
     });
     if (result.error) {
       messageApi.error("Failed to update version notes");

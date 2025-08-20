@@ -278,6 +278,7 @@ type UpdateGameRequest = {
   languageIds: string[];
   tagIds: string[];
   versionDescription: string;
+  requireActivationKey: boolean;
 };
 
 
