@@ -5,7 +5,7 @@ import ManageCommercialPackage from "@/pages/admin/manage-commercial-package/man
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
-const DashBoardPage = lazy(() => import("@/pages/admin/dashboard-page"));
+const DashBoardPage = lazy(() => import("@/pages/admin/dashboard/dashboard-page"));
 const DetailUser = lazy(() => import("@/pages/admin/manage-accounts/detail-user"));
 const ManageAccounts = lazy(() => import("@/pages/admin/manage-accounts/manage-accounts"));
 const ManageAgeRestrictionPage = lazy(

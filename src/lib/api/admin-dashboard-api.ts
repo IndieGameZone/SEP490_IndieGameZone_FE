@@ -25,3 +25,33 @@ export const getDashboardSummary = async () => {
         return handleApiError(error);
     }
 };
+
+export const getTopDownloadedGames = async (top?: number) => {
+    try {
+        const searchParams = new URLSearchParams();
+        if (top) searchParams.append("top", top.toString());
+        const queryString = searchParams.toString();
+        const url = queryString ? `/api/dashboard/top-downloaded-games?${queryString}` : "/api/dashboard/top-downloaded-games";
+        const { data } = await axiosClient.get(url);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
+
+export const getBestSellingGames = async (top?: number) => {
+    try {
+        const searchParams = new URLSearchParams();
+        if (top) searchParams.append("top", top.toString());
+        const queryString = searchParams.toString();
+        const url = queryString ? `/api/dashboard/top-selling?${queryString}` : "/api/dashboard/top-selling";
+        const { data } = await axiosClient.get(url);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
