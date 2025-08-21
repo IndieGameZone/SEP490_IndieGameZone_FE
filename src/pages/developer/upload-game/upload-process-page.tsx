@@ -61,7 +61,7 @@ const UploadProcessPage = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
 
-  const { isSaved, gameFiles, gameMediaAssets, gameInfo } =
+  const { isSaved, gameFiles, gameMediaAssets, gameInfo, clearState } =
     useManageGameStore();
   const { profile } = useAuthStore();
   useEffect(() => {
@@ -351,8 +351,7 @@ const UploadProcessPage = () => {
   };
 
   const handleFinish = () => {
-    // UNCOMMENT THIS LINE IN FINISH PRODUCT
-    // clearState();
+    clearState();
     navigate("/dev/manage-games");
   };
 

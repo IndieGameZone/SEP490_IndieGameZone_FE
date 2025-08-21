@@ -61,7 +61,12 @@ const useManageGameStore = create<ManageGameState>((set, get) => ({
         set({ gameMediaAssets: mediaAssets });
     },
     setGameFiles: (files) => {
-        set({ gameFiles: files })
+        set({
+            gameFiles: {
+                ...files,
+                files: files.files == undefined ? [] : files.files
+            }
+        })
     },
     loadState: () => {
         const stored = localStorage.getItem(STORAGE_KEY);

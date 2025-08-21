@@ -155,7 +155,7 @@ const UploadNewFileButton = () => {
         );
       } else {
         throw new Error(
-          "The file couldn't be uploaded because it didn't pass our safety check. Please make sure the file is safe and try again."
+          "Something went wrong! Please try again."
         );
       }
     }
