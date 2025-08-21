@@ -2,13 +2,15 @@
 import { formatCurrencyVND } from "@/lib/currency";
 import { formatDateTime } from "@/lib/date-n-time";
 import { Order } from "@/types/order";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { FaEye } from "react-icons/fa";
+import { RiResetLeftFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
 export const getColumns = (
-  setSelectedOrder: (orderId: string) => void
+  setSelectedOrder: (orderId: string) => void,
+  onResetKey: (gameId: string) => void
 ): ColumnsType<Order> => {
   return [
     {
@@ -22,11 +24,7 @@ export const getColumns = (
       title: "Order Code",
       dataIndex: "id",
       key: "id",
-      render: (_, record) => (
-        <span className="font-mono text-blue-400">
-          {record.transaction.orderCode}
-        </span>
-      ),
+      render: (_, record) => <span className="font-mono text-blue-400">{record.transaction.orderCode}</span>,
     },
     {
       title: "Description",
@@ -36,18 +34,14 @@ export const getColumns = (
           return (
             <p>
               Register{" "}
-              <Link
-                to={`/dev/commercial-package${record.commercialPackage.id}`}
-              >
+              <Link to={`/dev/commercial-package${record.commercialPackage.id}`}>
                 <span className="font-bold text-orange-500 hover:text-orange-400">
                   "{record.commercialPackage.name}"
                 </span>
               </Link>{" "}
               for{" "}
               <Link to={`/dev/game/${record.game.id}`}>
-                <span className="font-bold text-orange-500 hover:text-orange-400">
-                  "{record.game.name}"
-                </span>
+                <span className="font-bold text-orange-500 hover:text-orange-400">"{record.game.name}"</span>
               </Link>{" "}
             </p>
           );
@@ -56,9 +50,7 @@ export const getColumns = (
           <p>
             Purchase{" "}
             <Link to={`/game/${record.game.id}`}>
-              <span className="font-bold text-orange-500 hover:text-orange-400">
-                "{record.game.name}"
-              </span>
+              <span className="font-bold text-orange-500 hover:text-orange-400">"{record.game.name}"</span>
             </Link>{" "}
           </p>
         );
@@ -79,15 +71,33 @@ export const getColumns = (
       render: (text) => formatDateTime(new Date(text)),
     },
     {
+      title: "Game Active Key",
+      dataIndex: "activationKey",
+      key: "activationKey",
+      render: (activationKey) => (
+        <span className={`font-mono ${activationKey?.isUsed ? "text-red-500" : "text-green-500"}`}>
+          {activationKey?.key || ""}
+        </span>
+      ),
+    },
+    {
       title: "Action",
       key: "action",
       render: (_, record) => {
         return (
-          <Button
-            icon={<FaEye />}
-            shape="circle"
-            onClick={() => setSelectedOrder(record.id)}
-          />
+          <div className="flex items-center gap-2">
+            <Tooltip placement="top" title={"View Order Details"}>
+              <Button icon={<FaEye />} shape="circle" onClick={() => setSelectedOrder(record.id)} />
+            </Tooltip>
+            <Tooltip placement="top" title={"Reset Key"}>
+              <Button
+                icon={<RiResetLeftFill />}
+                shape="circle"
+                className="hover:text-red-500"
+                onClick={() => onResetKey(record.game.id)}
+              />{" "}
+            </Tooltip>
+          </div>
         );
       },
     },
