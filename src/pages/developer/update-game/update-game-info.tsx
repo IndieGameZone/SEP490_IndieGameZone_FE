@@ -57,7 +57,7 @@ const pricingOptions: CheckboxGroupProps<string>["options"] = [
 ];
 const UpdateGameInfo = () => {
   const [form] = Form.useForm<FieldType>();
-  const { game, rerender } = useGameStore();
+  const { game, rerender, gameFiles } = useGameStore();
   const [isFree, setIsFree] = useState(true);
   const [allowDonate, setAllowDonate] = useState(true);
   const { profile } = useAuthStore();
@@ -348,6 +348,7 @@ const UpdateGameInfo = () => {
           rules={[{ required: true, message: "Please a price" }]}
           hidden={isFree}
           extra="Minimum price to pay to get download access to game"
+          style={{ marginBottom: 10 }}
         >
           <InputNumber<number>
             min={1000}
@@ -381,32 +382,6 @@ const UpdateGameInfo = () => {
             Allow donation
           </Checkbox>
         </Form.Item>
-        <h2 className="text-2xl mb-3">Visibility & Access</h2>
-        <Form.Item<FieldType>
-          name={"visibility"}
-          rules={[
-            { required: true, message: "Please select a visibility status" },
-          ]}
-          style={{ width: 500, marginBottom: 20 }}
-        >
-          <Radio.Group>
-            <Space direction="vertical">
-              {visibilityStatusOptions.map((opt) => (
-                <div key={opt.value} style={{ padding: "4px 0" }}>
-                  <Radio value={opt.value} disabled={opt.value == "Draft"}>
-                    {opt.label}
-                  </Radio>
-                  <Paragraph
-                    type="secondary"
-                    style={{ margin: 0, paddingLeft: 24 }}
-                  >
-                    {opt.description}
-                  </Paragraph>
-                </div>
-              ))}
-            </Space>
-          </Radio.Group>
-        </Form.Item>
         <Form.Item<FieldType>
           name="requireActivationKey"
           valuePropName="checked"
@@ -421,6 +396,39 @@ const UpdateGameInfo = () => {
         <Link to={`/dev/api`} className={isFree ? "hidden" : ""}>
           <p className="mb-2 text-blue-400 underline">Learn more</p>
         </Link>
+        <h2 className="text-2xl mb-3">Visibility & Access</h2>
+        <Form.Item<FieldType>
+          name={"visibility"}
+          rules={[
+            { required: true, message: "Please select a visibility status" },
+          ]}
+          style={{ width: 500, marginBottom: 20 }}
+          extra={
+            gameFiles.length == 0 ? "You cannot public a game with no file" : ""
+          }
+        >
+          <Radio.Group>
+            <Space direction="vertical">
+              {visibilityStatusOptions.map((opt) => (
+                <div key={opt.value} style={{ padding: "4px 0" }}>
+                  <Radio
+                    value={opt.value}
+                    disabled={gameFiles.length == 0 || opt.value == "Draft"}
+                  >
+                    {opt.label}
+                  </Radio>
+                  <Paragraph
+                    type="secondary"
+                    style={{ margin: 0, paddingLeft: 24 }}
+                  >
+                    {opt.description}
+                  </Paragraph>
+                </div>
+              ))}
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+
         <Form.Item label={null}>
           <Tooltip title={hasChanged ? null : "You didn't change anything!"}>
             <Button
