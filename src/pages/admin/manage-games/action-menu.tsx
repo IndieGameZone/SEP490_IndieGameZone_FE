@@ -1,6 +1,12 @@
 import { Game } from "@/types/game";
 import { Button, Dropdown, Input, Modal, message } from "antd";
-import { DeleteOutlined, MoreOutlined, EyeOutlined, CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  MoreOutlined,
+  EyeOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import useGameStore from "@/store/use-game-store";
 import { updateGameActivation } from "@/lib/api/game-api";
@@ -33,7 +39,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
   };
 
   const handleView = (game: Game) => {
-    navigate(`/admin/game/${game.id}`);
+    navigate(`/${profile?.role.name.toLowerCase()}/game/${game.id}`);
   };
 
   const handleApprove = (game: Game) => {
@@ -45,7 +51,12 @@ const ActionMenu = ({ record }: { record: Game }) => {
       okType: "primary",
       cancelText: "Cancel",
       async onOk() {
-        const result = await updateGameActivation(game.id, "Approved", profile.id, "");
+        const result = await updateGameActivation(
+          game.id,
+          "Approved",
+          profile.id,
+          ""
+        );
         if (result.success) {
           messageApi.open({
             type: "success",
@@ -87,7 +98,12 @@ const ActionMenu = ({ record }: { record: Game }) => {
           throw new Error("No reason provided");
         }
 
-        const result = await updateGameActivation(game.id, "Rejected", profile.id, reason);
+        const result = await updateGameActivation(
+          game.id,
+          "Rejected",
+          profile.id,
+          reason
+        );
         if (result.success) {
           messageApi.success(`Game "${game.name}" rejected`);
           fetchAllGamesAdmin();
@@ -127,7 +143,12 @@ const ActionMenu = ({ record }: { record: Game }) => {
               icon: <FaRegClipboard />,
               onClick: () => handleCopyToClipboard(),
             },
-            ...(["PendingManualReview", "PendingAIReview", "Approved", "Rejected"].includes(record.censorStatus)
+            ...([
+              "PendingManualReview",
+              "PendingAIReview",
+              "Approved",
+              "Rejected",
+            ].includes(record.censorStatus)
               ? [
                   {
                     type: "divider" as const,
@@ -137,7 +158,9 @@ const ActionMenu = ({ record }: { record: Game }) => {
                         {
                           key: "approve",
                           label: "Approve",
-                          icon: <CheckCircleOutlined className="text-green-500" />,
+                          icon: (
+                            <CheckCircleOutlined className="text-green-500" />
+                          ),
                           onClick: () => handleApprove(record),
                         },
                       ]
@@ -147,7 +170,9 @@ const ActionMenu = ({ record }: { record: Game }) => {
                         {
                           key: "reject",
                           label: "Reject",
-                          icon: <CloseCircleOutlined className="text-red-500" />,
+                          icon: (
+                            <CloseCircleOutlined className="text-red-500" />
+                          ),
                           onClick: () => handleReject(record),
                         },
                       ]

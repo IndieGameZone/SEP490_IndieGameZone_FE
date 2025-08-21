@@ -1,8 +1,22 @@
 import useUserStore from "@/store/use-user-store";
 import { User } from "@/types/user";
-import { Button, Dropdown, message, Modal, Input, DatePicker, Form } from "antd";
+import {
+  Button,
+  Dropdown,
+  message,
+  Modal,
+  Input,
+  DatePicker,
+  Form,
+} from "antd";
 import { useState } from "react";
-import { FaBan, FaCheckCircle, FaEye, FaTrash, FaEllipsisV } from "react-icons/fa";
+import {
+  FaBan,
+  FaCheckCircle,
+  FaEye,
+  FaTrash,
+  FaEllipsisV,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { createBanHistory, unBanUserById } from "@/lib/api/user-api";
 import dayjs, { Dayjs } from "dayjs";
@@ -21,7 +35,7 @@ const ActionMenu = ({ record }: { record: User }) => {
   const { profile } = useAuthStore();
 
   const handleView = () => {
-    navigate(`/admin/detail-user/${record.id}`);
+    navigate(`/${profile?.role.name.toLowerCase()}/detail-user/${record.id}`);
   };
 
   const handleBanOrUnBan = async () => {
@@ -38,7 +52,9 @@ const ActionMenu = ({ record }: { record: User }) => {
           return;
         }
         if (!profile?.id) {
-          messageApi.error("Current user info is missing. Please log in again.");
+          messageApi.error(
+            "Current user info is missing. Please log in again."
+          );
           return;
         }
 
@@ -55,7 +71,11 @@ const ActionMenu = ({ record }: { record: User }) => {
       }
 
       if (response.success) {
-        messageApi.success(record.isActive ? "User banned successfully!" : "User unbanned successfully!");
+        messageApi.success(
+          record.isActive
+            ? "User banned successfully!"
+            : "User unbanned successfully!"
+        );
         await fetchAllAccounts();
         setIsModalOpen(false);
         setReason("");
@@ -134,7 +154,11 @@ const ActionMenu = ({ record }: { record: User }) => {
               />
             </Form.Item>
             <Form.Item label="Ban Date and Time">
-              <Input value={formatDateTime(banDate.toDate())} disabled style={{ marginBottom: 16, width: "100%" }} />
+              <Input
+                value={formatDateTime(banDate.toDate())}
+                disabled
+                style={{ marginBottom: 16, width: "100%" }}
+              />
             </Form.Item>
             <Form.Item label="UnBan Date and Time">
               <DatePicker
