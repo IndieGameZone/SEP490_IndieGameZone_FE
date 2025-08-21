@@ -2,6 +2,7 @@ import { User } from "@/types/user";
 import { getAdminFullMenuItems, getAdminMobileMenuItems } from "./admin-menu";
 import { MenuProps } from "antd";
 import { NavigateFunction } from "react-router-dom";
+import { getModeratorMenuItems } from "./moderator-menu";
 
 const useMenuItems = (
   profile: User | undefined,
@@ -17,7 +18,8 @@ const useMenuItems = (
       return isMobile
         ? getAdminMobileMenuItems(navigate, handleLogout, setDrawerOpen)
         : getAdminFullMenuItems(navigate, handleLogout);
-
+    case "Moderator":
+      return isMobile ? [] : getModeratorMenuItems(navigate, handleLogout);
     default:
       return [];
   }

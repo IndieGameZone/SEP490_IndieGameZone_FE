@@ -85,7 +85,7 @@ export const addGame = async (developerId: string, request: AddGameRequest) => {
   formData.append("AverageSession", request.averageSession + "");
   formData.append("AgeRestrictionId", request.ageRestrictionId);
   formData.append("VersionDescription", request.versionDescription ?? "");
-  formData.append("RequireActivationKey ", request.requireActivationKey ? "true" : "false");
+  formData.append("RequireActivationKey", request.requireActivationKey ? "true" : "false");
   request.languageIds.forEach((x) => formData.append("LanguageIds", x));
   request.tagIds.forEach((x) => formData.append("TagIds", x));
   request.gameImages.forEach((x) => formData.append("GameImages", x));
@@ -304,6 +304,7 @@ export const updateGame = async (developerId: string, gameId: string, request: U
   }
   request.languageIds.forEach((x) => formData.append("LanguageIds", x));
   request.tagIds.forEach((x) => formData.append("TagIds", x));
+  formData.append("RequireActivationKey", request.requireActivationKey ? "true" : "false");
 
   try {
     const { data } = await axiosClient.put(`/api/users/${developerId}/games/${gameId}`, formData);
@@ -327,10 +328,10 @@ export const updateGameImages = async (gameId: string, request: UpdateGameImages
   }
 };
 
-export const toggleFileVisibility = async (developerId: string, gamePlaformId: string, status: boolean) => {
+export const toggleFileVisibility = async (gamePlaformId: string, status: boolean) => {
   try {
     const formData = toFormData({ isActive: status });
-    const { data } = await axiosClient.put(`/api/developers/${developerId}/game-platforms/${gamePlaformId}/activation`, formData);
+    const { data } = await axiosClient.put(`/api/game-platforms/${gamePlaformId}/activation`, formData);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);

@@ -8,6 +8,7 @@ import { MdOutlineWifiOff } from "react-icons/md";
 import TransformDebugPage from "./pages/debug/transform-debug-page";
 import AppTheme from "./components/app-theme";
 import { ping } from "./lib/api/user-api";
+import ModeratorContainer from "./containers/moderator-container";
 
 const LoginPage = lazy(() => import("./pages/auth/log-in-page"));
 const SignUpPage = lazy(() => import("./pages/auth/sign-up-page"));
@@ -114,13 +115,20 @@ function App() {
           />
           <Route
             element={
+              <RequireAuth allowedRoles={["Admin"]} returnUrl="/admin/log-in" />
+            }
+          >
+            <Route path="/admin/*" element={<AdminContainer />} />
+          </Route>
+          <Route
+            element={
               <RequireAuth
-                allowedRoles={["Admin", "Moderator"]}
+                allowedRoles={["Moderator"]}
                 returnUrl="/admin/log-in"
               />
             }
           >
-            <Route path="/admin/*" element={<AdminContainer />} />
+            <Route path="/moderator/*" element={<ModeratorContainer />} />
           </Route>
           <Route
             element={<RequireAuth allowedRoles={["Developer", "Player"]} />}

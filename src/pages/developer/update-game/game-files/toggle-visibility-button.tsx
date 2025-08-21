@@ -15,11 +15,11 @@ const ToggleVisibilityButton = ({ file }: { file: GameFile }) => {
   const confirm: PopconfirmProps["onConfirm"] = async (_) => {
     if (!profile) return;
     setConfirmLoading(true);
-    const result = await toggleFileVisibility(profile.id, file.id, !file.isActive);
+    const result = await toggleFileVisibility(file.id, !file.isActive);
     if (result.error) {
       messageApi.error("Failed to update file visibility! Please try again.");
     } else {
-        rerender();
+      rerender();
     }
     setConfirmLoading(false);
   };
