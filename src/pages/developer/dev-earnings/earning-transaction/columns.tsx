@@ -23,7 +23,10 @@ export const columns: TableProps<Transaction>["columns"] = [
     key: "id",
     width: 120,
     render: (value) => (
-      <span className="font-mono text-blue-400">{value}</span>
+      <span className="font-mono text-blue-400">
+        TS-
+        {value.split("-")[0].toUpperCase()}
+      </span>
     ),
   },
   {

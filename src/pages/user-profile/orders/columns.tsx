@@ -24,7 +24,12 @@ export const getColumns = (
       title: "Order Code",
       dataIndex: "id",
       key: "id",
-      render: (_, record) => <span className="font-mono text-blue-400">{record.transaction.orderCode}</span>,
+      render: (_, record) => (
+        <span className="font-mono text-blue-400">
+          ORD-{new Date(record.createdAt).getFullYear()}-
+          {record.transaction.orderCode}
+        </span>
+      ),
     },
     {
       title: "Description",
@@ -34,14 +39,18 @@ export const getColumns = (
           return (
             <p>
               Register{" "}
-              <Link to={`/dev/commercial-package${record.commercialPackage.id}`}>
+              <Link
+                to={`/dev/commercial-package${record.commercialPackage.id}`}
+              >
                 <span className="font-bold text-orange-500 hover:text-orange-400">
                   "{record.commercialPackage.name}"
                 </span>
               </Link>{" "}
               for{" "}
               <Link to={`/dev/game/${record.game.id}`}>
-                <span className="font-bold text-orange-500 hover:text-orange-400">"{record.game.name}"</span>
+                <span className="font-bold text-orange-500 hover:text-orange-400">
+                  "{record.game.name}"
+                </span>
               </Link>{" "}
             </p>
           );
@@ -50,7 +59,9 @@ export const getColumns = (
           <p>
             Purchase{" "}
             <Link to={`/game/${record.game.id}`}>
-              <span className="font-bold text-orange-500 hover:text-orange-400">"{record.game.name}"</span>
+              <span className="font-bold text-orange-500 hover:text-orange-400">
+                "{record.game.name}"
+              </span>
             </Link>{" "}
           </p>
         );
@@ -75,7 +86,11 @@ export const getColumns = (
       dataIndex: "activationKey",
       key: "activationKey",
       render: (activationKey) => (
-        <span className={`font-mono ${activationKey?.isUsed ? "text-red-500" : "text-green-500"}`}>
+        <span
+          className={`font-mono ${
+            activationKey?.isUsed ? "text-red-500" : "text-green-500"
+          }`}
+        >
           {activationKey?.key || ""}
         </span>
       ),
@@ -87,7 +102,11 @@ export const getColumns = (
         return (
           <div className="flex items-center gap-2">
             <Tooltip placement="top" title={"View Order Details"}>
-              <Button icon={<FaEye />} shape="circle" onClick={() => setSelectedOrder(record.id)} />
+              <Button
+                icon={<FaEye />}
+                shape="circle"
+                onClick={() => setSelectedOrder(record.id)}
+              />
             </Tooltip>
             <Tooltip placement="top" title={"Reset Key"}>
               <Button

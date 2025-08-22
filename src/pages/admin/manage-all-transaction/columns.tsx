@@ -22,11 +22,16 @@ export const getAllTransactionColumns = (
   onRefresh?: () => void
 ): ColumnsType<Transaction> => [
   {
-    title: "ID",
+    title: "Transaction ID",
     dataIndex: "id",
     key: "id",
     width: 120,
-    render: (value) => <span className="font-mono text-blue-400">{value}</span>,
+    render: (value) => (
+      <span className="font-mono text-blue-400">
+        TS-
+        {value.split("-")[0].toUpperCase()}
+      </span>
+    ),
   },
   {
     title: "Type",

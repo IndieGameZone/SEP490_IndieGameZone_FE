@@ -1,5 +1,5 @@
-import CoinIcon from "@/components/coin-icon";
 import { getDashboardSummary } from "@/lib/api/admin-dashboard-api";
+import { formatCurrencyVND } from "@/lib/currency";
 import { useEffect, useState } from "react";
 import { VictoryPie, VictoryLabel } from "victory";
 
@@ -37,7 +37,7 @@ const DashboardSummary = () => {
       color: "#3B82F6",
     },
     {
-      x: "Platform Revenue",
+      x: "Comission Revenue",
       y: summaryData.gamePurchaseRevenueByAdmin,
       color: "#10B981",
     },
@@ -52,47 +52,44 @@ const DashboardSummary = () => {
     <div className="grid grid-cols-3 gap-6 mb-5">
       <div className="flex flex-col gap-3">
         {/* Developer Revenue Card */}
-        <div className="bg-white rounded shadow-md border border-zinc-200 p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded shadow-md border border-zinc-200 px-3 py-5">
+          <div className="flex items-center justify-between border-s-4 border-blue-500 ps-4">
             <div>
               <h3 className="text-sm font-medium text-gray-600 mb-2">
                 Total Developer Revenue
               </h3>
               <p className="text-2xl font-semibold text-blue-600 flex items-center gap-1">
-                {summaryData.gamePurchaseRevenueByDeveloper.toLocaleString(
-                  "vi-VN"
+                {formatCurrencyVND(
+                  summaryData.gamePurchaseRevenueByDeveloper ?? 0
                 )}
-                <CoinIcon size="size-5" />
               </p>
             </div>
           </div>
         </div>
 
         {/* Platform Revenue Card */}
-        <div className="bg-white rounded shadow-md border border-zinc-200 p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded shadow-md border border-zinc-200 px-3 py-5">
+          <div className="flex items-center justify-between border-s-4 border-green-500 ps-4">
             <div>
               <h3 className="text-sm font-medium text-gray-600 mb-2">
-                Total Platform Revenue
+                Total Comission Revenue
               </h3>
               <p className="text-2xl font-semibold text-green-600 flex items-center gap-1">
-                {summaryData.gamePurchaseRevenueByAdmin.toLocaleString("vi-VN")}
-                <CoinIcon size="size-5" />
+                {formatCurrencyVND(summaryData.gamePurchaseRevenueByAdmin ?? 0)}
               </p>
             </div>
           </div>
         </div>
 
         {/* Commercial Packages Card */}
-        <div className="bg-white rounded shadow-md border border-zinc-200 p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded shadow-md border border-zinc-200 px-3 py-5">
+          <div className="flex items-center justify-between border-s-4 border-amber-500 ps-4">
             <div>
               <h3 className="text-sm font-medium text-gray-600 mb-2">
                 Commercial Packages Revenue
               </h3>
               <p className="text-2xl font-semibold text-amber-600 flex items-center gap-1">
-                {summaryData.commercialPackageRevenue.toLocaleString("vi-VN")}
-                <CoinIcon size="size-5" />
+                {formatCurrencyVND(summaryData.commercialPackageRevenue ?? 0)}
               </p>
             </div>
           </div>
@@ -109,7 +106,7 @@ const DashboardSummary = () => {
             <VictoryPie
               data={pieData}
               width={600}
-              padding={{ top: 10, bottom: 10 }}
+              padding={{ top: 20, bottom: 10 }}
               height={220}
               innerRadius={40}
               padAngle={2}
@@ -126,6 +123,13 @@ const DashboardSummary = () => {
                 duration: 1000,
                 onLoad: { duration: 500 },
               }}
+            />
+            <VictoryLabel
+              textAnchor="middle"
+              style={{ fontSize: 20 }}
+              x={200}
+              y={200}
+              text="Pets"
             />
           </div>
         ) : (
