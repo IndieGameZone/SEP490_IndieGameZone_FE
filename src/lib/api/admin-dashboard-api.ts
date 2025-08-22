@@ -41,12 +41,43 @@ export const getTopDownloadedGames = async (top?: number) => {
     }
 };
 
+export const getTopRatedGames = async (top?: number) => {
+    try {
+        const searchParams = new URLSearchParams();
+        if (top) searchParams.append("top", top.toString());
+        const queryString = searchParams.toString();
+        const url = queryString ? `/api/dashboard/top-rated?${queryString}` : "/api/dashboard/top-rated";
+        const { data } = await axiosClient.get(url);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
+
+
 export const getBestSellingGames = async (top?: number) => {
     try {
         const searchParams = new URLSearchParams();
         if (top) searchParams.append("top", top.toString());
         const queryString = searchParams.toString();
         const url = queryString ? `/api/dashboard/top-selling?${queryString}` : "/api/dashboard/top-selling";
+        const { data } = await axiosClient.get(url);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
+
+export const getRecentlyPublishedGames = async (top?: number) => {
+    try {
+        const searchParams = new URLSearchParams();
+        if (top) searchParams.append("top", top.toString());
+        const queryString = searchParams.toString();
+        const url = queryString ? `/api/dashboard/recently-published?${queryString}` : "/api/dashboard/recently-published";
         const { data } = await axiosClient.get(url);
         return {
             error: null, data: data, success: true
