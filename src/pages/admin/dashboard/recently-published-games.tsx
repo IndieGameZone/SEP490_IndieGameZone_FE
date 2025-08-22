@@ -4,9 +4,11 @@ import GameInfo from "../manage-games/game-info";
 import { formatCurrencyVND } from "@/lib/currency";
 import { Tag } from "antd";
 import { ModerationStatusTag } from "@/components/status-tags";
-import { AiOutlineCalendar, AiOutlineUser } from "react-icons/ai";
+import { AiOutlineUser } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { getRecentlyPublishedGames } from "@/lib/api/admin-dashboard-api";
+import { timeAgo } from "@/lib/date-n-time";
+import { FaRegClock } from "react-icons/fa";
 
 const columns: ColumnsType<Game> = [
   {
@@ -63,12 +65,8 @@ const columns: ColumnsType<Game> = [
     render: (date: string) => (
       <div className="text-sm text-gray-600">
         <div className="flex items-center gap-1 mb-1">
-          <AiOutlineCalendar className="text-xs" />
-          {new Date(date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
+          <FaRegClock />
+          {timeAgo(new Date(date))}
         </div>
       </div>
     ),
@@ -79,19 +77,16 @@ const columns: ColumnsType<Game> = [
     title: "Updated",
     dataIndex: "updatedAt",
     key: "updatedAt",
-    render: (date: string | null) => (
-      <div className="text-sm text-gray-600">
-        {date
-          ? new Date(date).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            })
-          : "-"}
-      </div>
-    ),
+    render: (date: string | null) => {
+      if (date) {
+        return (
+          <div className="text-sm text-gray-600">
+            <FaRegClock />
+            {timeAgo(new Date(date))}
+          </div>
+        );
+      }
+    },
     sorter: (a, b) => {
       const dateA = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
       const dateB = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
