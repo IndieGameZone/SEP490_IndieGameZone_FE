@@ -17,6 +17,7 @@ import {
   Input,
   InputNumber,
   Radio,
+  RadioChangeEvent,
   Select,
   Space,
   Tooltip,
@@ -136,6 +137,16 @@ const UpdateGameInfo = () => {
     setHasChanged(changed);
   };
 
+  const handlePricingOptionChange = (e: RadioChangeEvent) => {
+    form.setFieldValue("pricingOption", e.target.value);
+    setIsFree(e.target.value == "Free");
+    if (e.target.value == "Free") {
+      form.setFieldValue("requireActivationKey", false);
+    } else {
+      form.setFieldValue("requireActivationKey", game?.requireActivationKey);
+    }
+  };
+
   const averageSession = Form.useWatch("averageSession", form);
 
   return (
@@ -150,7 +161,7 @@ const UpdateGameInfo = () => {
         onValuesChange={handleValuesChange}
         layout="vertical"
         initialValues={{
-          price: 1000,
+          price: 10000,
           pricingOption: "Free",
           allowDonate: true,
         }}
@@ -336,10 +347,7 @@ const UpdateGameInfo = () => {
         >
           <Radio.Group
             options={pricingOptions}
-            onChange={(e) => {
-              form.setFieldValue("pricingOption", e.target.value);
-              setIsFree(e.target.value == "Free");
-            }}
+            onChange={handlePricingOptionChange}
           />
         </Form.Item>
         <Form.Item<FieldType>
@@ -351,7 +359,7 @@ const UpdateGameInfo = () => {
           style={{ marginBottom: 10 }}
         >
           <InputNumber<number>
-            min={1000}
+            min={10000}
             max={10000000}
             step={1000}
             style={{ width: 500 }}

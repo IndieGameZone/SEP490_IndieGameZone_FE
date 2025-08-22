@@ -7,15 +7,21 @@ import { handleBeforeUploadFactory } from "./file-upload-helpers";
 import GameFileItem from "./game-file-item";
 import { FaPlus } from "react-icons/fa";
 import { GameFilesFieldType, GameVisibility } from "@/types/game";
+import { Link } from "react-router-dom";
 
 type FieldType = GameFilesFieldType;
 
 interface GameFilesForm {
   form: FormInstance<FieldType>;
   visibility: GameVisibility;
+  requireActivationKey: boolean;
 }
 
-const GameFilesForm = ({ form, visibility }: GameFilesForm) => {
+const GameFilesForm = ({
+  form,
+  visibility,
+  requireActivationKey,
+}: GameFilesForm) => {
   const { fetchPlatforms, platforms, loading, getDefaultPlatforms } =
     usePlatformStore();
   const { filesValidator, filesError } = useFileValidation(visibility);
@@ -23,6 +29,12 @@ const GameFilesForm = ({ form, visibility }: GameFilesForm) => {
   useEffect(() => {
     fetchPlatforms();
   }, []);
+
+  useEffect(() => {
+    if (requireActivationKey) {
+      form.setFieldValue("files", []);
+    }
+  }, [requireActivationKey]);
 
   const handleBeforeUpload = handleBeforeUploadFactory(
     form,
@@ -42,6 +54,24 @@ const GameFilesForm = ({ form, visibility }: GameFilesForm) => {
       autoComplete="off"
       onValuesChange={handleFormChange}
     >
+      {requireActivationKey && (
+        <Alert
+          message="Obtain game ID before you upload game files"
+          style={{ marginBottom: 15 }}
+          description={
+            <p>
+              In order to integrate activation key into your game, you have to
+              get your game ID by upload your game as a draft first then you can
+              upload your files later.{" "}
+              <Link to={`/dev/api`}>
+                <span className="mb-2 text-blue-400 underline">Learn more</span>
+              </Link>
+            </p>
+          }
+          type="info"
+          showIcon
+        />
+      )}
       <Form.List name="files" rules={[{ validator: filesValidator }]}>
         {(fields, { add, remove }, { errors }) => (
           <>
@@ -72,7 +102,7 @@ const GameFilesForm = ({ form, visibility }: GameFilesForm) => {
                 onClick={() => add()}
                 block
                 icon={<FaPlus />}
-                disabled={fields.length >= 6}
+                disabled={fields.length >= 6 || requireActivationKey}
               >
                 Add File
               </Button>

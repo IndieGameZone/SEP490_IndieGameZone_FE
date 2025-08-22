@@ -102,8 +102,9 @@ const DashboardSummary = () => {
           Revenue Distribution
         </h3>
         {pieData.length > 0 ? (
-          <div className="flex flex-col items-center">
+          <svg viewBox="0 0 600 220" width={600} height={220}>
             <VictoryPie
+              standalone={false}
               data={pieData}
               width={600}
               padding={{ top: 20, bottom: 10 }}
@@ -127,11 +128,15 @@ const DashboardSummary = () => {
             <VictoryLabel
               textAnchor="middle"
               style={{ fontSize: 20 }}
-              x={200}
-              y={200}
-              text="Pets"
+              x={300}
+              y={115}
+              text={formatCurrencyVND(
+                summaryData.commercialPackageRevenue +
+                  summaryData.gamePurchaseRevenueByAdmin +
+                  summaryData.gamePurchaseRevenueByDeveloper
+              )}
             />
-          </div>
+          </svg>
         ) : (
           <div className="flex items-center justify-center h-40 text-zinc-500">
             <p>No data available</p>

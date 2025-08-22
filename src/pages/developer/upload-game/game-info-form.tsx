@@ -15,10 +15,11 @@ import {
   Input,
   InputNumber,
   Radio,
+  RadioChangeEvent,
   Select,
   Space,
 } from "antd";
-import { CheckboxGroupProps } from "antd/es/checkbox";
+import { CheckboxChangeEvent, CheckboxGroupProps } from "antd/es/checkbox";
 import TextArea from "antd/es/input/TextArea";
 import Paragraph from "antd/es/typography/Paragraph";
 import { useEffect, useState } from "react";
@@ -66,7 +67,22 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
     }
   }, []);
 
+  const handleToggleRequireActivationKey = (e: CheckboxChangeEvent) => {
+    if (e.target.checked) {
+      form.setFieldValue("visibility", "Draft");
+    }
+  };
+
+  const handlePricingOptionChange = (e: RadioChangeEvent) => {
+    form.setFieldValue("pricingOption", e.target.value);
+    setIsFree(e.target.value == "Free");
+    if (e.target.value == "Free") {
+      form.setFieldValue("requireActivationKey", false);
+    }
+  };
+
   const averageSession = Form.useWatch("averageSession", form);
+  const requireActivationKey = Form.useWatch("requireActivationKey", form);
   return (
     <Form
       form={form}
@@ -74,7 +90,7 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
       onFinish={onFinish}
       autoComplete="off"
       layout="vertical"
-      initialValues={{ price: 1000, pricingOption: "Free", allowDonate: true }}
+      initialValues={{ price: 10000, pricingOption: "Free", allowDonate: true }}
     >
       <Form.Item<FieldType>
         name="name"
@@ -252,10 +268,7 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
       >
         <Radio.Group
           options={pricingOptions}
-          onChange={(e) => {
-            form.setFieldValue("pricingOption", e.target.value);
-            setIsFree(e.target.value == "Free");
-          }}
+          onChange={handlePricingOptionChange}
         />
       </Form.Item>
       <Form.Item<FieldType>
@@ -267,7 +280,7 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
         style={{ marginBottom: 10 }}
       >
         <InputNumber<number>
-          min={1000}
+          min={10000}
           max={10000000}
           step={1000}
           style={{ width: 500 }}
@@ -303,7 +316,7 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
         extra="Our platform provide API to validate player purchases. This will protect your game from piracy."
         style={{ marginBottom: 0 }}
       >
-        <Checkbox>
+        <Checkbox onChange={handleToggleRequireActivationKey}>
           Use IndieGameZone activation key <FaKey className="inline ms-1" />
         </Checkbox>
       </Form.Item>
@@ -318,7 +331,7 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
         ]}
         style={{ width: 500, marginBottom: 20 }}
       >
-        <Radio.Group>
+        <Radio.Group disabled={requireActivationKey}>
           <Space direction="vertical">
             {visibilityStatusOptions.map((opt) => (
               <div key={opt.value} style={{ padding: "4px 0" }}>

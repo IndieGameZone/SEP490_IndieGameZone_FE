@@ -73,7 +73,7 @@ const DevUploadGamePage = () => {
         allowDonate: gameInfo.allowDonate,
         pricingOption: gameInfo.pricingOption,
         visibility: gameInfo.visibility,
-        requireActivationKey: gameInfo.requireActivationKey
+        requireActivationKey: gameInfo.requireActivationKey,
       });
       mediaForm.setFieldsValue({
         coverImage: gameMediaAssets.coverImage,
@@ -90,6 +90,7 @@ const DevUploadGamePage = () => {
   }, [isLoaded]);
 
   const visibility = Form.useWatch("visibility", infoForm);
+  const requireActivationKey = Form.useWatch("requireActivationKey", infoForm);
 
   return (
     <div className="bg-zinc-900">
@@ -110,7 +111,11 @@ const DevUploadGamePage = () => {
         </StepLayout>
         <hr className="border-zinc-600 my-5" />
         <StepLayout title="Game Files" current={2}>
-          <GameFilesForm form={fileForm} visibility={visibility} />
+          <GameFilesForm
+            form={fileForm}
+            visibility={visibility}
+            requireActivationKey={requireActivationKey}
+          />
         </StepLayout>
         <hr className="border-zinc-600 my-5" />
         <div className="flex justify-center gap-3">
