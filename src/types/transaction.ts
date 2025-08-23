@@ -7,6 +7,8 @@ export type Transaction = {
   donation?: number;
   gamePrice?: number;
   amount: number;
+  initialBalance: number;
+  finalBalance: number;
   description: string;
   status: "Success" | "Pending" | "Failed";
   type:
