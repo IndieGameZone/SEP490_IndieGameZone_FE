@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const LicenseActivationOverview = () => {
   return (
-    <div className="bg-zinc-900 p-5 grid grid-cols-12 gap-5">
+    <div className="grid grid-cols-12 gap-5">
       <div className="col-span-8 leading-7">
         <h2 className="mb-3 text-3xl font-bold" id="part-1">
           Introduction to Game License
@@ -131,7 +131,7 @@ const LicenseActivationOverview = () => {
         </ol>
 
         <h2 className="mt-10 mb-5 text-3xl font-bold" id="part-4">
-          Key Features
+          Best Practices
         </h2>
         <ul className="list-disc ps-5">
           <li>
@@ -152,7 +152,7 @@ const LicenseActivationOverview = () => {
         </ul>
 
         <h2 className="mt-10 mb-5 text-3xl font-bold" id="part-5">
-          Developer Requirements
+          Requirements
         </h2>
         <ul className="list-disc ps-5">
           <li>
@@ -206,12 +206,12 @@ const LicenseActivationOverview = () => {
               {
                 key: "part-4",
                 href: "#part-4",
-                title: "Key Features",
+                title: "Best Practices",
               },
               {
                 key: "part-5",
                 href: "#part-5",
-                title: "Developer Requirements",
+                title: "Requirements",
               },
               {
                 key: "part-6",

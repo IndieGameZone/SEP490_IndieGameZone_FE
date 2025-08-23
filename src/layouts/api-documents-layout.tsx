@@ -1,6 +1,6 @@
 import ScrollToTop from "@/components/scroll-to-top";
 import { Menu, MenuProps, theme } from "antd";
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -46,6 +46,16 @@ const ApiDocumentLayout = ({ children }: ApiDocumentLayout) => {
     },
   ];
 
+  const selectedKey = useMemo(() => {
+    if (location.pathname.includes("/overview"))
+      return "activation-keys-overview";
+    if (location.pathname.includes("/activate-license/example"))
+      return "activate-game-code";
+    if (location.pathname.includes("/activate-license"))
+      return "activate-license";
+    return "";
+  }, [location.pathname]);
+
   return (
     <div className="grid grid-cols-12">
       <ScrollToTop />
@@ -53,9 +63,20 @@ const ApiDocumentLayout = ({ children }: ApiDocumentLayout) => {
         className="col-span-3 border-e border-zinc-700"
         style={{ background: token.colorBgContainer }}
       >
-        <Menu mode="inline" items={items} />
+        <Menu
+          mode="inline"
+          items={items}
+          selectedKeys={[selectedKey]}
+          defaultOpenKeys={["game-licenses"]}
+          style={{
+            position: "sticky",
+            top: 70,
+          }}
+        />
       </div>
-      <div className="col-span-9 min-h-screen">{children}</div>
+      <div className="col-span-9 min-h-screen bg-zinc-900 p-5">
+        {children}
+      </div>
     </div>
   );
 };
