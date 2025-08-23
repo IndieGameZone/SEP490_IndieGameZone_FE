@@ -28,6 +28,8 @@ const PurchaseTransactionHistory = () => {
                 amount,
                 gamePrice,
                 donation,
+                initialBalance: item.initialBalance,
+                finalBalance: item.finalBalance,
                 paymentMethod: item.paymentMethod,
                 description: item.description,
                 createdAt: item.createdAt,
