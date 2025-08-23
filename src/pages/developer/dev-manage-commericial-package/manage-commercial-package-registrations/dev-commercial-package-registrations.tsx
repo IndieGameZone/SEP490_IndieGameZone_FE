@@ -38,10 +38,10 @@ const DevCommercialPackageRegistrations: React.FC = () => {
   }, [fetchCommercialPackagesByUserId, profile?.id]);
 
   return (
-    <>
+    <div className="p-5">
       {contextHolder}
       <div className="flex justify-center mb-6">
-        <Title level={2}>Manage Commercial Packages Registrations</Title>
+        <Title level={2}>Commercial Packages Registrations</Title>
       </div>
       <div>
         <Table
@@ -53,7 +53,7 @@ const DevCommercialPackageRegistrations: React.FC = () => {
           pagination={{ pageSize: 5 }}
         />
       </div>
-    </>
+    </div>
   );
 };
 

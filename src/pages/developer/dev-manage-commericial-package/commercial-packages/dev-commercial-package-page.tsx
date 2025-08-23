@@ -93,7 +93,7 @@ const DevCommercialPackagePage = () => {
       <p className="text-zinc-500 text-sm italic">
         Prices are subject to change based on seasonality and traffic volume.
       </p>
-      <div className="grid grid-cols-4 gap-3 py-5">
+      <div className="grid grid-cols-3 gap-3 py-5">
         {commercialPackages.map((p) => {
           return <PackageCard key={p.id} data={p} />;
         })}
