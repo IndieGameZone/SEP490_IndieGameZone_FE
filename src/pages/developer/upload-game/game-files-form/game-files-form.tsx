@@ -63,7 +63,7 @@ const GameFilesForm = ({
               In order to integrate activation key into your game, you have to
               get your game ID by upload your game as a draft first then you can
               upload your files later.{" "}
-              <Link to={`/dev/api`}>
+              <Link to={`/docs/api/overview`}>
                 <span className="mb-2 text-blue-400 underline">Learn more</span>
               </Link>
             </p>

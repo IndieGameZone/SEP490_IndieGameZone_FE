@@ -9,6 +9,7 @@ import TransformDebugPage from "./pages/debug/transform-debug-page";
 import AppTheme from "./components/app-theme";
 import { ping } from "./lib/api/user-api";
 import ModeratorContainer from "./containers/moderator-container";
+import DocumentContainer from "./containers/document-container";
 
 const LoginPage = lazy(() => import("./pages/auth/log-in-page"));
 const SignUpPage = lazy(() => import("./pages/auth/sign-up-page"));
@@ -138,6 +139,7 @@ function App() {
           <Route element={<RequireAuth allowedRoles={["Developer"]} />}>
             <Route path="/dev/*" element={<DeveloperDashboardContainer />} />
           </Route>
+          <Route path="/docs/*" element={<DocumentContainer />} />
           <Route path="/debug" element={<TransformDebugPage />} />
           <Route path="/*" element={<HomeContainer />} />
         </Routes>

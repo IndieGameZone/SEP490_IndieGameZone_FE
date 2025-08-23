@@ -1,0 +1,61 @@
+import { Menu, MenuProps, theme } from "antd";
+import { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+
+type MenuItem = Required<MenuProps>["items"][number];
+const { useToken } = theme;
+
+interface ApiDocumentLayout {
+  children?: ReactNode;
+}
+
+const ApiDocumentLayout = ({ children }: ApiDocumentLayout) => {
+  const { token } = useToken();
+  const navigate = useNavigate();
+
+  const items: MenuItem[] = [
+    {
+      key: "game-licenses",
+      label: "Game Licenses",
+      type: "group",
+      children: [
+        {
+          key: "activation-keys-overview",
+          label: "Overview",
+          onClick: () => navigate("/docs/api/overview"),
+        },
+        {
+          key: "activate-license",
+          label: (
+            <div className="flex gap-2 items-center">
+              <span className="bg-amber-500 px-2 py-0.5 text-xs text-white rounded">
+                PUT
+              </span>
+              <span>Activate Game License</span>
+            </div>
+          ),
+          onClick: () => navigate("/docs/api/activate-license"),
+        },
+        {
+          key: "activate-game-code",
+          label: "Code Example",
+          onClick: () => navigate("/docs/api/activate-license/example"),
+        },
+      ],
+    },
+  ];
+
+  return (
+    <div className="grid grid-cols-12">
+      <div
+        className="col-span-3 border-e border-zinc-700"
+        style={{ background: token.colorBgContainer }}
+      >
+        <Menu mode="inline" items={items} />
+      </div>
+      <div className="min-h-[80vh] col-span-9">{children}</div>
+    </div>
+  );
+};
+
+export default ApiDocumentLayout;

@@ -401,7 +401,10 @@ const UpdateGameInfo = () => {
             Use IndieGameZone activation key <FaKey className="inline ms-1" />
           </Checkbox>
         </Form.Item>
-        <Link to={`/dev/api`} className={isFree ? "hidden" : ""}>
+        <Link
+          to={`/docs/api/overview`}
+          className={isFree ? "hidden" : ""}
+        >
           <p className="mb-2 text-blue-400 underline">Learn more</p>
         </Link>
         <h2 className="text-2xl mb-3">Visibility & Access</h2>
