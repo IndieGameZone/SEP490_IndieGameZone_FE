@@ -98,7 +98,7 @@ const Navbar = () => {
 
   const isLoadingProfile = isRefreshingToken || loading;
   return (
-    <div className="bg-zinc-900 border-b border-zinc-800 shadow">
+    <div className="bg-zinc-900 border-b border-zinc-800 shadow sticky top-0 z-50">
       <MaxWidthWrapper className="flex justify-between  p-5">
         <div className="flex justify-center items-center gap-2">
           <div

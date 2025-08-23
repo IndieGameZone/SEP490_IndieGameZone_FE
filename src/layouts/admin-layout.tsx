@@ -122,6 +122,7 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
               background: colorBgContainer,
               boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
             }}
+            className="sticky top-0 z-50"
           >
             <div className="flex items-center justify-between px-5 py-3">
               <Button

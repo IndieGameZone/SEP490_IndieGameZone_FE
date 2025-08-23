@@ -1,3 +1,4 @@
+import ScrollToTop from "@/components/scroll-to-top";
 import { Menu, MenuProps, theme } from "antd";
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
@@ -47,13 +48,14 @@ const ApiDocumentLayout = ({ children }: ApiDocumentLayout) => {
 
   return (
     <div className="grid grid-cols-12">
+      <ScrollToTop />
       <div
         className="col-span-3 border-e border-zinc-700"
         style={{ background: token.colorBgContainer }}
       >
         <Menu mode="inline" items={items} />
       </div>
-      <div className="min-h-[80vh] col-span-9">{children}</div>
+      <div className="col-span-9 min-h-screen">{children}</div>
     </div>
   );
 };

@@ -1,10 +1,11 @@
+import { Anchor } from "antd";
 import { Link } from "react-router-dom";
 
 const LicenseActivationOverview = () => {
   return (
-    <div className="bg-zinc-900 p-5 grid grid-cols-12">
+    <div className="bg-zinc-900 p-5 grid grid-cols-12 gap-5">
       <div className="col-span-8 leading-7">
-        <h2 className="mb-3 text-3xl font-bold">
+        <h2 className="mb-3 text-3xl font-bold" id="part-1">
           Introduction to Game License
         </h2>
         <p className="mb-3 text-zinc-400">
@@ -26,7 +27,9 @@ const LicenseActivationOverview = () => {
         </p>
         <p className="my-3">With this system:</p>
         <ul className="list-disc ps-5 mb-2">
-          <li>Players enter their activation key after purchasing your game.</li>
+          <li>
+            Players enter their activation key after purchasing your game.
+          </li>
           <li>Your game communicates with our API to confirm the key.</li>
           <li>
             Once validated, the key is{" "}
@@ -41,7 +44,7 @@ const LicenseActivationOverview = () => {
           This ensures both strong protection and a smooth player experience.
         </p>
 
-        <h2 className="mt-10 mb-5 text-3xl font-bold">
+        <h2 className="mt-10 mb-5 text-3xl font-bold" id="part-2">
           Getting Your Game ID
         </h2>
         <p>
@@ -49,7 +52,8 @@ const LicenseActivationOverview = () => {
           <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono text-sm rounded">
             gameId
           </code>{" "}
-          which you’ll need when calling the License Activation API. To get this:
+          which you’ll need when calling the License Activation API. To get
+          this:
         </p>
         <ol className="list-decimal ps-5 my-3">
           <li>Go to your developer dashboard.</li>
@@ -71,7 +75,7 @@ const LicenseActivationOverview = () => {
           fully published.
         </p>
 
-        <h2 className="mt-10 mb-5 text-3xl font-bold">
+        <h2 className="mt-10 mb-5 text-3xl font-bold" id="part-3">
           How It Works (High-Level Flow)
         </h2>
         <ol className="list-decimal ps-5">
@@ -126,7 +130,9 @@ const LicenseActivationOverview = () => {
           </li>
         </ol>
 
-        <h2 className="mt-10 mb-5 text-3xl font-bold">Key Features</h2>
+        <h2 className="mt-10 mb-5 text-3xl font-bold" id="part-4">
+          Key Features
+        </h2>
         <ul className="list-disc ps-5">
           <li>
             <strong>One-time online activation</strong> – no constant server
@@ -145,7 +151,7 @@ const LicenseActivationOverview = () => {
           </li>
         </ul>
 
-        <h2 className="mt-10 mb-5 text-3xl font-bold">
+        <h2 className="mt-10 mb-5 text-3xl font-bold" id="part-5">
           Developer Requirements
         </h2>
         <ul className="list-disc ps-5">
@@ -156,10 +162,65 @@ const LicenseActivationOverview = () => {
           <li>
             Players must provide a valid <strong>activation key</strong>.
           </li>
-          <li>
-            Internet access is required only for first-time activation.
-          </li>
+          <li>Internet access is required only for first-time activation.</li>
         </ul>
+        <h2 className="mt-10 mb-5 text-3xl font-bold" id="part-6">
+          Next Steps
+        </h2>
+        <ul className="list-disc ps-5">
+          <Link
+            to={`/docs/api/activate-license`}
+            className="text-blue-400 hover:underline"
+          >
+            <li>View game license activation API document</li>
+          </Link>
+          <Link
+            to={`/docs/api/activate-license/example`}
+            className="text-blue-400 hover:underline"
+          >
+            <li>View example code</li>
+          </Link>
+        </ul>
+      </div>
+      <div className="col-span-4">
+        <div className="sticky top-20">
+          <h3 className="font-semibold text-xl mb-3">In this article</h3>
+          <Anchor
+            affix={false}
+            items={[
+              {
+                key: "part-1",
+                href: "#part-1",
+                title: "Introduction",
+              },
+              {
+                key: "part-2",
+                href: "#part-2",
+                title: "Getting Your Game ID",
+              },
+              {
+                key: "part-3",
+                href: "#part-3",
+                title: "How It Works",
+              },
+              {
+                key: "part-4",
+                href: "#part-4",
+                title: "Key Features",
+              },
+              {
+                key: "part-5",
+                href: "#part-5",
+                title: "Developer Requirements",
+              },
+              {
+                key: "part-6",
+                href: "#part-6",
+                title: "Next Steps",
+              },
+            ]}
+          />
+        </div>
       </div>
     </div>
   );
