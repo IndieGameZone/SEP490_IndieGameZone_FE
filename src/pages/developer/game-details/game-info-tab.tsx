@@ -6,7 +6,7 @@ import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
 import { Button, Descriptions, DescriptionsProps, Tag } from "antd";
 import { useEffect, useMemo, useState } from "react";
-import { FaEye, FaPencilAlt } from "react-icons/fa";
+import { FaEye, FaKey, FaPencilAlt } from "react-icons/fa";
 import ReactPlayer from "react-player";
 import { useNavigate } from "react-router-dom";
 import Lightbox from "yet-another-react-lightbox";
@@ -23,51 +23,37 @@ import ViewCensorLogButton from "../../../components/buttons/view-censor-log-but
 import { GameCensorLog } from "@/types/game";
 import ViewAllVersionButton from "@/components/buttons/view-all-version-button";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
-import { getGameKeyByDevId, getKeyByGameID } from "@/lib/api/game-key-api";
 import { GameKey } from "@/types/game-key";
-import { RiResetLeftFill } from "react-icons/ri";
-import { useGlobalMessage } from "@/components/message-provider";
+import { getGameKeyByDevId } from "@/lib/api/game-key-api";
+import GameKeyModal from "../../../components/game-key-modal";
+
 const GameInfoTab = () => {
   const { game, error } = useGameStore();
   const navigate = useNavigate();
-  const [gameKeys, setGameKeys] = useState<GameKey[]>([]);
-  const [loading, setLoading] = useState(false);
+
   const [index, setIndex] = useState(-1);
   const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
-  const messageApi = useGlobalMessage();
-
+  const [gameKeys, setGameKeys] = useState<GameKey[]>([]);
+  const [keyModalOpen, setKeyModalOpen] = useState(false);
   const { fetchGameFiles, gameFiles, installInstruction, fetchGameCensorLog, gameCensorLogs } = useGameStore();
   const fetchGameKeys = async () => {
-    if (game?.id) {
+    if (!game?.id || !game.developer.id) return;
+
+    try {
       const result = await getGameKeyByDevId(game.developer.id, game.id);
       if (result.success) {
         setGameKeys(result.data);
       }
-    }
-  };
-
-  useEffect(() => {
-    fetchGameKeys();
-  }, [game?.id]);
-
-  const handleResetKey = async () => {
-    if (!game?.id) return;
-
-    try {
-      setLoading(true);
-      const result = await getKeyByGameID(game.id);
-      if (result.success) {
-        messageApi.success("Game key has been reset successfully!");
-        fetchGameKeys();
-      } else {
-        messageApi.error(result.error || "Failed to reset game key");
-      }
     } catch (error) {
-      messageApi.error("An error occurred while resetting the game key");
-    } finally {
-      setLoading(false);
+      console.error("Failed to fetch game keys:", error);
     }
   };
+  useEffect(() => {
+    if (game?.id && game?.developer.id) {
+      fetchGameKeys();
+    }
+  }, [game?.id, game?.developer.id]);
+
   const handleViewGamePage = () => {
     navigate(`/game/${game?.id}`);
   };
@@ -211,39 +197,6 @@ const GameInfoTab = () => {
     },
   ];
 
-  const gameKeyItems: DescriptionsProps["items"] = [
-    {
-      key: "game-keys",
-      label: (
-        <div className="flex justify-between items-center">
-          <span>Game Key</span>
-          <Button type="primary" icon={<RiResetLeftFill />} onClick={handleResetKey} loading={loading}>
-            Get Key
-          </Button>{" "}
-        </div>
-      ),
-      children: (
-        <div className="space-y-2">
-          {gameKeys.length > 0 ? (
-            gameKeys.map((key) => (
-              <div
-                key={key.id}
-                className={`font-mono p-2 rounded ${
-                  key.isUsed ? "text-red-500 bg-zinc-700" : "text-green-500 bg-zinc-700"
-                }`}
-              >
-                {key.key}
-                <span className="ml-2 text-xs">{key.isUsed ? "(Used)" : "(Available)"}</span>
-              </div>
-            ))
-          ) : (
-            <span className="text-gray-500">No game keys available</span>
-          )}
-        </div>
-      ),
-      span: 2,
-    },
-  ];
   const descriptionItems: DescriptionsProps["items"] = [
     {
       key: "description",
@@ -311,6 +264,12 @@ const GameInfoTab = () => {
         plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
       />
       <div className="col-span-12 flex gap-3 justify-end">
+        {game?.requireActivationKey && (
+          <Button icon={<FaKey />} type="primary" onClick={() => setKeyModalOpen(true)}>
+            Game key
+          </Button>
+        )}
+
         <DeleteGameButton />
         <Button icon={<FaEye />} onClick={handleViewGamePage}>
           View game's page
@@ -391,13 +350,18 @@ const GameInfoTab = () => {
           </div>
         )}
         <Descriptions title="Game Infomation" column={2} bordered items={infoItems} />
-        {game?.requireActivationKey && (
-          <Descriptions column={2} layout="vertical" bordered items={gameKeyItems} style={{ marginTop: 15 }} />
-        )}{" "}
+
         <Descriptions column={2} layout="vertical" bordered items={descriptionItems} style={{ marginTop: 15 }} />
         <Descriptions column={2} layout="vertical" bordered items={versionDescriptionItems} style={{ marginTop: 15 }} />
         <Descriptions column={2} layout="vertical" bordered items={installInstructionItems} style={{ marginTop: 15 }} />
       </div>
+      <GameKeyModal
+        open={keyModalOpen}
+        onClose={() => setKeyModalOpen(false)}
+        gameId={game?.id}
+        gameKeys={gameKeys}
+        onKeysUpdated={fetchGameKeys}
+      />
     </div>
   );
 };
