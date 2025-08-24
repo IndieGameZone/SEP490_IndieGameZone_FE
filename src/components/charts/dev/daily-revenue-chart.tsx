@@ -19,11 +19,15 @@ interface Props {
 }
 
 const DailyRevenueChart = ({ data }: Props) => {
-  const revenueData = data.map(({ day, revenue }) => ({ day, value: revenue, series: "Revenue" }));
+  const revenueData = data.map(({ day, revenue }) => ({
+    day,
+    value: revenue,
+    series: "Revenue",
+  }));
   const donationData = data.map(({ day, donation }) => ({
     day,
     value: donation,
-    series: "Donation"
+    series: "Donation",
   }));
 
   const yMax = Math.max(

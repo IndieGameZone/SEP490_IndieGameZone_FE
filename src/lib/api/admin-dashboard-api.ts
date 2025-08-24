@@ -86,3 +86,25 @@ export const getRecentlyPublishedGames = async (top?: number) => {
         return handleApiError(error);
     }
 };
+
+export const getCommercialPackageRevenueStatisticByMonth = async (month: number, year: number) => {
+    try {
+        const { data } = await axiosClient.get(`/api/dashboard/revenue/commercial-packages/monthly-stats?month=${month}&year=${year}`);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
+
+export const getAdminRevenueStatisticByMonth = async (month: number, year: number) => {
+    try {
+        const { data } = await axiosClient.get(`/api/dashboard/admin/revenue/monthly-stats?month=${month}&year=${year}`);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
