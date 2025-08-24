@@ -1,21 +1,22 @@
 import Loader from "@/components/loader";
-import useGameStore from "@/store/use-game-store";
-import { useEffect } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
-import GameNotFound from "@/pages/errors/game-not-found";
-import { Tabs, TabsProps } from "antd";
-import { FaChartBar, FaInfoCircle } from "react-icons/fa";
-import GameInfoTab from "./game-info-tab";
-import GameStatisticsTab from "./game-statistic-tab/game-statistics-tab";
-import { IoIosChatboxes } from "react-icons/io";
-import GameReviewTab from "./game-review-tab/game-reviews-tab";
 import { useHashState } from "@/hooks/use-hash-state";
+import GameNotFound from "@/pages/errors/game-not-found";
+import useGameStore from "@/store/use-game-store";
+import { Tabs, TabsProps } from "antd";
+import { useEffect } from "react";
+import { FaChartBar, FaInfoCircle } from "react-icons/fa";
+import { IoIosChatboxes } from "react-icons/io";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import GameInfoTab from "./game-info-tab";
+import GameReviewTab from "./game-review-tab/game-reviews-tab";
+import GameStatisticsTab from "./game-statistic-tab/game-statistics-tab";
 
 const DevGameDetailPages = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
   const { fetchGameById, loading, error, game } = useGameStore();
   const [activeTab, setActiveTab] = useHashState("game-info");
+
   useEffect(() => {
     if (gameId) {
       fetchGameById(gameId);
