@@ -108,3 +108,14 @@ export const getAdminRevenueStatisticByMonth = async (month: number, year: numbe
         return handleApiError(error);
     }
 };
+
+export const getNewPlayersStatisticByYear = async (year: number) => {
+    try {
+        const { data } = await axiosClient.get(`/api/dashboard/players/new/monthly-stats?year=${year}`);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};

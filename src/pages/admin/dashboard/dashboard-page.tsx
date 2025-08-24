@@ -1,5 +1,6 @@
 import BestSellingGames from "./best-selling-games";
 import DashboardSummary from "./dashboard-summary";
+import NewPlayersByYearChart from "./new-players-by-year";
 import RecentlyPublishedGames from "./recently-published-games";
 import RevenueByMonthChart from "./revenue-by-month-chart";
 import TopDownloadedGames from "./top-downloaded-games";
@@ -15,6 +16,9 @@ const DashBoardPage = () => {
       <div className="md:col-span-12">
         <RecentlyPublishedGames />
         <hr className="my-5 border-zinc-300" />
+      </div>
+      <div className="md:col-span-12">
+        <NewPlayersByYearChart />
       </div>
       <div className="md:col-span-6">
         <TopDownloadedGames />

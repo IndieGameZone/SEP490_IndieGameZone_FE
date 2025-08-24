@@ -45,14 +45,14 @@ const RevenueByMonthChart = () => {
   }));
 
   const yMax = Math.max(
-    ...commercialRevenueData.map((d) => d.y), // Fixed: should be d.y not d.x
-    ...commissionRevenueData.map((d) => d.y) // Fixed: should be d.y not d.x
+    ...commercialRevenueData.map((d) => d.y),
+    ...commissionRevenueData.map((d) => d.y) 
   );
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Daily Revenue Statistics</h2>
+        <h2 className="text-xl font-bold">Revenue per Day</h2>
 
         <Form layout="inline">
           <Form.Item label="Select Month">
