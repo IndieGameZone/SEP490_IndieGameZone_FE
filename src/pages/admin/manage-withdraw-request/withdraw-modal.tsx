@@ -120,7 +120,7 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
       handleCancel();
       onSuccess();
     } catch (error) {
-      console.error("Update error:", error); 
+      console.error("Update error:", error);
       messageApi.error("An error occurred while processing the request");
     } finally {
       setLoading(false);
@@ -157,7 +157,7 @@ const WithdrawActionModal = ({ open, actionType, record, onCancel, onSuccess }: 
             <h4 className="font-medium text-gray-800 mb-2">Request Details:</h4>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div>
-                <span className="font-medium">ID:</span> {record.id}
+                <span className="font-medium">ID:</span> WDR-{record.id.slice(-8).toUpperCase()}
               </div>
               <div>
                 <span className="font-medium">Amount:</span> {record.amount?.toLocaleString()} VND

@@ -17,7 +17,7 @@ import usePlatformStore from "@/store/use-platform-store";
 import { GameCensorLog } from "@/types/game";
 import { Button, Descriptions, DescriptionsProps, Tag, message, Modal, Input } from "antd";
 import { useEffect, useState } from "react";
-import { FaCheck, FaEye } from "react-icons/fa";
+import { FaCheck, FaEye, FaKey } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import ReactPlayer from "react-player";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
@@ -27,8 +27,9 @@ import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import { RiResetLeftFill } from "react-icons/ri";
-import { getGameKeyByDevId, getKeyByGameID } from "@/lib/api/game-key-api";
+import { createKeyByGameID, getGameKeyByDevId } from "@/lib/api/game-key-api";
 import { GameKey } from "@/types/game-key";
+import GameKeyModal from "@/components/game-key-modal";
 
 const AdminGameDetail = () => {
   const { gameId } = useParams();
@@ -41,9 +42,25 @@ const AdminGameDetail = () => {
   const [isDeclining, setIsDeclining] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const { profile } = useAuthStore();
-  const [isLoading, setIsLoading] = useState(false);
   const [gameKeys, setGameKeys] = useState<GameKey[]>([]);
+  const [keyModalOpen, setKeyModalOpen] = useState(false);
+  const fetchGameKeys = async () => {
+    if (!game?.id || !game.developer.id) return;
 
+    try {
+      const result = await getGameKeyByDevId(game.developer.id, game.id);
+      if (result.success) {
+        setGameKeys(result.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch game keys:", error);
+    }
+  };
+  useEffect(() => {
+    if (game?.id && game?.developer.id) {
+      fetchGameKeys();
+    }
+  }, [game?.id, game?.developer.id]);
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -67,37 +84,6 @@ const AdminGameDetail = () => {
     }
   }, [gameId]);
 
-  const fetchGameKeys = async () => {
-    if (game?.id) {
-      const result = await getGameKeyByDevId(game.developer.id, game.id);
-      if (result.success) {
-        setGameKeys(result.data);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchGameKeys();
-  }, [game?.id]);
-
-  const handleResetKey = async () => {
-    if (!game?.id) return;
-
-    try {
-      setIsLoading(true);
-      const result = await getKeyByGameID(game.id);
-      if (result.success) {
-        messageApi.success("Game key has been reset successfully!");
-        fetchGameKeys();
-      } else {
-        messageApi.error(result.error || "Failed to reset game key");
-      }
-    } catch (error) {
-      messageApi.error("An error occurred while resetting the game key");
-    } finally {
-      setIsLoading(false);
-    }
-  };
   if (!gameId) {
     return <Navigate to={`/`} />;
   }
@@ -339,6 +325,9 @@ const AdminGameDetail = () => {
         </span>
       </h1>
       <div className="flex gap-3 justify-end mb-3">
+        <Button icon={<FaKey />} type="primary" onClick={() => setKeyModalOpen(true)}>
+          Game key
+        </Button>
         <DeleteGameButton />
         <Button icon={<FaEye />} onClick={handleViewGamePage}>
           View game's page
@@ -444,9 +433,6 @@ const AdminGameDetail = () => {
                       <span className="text-gray-500">No game keys available</span>
                     )}
                   </span>
-                  <Button type="primary" icon={<RiResetLeftFill />} onClick={handleResetKey} loading={isLoading}>
-                    Get Key
-                  </Button>
                 </div>
               </div>
             </div>
@@ -517,6 +503,13 @@ const AdminGameDetail = () => {
           </div>
         </div>
       </div>
+      <GameKeyModal
+        open={keyModalOpen}
+        onClose={() => setKeyModalOpen(false)}
+        gameId={game?.id}
+        gameKeys={gameKeys}
+        onKeysUpdated={fetchGameKeys}
+      />
     </div>
   );
 };
