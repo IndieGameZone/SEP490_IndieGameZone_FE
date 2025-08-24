@@ -175,10 +175,10 @@ const LicenseActivationOverview = () => {
             <li>View game license activation API document</li>
           </Link>
           <Link
-            to={`/docs/api/activate-license/example`}
+            to={`/docs/api/integration-guide`}
             className="text-blue-400 hover:underline"
           >
-            <li>View example code</li>
+            <li>Learn how to integrate</li>
           </Link>
         </ul>
       </div>

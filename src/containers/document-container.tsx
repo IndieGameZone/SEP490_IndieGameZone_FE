@@ -1,7 +1,7 @@
 import ApiDocumentLayout from "@/layouts/api-documents-layout";
 import HomeLayout from "@/layouts/home-layout";
 import ActivateLicenseApiDocs from "@/pages/documents/api-docs/activate-license-api-docs";
-import LicenseActivationExample from "@/pages/documents/examples/license-activation-example";
+import IntegrationGuide from "@/pages/documents/integration-guide";
 import LicenseActivationOverview from "@/pages/documents/license-activation-overview";
 import NotFoundPage from "@/pages/errors/not-found-page";
 import { Route, Routes } from "react-router-dom";
@@ -11,14 +11,8 @@ const ApiDocumentContainer = () => {
     <ApiDocumentLayout>
       <Routes>
         <Route path="/overview" element={<LicenseActivationOverview />} />
-        <Route
-          path="/activate-license"
-          element={<ActivateLicenseApiDocs />}
-        />
-        <Route
-          path="activate-license/example"
-          element={<LicenseActivationExample />}
-        />
+        <Route path="/activate-license" element={<ActivateLicenseApiDocs />} />
+        <Route path="/integration-guide" element={<IntegrationGuide />} />
         <Route path="/*" element={<NotFoundPage />} />
       </Routes>
     </ApiDocumentLayout>

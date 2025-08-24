@@ -38,9 +38,9 @@ const ApiDocumentLayout = ({ children }: ApiDocumentLayout) => {
           onClick: () => navigate("/docs/api/activate-license"),
         },
         {
-          key: "activate-game-code",
-          label: "Code Example",
-          onClick: () => navigate("/docs/api/activate-license/example"),
+          key: "integration-guide",
+          label: "Integration Guide",
+          onClick: () => navigate("/docs/api/integration-guide"),
         },
       ],
     },
@@ -49,8 +49,8 @@ const ApiDocumentLayout = ({ children }: ApiDocumentLayout) => {
   const selectedKey = useMemo(() => {
     if (location.pathname.includes("/overview"))
       return "activation-keys-overview";
-    if (location.pathname.includes("/activate-license/example"))
-      return "activate-game-code";
+    if (location.pathname.includes("/integration-guide"))
+      return "integration-guide";
     if (location.pathname.includes("/activate-license"))
       return "activate-license";
     return "";
@@ -74,9 +74,7 @@ const ApiDocumentLayout = ({ children }: ApiDocumentLayout) => {
           }}
         />
       </div>
-      <div className="col-span-9 min-h-screen bg-zinc-900 p-5">
-        {children}
-      </div>
+      <div className="col-span-9 min-h-screen bg-zinc-900 p-5">{children}</div>
     </div>
   );
 };
