@@ -19,7 +19,7 @@ const UpdateVideoButton = ({ url }: { url: string }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
-  const { game, rerender } = useGameStore();
+  const { game, rerender, installInstruction } = useGameStore();
   const { profile } = useAuthStore();
   const showModal = () => {
     setIsModalOpen(true);
@@ -43,7 +43,7 @@ const UpdateVideoButton = ({ url }: { url: string }) => {
       categoryId: game.category.id,
       coverImage: game.coverImage,
       description: game.description,
-      installInstruction: game.installInstruction,
+      installInstruction: installInstruction ?? "None",
       languageIds: game.gameLanguages.map((x) => x.language.id),
       name: game.name,
       price: game.price,

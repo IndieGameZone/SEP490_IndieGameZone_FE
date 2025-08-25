@@ -150,3 +150,9 @@ export type GameCensorLog = {
 }
 
 export type SortableImage = { id: string; url: string };
+
+export type PriceLog = {
+    id: string;
+    price: number;
+    createdAt: string;
+}

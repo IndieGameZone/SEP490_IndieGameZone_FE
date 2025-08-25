@@ -31,8 +31,15 @@ const { useToken } = theme;
 const DevUpdateGamePage = () => {
   const { gameId } = useParams();
   const [selectedKey, setSelectedKey] = useHashState("info");
-  const { fetchGameById, fetchGameFiles, game, loading, error, renderKey } =
-    useGameStore();
+  const {
+    fetchGameById,
+    fetchGameFiles,
+    game,
+    loading,
+    error,
+    renderKey,
+    fetchGamePriceLogs,
+  } = useGameStore();
   const navigate = useNavigate();
   const messageApi = useGlobalMessage();
   const { token } = useToken();
@@ -46,6 +53,7 @@ const DevUpdateGamePage = () => {
     if (gameId) {
       fetchGameById(gameId);
       fetchGameFiles(gameId);
+      fetchGamePriceLogs(gameId);
       fetchCategories();
       fetchTags();
       fetchAgeRestrictions();

@@ -1,5 +1,5 @@
-import { getGamesAsAdmin, getGamesByDeveloperId, getGameById, getGameFiles, getGameCensorLog, getNumberOfGame } from '@/lib/api/game-api';
-import { Game, GameCensorLog, GameFile } from '@/types/game';
+import { getGamesAsAdmin, getGamesByDeveloperId, getGameById, getGameFiles, getGameCensorLog, getNumberOfGame, getGamePriceLogs } from '@/lib/api/game-api';
+import { Game, GameCensorLog, GameFile, PriceLog } from '@/types/game';
 import { create } from 'zustand';
 
 interface GameStatistics {
@@ -15,6 +15,7 @@ interface GameState {
   gameFiles: GameFile[];
   game?: Game;
   gameCensorLogs: GameCensorLog[];
+  gamePriceLogs: PriceLog[];
   installInstruction?: string;
   statistics: GameStatistics | null;
   loading: boolean;
@@ -25,6 +26,7 @@ interface GameState {
   fetchGameById: (gameId: string) => void;
   fetchGameFiles: (gameId: string) => void;
   fetchGameCensorLog: (gameId: string) => void;
+  fetchGamePriceLogs: (gameId: string) => void;
   fetchAllGamesAdmin: () => void;
   fetchGameStatistics: () => void;
   clearGameStore: () => void;
@@ -36,6 +38,7 @@ const useGameStore = create<GameState>((set) => ({
   games: [],
   gameFiles: [],
   gameCensorLogs: [],
+  gamePriceLogs: [],
   game: undefined,
   statistics: null,
   loading: false,
@@ -104,18 +107,31 @@ const useGameStore = create<GameState>((set) => ({
   },
 
   fetchGameCensorLog: async (gameId) => {
-    set({ loadingFiles: true, error: null });
     try {
       const response = await getGameCensorLog(gameId);
       if (!response.error) {
-        set({ gameCensorLogs: response.data, loadingFiles: false });
+        set({ gameCensorLogs: response.data });
       } else {
-        set({ loadingFiles: false, error: response.error });
+        set({ error: response.error });
       }
     } catch (error: any) {
-      set({ loadingFiles: false, error: error.message });
+      set({ error: error.message });
     }
   },
+
+  fetchGamePriceLogs: async (gameId) => {
+    try {
+      const response = await getGamePriceLogs(gameId);
+      if (!response.error) {
+        set({ gamePriceLogs: response.data });
+      } else {
+        set({ error: response.error });
+      }
+    } catch (error: any) {
+      set({ error: error.message });
+    }
+  },
+
 
   fetchGameStatistics: async () => {
     set({ loadingStatistics: true, error: null });

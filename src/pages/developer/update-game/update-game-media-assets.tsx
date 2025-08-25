@@ -37,7 +37,7 @@ type FieldType = {
 const { Dragger } = Upload;
 
 const UpdateGameMediaAssets = () => {
-  const { game, rerender } = useGameStore();
+  const { game, rerender, installInstruction } = useGameStore();
   const [form] = Form.useForm<FieldType>();
   const [index, setIndex] = useState(-1);
   const [messageApi, contextHolder] = message.useMessage();
@@ -52,7 +52,7 @@ const UpdateGameMediaAssets = () => {
         categoryId: game.category.id,
         coverImage: game.coverImage,
         description: game.description,
-        installInstruction: game.installInstruction,
+        installInstruction: installInstruction ?? "None",
         languageIds: game.gameLanguages.map((x) => x.language.id),
         name: game.name,
         price: game.price,

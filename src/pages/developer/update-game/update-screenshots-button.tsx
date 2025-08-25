@@ -124,7 +124,7 @@ const UpdateScreenshotsButton = ({
     <>
       {contextHolder}
       <Tooltip title="Edit screenshots">
-        <Button onClick={showModal} icon={<FaPen />} shape="circle"/>
+        <Button onClick={showModal} icon={<FaPen />} shape="circle" />
       </Tooltip>
 
       <Modal

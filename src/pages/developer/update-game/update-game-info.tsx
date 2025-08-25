@@ -1,7 +1,7 @@
 import TiptapEditor from "@/components/tiptap/tiptap-editor";
 import { GAME_REALEASE_STATUS, GAME_VISIBILITY_STATUS } from "@/constants/game";
 import { updateGame } from "@/lib/api/game-api";
-import { formatDuration } from "@/lib/date-n-time";
+import { formatDuration, timeAgo } from "@/lib/date-n-time";
 import { deepEqual } from "@/lib/object";
 import useAgeRestrictionStore from "@/store/use-age-restriction-store";
 import useAuthStore from "@/store/use-auth-store";
@@ -58,7 +58,8 @@ const pricingOptions: CheckboxGroupProps<string>["options"] = [
 ];
 const UpdateGameInfo = () => {
   const [form] = Form.useForm<FieldType>();
-  const { game, rerender, gameFiles } = useGameStore();
+  const { game, rerender, gameFiles, installInstruction, gamePriceLogs } =
+    useGameStore();
   const [isFree, setIsFree] = useState(true);
   const [allowDonate, setAllowDonate] = useState(true);
   const { profile } = useAuthStore();
@@ -82,7 +83,7 @@ const UpdateGameInfo = () => {
       categoryId: values.categoryId,
       coverImage: game.coverImage,
       description: values.description,
-      installInstruction: game.installInstruction,
+      installInstruction: installInstruction ?? "None",
       languageIds: values.languageIds,
       name: values.name,
       price: values.pricingOption == "Free" ? 0 : values.price,
@@ -96,7 +97,7 @@ const UpdateGameInfo = () => {
     });
     setLoading(false);
     if (result.error) {
-      messageApi.error("Failed to update coverImage");
+      messageApi.error(result.error || "Failed to update game");
     } else {
       messageApi.success("Update game successfully!");
       setTimeout(() => {
@@ -148,6 +149,7 @@ const UpdateGameInfo = () => {
   };
 
   const averageSession = Form.useWatch("averageSession", form);
+  const lastTimeChangePrice = gamePriceLogs[0]?.createdAt;
 
   return (
     <div className="p-5 bg-zinc-900">
@@ -337,12 +339,14 @@ const UpdateGameInfo = () => {
           <TiptapEditor />
         </Form.Item>
         {/* PRICING */}
-
+        <h2 className="text-2xl">Pricing</h2>
+        <p className="text-sm text-zinc-400 mb-3">
+          Last price change: {timeAgo(new Date(lastTimeChangePrice))}
+        </p>
         <Form.Item<FieldType>
           extra={isFree && "The game's files will be freely available"}
           name={"pricingOption"}
           style={{ marginBottom: 10 }}
-          label={<h2 className="text-2xl mb-3">Pricing</h2>}
           tooltip="You cannot change the price. However, you can set sales to your game to reduce the price!"
         >
           <Radio.Group
@@ -355,7 +359,7 @@ const UpdateGameInfo = () => {
           label="Minimum price"
           rules={[{ required: true, message: "Please a price" }]}
           hidden={isFree}
-          extra="Minimum price to pay to get download access to game"
+          extra="Minimum price to pay to get download access to game."
           style={{ marginBottom: 10 }}
         >
           <InputNumber<number>
@@ -401,12 +405,10 @@ const UpdateGameInfo = () => {
             Use IndieGameZone activation key <FaKey className="inline ms-1" />
           </Checkbox>
         </Form.Item>
-        <Link
-          to={`/docs/api/overview`}
-          className={isFree ? "hidden" : ""}
-        >
+        <Link to={`/docs/api/overview`} className={isFree ? "hidden" : ""}>
           <p className="mb-2 text-blue-400 underline">Learn more</p>
         </Link>
+
         <h2 className="text-2xl mb-3">Visibility & Access</h2>
         <Form.Item<FieldType>
           name={"visibility"}

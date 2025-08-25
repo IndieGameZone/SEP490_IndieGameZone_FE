@@ -4,7 +4,10 @@ import { toFormData } from "../object";
 
 export const handleApiError = (error: any): { error: string | null; data: any; success: boolean } => {
   try {
-    const errorMessage = error.response?.data.message || error?.message || "An unexpected error occurred.";
+    let errorMessage = error.response?.data.detail || error?.message || "An unexpected error occurred.";
+    if (errorMessage.includes("28 days")) {
+      errorMessage = "You can only update the game price once every 28 days.";
+    }
     const data = null;
     return { error: errorMessage, data, success: false };
   } catch (err) {
@@ -290,7 +293,7 @@ export const updateGame = async (developerId: string, gameId: string, request: U
     formData.append("VideoLink", request.videoLink);
   }
   formData.append("ShortDescription", request.shortDescription);
-  formData.append("InstallInstruction", request.installInstruction ?? "null");
+  formData.append("InstallInstruction", request.installInstruction ?? "None");
   formData.append("Description", request.description);
   formData.append("AllowDonation", request.allowDonation ? "true" : "false");
   formData.append("Status", request.status);
@@ -368,6 +371,15 @@ export const getRecommendedGames = async (userId: string) => {
 export const getDevActiveGames = async (developerId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/users/${developerId}/active-games`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const getGamePriceLogs = async (gameId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/games/${gameId}/game-price-logs`);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);

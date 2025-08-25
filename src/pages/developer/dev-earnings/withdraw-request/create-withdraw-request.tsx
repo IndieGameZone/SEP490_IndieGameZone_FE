@@ -40,7 +40,7 @@ const CreateWithdrawRequest = ({
         Amount: values.Amount,
       });
 
-      if (result.success) {
+      if (!result.error) {
         messageApi.success("Withdraw request created successfully!");
         form.resetFields();
         onClose();
