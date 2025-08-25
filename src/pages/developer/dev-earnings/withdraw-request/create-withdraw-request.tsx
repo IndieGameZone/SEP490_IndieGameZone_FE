@@ -13,7 +13,11 @@ interface CreateWithdrawRequestForm {
   Amount: number;
 }
 
-const CreateWithdrawRequest = ({ open, onClose, onSuccess }: AddCreateWithdrawRequestModalProps) => {
+const CreateWithdrawRequest = ({
+  open,
+  onClose,
+  onSuccess,
+}: AddCreateWithdrawRequestModalProps) => {
   const [form] = Form.useForm<CreateWithdrawRequestForm>();
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
@@ -76,7 +80,12 @@ const CreateWithdrawRequest = ({ open, onClose, onSuccess }: AddCreateWithdrawRe
         destroyOnHidden
         forceRender
       >
-        <Form form={form} layout="vertical" onFinish={handleSubmit} autoComplete="off">
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          autoComplete="off"
+        >
           <Form.Item
             label="Amount"
             name="Amount"
@@ -84,8 +93,8 @@ const CreateWithdrawRequest = ({ open, onClose, onSuccess }: AddCreateWithdrawRe
               { required: true, message: "Please input the amount!" },
               {
                 type: "number",
-                min: 1000,
-                message: "Amount must be at least 1000!",
+                min: 10_000,
+                message: "Amount must be at least 10.000!",
               },
             ]}
           >
@@ -95,23 +104,32 @@ const CreateWithdrawRequest = ({ open, onClose, onSuccess }: AddCreateWithdrawRe
               placeholder="Enter points amount (e.g. 50.000)"
               max={maxWithdrawAmount}
               size="large"
-              formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-              parser={(value) => (value ? parseInt(value.replace(/\./g, ""), 10) : 0)}
+              min={10_000}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+              }
+              parser={(value) =>
+                value ? parseInt(value.replace(/\./g, ""), 10) : 0
+              }
             />
           </Form.Item>
         </Form>
-        
+
         <div>
           {!hasBankInformation() && (
             <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              Please update your bank account information in the Bank Information section before making a withdrawal
-              request.
+              Please update your bank account information in the Bank
+              Information section before making a withdrawal request.
             </div>
           )}
           <div className="flex flex-col gap-3">
             <div>
-              <span className="font-semibold text-yellow-500">Your Bank Account Information</span>
-              {!hasBankInformation() && <span className="ml-2 text-red-500">(Missing Information)</span>}
+              <span className="font-semibold text-yellow-500">
+                Your Bank Account Information
+              </span>
+              {!hasBankInformation() && (
+                <span className="ml-2 text-red-500">(Missing Information)</span>
+              )}
             </div>
           </div>
           <div className="flex flex-col gap-3  ">
@@ -141,6 +159,7 @@ const CreateWithdrawRequest = ({ open, onClose, onSuccess }: AddCreateWithdrawRe
               <br />
               • Transaction fee: Free
               <br />• Exchange rate: 1 point = 1 VND
+              <br />• You can only make a withdraw request every 30 days
             </p>
           </div>
           <div className="mt-6 p-4 bg-gray-800 rounded-lg border border-gray-700">
@@ -156,8 +175,9 @@ const CreateWithdrawRequest = ({ open, onClose, onSuccess }: AddCreateWithdrawRe
             </div>
             <p className="text-gray-300 text-sm">
               {" "}
-              Please check Bank Information carefully, we will transfer money to you based on the account number, if you
-              enter incorrect bank information we will not be responsible.
+              Please check Bank Information carefully, we will transfer money to
+              you based on the account number, if you enter incorrect bank
+              information we will not be responsible.
             </p>
           </div>
         </div>

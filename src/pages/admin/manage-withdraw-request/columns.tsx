@@ -1,7 +1,7 @@
 // columns.tsx
 import { formatDateTime } from "@/lib/date-n-time";
 import { Withdraw } from "@/types/withdraw-request";
-import { Image, Tag } from "antd";
+import { Badge, Image } from "antd";
 import { ColumnsType } from "antd/es/table";
 import ActionMenu from "./action-menu";
 
@@ -34,19 +34,18 @@ export const getWithdrawRequestColumns = (
     dataIndex: "status",
     key: "status",
     render: (status: string) => (
-      <Tag
-        color={
+      <Badge
+        status={
           status === "Approved"
-            ? "green"
+            ? "success"
             : status === "Rejected"
-            ? "red"
+            ? "error"
             : status === "Pending"
-            ? "gold"
+            ? "warning"
             : "default"
         }
-      >
-        {status || "Unknown"}
-      </Tag>
+        text={status || "Unknown"}
+      />
     ),
   },
   {

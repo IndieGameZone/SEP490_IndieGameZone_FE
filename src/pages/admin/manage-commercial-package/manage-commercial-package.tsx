@@ -2,13 +2,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Table, Typography, message } from "antd";
 import { reportColumns } from "./columns";
-import {  getAllCommercialPackagesRegistrations } from "@/lib/api/commercial-package-api";
+import { getAllCommercialPackagesRegistrations } from "@/lib/api/commercial-package-api";
 import { CommercialPackage } from "@/types/commercial-package";
 
 const { Title } = Typography;
 
 const ManageCommercialPackage: React.FC = () => {
-  const [commercialPackages, setCommercialPackages] = useState<CommercialPackage[]>([]);
+  const [commercialPackages, setCommercialPackages] = useState<
+    CommercialPackage[]
+  >([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -44,6 +46,7 @@ const ManageCommercialPackage: React.FC = () => {
           rowKey="id"
           loading={loading}
           pagination={{ pageSize: 5 }}
+          scroll={{ x: 1000 }}
         />
       </div>
     </>

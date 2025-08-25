@@ -1,6 +1,7 @@
 // columns.tsx
+import { formatCurrencyVND } from "@/lib/currency";
 import { CommercialPackage } from "@/types/commercial-package";
-import { Tag } from "antd";
+import { Badge } from "antd";
 import { ColumnsType } from "antd/es/table";
 
 export const reportColumns: ColumnsType<CommercialPackage> = [
@@ -22,7 +23,7 @@ export const reportColumns: ColumnsType<CommercialPackage> = [
     key: "commercialPackageName",
     render: (name: string) => name || "N/A",
   },
-  
+
   {
     title: "Duration (days)",
     dataIndex: "duration",
@@ -32,43 +33,55 @@ export const reportColumns: ColumnsType<CommercialPackage> = [
     title: "Price ",
     dataIndex: "price",
     key: "price",
-    render: (price: number) => `${price?.toLocaleString()} VND`,
+    render: (price: number) => formatCurrencyVND(price),
   },
 
   {
-  title: "Status",
-  dataIndex: "status",
-  key: "status",
-  render: (status: string) => {
-    let color = "default";
-    switch (status.toLowerCase()) {
-      case "pending":
-        color = "blue";
-        break;
-      case "active":
-        color = "green";
-        break;
-      case "expired":
-        color = "red";
-        break;
-      case "cancelled":
-        color = "orange";
-        break;
-      case "failed":
-        color = "volcano";
-        break;
-    }
-    return <Tag color={color}>{status}</Tag>;
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+    render: (status: string) => {
+      let badgeStatus:
+        | "default"
+        | "success"
+        | "processing"
+        | "error"
+        | "warning" = "default";
+      switch (status.toLowerCase()) {
+        case "pending":
+          badgeStatus = "processing";
+          break;
+        case "active":
+          badgeStatus = "success";
+          break;
+        case "expired":
+          badgeStatus = "warning";
+          break;
+        case "cancelled":
+          badgeStatus = "default";
+          break;
+        case "failed":
+          badgeStatus = "error";
+          break;
+      }
+      return <Badge status={badgeStatus} text={status} />;
+    },
+    width: 100,
   },
-},
   {
     title: "Start Date",
     dataIndex: "startDate",
     key: "startDate",
+    render: (value) => {
+      return new Date(value).toDateString();
+    },
   },
   {
     title: "End Date",
     dataIndex: "endDate",
     key: "endDate",
+    render: (value) => {
+      return new Date(value).toDateString();
+    },
   },
 ];
