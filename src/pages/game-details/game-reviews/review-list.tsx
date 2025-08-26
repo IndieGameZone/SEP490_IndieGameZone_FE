@@ -1,24 +1,20 @@
 import useGameStore from "@/store/use-game-store";
 import { Review } from "@/types/review";
-import { Pagination, Select } from "antd";
+import { Pagination } from "antd";
 import ReviewCard from "./review-card";
 import useAuthStore from "@/store/use-auth-store";
+import { GameReviewFilters } from "./game-reviews";
 
-const sortOptions = [
-  { value: "most-helpful", label: "Most helpful" },
-  { value: "latest", label: "Latest" },
-];
-
-type Filters = {
-  page: number;
-  rating: number | undefined;
-};
+// const sortOptions = [
+//   { value: "most-helpful", label: "Most helpful" },
+//   { value: "latest", label: "Latest" },
+// ];
 
 interface ReviewListProps {
   reviews: Review[];
   page: number;
   totalCount: number;
-  setFilter: (key: keyof Filters, value: number | undefined) => void;
+  setFilter: (key: keyof GameReviewFilters, value: number | undefined) => void;
 }
 
 const ReviewList = ({
@@ -40,14 +36,14 @@ const ReviewList = ({
 
   return (
     <div className="col-span-8">
-      <div className="flex items-center mb-2 gap-2 justify-end">
+      {/* <div className="flex items-center mb-2 gap-2 justify-end">
         <p className="text-sm text-zinc-500">sort by</p>
         <Select
           defaultValue="latest"
           style={{ width: 150 }}
           options={sortOptions}
         />
-      </div>
+      </div> */}
 
       {filteredReviews.length > 0 ? (
         filteredReviews.map((review) => (

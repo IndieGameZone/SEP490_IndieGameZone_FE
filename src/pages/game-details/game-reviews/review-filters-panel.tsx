@@ -13,12 +13,12 @@ type Filters = {
   rating: number | undefined;
 };
 
-interface ReviewFilters {
+interface ReviewFiltersPanelProps {
   selectedRating: number | undefined;
   setFilters: (updates: Partial<Filters>) => void;
 }
 
-const ReviewFilters = ({ selectedRating, setFilters }: ReviewFilters) => {
+const ReviewFiltersPanel = ({ selectedRating, setFilters }: ReviewFiltersPanelProps) => {
   const handleChange = (e: RadioChangeEvent) => {
     const value = e.target.value;
     if (value == "all") {
@@ -49,4 +49,4 @@ const ReviewFilters = ({ selectedRating, setFilters }: ReviewFilters) => {
     </div>
   );
 };
-export default ReviewFilters;
+export default ReviewFiltersPanel;

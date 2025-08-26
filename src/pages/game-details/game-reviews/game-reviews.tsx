@@ -12,15 +12,16 @@ import RatingChart, {
 import { checkGameOwnership } from "@/lib/api/game-api";
 import { getExistingReview, getReviewStatistic } from "@/lib/api/review-api";
 import { Review } from "@/types/review";
-import ReviewFilters from "./review-filters";
+import ReviewFiltersPanel from "./review-filters-panel";
 import YourReview from "./your-review";
 import ReviewList from "./review-list";
 import { useFilters } from "@/hooks/use-filters";
 
-type Filters = {
+export type GameReviewFilters = {
   page: number;
   rating: number | undefined;
 };
+
 const GameReviews = () => {
   const { game } = useGameStore();
   const { profile } = useAuthStore();
@@ -30,8 +31,7 @@ const GameReviews = () => {
   const [isGameOwned, setIsGameOwned] = useState(false);
   const [existingReview, setExistingReview] = useState<Review>();
   const [ratingChartData, setRatingChartData] = useState<RatingChartData[]>([]);
-
-  const { filters, setFilter, setFilters } = useFilters<Filters>(
+  const { filters, setFilter, setFilters } = useFilters<GameReviewFilters>(
     {
       page: 1,
       rating: undefined,
@@ -95,7 +95,7 @@ const GameReviews = () => {
         </h3>
         <hr className="my-1 border-zinc-600" />
 
-        <ReviewFilters selectedRating={filters.rating} setFilters={setFilters} />
+        <ReviewFiltersPanel selectedRating={filters.rating} setFilters={setFilters} />
         <div className="grid grid-cols-12 mt-3 gap-3">
           <div className="col-span-4">
             <RatingChart data={ratingChartData} />

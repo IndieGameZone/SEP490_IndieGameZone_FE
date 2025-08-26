@@ -48,7 +48,7 @@ export const useFilters = <T extends FilterValues>(
         newParams.set(key, String(value));
       }
     });
-    setSearchParams(newParams);
+    updateParams(newParams);
   };
 
   const resetFilters = () => {
