@@ -9,13 +9,34 @@ const sortOptions = [
   { value: "latest", label: "Latest" },
 ];
 
-const ReviewList = ({ reviews }: { reviews: Review[] }) => {
+type Filters = {
+  page: number;
+  rating: number | undefined;
+};
+
+interface ReviewListProps {
+  reviews: Review[];
+  page: number;
+  totalCount: number;
+  setFilter: (key: keyof Filters, value: number | undefined) => void;
+}
+
+const ReviewList = ({
+  reviews,
+  page,
+  totalCount,
+  setFilter,
+}: ReviewListProps) => {
   const { game } = useGameStore();
   const { profile } = useAuthStore();
   const filteredReviews = reviews.filter(({ user }) => {
     if (!user || !profile) return true;
     return user.id !== profile.id;
   });
+
+  const onPaginationChange = (page: number, _: number) => {
+    setFilter("page", page);
+  };
 
   return (
     <div className="col-span-8">
@@ -39,7 +60,12 @@ const ReviewList = ({ reviews }: { reviews: Review[] }) => {
         </div>
       )}
 
-      <Pagination align="center" defaultCurrent={1} total={50} />
+      <Pagination
+        align="center"
+        current={page}
+        total={totalCount}
+        onChange={onPaginationChange}
+      />
     </div>
   );
 };

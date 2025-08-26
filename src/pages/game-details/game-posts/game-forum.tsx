@@ -18,6 +18,7 @@ import { GamePost } from "@/types/game-post";
 import notFoundIcon from "@/assets/not-found-icon.svg";
 import usePostStore from "@/store/use-game-post-store";
 import { usePostDetail } from "@/hooks/use-post-detail";
+import useAuthStore from "@/store/use-auth-store";
 
 const SORT_TABS = ["Hot & Trending", "Most popular", "Best", "Latest"];
 const PAGE_SIZE = 4;
@@ -36,6 +37,7 @@ const GameForum = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { posts, setPosts } = usePostStore();
+  const { profile } = useAuthStore();
 
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
@@ -158,7 +160,7 @@ const GameForum = () => {
           </div>
 
           <hr className="border border-zinc-700 my-3" />
-          <CreatePostButton rerender={rerender} />
+          {profile && <CreatePostButton rerender={rerender} />}
         </div>
       </div>
 

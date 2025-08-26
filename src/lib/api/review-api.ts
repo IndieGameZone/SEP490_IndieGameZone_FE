@@ -1,3 +1,4 @@
+import { toSearchParams } from "../object";
 import { axiosClient } from "./config/axios-client";
 
 export const handleApiError = (error: any): { error: string | null; data: any; success: boolean } => {
@@ -24,10 +25,17 @@ export const createReview = async (userId: string, gameId: string, reviewData: R
   }
 };
 
-export const getReviewByGameId = async (gameId: string) => {
+export type GetReviewsParams = {
+  Rating?: number;
+  PageNumber?: number;
+  PageSize?: number;
+}
+
+export const getReviewsByGameId = async (gameId: string, params?: GetReviewsParams) => {
   try {
-    const { data } = await axiosClient.get(`/api/games/${gameId}/reviews`);
-    return { error: null, data: data, success: true };
+    const { data, headers } = await axiosClient.get(`/api/games/${gameId}/reviews${params ? toSearchParams(params) : ""}`);
+
+    return { error: null, data: { reviews: data, headers }, success: true };
   } catch (error) {
     return handleApiError(error);
   }

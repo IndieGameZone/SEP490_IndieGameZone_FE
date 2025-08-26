@@ -1,4 +1,4 @@
-import { Radio } from "antd";
+import { Radio, RadioChangeEvent } from "antd";
 const filterOptions = [
   { value: "all", label: "All Ratings" },
   { value: "5", label: "5 Stars" },
@@ -8,16 +8,45 @@ const filterOptions = [
   { value: "1", label: "1 Star" },
 ];
 
-const ReviewFilters = () => (
-  <div className="p-3 bg-zinc-800 rounded">
-    <p className="text-sm text-zinc-500 mb-1">Star ratings</p>
-    <Radio.Group
-      block
-      options={filterOptions}
-      defaultValue="all"
-      optionType="button"
-      buttonStyle="solid"
-    />
-  </div>
-);
+type Filters = {
+  page: number;
+  rating: number | undefined;
+};
+
+interface ReviewFilters {
+  selectedRating: number | undefined;
+  setFilters: (updates: Partial<Filters>) => void;
+}
+
+const ReviewFilters = ({ selectedRating, setFilters }: ReviewFilters) => {
+  const handleChange = (e: RadioChangeEvent) => {
+    const value = e.target.value;
+    if (value == "all") {
+      setFilters({
+        rating: undefined,
+        page: 1,
+      });
+    } else {
+      setFilters({
+        rating: value,
+        page: 1,
+      });
+    }
+  };
+
+  return (
+    <div className="p-3 bg-zinc-800 rounded">
+      <p className="text-sm text-zinc-500 mb-1">Star ratings</p>
+      <Radio.Group
+        block
+        options={filterOptions}
+        defaultValue="all"
+        optionType="button"
+        buttonStyle="solid"
+        value={selectedRating}
+        onChange={handleChange}
+      />
+    </div>
+  );
+};
 export default ReviewFilters;

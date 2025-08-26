@@ -47,7 +47,6 @@ export const updateGameFile = async (fileId: string, request: UpdateGameFilesReq
   }
 };
 
-
 type AddGameRequest = {
   name: string;
   coverImage: string;
@@ -255,6 +254,7 @@ export const getGameCensorLog = async (gameId: string) => {
     return handleApiError(error);
   }
 }
+
 export const getNumberOfGame = async () => {
   try {
     const { data } = await axiosClient.get(`/api/games/number-of-games`);
@@ -283,7 +283,6 @@ type UpdateGameRequest = {
   versionDescription: string;
   requireActivationKey: boolean;
 };
-
 
 export const updateGame = async (developerId: string, gameId: string, request: UpdateGameRequest) => {
   const formData = new FormData();
