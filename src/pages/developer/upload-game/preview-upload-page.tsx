@@ -163,7 +163,7 @@ const PreviewUploadPage = () => {
             )}
             <p className="font-semibold">{profile?.userName}</p>
           </div>
-          <div className="flex gap-2 text-sm items-end">
+          <div className="flex gap-2 text-sm items-end flex-wrap">
             <span className="uppercase text-zinc-400 text-xs">Tags:</span>
             {tags.map((tag, index: number) => (
               <span

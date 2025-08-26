@@ -26,7 +26,7 @@ const addPriceButtonStyle: CSSProperties = {
 
 const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [price, setPrice] = useState(10000); 
+  const [price, setPrice] = useState(10000);
   const { game } = useGameStore();
   const { getDefaultPlatforms } = usePlatformStore();
   const navigate = useNavigate();
@@ -34,6 +34,8 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
   const [loading, setLoading] = useState(false);
   const accessToken = localStorage.getItem("accessToken");
   const messageApi = useGlobalMessage();
+
+  const isGameDeveloper = game && profile?.id === game.developer.id;
 
   const handleGoToDownloadPage = () => {
     if (game) navigate(`/download/${game.id}`);
@@ -45,7 +47,7 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
       handleGoToLogin();
       return;
     }
-    if (game && profile?.id === game.developer.id) {
+    if (isGameDeveloper) {
       navigate(`/dev/game/${game.id}`);
       return;
     }
@@ -93,7 +95,10 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
 
     setLoading(true);
     try {
-      const response = await donateGame(profile.id, game.id, { Amount: price, PaymentMethod: "Wallet" });
+      const response = await donateGame(profile.id, game.id, {
+        Amount: price,
+        PaymentMethod: "Wallet",
+      });
       if (response.success) {
         messageApi.success("Donation successful!");
         <Navigate to={"/account/transaction-history"} />;
@@ -116,7 +121,10 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
 
     setLoading(true);
     try {
-      const response = await donateGame(profile.id, game.id, { Amount: price, PaymentMethod: "PayOS" });
+      const response = await donateGame(profile.id, game.id, {
+        Amount: price,
+        PaymentMethod: "PayOS",
+      });
       if (response.success) {
         if (response.data) {
           window.open(response.data, "_blank");
@@ -139,7 +147,13 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
 
   return (
     <>
-      <Button size="large" type="primary" icon={<FaDownload />} onClick={showModal}>
+      <Button
+        size="large"
+        type="primary"
+        icon={<FaDownload />}
+        onClick={showModal}
+      >
+        {}
         Download Now
       </Button>
       <Modal
@@ -151,10 +165,15 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
         footer={<div></div>}
       >
         <p>
-          {isGameOwned ? "You already bought this game" : "This game is free"} but the developer accepts your support by
-          letting you pay what you think is fair for the game.
+          {isGameOwned ? "You already bought this game" : "This game is free"}{" "}
+          but the developer accepts your support by letting you pay what you
+          think is fair for the game.
         </p>
-        <Button className="mt-2" icon={<FaAngleRight className="inline" />} onClick={handleGoToDownloadPage}>
+        <Button
+          className="mt-2"
+          icon={<FaAngleRight className="inline" />}
+          onClick={handleGoToDownloadPage}
+        >
           No thanks, just take me to the downloads
         </Button>
         {activeFiles.length > 0 && (
@@ -164,7 +183,10 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
             <div className="flex flex-col gap-2">
               {activeFiles.map((file, index) => {
                 return (
-                  <div key={`game-file-${index}`} className="flex gap-2 items-center">
+                  <div
+                    key={`game-file-${index}`}
+                    className="flex gap-2 items-center"
+                  >
                     {file.platform.id == defaultPlatforms.windowsPlatformId ? (
                       <FaWindows />
                     ) : file.platform.id == defaultPlatforms.macOsPlatformId ? (
@@ -177,7 +199,9 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
                     <span className="font-semibold max-w-50 text-ellipsis overflow-clip">
                       {file.displayName ? file.displayName : "unnamed file"}
                     </span>
-                    <span className="text-sm text-zinc-400">({file.size.toFixed(1)} MB)</span>
+                    <span className="text-sm text-zinc-400">
+                      ({file.size.toFixed(1)} MB)
+                    </span>
                   </div>
                 );
               })}
@@ -186,7 +210,8 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
         )}
         <hr className="my-3 border-zinc-700" />
         <div className="flex items-center gap-2 text-rose-400 font-semibold">
-          <FaRegHeart className="inline" /> Support the developer with an additional contribution
+          <FaRegHeart className="inline" /> Support the developer with an
+          additional contribution
         </div>
         <div className="mt-3">
           <InputNumber
@@ -196,7 +221,9 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
             step={1000}
             onChange={(value) => setPrice(value ?? 0)}
             value={price}
-            formatter={(value) => `${value} ₫`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+            formatter={(value) =>
+              `${value} ₫`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            }
             style={{ width: "100%" }}
           />
           <div className="mt-3">
@@ -227,7 +254,12 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
             >
               +50.000₫
             </Button>
-            <Button type="primary" size="small" onClick={() => handleAddPrice(100000)} style={addPriceButtonStyle}>
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => handleAddPrice(100000)}
+              style={addPriceButtonStyle}
+            >
               +100.000₫
             </Button>
           </div>
@@ -244,7 +276,12 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
               Pay with <span className="font-bold">PayOS</span>
             </Button>
             {profile?.role?.name === "Developer" && (
-              <Button size="large" onClick={handleWalletDonate} style={{ marginTop: "1.5rem" }} icon={<FaWallet />}>
+              <Button
+                size="large"
+                onClick={handleWalletDonate}
+                style={{ marginTop: "1.5rem" }}
+                icon={<FaWallet />}
+              >
                 Pay with wallet
               </Button>
             )}
@@ -253,14 +290,24 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
           <>
             <div onClick={handleGoToLogin} className="inline">
               <Tooltip title="Log in to continue">
-                <Button size="large" style={{ marginTop: "1.5rem", marginRight: "0.5rem" }} type="primary" disabled>
+                <Button
+                  size="large"
+                  style={{ marginTop: "1.5rem", marginRight: "0.5rem" }}
+                  type="primary"
+                  disabled
+                >
                   Pay with <span className="font-bold">PayOS</span>
                 </Button>
               </Tooltip>
             </div>
             <div onClick={handleGoToLogin} className="inline">
               <Tooltip title="Log in to continue">
-                <Button size="large" style={{ marginTop: "1.5rem" }} icon={<FaWallet />} disabled>
+                <Button
+                  size="large"
+                  style={{ marginTop: "1.5rem" }}
+                  icon={<FaWallet />}
+                  disabled
+                >
                   Pay with wallet
                 </Button>
               </Tooltip>
@@ -270,11 +317,15 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
         <p className="mt-2">
           By completing a payment you agree to our{" "}
           <Link to={"/terms-or-service"}>
-            <span className="text-orange-500 hover:underline">Terms of Service</span>
+            <span className="text-orange-500 hover:underline">
+              Terms of Service
+            </span>
           </Link>{" "}
           and{" "}
           <Link to={"/privacy-policy"}>
-            <span className="text-orange-500 hover:underline">Privacy Policy</span>
+            <span className="text-orange-500 hover:underline">
+              Privacy Policy
+            </span>
           </Link>
           .
         </p>

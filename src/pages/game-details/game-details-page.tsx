@@ -229,7 +229,7 @@ const GameDetailsPage = () => {
               </Dropdown>
             </div>
           </div>
-          <div className="flex gap-1 text-sm items-end">
+          <div className="flex gap-1 text-sm items-end flex-wrap">
             <span className="uppercase text-zinc-400 text-xs">Tags:</span>
             {game.gameTags.map((tag, index: number) => (
               <Link key={`game-tag-${index}`} to={`/search?tags=${tag.tag.id}`}>

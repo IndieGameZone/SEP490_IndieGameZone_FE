@@ -5,7 +5,13 @@ import useUserStore from "@/store/use-user-store";
 import { Button, Dropdown, MenuProps, Tabs, TabsProps, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { CiUser } from "react-icons/ci";
-import { FaFacebook, FaFlag, FaGamepad, FaLink, FaYoutube } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaFlag,
+  FaGamepad,
+  FaLink,
+  FaYoutube,
+} from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import ViewUserPosts from "./view-user-posts";
@@ -103,7 +109,7 @@ const ViewProfilePage = () => {
     } else {
       navigate("/");
     }
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (userId) {
@@ -147,7 +153,9 @@ const ViewProfilePage = () => {
     return (
       <div className="min-h-[70vh] flex items-center justify-center px-4">
         <div className="bg-zinc-800 shadow-xl rounded-2xl p-8 max-w-md text-center border border-orange-500">
-          <h1 className="text-3xl font-bold text-red-600 mb-4">User Not Found</h1>
+          <h1 className="text-3xl font-bold text-red-600 mb-4">
+            User Not Found
+          </h1>
           <p className="mb-6">We couldn't find the user you're looking for.</p>
           <Button onClick={() => navigate(-1)}>Go Back</Button>
         </div>
@@ -197,25 +205,6 @@ const ViewProfilePage = () => {
               </div>
             </div>
 
-            {user?.bio && (
-              <>
-                <hr className="border-zinc-600 my-3 w-full" />
-                <TiptapView value={user?.bio} />
-              </>
-            )}
-            {(user?.facebookLink || user?.youtubeChannelLink) && <hr className="border-zinc-600 my-3 w-full" />}
-            {user?.facebookLink && (
-              <Link to={user.facebookLink} className="flex items-center w-full gap-2">
-                <FaFacebook />
-                <p className="hover:underline">{user.facebookLink.split("/").pop()}</p>
-              </Link>
-            )}
-            {user?.youtubeChannelLink && (
-              <Link to={user.youtubeChannelLink} className="flex items-center w-full gap-2">
-                <FaYoutube />
-                <p className="hover:underline">{user.youtubeChannelLink.split("/").pop()}</p>
-              </Link>
-            )}
             {profile?.id == userId ? (
               <div className="flex w-full mt-3">
                 <Button
@@ -228,9 +217,9 @@ const ViewProfilePage = () => {
                 </Button>
               </div>
             ) : (
-              <div className="flex mt-3">
+              <div className="flex mt-3 w-full">
                 <Button
-                  style={{ width: 250 }}
+                  style={{ flex: 1 }}
                   type={isFollowed ? "default" : "primary"}
                   onClick={handleFollowClick}
                   loading={followLoading}
@@ -243,7 +232,40 @@ const ViewProfilePage = () => {
                 </Dropdown>
               </div>
             )}
-            <div className="mt-4 w-full">
+
+            {user?.bio && (
+              <>
+                <hr className="border-zinc-600 my-3 w-full" />
+                <TiptapView value={user?.bio} />
+              </>
+            )}
+            {(user?.facebookLink || user?.youtubeChannelLink) && (
+              <hr className="border-zinc-600 my-3 w-full" />
+            )}
+            {user?.facebookLink && (
+              <Link
+                to={user.facebookLink}
+                className="flex items-center w-full gap-2"
+              >
+                <FaFacebook />
+                <p className="hover:underline">
+                  {user.facebookLink.split("/").pop()}
+                </p>
+              </Link>
+            )}
+            {user?.youtubeChannelLink && (
+              <Link
+                to={user.youtubeChannelLink}
+                className="flex items-center w-full gap-2"
+              >
+                <FaYoutube />
+                <p className="hover:underline">
+                  {user.youtubeChannelLink.split("/").pop()}
+                </p>
+              </Link>
+            )}
+
+            <div className="w-full">
               {loadingAchievements ? (
                 <div className="flex justify-center">
                   <Loader type="inline" />
@@ -257,7 +279,11 @@ const ViewProfilePage = () => {
                       {achievements.map((achievement) => (
                         <div key={achievement.id}>
                           <Tooltip placement="bottom" title={achievement.name}>
-                            <img src={achievement.image} alt="" className="w-16 h-16 rounded-full object-cover border-2" />
+                            <img
+                              src={achievement.image}
+                              alt=""
+                              className="w-16 h-16 rounded-full object-cover border-2"
+                            />
                           </Tooltip>
                         </div>
                       ))}

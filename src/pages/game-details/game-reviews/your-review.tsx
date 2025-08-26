@@ -28,7 +28,7 @@ const YourReview = ({ review }: { review: Review }) => (
             • {timeAgo(new Date(review.createdAt))}
           </span>
         </p>
-        <Rate value={review.rating} />
+        <Rate value={review.rating} disabled/>
         <p>{review.comment}</p>
       </div>
     </div>

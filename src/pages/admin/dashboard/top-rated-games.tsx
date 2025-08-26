@@ -51,7 +51,7 @@ const TopRatedGames = () => {
                     {entry.game.category.name}
                   </p>
 
-                  <p className="flex items-center gap-1">
+                  <div className="flex items-center gap-1">
                     <Rate
                       disabled
                       defaultValue={entry.averageRating}
@@ -59,7 +59,7 @@ const TopRatedGames = () => {
                       style={{ fontSize: 16 }}
                     />
                     <span className="ms-1 italic">{entry.averageRating.toFixed(1)}</span>
-                  </p>
+                  </div>
                 </div>
               </div>
             );

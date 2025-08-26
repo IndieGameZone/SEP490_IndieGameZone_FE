@@ -11,30 +11,27 @@ import BuyGameButton from "./buy-game-button";
 import { useEffect, useState } from "react";
 import useLibraryStore from "@/store/use-library-store";
 import useAuthStore from "@/store/use-auth-store";
-import { Tooltip } from "antd";
+import { Button } from "antd";
 import { formatMegabytes } from "@/lib/file";
+import { MdOutlineInsertChart } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { Game } from "@/types/game";
 
 const GameOverView = () => {
   const { game } = useGameStore();
   const { getDefaultPlatforms } = usePlatformStore();
   const { ownedGameIds, fetchOwnedGameIds } = useLibraryStore();
   const [isGameOwned, setIsGameOwned] = useState(false);
-  const [developerTooltip, setDeveloperTooltip] = useState<string | undefined>(
-    undefined
-  );
   const { profile } = useAuthStore();
+  const navigate = useNavigate();
+
+  const isGameDeveloper = game && profile?.id === game.developer.id;
 
   useEffect(() => {
     if (profile) {
       fetchOwnedGameIds(profile.id);
     }
   }, [profile]);
-
-  useEffect(() => {
-    if (profile && game && profile.id == game.developer.id) {
-      setDeveloperTooltip("You are developer of this game!");
-    }
-  }, [profile, game]);
 
   useEffect(() => {
     if (ownedGameIds.length && game) {
@@ -108,68 +105,91 @@ const GameOverView = () => {
       </div>
       {/* DISLAY DOWNLOAD/PURCHASE BUTTON */}
       <div className="col-span-4">
-        <div className="bg-zinc-800 rounded">
-          <h1 className="px-5 pt-5 font-semibold text-xl">Download Game</h1>
-          <div className="px-5 pt-2 pb-5 border-b border-zinc-800 ">
-            <Tooltip title={developerTooltip}>
-              <div className="flex gap-3 items-center">
-                {game.price == 0 || isGameOwned ? (
-                  <>
-                    <DownloadGameButton isGameOwned={isGameOwned} />
-                    <p className="mt-1 text-gray-500 text-sm">
-                      {isGameOwned ? "Purchased" : "For free"}
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <BuyGameButton />
-                    <p className="mt-1 text-xl">
-                      {formatCurrencyVND(game.price)}
-                    </p>
-                  </>
-                )}
-              </div>
-            </Tooltip>
-            {/* DISPLAYED INCLUDED FILES */}
-            {game.price > 0 && !isGameOwned && activeFiles.length > 0 && (
-              <>
-                <p className="my-2">
-                  You will get access to the following files:
-                </p>
-                <div className="flex flex-col gap-2">
-                  {activeFiles?.map((file, index) => {
-                    return (
-                      <div
-                        key={`game-file-${index}`}
-                        className="flex gap-2 items-center bg-zinc-800 rounded"
-                      >
-                        {file.platform.id ==
-                        defaultPlatforms.windowsPlatformId ? (
-                          <FaWindows />
-                        ) : file.platform.id ==
-                          defaultPlatforms.macOsPlatformId ? (
-                          <FaApple />
-                        ) : file.platform.id ==
-                          defaultPlatforms.linuxPlatformId ? (
-                          <FaLinux />
-                        ) : (
-                          <FaFileArchive />
-                        )}
-                        <span className="font-semibold">
-                          {file.displayName ? file.displayName : "unnamed file"}
-                          {" "}
-                          <span className="text-sm text-zinc-400">
-                            ({formatMegabytes(file.size)})
-                          </span>
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            )}
+        {isGameDeveloper ? (
+          <div className="bg-zinc-800 rounded p-5">
+            <h1 className="font-semibold text-xl">Manage Game</h1>
+            <div className="mt-2">
+              <Button
+                icon={<MdOutlineInsertChart />}
+                onClick={() => navigate(`/dev/game/${game.id}`)}
+              >
+                View Game in Dashboard
+              </Button>
+            </div>
           </div>
+        ) : (
+          <DownloadPanel
+            game={game}
+            isGameOwned={isGameOwned}
+            defaultPlatforms={defaultPlatforms}
+            activeFiles={activeFiles}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const DownloadPanel = ({
+  game,
+  isGameOwned,
+  defaultPlatforms,
+  activeFiles,
+}: {
+  game: Game;
+  isGameOwned: boolean;
+  defaultPlatforms: any;
+  activeFiles: any[];
+}) => {
+  return (
+    <div className="bg-zinc-800 rounded">
+      <h1 className="px-5 pt-5 font-semibold text-xl">Download Game</h1>
+      <div className="px-5 pt-2 pb-5 border-b border-zinc-800 ">
+        <div className="flex gap-3 items-center">
+          {game.price === 0 || isGameOwned ? (
+            <>
+              <DownloadGameButton isGameOwned={isGameOwned} />
+              <p className="mt-1 text-gray-500 text-sm">
+                {isGameOwned ? "Purchased" : "For free"}
+              </p>
+            </>
+          ) : (
+            <>
+              <BuyGameButton />
+              <p className="mt-1 text-xl">{formatCurrencyVND(game.price)}</p>
+            </>
+          )}
         </div>
+        {/* files */}
+        {game.price > 0 && !isGameOwned && activeFiles.length > 0 && (
+          <>
+            <p className="my-2">You will get access to the following files:</p>
+            <div className="flex flex-col gap-2">
+              {activeFiles.map((file, index) => (
+                <div
+                  key={`game-file-${index}`}
+                  className="flex gap-2 items-center bg-zinc-800 rounded"
+                >
+                  {file.platform.id === defaultPlatforms.windowsPlatformId ? (
+                    <FaWindows />
+                  ) : file.platform.id === defaultPlatforms.macOsPlatformId ? (
+                    <FaApple />
+                  ) : file.platform.id === defaultPlatforms.linuxPlatformId ? (
+                    <FaLinux />
+                  ) : (
+                    <FaFileArchive />
+                  )}
+                  <span className="font-semibold">
+                    {file.displayName || "unnamed file"}{" "}
+                    <span className="text-sm text-zinc-400">
+                      ({formatMegabytes(file.size)})
+                    </span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

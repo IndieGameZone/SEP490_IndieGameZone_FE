@@ -81,7 +81,7 @@ const DevDashBoardPage = () => {
                   className="bg-zinc-800 mt-2 rounded flex gap-3 highlight-hover"
                   key={entry.game.id}
                 >
-                  <Link to={`/dev/game/${entry.game.id}`}>
+                  <Link to={`/dev/game/${entry.game.id}`} className="flex-shrink-0">
                     <FaultTolerantImage
                       src={entry.game.coverImage}
                       alt=""
@@ -90,7 +90,7 @@ const DevDashBoardPage = () => {
                   </Link>
                   <div className="">
                     <Link to={`/dev/game/${entry.game.id}`}>
-                      <h4 className="font-bold text-lg">{entry.game.name}</h4>
+                      <h4 className="font-bold text-lg break-words">{entry.game.name}</h4>
                     </Link>
                     <p className="text-sm text-zinc-400">{entry.game.category.name}</p>
 

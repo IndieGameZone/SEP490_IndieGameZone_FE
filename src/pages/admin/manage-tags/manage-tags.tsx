@@ -70,6 +70,15 @@ const ManageTags = () => {
 
   const filterTagsByLetter = (tags: Tag[]) => {
     if (!activeLetter) return tags;
+
+    if (activeLetter === "0-9") {
+      return tags.filter((tag) => /^[0-9]/.test(tag.name));
+    }
+
+    if (activeLetter === "symbol") {
+      return tags.filter((tag) => /^[^a-zA-Z0-9]/.test(tag.name));
+    }
+
     return tags.filter((tag) =>
       tag.name.toLowerCase().startsWith(activeLetter.toLowerCase())
     );
@@ -79,8 +88,10 @@ const ManageTags = () => {
     const alphabet = Array.from({ length: 26 }, (_, i) =>
       String.fromCharCode(65 + i)
     );
+
     return (
       <div className="flex flex-wrap gap-2">
+        {/* Show all tags */}
         <Button
           size="small"
           type={!activeLetter ? "primary" : "default"}
@@ -88,6 +99,26 @@ const ManageTags = () => {
         >
           All
         </Button>
+
+        {/* Numbers filter */}
+        <Button
+          size="small"
+          type={activeLetter === "0-9" ? "primary" : "default"}
+          onClick={() => setActiveLetter("0-9")}
+        >
+          0-9
+        </Button>
+
+        {/* Special chars filter */}
+        <Button
+          size="small"
+          type={activeLetter === "symbol" ? "primary" : "default"}
+          onClick={() => setActiveLetter("symbol")}
+        >
+          #
+        </Button>
+
+        {/* Alphabet filter */}
         {alphabet.map((letter) => (
           <Button
             key={letter}
