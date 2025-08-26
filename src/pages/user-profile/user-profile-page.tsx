@@ -74,7 +74,7 @@ const validateYoutubeUrl = async (_: RuleObject, value: string) => {
 };
 
 const UserProfilePage = () => {
-  const { profile, rerender, renderKey } = useAuthStore();
+  const { profile, fetchProfile } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [form] = useForm<FieldType>();
   const [messageApi, contextHolder] = message.useMessage();
@@ -95,7 +95,7 @@ const UserProfilePage = () => {
     } else {
       messageApi.success("Update profile successfully.");
       setTimeout(() => {
-        rerender();
+        fetchProfile();
       }, 1000);
     }
     setLoading(false);
@@ -120,7 +120,7 @@ const UserProfilePage = () => {
         youtubeChannelLink: profile.youtubeChannelLink,
       });
     }
-  }, [renderKey]);
+  }, [profile]);
 
   return (
     <div className="p-5">
@@ -184,9 +184,6 @@ const UserProfilePage = () => {
               name="fullName"
               label={<p className="font-bold">Full name</p>}
               style={{ marginBottom: 15 }}
-              rules={[
-                { required: true, message: "Please enter your full name!" },
-              ]}
             >
               <Input placeholder="Enter your full name" />
             </Form.Item>
