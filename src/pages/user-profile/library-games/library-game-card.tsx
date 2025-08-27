@@ -36,7 +36,7 @@ const LibraryGameCard: React.FC<LibraryGameCardProps> = ({ item }) => {
         <div className="flex justify-between">
           <div>
             <h3
-              className="font-bold text-lg truncate cursor-pointer"
+              className="font-bold text-lg cursor-pointer"
               onClick={handleClickCard}
             >
               {item.game.name}

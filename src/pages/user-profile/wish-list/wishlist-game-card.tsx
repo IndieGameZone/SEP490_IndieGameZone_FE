@@ -44,7 +44,7 @@ const WishlistGameCard: React.FC<WishlistGameCardProps> = ({ game }) => {
       <div className="p-3">
         <div className="flex justify-between">
           <div>
-            <h3 className="font-bold text-lg truncate cursor-pointer" onClick={handleClickCard}>
+            <h3 className="font-bold text-lg cursor-pointer" onClick={handleClickCard}>
               {game.game.name}
             </h3>
             <p className="text-xs hover:underline">{game.game.category}</p>

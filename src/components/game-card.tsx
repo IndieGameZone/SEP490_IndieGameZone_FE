@@ -29,7 +29,7 @@ const GameCard = ({ game, variant = "default" }: GameCardProps) => {
   } = game;
 
   const handleClickCard = () => navigate(`/game/${game.id}`);
-  
+
   const priceAfterDiscount = useMemo(
     () => game.price * (1 - game.discount / 100),
     [game]
@@ -73,9 +73,9 @@ const GameCard = ({ game, variant = "default" }: GameCardProps) => {
         </div>
         <div className="p-3">
           <div className="flex justify-between">
-            <div>
+            <div className="min-w-0">
               <h3
-                className="font-bold text-lg truncate cursor-pointer"
+                className="font-bold text-lg truncate text-ellipsis cursor-pointer"
                 onClick={handleClickCard}
               >
                 {name}
@@ -84,7 +84,7 @@ const GameCard = ({ game, variant = "default" }: GameCardProps) => {
                 <p className="text-xs hover:underline">{category?.name}</p>
               </a>
             </div>
-            <div>
+            <div className="flex-shrink-0 text-right">
               <p className="font-semibold text-green-500 text-right">
                 {discount > 0 && (
                   <>
@@ -100,7 +100,7 @@ const GameCard = ({ game, variant = "default" }: GameCardProps) => {
               {numberOfReviews > 0 ? (
                 <div className="flex items-center justify-end gap-1">
                   <span>{averageRating.toFixed(1)}</span>
-                  <FaStar className="text-yellow-400 text-xs"/>
+                  <FaStar className="text-yellow-400 text-xs" />
                 </div>
               ) : (
                 <p className="text-zinc-400 text-xs text-end">No rating</p>

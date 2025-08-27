@@ -35,9 +35,11 @@ const GameCard = ({ game }: { game: Game }) => {
         <div className="p-3">
           <div className="flex-1">
             <div className="flex justify-between">
-              <div>
+              <div className="min-w-0">
                 <Link to={`/dev/game/${game.id}`}>
-                  <h3 className="font-bold text-lg truncate">{game.name}</h3>
+                  <h3 className="font-bold text-lg truncate text-ellipsis">
+                    {game.name}
+                  </h3>
                 </Link>
                 <Link to={`/search?category=${game.category?.id}`}>
                   <p className="text-xs hover:underline">
@@ -45,7 +47,7 @@ const GameCard = ({ game }: { game: Game }) => {
                   </p>
                 </Link>
               </div>
-              <div>
+              <div className="flex-shrink-0 text-right">
                 <p className="text-sm font-semibold text-green-500 text-right">
                   {game.discount > 0 && (
                     <>
