@@ -25,6 +25,15 @@ export const createReview = async (userId: string, gameId: string, reviewData: R
   }
 };
 
+export const updateReview = async (userId: string, reviewId: string, reviewData: ReviewData) => {
+  try {
+    const { data } = await axiosClient.put(`/api/users/${userId}/reviews/${reviewId}`, reviewData);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
 export type GetReviewsParams = {
   Rating?: number;
   PageNumber?: number;
