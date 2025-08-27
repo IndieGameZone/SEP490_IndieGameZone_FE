@@ -119,3 +119,13 @@ export const getNewPlayersStatisticByYear = async (year: number) => {
         return handleApiError(error);
     }
 };
+export const getTotalCurrentDevRevenue = async () => {
+    try {
+        const { data } = await axiosClient.get(`/api/dashboard/revenue/developers/total-current`);
+        return {
+            error: null, data: data, success: true
+        };
+    } catch (error) {
+        return handleApiError(error);
+    }
+};
