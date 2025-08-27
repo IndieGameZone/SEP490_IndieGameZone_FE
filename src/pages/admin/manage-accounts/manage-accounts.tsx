@@ -3,17 +3,14 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Input, Card } from "antd";
 import { User } from "@/types/user";
 
-import {
-
-  FaPlus,
-  FaSearch,
-
-} from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import columns from "./columns";
 import useUserStore from "@/store/use-user-store";
+import AddUserModal from "./add-user-modal";
 
 const ManageAccounts: React.FC = () => {
   const [searchText, setSearchText] = useState("");
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const { fetchAllAccounts, loading, renderKey, rerender, users } = useUserStore();
 
   useEffect(() => {
@@ -32,6 +29,18 @@ const ManageAccounts: React.FC = () => {
       userName.toLowerCase().includes(searchLower)
     );
   });
+
+  const handleAddUser = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsAddModalOpen(false);
+  };
+
+  const handleUserAddSuccess = () => {
+    rerender();
+  };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -57,7 +66,13 @@ const ManageAccounts: React.FC = () => {
               />
             </div>
             <div className="flex gap-3">
-              <Button type="primary" icon={<FaPlus />} size="large" className="bg-blue-600 hover:bg-blue-700">
+              <Button
+                type="primary"
+                icon={<FaPlus />}
+                size="large"
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={handleAddUser}
+              >
                 Add User
               </Button>
               <Button size="large" onClick={rerender} loading={loading}>
@@ -84,6 +99,8 @@ const ManageAccounts: React.FC = () => {
           />
         </Card>
       </div>
+
+      <AddUserModal isOpen={isAddModalOpen} onClose={handleModalClose} onSuccess={handleUserAddSuccess} />
     </div>
   );
 };
