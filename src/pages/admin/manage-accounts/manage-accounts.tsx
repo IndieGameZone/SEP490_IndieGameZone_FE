@@ -7,15 +7,26 @@ import { FaPlus, FaSearch } from "react-icons/fa";
 import columns from "./columns";
 import useUserStore from "@/store/use-user-store";
 import AddUserModal from "./add-user-modal";
+import { useFilters } from "@/hooks/use-filters";
+
+type AccountFilters = {
+  page: number;
+  pageSize: number;
+};
 
 const ManageAccounts: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const { fetchAllAccounts, loading, renderKey, rerender, users } = useUserStore();
+  const { fetchAllAccounts, loading, renderKey, rerender, users, pagination } =
+    useUserStore();
+  const { filters, setFilters } = useFilters<AccountFilters>({
+    page: 1,
+    pageSize: 10,
+  });
 
   useEffect(() => {
-    fetchAllAccounts();
-  }, [renderKey]);
+    fetchAllAccounts({ PageNumber: filters.page, PageSize: filters.pageSize });
+  }, [renderKey, filters.page, filters.pageSize]);
 
   const filteredUsers = users.filter((user) => {
     const searchLower = searchText.toLowerCase();
@@ -46,9 +57,12 @@ const ManageAccounts: React.FC = () => {
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Manage Accounts</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Manage Accounts
+          </h1>
           <p className="text-gray-600">
-            Total users: {filteredUsers.length} {searchText && `(filtered from ${users.length})`}
+            Total users: {filteredUsers.length}{" "}
+            {searchText && `(filtered from ${users.length})`}
           </p>
         </div>
 
@@ -89,10 +103,19 @@ const ManageAccounts: React.FC = () => {
             rowKey="id"
             loading={loading}
             pagination={{
-              pageSize: 10,
+              pageSize: filters.pageSize,
               showSizeChanger: true,
               showQuickJumper: true,
-              showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} users`,
+              showTotal: (_, range) =>
+                `${range[0]}-${range[1]} of ${pagination.totalCount} users`,
+              onChange(page, pageSize) {
+                setFilters({
+                  page: page,
+                  pageSize: pageSize,
+                });
+              },
+              total: pagination.totalCount,
+              current: pagination.currentPage,
             }}
             className="overflow-x-auto"
             scroll={{ x: 1000 }}
@@ -100,7 +123,11 @@ const ManageAccounts: React.FC = () => {
         </Card>
       </div>
 
-      <AddUserModal isOpen={isAddModalOpen} onClose={handleModalClose} onSuccess={handleUserAddSuccess} />
+      <AddUserModal
+        isOpen={isAddModalOpen}
+        onClose={handleModalClose}
+        onSuccess={handleUserAddSuccess}
+      />
     </div>
   );
 };

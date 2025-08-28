@@ -1,9 +1,11 @@
+import { toSearchParams } from "../object";
 import { axiosClient } from "./config/axios-client";
 
 export interface ApiResponse {
   error: string | null;
   data: any;
   success: boolean;
+  headers?: any;
 }
 
 export const handleApiError = (error: any): ApiResponse => {
@@ -15,10 +17,15 @@ export const handleApiError = (error: any): ApiResponse => {
   }
 };
 
-export const getAllAccounts = async () => {
+export type GetAccountParams = {
+  PageNumber?: number;
+  PageSize?: number;
+}
+
+export const getAllAccounts = async (params?: GetAccountParams) => {
   try {
-    const { data } = await axiosClient.get(`/api/users`);
-    return { error: null, data: data, success: true };
+    const { data, headers } = await axiosClient.get(`/api/users${params ? toSearchParams(params) : ""}`);
+    return { error: null, data: data, headers: headers, success: true };
   } catch (error) {
     return handleApiError(error);
   }

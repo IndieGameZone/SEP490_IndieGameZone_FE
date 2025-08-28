@@ -1,4 +1,4 @@
-import { getAllAccounts, getBanHistoryById, getUserById } from "@/lib/api/user-api";
+import { GetAccountParams, getAllAccounts, getBanHistoryById, getUserById } from "@/lib/api/user-api";
 import { User, UserBanHistory } from "@/types/user";
 import { create } from "zustand";
 
@@ -9,10 +9,15 @@ interface UserState {
   userBanHistory: UserBanHistory[];
   error: string | null;
   fetchUserById: (id: string) => Promise<User | undefined>;
-  fetchAllAccounts: () => void;
+  fetchAllAccounts: (params?: GetAccountParams) => void;
   fetchBanHistory: (userId: string) => void;
   renderKey: number;
   rerender: () => void;
+  pagination: {
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+  }
 }
 
 const useUserStore = create<UserState>((set) => ({
@@ -22,16 +27,30 @@ const useUserStore = create<UserState>((set) => ({
   userBanHistory: [],
   error: null,
   renderKey: 0,
+  pagination: {
+    totalCount: 0,
+    currentPage: 1,
+    pageSize: 10,
+  },
   rerender: () => {
     set((prev) => ({ renderKey: prev.renderKey + 1 }));
   },
 
-  fetchAllAccounts: async () => {
+  fetchAllAccounts: async (params) => {
     set({ loading: true, error: null });
     try {
-      const response = await getAllAccounts();
+      const response = await getAllAccounts(params);
+      const paginationHeader = response.headers["x-pagination"];
+      const pagination = paginationHeader ? JSON.parse(paginationHeader) : null;
       if (!response.error) {
-        set({ users: response.data, loading: false });
+        set({
+          users: response.data,
+          pagination: {
+            currentPage: pagination.CurrentPage,
+            pageSize: pagination.PageSize,
+            totalCount: pagination.TotalCount
+          }, loading: false
+        });
       } else {
         set({ loading: false, error: response.error });
       }
