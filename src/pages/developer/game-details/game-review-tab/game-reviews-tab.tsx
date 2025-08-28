@@ -7,7 +7,7 @@ import RatingChart, {
   RatingChartData,
 } from "@/components/charts/dev/rating-chart";
 import ReviewCard from "@/pages/game-details/game-reviews/review-card";
-import GameSummaryReview from "./game-summary-review";
+import GameReviewsSummary from "./game-reviews-summary";
 import { getReviewStatistic } from "@/lib/api/review-api";
 import { FaStar } from "react-icons/fa";
 import { useFilters } from "@/hooks/use-filters";
@@ -68,7 +68,7 @@ const GameReviewTab = () => {
 
   return (
     <div className="p-3">
-      <GameSummaryReview />
+      <GameReviewsSummary />
       <div className="py-3">
         <div>
           <div className="flex justify-between">

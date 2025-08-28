@@ -8,6 +8,7 @@ import columns from "./columns";
 import useUserStore from "@/store/use-user-store";
 import AddUserModal from "./add-user-modal";
 import { useFilters } from "@/hooks/use-filters";
+import { FaArrowRotateLeft } from "react-icons/fa6";
 
 type AccountFilters = {
   page: number;
@@ -29,6 +30,7 @@ const ManageAccounts: React.FC = () => {
   }, [renderKey, filters.page, filters.pageSize]);
 
   const filteredUsers = users.filter((user) => {
+    if (!searchText || searchText.length == 0) return true;
     const searchLower = searchText.toLowerCase();
     const fullName = user.fullname || "";
     const email = user.email || "";
@@ -62,7 +64,7 @@ const ManageAccounts: React.FC = () => {
           </h1>
           <p className="text-gray-600">
             Total users: {filteredUsers.length}{" "}
-            {searchText && `(filtered from ${users.length})`}
+            {searchText && `(filtered from ${pagination.totalCount})`}
           </p>
         </div>
 
@@ -75,7 +77,6 @@ const ManageAccounts: React.FC = () => {
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 className="w-full"
-                size="large"
                 allowClear
               />
             </div>
@@ -83,13 +84,16 @@ const ManageAccounts: React.FC = () => {
               <Button
                 type="primary"
                 icon={<FaPlus />}
-                size="large"
                 className="bg-blue-600 hover:bg-blue-700"
                 onClick={handleAddUser}
               >
                 Add User
               </Button>
-              <Button size="large" onClick={rerender} loading={loading}>
+              <Button
+                onClick={rerender}
+                loading={loading}
+                icon={<FaArrowRotateLeft />}
+              >
                 Refresh
               </Button>
             </div>

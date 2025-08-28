@@ -5,6 +5,7 @@ import { formatBytes, formatTimeLeft } from "@/lib/file";
 import { IoClose, IoPause, IoPlay, IoRefresh } from "react-icons/io5";
 import useDownloadStore from "@/store/use-download-store";
 import useDocumentTheme from "@/hooks/use-document-theme";
+import { timeAgo } from "@/lib/date-n-time";
 
 const processStatusMap: Record<
   DownloadEntry["status"],
@@ -35,6 +36,7 @@ const DownloadEntryCard = ({ downloadEntry }: Props) => {
     progress,
     estimatedTimeLeft,
     retryable,
+    startedAt,
   } = downloadEntry;
 
   const fileExtension = filename.split(".").pop() ?? "";
@@ -53,6 +55,8 @@ const DownloadEntryCard = ({ downloadEntry }: Props) => {
     if (status === "paused") return `${sizeText} • Paused`;
     if (status === "downloading" && estimatedTimeLeft)
       return `${sizeText} • ${formatTimeLeft(estimatedTimeLeft)}`;
+    if (status === "success")
+      return `${formatBytes(receivedBytes ?? 0)} • Done`;
     return sizeText;
   };
 
@@ -132,7 +136,7 @@ const DownloadEntryCard = ({ downloadEntry }: Props) => {
           />
         )}
       </div>
-      {status !== "cancelled" && retryable && (
+      {status !== "cancelled" && status !== "success" && retryable && (
         <Progress
           percent={progress * 100}
           format={(p) => p?.toFixed(2) + "%"}

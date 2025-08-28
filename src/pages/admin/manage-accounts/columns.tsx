@@ -45,7 +45,12 @@ const columns: ColumnsType<User> = [
 
       return (
         <div className="flex items-center gap-3">
-          <Avatar src={record.avatar} icon={<FaUser />} size={40} className="shadow-sm" />
+          <Avatar
+            src={record.avatar}
+            icon={<FaUser />}
+            size={40}
+            className="shadow-sm"
+          />
           <div>
             <div className="font-medium text-gray-900">
               {displayName}
@@ -69,7 +74,10 @@ const columns: ColumnsType<User> = [
     render: (email: string, record: User) => (
       <div>
         <div className="text-sm">{email}</div>
-        <Tag color={record.emailConfirmed ? "green" : "orange"} className="mt-1 text-xs">
+        <Tag
+          color={record.emailConfirmed ? "green" : "orange"}
+          className="mt-1 text-xs"
+        >
           {record.emailConfirmed ? "Verified" : "Unverified"}
         </Tag>
       </div>
@@ -79,6 +87,13 @@ const columns: ColumnsType<User> = [
     title: "Role",
     dataIndex: ["role", "name"],
     key: "role",
+    filters: [
+      { text: "Admin", value: "Admin" },
+      { text: "Moderator", value: "Moderator" },
+      { text: "Developer", value: "Developer" },
+      { text: "Player", value: "Player" },
+    ],
+    onFilter: (value, record) => record.role.name === value,
     render: (role: string) => (
       <Tag
         color={getRoleColor(role)}
@@ -90,7 +105,9 @@ const columns: ColumnsType<User> = [
           minHeight: "32px",
         }}
       >
-        <span className="flex items-center justify-center w-4 h-4">{getRoleIcon(role)}</span>
+        <span className="flex items-center justify-center w-4 h-4">
+          {getRoleIcon(role)}
+        </span>
         <span>{role}</span>
       </Tag>
     ),
@@ -102,7 +119,9 @@ const columns: ColumnsType<User> = [
     key: "isActive",
     render: (isActive: boolean, record: User) => (
       <div className="space-y-1">
-        <Tag color={isActive ? "green" : "red"}>{isActive ? "Active" : "Inactive"}</Tag>
+        <Tag color={isActive ? "green" : "red"}>
+          {isActive ? "Active" : "Inactive"}
+        </Tag>
         {record.twoFactorEnabled && (
           <Tag color="purple" className="text-xs">
             2FA

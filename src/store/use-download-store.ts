@@ -163,7 +163,7 @@ const useDownloadStore = create<DownloadState>((set, get) => ({
 
     startDownload: async (url, filename, messageApi) => {
         const existings = Object.values(get().downloads);
-        if (existings.length > 2) {
+        if (existings.filter(x => x.status == "downloading").length > 2) {
             messageApi?.error("Cannot download more than 2 files at the same time!");
             return;
         } else if (

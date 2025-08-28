@@ -40,7 +40,7 @@ const RevenueByMonthChart = () => {
   }));
   const commissionRevenueData = data.map(({ day, gameRevenue }) => ({
     x: day,
-    y: gameRevenue,
+    y: gameRevenue * 0.2,
     series: "Commission revenue",
   }));
 

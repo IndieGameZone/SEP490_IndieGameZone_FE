@@ -538,3 +538,11 @@ select:-webkit-autofill:focus {
 .params-table tr {
   border-bottom: 1px solid #3f3f46;
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.7s ease-in forwards;
+}
