@@ -79,6 +79,7 @@ const AddReportReason = ({ open, onClose, onSuccess }: AddReportReasonModalProps
                 { value: "Game", label: "Game Report" },
                 { value: "Post", label: "Post Report" },
                 { value: "User", label: "User Report" },
+                { value: "Review", label: "Review Report" },
               ]}
             />
           </Form.Item>

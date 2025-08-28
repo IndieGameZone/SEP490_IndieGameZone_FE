@@ -1,17 +1,23 @@
-import { getAllCommentReportReason, getAllGameReportReason, getAllPostReportReason } from "@/lib/api/report-api";
+import {
+  getAllCommentReportReason,
+  getAllGameReportReason,
+  getAllPostReportReason,
+  getAllReviewReportReason,
+} from "@/lib/api/report-api";
 import { ReportReason } from "@/types/report-reason";
 import { create } from "zustand";
-
 
 interface reportReasonState {
   gameReportReasons: ReportReason[];
   postReportReasons: ReportReason[];
   commentReportReasons: ReportReason[];
+  reviewReportReasons: ReportReason[];
   loading: boolean;
   error: string | null;
   fetchGameReportReasons: () => Promise<void>;
   fetchPostReportReasons: () => Promise<void>;
   fetchCommentReportReasons: () => Promise<void>;
+  fetchReviewReportReasons: () => Promise<void>;
   renderKey: number;
   rerender: () => void;
 }
@@ -21,13 +27,13 @@ const useReportReasonStore = create<reportReasonState>((set) => ({
   gameReportReasons: [],
   postReportReasons: [],
   commentReportReasons: [],
+  reviewReportReasons: [],
   loading: false,
   error: null,
   renderKey: 0,
   rerender: () => {
     set((prev) => ({ renderKey: prev.renderKey + 1 }));
   },
-
   fetchGameReportReasons: async () => {
     set({ loading: true, error: null });
     try {
@@ -41,6 +47,20 @@ const useReportReasonStore = create<reportReasonState>((set) => ({
       set({ loading: false, error: error.message });
     }
   },
+  fetchReviewReportReasons: async () => {
+    set({ loading: true, error: null });
+    try {
+      const response = await getAllReviewReportReason();
+      if (!response.error) {
+        set({ reviewReportReasons: response.data, loading: false });
+      } else {
+        set({ loading: false, error: response.error });
+      }
+    } catch (error: any) {
+      set({ loading: false, error: error.message });
+    }
+  },
+
   fetchPostReportReasons: async () => {
     set({ loading: true, error: null });
     try {

@@ -21,9 +21,11 @@ const ManageReportReason = () => {
     gameReportReasons,
     postReportReasons,
     commentReportReasons,
+    reviewReportReasons,
     fetchGameReportReasons,
     fetchPostReportReasons,
     fetchCommentReportReasons,
+    fetchReviewReportReasons,
   } = useReportReasonStore();
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -45,11 +47,13 @@ const ManageReportReason = () => {
     fetchGameReportReasons();
     fetchPostReportReasons();
     fetchCommentReportReasons();
+    fetchReviewReportReasons();
   };
   useEffect(() => {
     fetchGameReportReasons();
     fetchPostReportReasons();
     fetchCommentReportReasons();
+    fetchReviewReportReasons();
   }, []);
 
   const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
@@ -180,6 +184,15 @@ const ManageReportReason = () => {
       children: (
         <div>
           <Table<ReportReason> columns={columns} dataSource={commentReportReasons} loading={loading} bordered />
+        </div>
+      ),
+    },
+    {
+      key: "Review",
+      label: "Review Reports",
+      children: (
+        <div>
+          <Table<ReportReason> columns={columns} dataSource={reviewReportReasons} loading={loading} bordered />
         </div>
       ),
     },

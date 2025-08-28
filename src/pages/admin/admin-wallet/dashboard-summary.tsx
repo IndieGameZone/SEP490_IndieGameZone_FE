@@ -1,4 +1,4 @@
-import { getDashboardSummary } from "@/lib/api/admin-dashboard-api";
+import { getDashboardSummary, getTotalCurrentDevRevenue } from "@/lib/api/admin-dashboard-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { useEffect, useState } from "react";
 import { VictoryPie, VictoryLabel } from "victory";
@@ -15,7 +15,7 @@ const DashboardSummary = () => {
     gamePurchaseRevenueByAdmin: 0,
     commercialPackageRevenue: 0,
   });
-
+  const [developerRevenue, setDeveloperRevenue] = useState<number>(0);
   const fetchData = async () => {
     const result = await getDashboardSummary();
     if (result.error) {
@@ -24,9 +24,15 @@ const DashboardSummary = () => {
       setSummaryData(result.data);
     }
   };
-
+  const fetchDeveloperCurrentRevenue = async () => {
+    const result = await getTotalCurrentDevRevenue();
+    if (!result.error) {
+      setDeveloperRevenue(result.data);
+    }
+  };
   useEffect(() => {
     fetchData();
+    fetchDeveloperCurrentRevenue();
   }, []);
 
   // Prepare data for pie chart
@@ -55,13 +61,9 @@ const DashboardSummary = () => {
         <div className="bg-white rounded shadow-md border border-zinc-200 px-3 py-5">
           <div className="flex items-center justify-between border-s-4 border-blue-500 ps-4">
             <div>
-              <h3 className="text-sm font-medium text-gray-600 mb-2">
-                Total Developer Revenue
-              </h3>
+              <h3 className="text-sm font-medium text-gray-600 mb-2">Total Developer Revenue</h3>
               <p className="text-2xl font-semibold text-blue-600 flex items-center gap-1">
-                {formatCurrencyVND(
-                  summaryData.gamePurchaseRevenueByDeveloper ?? 0
-                )}
+                {formatCurrencyVND(developerRevenue ?? 0)}
               </p>
             </div>
           </div>
@@ -71,9 +73,7 @@ const DashboardSummary = () => {
         <div className="bg-white rounded shadow-md border border-zinc-200 px-3 py-5">
           <div className="flex items-center justify-between border-s-4 border-green-500 ps-4">
             <div>
-              <h3 className="text-sm font-medium text-gray-600 mb-2">
-                Total Comission Revenue
-              </h3>
+              <h3 className="text-sm font-medium text-gray-600 mb-2">Total Comission Revenue</h3>
               <p className="text-2xl font-semibold text-green-600 flex items-center gap-1">
                 {formatCurrencyVND(summaryData.gamePurchaseRevenueByAdmin ?? 0)}
               </p>
@@ -85,9 +85,7 @@ const DashboardSummary = () => {
         <div className="bg-white rounded shadow-md border border-zinc-200 px-3 py-5">
           <div className="flex items-center justify-between border-s-4 border-amber-500 ps-4">
             <div>
-              <h3 className="text-sm font-medium text-gray-600 mb-2">
-                Commercial Packages Revenue
-              </h3>
+              <h3 className="text-sm font-medium text-gray-600 mb-2">Commercial Packages Revenue</h3>
               <p className="text-2xl font-semibold text-amber-600 flex items-center gap-1">
                 {formatCurrencyVND(summaryData.commercialPackageRevenue ?? 0)}
               </p>
@@ -98,9 +96,7 @@ const DashboardSummary = () => {
 
       {/* Revenue Distribution Pie Chart */}
       <div className="bg-white rounded shadow-md border border-zinc-200 p-6 col-span-2">
-        <h3 className="text-lg font-medium text-gray-600 mb-4 text-center">
-          Revenue Distribution
-        </h3>
+        <h3 className="text-lg font-medium text-gray-600 mb-4 text-center">Revenue Distribution</h3>
         {pieData.length > 0 ? (
           <svg viewBox="0 0 600 220" width={600} height={220}>
             <VictoryPie

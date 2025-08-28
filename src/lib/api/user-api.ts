@@ -144,9 +144,8 @@ export const ping = async () => {
   }
 };
 
-
 export type UpdateBankInfoData = {
-  bankName: string; 
+  bankName: string;
   bankAccountName: string;
   bankAccountNumber: string;
   bankCode: string;
@@ -162,4 +161,20 @@ export const updateBankInfo = async (userId: string, updateBankInfoData: UpdateB
     return handleApiError(error);
   }
 };
- 
+export interface moderatorData {
+  email: string;
+  userName: string;
+  birthday: string;
+  password: string;
+  confirmPassword: string;
+  role: string;
+}
+
+export const createModerator = async (moderatorData: moderatorData) => {
+  try {
+    const { data } = await axiosClient.post(`/api/users`, moderatorData);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

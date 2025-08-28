@@ -38,6 +38,18 @@ export const getAllCommentReportReason = async () => {
     return handleApiError(error);
   }
 };
+export const getAllReviewReportReason = async () => {
+  try {
+    const { data } = await axiosClient.get(`/api/report-reasons`, {
+      params: {
+        ReportReasonType: "Review",
+      },
+    });
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 export const getAllPostReportReason = async () => {
   try {
     const { data } = await axiosClient.get(`/api/report-reasons`, {
