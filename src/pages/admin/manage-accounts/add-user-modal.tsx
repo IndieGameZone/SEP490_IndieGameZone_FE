@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Modal, Form, Input, Select, DatePicker, message } from "antd";
-import { UserOutlined, MailOutlined, LockOutlined, CalendarOutlined } from "@ant-design/icons";
-import { createModerator } from "../../../lib/api/user-api";
-import dayjs from "dayjs";
 import { useGlobalMessage } from "@/components/message-provider";
+import { CalendarOutlined, LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
+import { DatePicker, Form, Input, Modal, Select } from "antd";
+import dayjs from "dayjs";
+import React, { useState } from "react";
+import { createModerator } from "../../../lib/api/user-api";
 
 interface AddUserModalProps {
   isOpen: boolean;

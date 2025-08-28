@@ -1,11 +1,10 @@
-import { DownloadEntry } from "@/types/download-entry";
-import FileIcon from "../file-icon";
-import { Button, Progress } from "antd";
-import { formatBytes, formatTimeLeft } from "@/lib/file";
-import { IoClose, IoPause, IoPlay, IoRefresh } from "react-icons/io5";
-import useDownloadStore from "@/store/use-download-store";
 import useDocumentTheme from "@/hooks/use-document-theme";
-import { timeAgo } from "@/lib/date-n-time";
+import { formatBytes, formatTimeLeft } from "@/lib/file";
+import useDownloadStore from "@/store/use-download-store";
+import { DownloadEntry } from "@/types/download-entry";
+import { Button, Progress } from "antd";
+import { IoClose, IoPause, IoPlay, IoRefresh } from "react-icons/io5";
+import FileIcon from "../file-icon";
 
 const processStatusMap: Record<
   DownloadEntry["status"],
@@ -36,7 +35,6 @@ const DownloadEntryCard = ({ downloadEntry }: Props) => {
     progress,
     estimatedTimeLeft,
     retryable,
-    startedAt,
   } = downloadEntry;
 
   const fileExtension = filename.split(".").pop() ?? "";
