@@ -150,6 +150,22 @@ export const createReportPost = async (userId: string, reportPostData: ReportPos
     return handleApiError(error);
   }
 };
+export interface ReportReviewData {
+  message: string;
+  reportReasonId: string;
+  reviewId: string;
+  gameId: string;
+}
+
+export const createReportReview = async (userId: string, reportReviewData: ReportReviewData) => {
+  try {
+    const { data } = await axiosClient.post(`/api/users/${userId}/review-reports`, reportReviewData);
+
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 export const getAllReport = async () => {
   try {
     const { data } = await axiosClient.get(`/api/reports`);

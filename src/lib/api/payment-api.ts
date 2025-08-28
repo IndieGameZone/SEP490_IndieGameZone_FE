@@ -53,7 +53,7 @@ export const getTransactionsPurchase = async (userId: string) => {
     params.append("TransactionTypes", "Donation");
     params.append("TransactionTypes", "Withdraw");
     params.append("TransactionTypes", "PurchaseCommercialPackage");
-    params.append("TransactionTypes", "RefundRevenue");
+
     params.append("PageNumber", "1");
     params.append("PageSize", "10");
 
@@ -72,6 +72,7 @@ export const getTransactionsEarning = async (userId: string) => {
     const params = new URLSearchParams();
     params.append("TransactionTypes", "PurchaseGameRevenue");
     params.append("TransactionTypes", "PurchaseCommercialPackageRevenue");
+    params.append("TransactionTypes", "ReceiveCommercialRefundPackage");
     params.append("TransactionTypes", "DonationRevenue");
     params.append("PageNumber", "1");
     params.append("PageSize", "10");

@@ -46,7 +46,7 @@ export const getAdminWalletColumns = (): ColumnsType<Transaction> => [
         "PurchaseGameRevenue",
         "PurchaseCommercialPackageRevenue",
         "DonationRevenue",
-        "RefundRevenue",
+        "ReceiveCommercialRefundPackage",
       ];
 
       const negativeTypes: Transaction["type"][] = [
@@ -54,7 +54,7 @@ export const getAdminWalletColumns = (): ColumnsType<Transaction> => [
         "PurchaseGame",
         "PurchaseCommercialPackage",
         "Donation",
-        "Refund",
+        "RefundCommercialPackage",
       ];
 
       const isPositive = positiveTypes.includes(record.type);

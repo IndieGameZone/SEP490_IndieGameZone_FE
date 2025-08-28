@@ -8,9 +8,7 @@ import { CommercialPackage } from "@/types/commercial-package";
 const { Title } = Typography;
 
 const ManageCommercialPackage: React.FC = () => {
-  const [commercialPackages, setCommercialPackages] = useState<
-    CommercialPackage[]
-  >([]);
+  const [commercialPackages, setCommercialPackages] = useState<CommercialPackage[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -42,11 +40,11 @@ const ManageCommercialPackage: React.FC = () => {
       <div>
         <Table
           dataSource={commercialPackages}
-          columns={reportColumns}
+          columns={reportColumns(fetchCommercialPackages)}
           rowKey="id"
           loading={loading}
           pagination={{ pageSize: 5 }}
-          scroll={{ x: 1000 }}
+          scroll={{ x: "max-content" }}
         />
       </div>
     </>
