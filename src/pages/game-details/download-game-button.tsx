@@ -1,6 +1,7 @@
 import { useGlobalMessage } from "@/components/message-provider";
 import { MAX_DONATION } from "@/constants/game";
 import { donateGame } from "@/lib/api/payment-api";
+import { formatMegabytes } from "@/lib/file";
 import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
@@ -200,7 +201,7 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
                       {file.displayName ? file.displayName : "unnamed file"}
                     </span>
                     <span className="text-sm text-zinc-400">
-                      ({file.size.toFixed(1)} MB)
+                      ({formatMegabytes(file.size)})
                     </span>
                   </div>
                 );

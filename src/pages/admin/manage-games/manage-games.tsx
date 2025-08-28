@@ -13,7 +13,7 @@ import { Game, GameCensorStatus } from "@/types/game";
 import useGameStore from "@/store/use-game-store";
 import Loader from "@/components/loader";
 
-import columns from "./columns";
+import getColumns from "./columns";
 import GamesStatistics from "./games-statistics";
 import { useSearchParams } from "react-router-dom";
 import { getGamesAsAdmin } from "@/lib/api/game-api";
@@ -177,7 +177,7 @@ const ManageGames = () => {
           </div>
           <div className="shadow overflow-hidden">
             <Table<Game>
-              columns={columns}
+              columns={getColumns(rerender)}
               dataSource={games}
               rowKey="id"
               loading={loading}

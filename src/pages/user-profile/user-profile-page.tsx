@@ -1,6 +1,5 @@
 import {
   Button,
-  Checkbox,
   DatePicker,
   Form,
   FormProps,
@@ -212,7 +211,7 @@ const UserProfilePage = () => {
             </Form.Item>
           </div>
 
-          <p className="font-bold">Content</p>
+          {/* <p className="font-bold">Content</p>
           <p className="text-sm text-gray-400 mb-2">
             How content on IndieGameZone is shown to you
           </p>
@@ -222,7 +221,7 @@ const UserProfilePage = () => {
             valuePropName="checked"
           >
             <Checkbox>Show content marked as adult in search & browse</Checkbox>
-          </Form.Item>
+          </Form.Item> */}
           <div className="max-w-[600px]">
             <Form.Item<FieldType>
               name="bio"

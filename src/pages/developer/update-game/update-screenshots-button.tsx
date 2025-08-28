@@ -69,7 +69,7 @@ const UpdateScreenshotsButton = ({
 
   const props = {
     name: "file",
-    multiple: false,
+    multiple: true,
     accept: ".png,.jpg,.jpeg,.webp",
     maxCount: MAX_IMAGES - imageUrls.length,
     beforeUpload: (file: File) => {

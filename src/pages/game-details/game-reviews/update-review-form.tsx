@@ -22,7 +22,7 @@ interface UpdateReviewFormProps {
 }
 
 const UpdateReviewForm = ({ review, setIsEditing }: UpdateReviewFormProps) => {
-  const { game } = useGameStore();
+  const { game, fetchGameById } = useGameStore();
   const { profile } = useAuthStore();
   const [rating, setRating] = useState<number>(review.rating);
   const [comment, setComment] = useState<string>(review.comment);
@@ -59,6 +59,7 @@ const UpdateReviewForm = ({ review, setIsEditing }: UpdateReviewFormProps) => {
         setComment("");
         setRating(0);
         setIsEditing(false);
+        fetchGameById(game.id);
       } else {
         messageApi.error(response.error || "Failed to update review.");
       }

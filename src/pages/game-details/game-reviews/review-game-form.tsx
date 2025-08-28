@@ -16,7 +16,7 @@ const ratingHints = [
 ];
 
 const ReviewGameForm = () => {
-  const { game } = useGameStore();
+  const { game, fetchGameById } = useGameStore();
   const { profile } = useAuthStore();
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
@@ -52,6 +52,7 @@ const ReviewGameForm = () => {
         rerender();
         setComment("");
         setRating(0);
+        fetchGameById(game.id);
       } else {
         messageApi.error(response.error || "Failed to post review.");
       }

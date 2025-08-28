@@ -24,7 +24,7 @@ const AddLanguageModal = ({
   const handleSubmit = async (values: AddLanguageForm) => {
     try {
       setLoading(true);
-      await axiosClient.post("/languages", {
+      await axiosClient.post("/api/languages", {
         name: values.name,
       });
 

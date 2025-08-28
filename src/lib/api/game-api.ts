@@ -292,7 +292,7 @@ export const updateGame = async (developerId: string, gameId: string, request: U
     formData.append("VideoLink", request.videoLink);
   }
   formData.append("ShortDescription", request.shortDescription);
-  formData.append("InstallInstruction", request.installInstruction ?? "None");
+  formData.append("InstallInstruction", (request.installInstruction && request.installInstruction.length > 0) ? request.installInstruction : "None");
   formData.append("Description", request.description);
   formData.append("AllowDonation", request.allowDonation ? "true" : "false");
   formData.append("Status", request.status);

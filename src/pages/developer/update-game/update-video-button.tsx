@@ -64,6 +64,7 @@ const UpdateVideoButton = ({ url }: { url: string }) => {
       }, 1000);
       setIsModalOpen(false);
     }
+    setLoading(false);
   };
 
   const validateYouTubeUrl = (_: any, value: any) => {

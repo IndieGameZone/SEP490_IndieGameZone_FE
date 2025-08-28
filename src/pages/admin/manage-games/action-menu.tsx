@@ -14,9 +14,13 @@ import { useClipboard } from "@/hooks/use-clipboard";
 import { FaRegClipboard } from "react-icons/fa";
 import useAuthStore from "@/store/use-auth-store";
 
-const ActionMenu = ({ record }: { record: Game }) => {
+interface ActionMenuProps {
+  record: Game;
+  rerender: () => void;
+}
+const ActionMenu = ({ record, rerender }: ActionMenuProps) => {
   const navigate = useNavigate();
-  const { fetchGameById, fetchAllGamesAdmin } = useGameStore();
+  const { fetchAllGamesAdmin } = useGameStore();
   const { profile } = useAuthStore();
   const [messageApi, contextHolder] = message.useMessage();
   const { copyToClipboard } = useClipboard();
@@ -62,7 +66,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
             type: "success",
             content: `Game "${game.name}" approved successfully`,
           });
-          fetchAllGamesAdmin();
+          rerender();
         } else {
           messageApi.open({
             type: "error",
@@ -106,9 +110,7 @@ const ActionMenu = ({ record }: { record: Game }) => {
         );
         if (result.success) {
           messageApi.success(`Game "${game.name}" rejected`);
-          fetchAllGamesAdmin();
-
-          setTimeout(() => fetchGameById(game.id), 1000);
+          rerender();
         } else {
           messageApi.error(result.error || "Failed to reject game");
         }
