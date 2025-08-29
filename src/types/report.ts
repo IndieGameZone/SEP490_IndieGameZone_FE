@@ -6,6 +6,7 @@ import { User } from "./user";
 export interface ReportItem {
   id: string;
   user: User;
+  reportType: string;
   reportReason: ReportReason;
   message: string;
   status:string; 

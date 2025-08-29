@@ -166,9 +166,16 @@ export const createReportReview = async (userId: string, reportReviewData: Repor
     return handleApiError(error);
   }
 };
-export const getAllReport = async () => {
+export const getAllReport = async (reportType?: string) => {
   try {
-    const { data } = await axiosClient.get(`/api/reports`);
+    const params: Record<string, any> = {};
+    if (reportType) {
+      params.ReportType = reportType;
+    }
+
+    const { data } = await axiosClient.get(`/api/reports`, {
+      params,
+    });
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
@@ -183,17 +190,30 @@ export const changeStatusReport = async (id: string, status: "true" | "false") =
   }
 };
 
-export const getReportByReporting = async (reportingUserId: string) => {
+export const getReportByReporting = async (reportingUserId: string, reportType?: string) => {
   try {
-    const { data } = await axiosClient.get(`/api/reporting-users/${reportingUserId}/reports`);
+    const params: Record<string, any> = {};
+    if (reportType) {
+      params.ReportType = reportType;
+    }
+    const { data } = await axiosClient.get(`/api/reporting-users/${reportingUserId}/reports`, {
+      params,
+    });
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
   }
 };
-export const getReportByReported = async (reportedUserId: string) => {
+export const getReportByReported = async (reportedUserId: string, reportType?: string) => {
   try {
-    const { data } = await axiosClient.get(`/api/reported-users/${reportedUserId}/reports`);
+    const params: Record<string, any> = {};
+    if (reportType) {
+      params.ReportType = reportType;
+    }
+
+    const { data } = await axiosClient.get(`/api/reported-users/${reportedUserId}/reports`, {
+      params,
+    });
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
