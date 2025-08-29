@@ -1,6 +1,7 @@
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 import { formatCurrencyVND } from "@/lib/currency";
 import { Game } from "@/types/game";
+import { Tag } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Lightbox from "yet-another-react-lightbox";
@@ -55,7 +56,7 @@ const CarouselItem = ({ game }: CarouselItemProps) => {
               </p>
             </div>
             <div className="flex gap-2 text-sm mt-1">
-              {game.gameTags.map((tag, index: number) => {
+              {game.gameTags.slice(0, 5).map((tag, index: number) => {
                 return (
                   <Link
                     to={`/search?tag=${tag.tag.id}`}
@@ -66,6 +67,9 @@ const CarouselItem = ({ game }: CarouselItemProps) => {
                   </Link>
                 );
               })}
+              {game.gameTags && game.gameTags.length > 5 && (
+                <Tag>+{game.gameTags.length - 5} more</Tag>
+              )}
             </div>
           </div>
 

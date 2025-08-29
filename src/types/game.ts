@@ -97,7 +97,7 @@ export type GameVisibility = "Draft" | "Restricted" | "Public";
 export type LibraryItem = {
     game: {
         id: string;
-        category: string;
+        category: Category;
         coverImage: string;
         name: string;
         price: number;
@@ -112,7 +112,7 @@ export type LibraryItem = {
 export type WishlistItem = {
     game: {
         id: string;
-        category: string;
+        category: Category;
         coverImage: string;
         name: string;
         price: number;

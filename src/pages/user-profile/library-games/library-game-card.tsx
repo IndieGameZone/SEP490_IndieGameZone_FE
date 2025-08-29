@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import { Tag } from "antd";
@@ -10,7 +9,7 @@ interface LibraryGameCardProps {
   item: LibraryItem;
 }
 
-const LibraryGameCard: React.FC<LibraryGameCardProps> = ({ item }) => {
+const LibraryGameCard = ({ item }: LibraryGameCardProps) => {
   const navigate = useNavigate();
   const handleClickCard = () => navigate(`/game/${item.game.id}`);
 
@@ -34,14 +33,14 @@ const LibraryGameCard: React.FC<LibraryGameCardProps> = ({ item }) => {
       </div>
       <div className="p-3">
         <div className="flex justify-between">
-          <div>
+          <div className="min-w-0">
             <h3
-              className="font-bold text-lg cursor-pointer"
+              className="font-bold text-lg cursor-pointer truncate text-ellipsis"
               onClick={handleClickCard}
             >
               {item.game.name}
             </h3>
-            <p className="text-xs">{item.game.category}</p>
+            <p className="text-xs">{item.game.category.name}</p>
           </div>
           <div>
             <p className="text-sm font-semibold text-green-500">

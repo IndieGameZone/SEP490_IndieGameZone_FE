@@ -16,7 +16,11 @@ const WishlistGameCard: React.FC<WishlistGameCardProps> = ({ game }) => {
   const handleClickCard = () => navigate(`/game/${game.game.id}`);
 
   if (!game || !game.game.id) {
-    return <div className="bg-zinc-900 rounded-lg p-4 text-center text-gray-500">Game data unavailable</div>;
+    return (
+      <div className="bg-zinc-900 rounded-lg p-4 text-center text-gray-500">
+        Game data unavailable
+      </div>
+    );
   }
 
   return (
@@ -43,15 +47,20 @@ const WishlistGameCard: React.FC<WishlistGameCardProps> = ({ game }) => {
       </div>
       <div className="p-3">
         <div className="flex justify-between">
-          <div>
-            <h3 className="font-bold text-lg cursor-pointer" onClick={handleClickCard}>
+          <div className="min-w-0">
+            <h3
+              className="font-bold text-lg cursor-pointer truncate text-ellipsis"
+              onClick={handleClickCard}
+            >
               {game.game.name}
             </h3>
-            <p className="text-xs hover:underline">{game.game.category}</p>
+            <p className="text-xs hover:underline">{game.game.category.name}</p>
           </div>
           <div>
             <p className="text-sm font-semibold text-green-500">
-              {game.game.price === 0 ? "Free" : formatCurrencyVND(game.game.price)}
+              {game.game.price === 0
+                ? "Free"
+                : formatCurrencyVND(game.game.price)}
             </p>
             {game.game.numberOfReviews > 0 ? (
               <div className="flex items-center justify-end gap-1">
@@ -63,14 +72,18 @@ const WishlistGameCard: React.FC<WishlistGameCardProps> = ({ game }) => {
             )}
           </div>
         </div>
-        <p className="py-1 text-sm text-zinc-500">{game.game.shortDescription}</p>
+        <p className="py-1 text-sm text-zinc-500">
+          {game.game.shortDescription}
+        </p>
         <div className="flex items-center mt-1">
           {game.game.tags?.slice(0, 3).map((tag, index) => (
             <Tag color="orange" key={index}>
               {tag}
             </Tag>
           ))}
-          {game.game.tags && game.game.tags.length > 3 && <Tag color="orange">+{game.game.tags.length - 3} more</Tag>}
+          {game.game.tags && game.game.tags.length > 3 && (
+            <Tag color="orange">+{game.game.tags.length - 3} more</Tag>
+          )}
         </div>
       </div>
     </div>
