@@ -71,7 +71,7 @@ export const columns: TableProps<Transaction>["columns"] = [
     render: (amount: number = 0, record: Transaction) => {
       const type = record.type.toLowerCase();
       const isDeposit = type === "deposit";
-      const isRefund = type === "refundrevenue";
+      const isRefund = type === "ReceiveCommercialRefundPackage";
       const isWithdraw = type === "withdraw";
       const isPurchase = type === "purchasegame" || type === "purchasecommercialpackage" || type === "donation";
       const isWallet = record.paymentMethod === "Wallet";

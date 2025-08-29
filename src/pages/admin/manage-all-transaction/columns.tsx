@@ -65,7 +65,7 @@ export const getAllTransactionColumns = (
         "PurchaseGameRevenue",
         "PurchaseCommercialPackageRevenue",
         "DonationRevenue",
-        "RefundRevenue",
+        "ReceiveCommercialRefundPackage",
       ];
 
       const negativeTypes: Transaction["type"][] = [
@@ -73,7 +73,7 @@ export const getAllTransactionColumns = (
         "PurchaseGame",
         "PurchaseCommercialPackage",
         "Donation",
-        "Refund",
+        "RefundCommercialPackage",
       ];
 
       const isPositive = positiveTypes.includes(record.type);

@@ -17,8 +17,8 @@ export type Transaction = {
     | "PurchaseGame"
     | "PurchaseCommercialPackage"
     | "Donation"
-    | "Refund"
-    | "RefundRevenue"
+    | "RefundCommercialPackage"
+    | "ReceiveCommercialRefundPackage"
     | "PurchaseGameRevenue"
     | "PurchaseCommercialPackageRevenue"
     | "DonationRevenue";
@@ -31,8 +31,8 @@ export function getReadableTransactionType(type: Transaction["type"]): string {
   const typeMap: Record<Transaction["type"], string> = {
     Deposit: "Deposit",
     Withdraw: "Withdraw",
-    Refund: "Refund",
-    RefundRevenue: "Refund Commercial Package",
+    RefundCommercialPackage: "Refund Commercial Package",
+    ReceiveCommercialRefundPackage: "Receive Refund Commercial Package",
     PurchaseGame: "Purchase Game",
     PurchaseCommercialPackage: "Purchase Commercial Package",
     Donation: "Donation",

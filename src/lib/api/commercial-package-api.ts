@@ -90,3 +90,11 @@ export const cancelCommercialPackageRegistration = async (registrationId: string
     return handleApiError(error);
   }
 };
+export const activeCommercialPackageRegistration = async (registrationId: string) => {
+  try {
+    const { data } = await axiosClient.patch(`/api/commercial-packages/registrations/activate/${registrationId}`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

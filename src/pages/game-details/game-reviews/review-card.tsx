@@ -3,9 +3,18 @@ import { Avatar, Button, message, Rate, Tooltip } from "antd";
 import { CiUser } from "react-icons/ci";
 import { FaFlag } from "react-icons/fa";
 import { Review } from "@/types/review";
-
+import ReportReviewModal from "@/components/report-modal/report-review-modal";
+import { useState } from "react";
 
 const ReviewCard = ({ review }: { review: Review }) => {
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const handleReportClick = () => {
+    setIsReportModalOpen(true);
+  };
+
+  const handleReportModalClose = () => {
+    setIsReportModalOpen(false);
+  };
   return (
     <div className="p-3 rounded bg-zinc-800 mb-3">
       <div className="flex gap-3">
@@ -24,7 +33,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
               </p>
             </div>
             <Tooltip title="Report this review">
-              <Button shape="circle" icon={<FaFlag />} onClick={() => message.info(`Reported review ${review.id}`)} />
+              <Button shape="circle" icon={<FaFlag />} onClick={handleReportClick} />{" "}
             </Tooltip>
           </div>
           <div className="my-1">
@@ -56,6 +65,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
           </div> */}
         </div>
       </div>
+      <ReportReviewModal open={isReportModalOpen} onClose={handleReportModalClose} reviewId={review.id} />
     </div>
   );
 };
