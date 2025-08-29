@@ -1,10 +1,10 @@
+import ReportReviewModal from "@/components/report-modal/report-review-modal";
 import { timeAgo } from "@/lib/date-n-time";
-import { Avatar, Button, message, Rate, Tooltip } from "antd";
+import { Review } from "@/types/review";
+import { Avatar, Button, Rate, Tooltip } from "antd";
+import { useState } from "react";
 import { CiUser } from "react-icons/ci";
 import { FaFlag } from "react-icons/fa";
-import { Review } from "@/types/review";
-import ReportReviewModal from "@/components/report-modal/report-review-modal";
-import { useState } from "react";
 
 const ReviewCard = ({ review }: { review: Review }) => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
