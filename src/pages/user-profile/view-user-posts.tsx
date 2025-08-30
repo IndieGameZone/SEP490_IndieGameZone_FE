@@ -1,5 +1,5 @@
 import { useGlobalMessage } from "@/components/message-provider";
-import {  getPostByUserId } from "@/lib/api/game-post-api";
+import { getPostByUserId } from "@/lib/api/game-post-api";
 import { GamePost } from "@/types/game-post";
 import { Alert, Empty, Spin, Tag, Tooltip } from "antd";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import PostCard from "../game-details/game-posts/post-card";
 import DeletePostConfirmationModal from "../game-details/game-posts/delete-post-confirmation-modal";
 import useAuthStore from "@/store/use-auth-store";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import Loader from "@/components/loader";
 
 const ViewUserPosts = () => {
   const { userId } = useParams();
@@ -96,7 +97,7 @@ const ViewUserPosts = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-48">
-        <Spin size="large" />
+        <Loader />
       </div>
     );
   }
@@ -145,24 +146,31 @@ const ViewUserPosts = () => {
           </div>
           {posts.map((post) => {
             const isApproved = post.status?.toLowerCase() === "approved";
-
+            const gameName = post.game?.name || "Unknown Game";
+            const tooltipTitle = `Post in game: ${gameName}`;
             return (
-              <div key={post.id} className={`relative ${!isApproved ? "opacity-70 transition-opacity" : ""}`}>
-                {!isApproved && post.status && (
-                  <div className="absolute top-3 right-3 z-10">
-                    <Tooltip title={`This post is ${getStatusBadge(post.status).text}`}>
+              <Tooltip
+                key={post.id}
+                title={tooltipTitle}
+                placement="topRight"
+                mouseEnterDelay={0.3}
+              >
+                <div className={`relative ${!isApproved ? "opacity-70 transition-opacity" : ""} cursor-pointer`}>
+                  {!isApproved && post.status && (
+                    <div className="absolute top-5 right-8 z-10">
                       <Tag color={getStatusBadge(post.status).color} className="px-2 py-1 font-medium">
                         {getStatusBadge(post.status).text}
                       </Tag>
-                    </Tooltip>
-                  </div>
-                )}
-                <PostCard
-                  post={post}
-                  onViewPostDetail={() => handleViewPostDetail(post.id, post.game.id)}
-                  onDelete={isProfileOwner ? handleDeletePost : undefined}
-                />
-              </div>
+                    </div>
+                  )}
+
+                  <PostCard
+                    post={post}
+                    onViewPostDetail={() => handleViewPostDetail(post.id, post.game.id)}
+                    onDelete={isProfileOwner ? handleDeletePost : undefined}
+                  />
+                </div>
+              </Tooltip>
             );
           })}
         </>
