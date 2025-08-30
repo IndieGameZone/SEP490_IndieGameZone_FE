@@ -140,3 +140,11 @@ export const getDevActivePosts = async (developerId: string) => {
     return handleApiError(error);
   }
 };
+export const getPostByUserId = async (userId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/users/${userId}/posts`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

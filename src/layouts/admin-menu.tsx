@@ -1,6 +1,7 @@
 import { MenuProps } from "antd";
 import { Dispatch } from "react";
 import { BiMoneyWithdraw, BiSolidUserAccount } from "react-icons/bi";
+import { BsPostcardHeartFill } from "react-icons/bs";
 import { CgGames } from "react-icons/cg";
 import { FaDoorOpen, FaMoneyBill, FaTags, FaWindows } from "react-icons/fa";
 import { GoReport } from "react-icons/go";
@@ -24,6 +25,12 @@ export const getAdminFullMenuItems = (navigate: NavigateFunction, handleLogout: 
       icon: <BiSolidUserAccount />,
       label: "Manage Accounts",
       onClick: () => navigate("/admin/manage-accounts"),
+    },
+      {
+      key: "/admin/manage-posts",
+      icon: <BsPostcardHeartFill />,
+      label: "Manage Posts",
+      onClick: () => navigate("/admin/manage-posts"),
     },
     {
       key: "report-management",

@@ -16,6 +16,7 @@ export type GamePost = {
   createdAt: string;
   game: Game;
   user: User;
+  status: string;
   liked?: boolean;
 };
 

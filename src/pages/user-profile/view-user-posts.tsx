@@ -1,11 +1,13 @@
 import { useGlobalMessage } from "@/components/message-provider";
-import { getDevActivePosts } from "@/lib/api/game-post-api";
+import {  getPostByUserId } from "@/lib/api/game-post-api";
 import { GamePost } from "@/types/game-post";
-import { Empty, Spin } from "antd";
+import { Alert, Empty, Spin, Tag, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PostCard from "../game-details/game-posts/post-card";
 import DeletePostConfirmationModal from "../game-details/game-posts/delete-post-confirmation-modal";
+import useAuthStore from "@/store/use-auth-store";
+import { InfoCircleOutlined } from "@ant-design/icons";
 
 const ViewUserPosts = () => {
   const { userId } = useParams();
@@ -14,18 +16,31 @@ const ViewUserPosts = () => {
   const [loading, setLoading] = useState(false);
   const messageApi = useGlobalMessage();
   const [postToDelete, setPostToDelete] = useState<string | null>(null);
+  const { profile } = useAuthStore();
+  const [username, setUsername] = useState<string>("this user");
+
+  const isProfileOwner = profile?.id === userId;
 
   useEffect(() => {
     fetchUserPosts();
-  }, [userId]);
+  }, [userId, isProfileOwner]);
 
   const fetchUserPosts = async () => {
     if (!userId) return;
     setLoading(true);
     try {
-      const result = await getDevActivePosts(userId);
+      const result = await getPostByUserId(userId);
       if (result.success) {
-        setPosts(result.data);
+        if (isProfileOwner) {
+          setPosts(result.data);
+        } else {
+          const approvedPosts = result.data.filter((post: GamePost) => post.status?.toLowerCase() === "approved");
+          setPosts(approvedPosts);
+
+          if (result.data.length > 0 && result.data[0].user && result.data[0].user.userName) {
+            setUsername(result.data[0].user.userName);
+          }
+        }
       } else {
         messageApi.error(result.error || "Failed to load posts");
       }
@@ -49,6 +64,35 @@ const ViewUserPosts = () => {
     fetchUserPosts();
   };
 
+  const getStatusBadge = (status: string) => {
+    let color = "default";
+    let text = status;
+
+    switch (status.toLowerCase()) {
+      case "approved":
+        color = "success";
+        text = "Approved";
+        break;
+      case "pendingaireview":
+        color = "processing";
+        text = "Pending AI Review";
+        break;
+      case "pendingmanualreview":
+        color = "warning";
+        text = "Pending Manual Review";
+        break;
+      case "rejected":
+        color = "error";
+        text = "Rejected";
+        break;
+      default:
+        color = "default";
+        text = status;
+    }
+
+    return { color, text };
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-48">
@@ -59,20 +103,69 @@ const ViewUserPosts = () => {
 
   return (
     <div className="space-y-4 bg-zinc-900 border border-zinc-700 p-3 rounded">
+      <div className="">
+        {!isProfileOwner && (
+          <Alert
+            message={
+              <div className="flex items-center">
+                <InfoCircleOutlined className="mr-2" />
+                <span>You're viewing only the approved posts from {username}</span>
+              </div>
+            }
+            type="success"
+            showIcon={false}
+            className="mb-4"
+          />
+        )}
+      </div>
       {posts.length === 0 ? (
         <Empty
-          description="This user has posts yet"
+          description={isProfileOwner ? "You haven't created any posts yet" : `${username} has no approved posts yet`}
           className="p-8 rounded"
         />
       ) : (
-        posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            onViewPostDetail={() => handleViewPostDetail(post.id, post.game.id)}
-            onDelete={handleDeletePost}
-          />
-        ))
+        <>
+          <div>
+            {isProfileOwner && (
+              <Alert
+                message={
+                  <div>
+                    <span className="text-lg font-semibold">My Posts </span>
+                    <div className="flex items-center gap-2">
+                      <InfoCircleOutlined />
+                      <span>You can read all your Posts including all Post statuses</span>
+                    </div>
+                  </div>
+                }
+                type="info"
+                showIcon={false}
+                className="mb-4"
+              />
+            )}
+          </div>
+          {posts.map((post) => {
+            const isApproved = post.status?.toLowerCase() === "approved";
+
+            return (
+              <div key={post.id} className={`relative ${!isApproved ? "opacity-70 transition-opacity" : ""}`}>
+                {!isApproved && post.status && (
+                  <div className="absolute top-3 right-3 z-10">
+                    <Tooltip title={`This post is ${getStatusBadge(post.status).text}`}>
+                      <Tag color={getStatusBadge(post.status).color} className="px-2 py-1 font-medium">
+                        {getStatusBadge(post.status).text}
+                      </Tag>
+                    </Tooltip>
+                  </div>
+                )}
+                <PostCard
+                  post={post}
+                  onViewPostDetail={() => handleViewPostDetail(post.id, post.game.id)}
+                  onDelete={isProfileOwner ? handleDeletePost : undefined}
+                />
+              </div>
+            );
+          })}
+        </>
       )}
 
       <DeletePostConfirmationModal
