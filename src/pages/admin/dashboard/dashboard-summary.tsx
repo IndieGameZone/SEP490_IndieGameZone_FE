@@ -1,9 +1,11 @@
 import { getDashboardSummary, getTotalCurrentDevRevenue } from "@/lib/api/admin-dashboard-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { useEffect, useState } from "react";
+import { CiBank } from "react-icons/ci";
 import { FaHandsHelping, FaUser } from "react-icons/fa";
 import { FaGamepad } from "react-icons/fa6";
 import { GoPackage } from "react-icons/go";
+import { HiStatusOnline } from "react-icons/hi";
 
 type Data = {
   onlineUserCount: number;
@@ -52,6 +54,13 @@ const DashboardSummary = () => {
           <p className="text-xs">Total Users</p>
         </div>
       </div>
+      <div className="md:col-span-3 bg-yellow-600 text-white p-5 rounded flex items-center gap-5">
+        <HiStatusOnline className="p-4 size-12 bg-yellow-500 rounded-full" />
+        <div>
+          <p className="text-2xl font-semibold">{summaryData.onlineUserCount}</p>
+          <p className="text-xs"> Users Online</p>
+        </div>
+      </div>
       <div className="md:col-span-3 bg-blue-600 text-white p-5 rounded flex items-center gap-5">
         <GoPackage className="p-4 size-12 bg-blue-500 rounded-full" />
         <div>
@@ -71,6 +80,13 @@ const DashboardSummary = () => {
         <div>
           <p className="text-2xl font-semibold">{formatCurrencyVND(developerRevenue)}</p>
           <p className="text-xs">Developer Revenue</p>
+        </div>
+      </div>
+      <div className="md:col-span-3 bg-green-600 text-white p-5 rounded flex items-center gap-5">
+        <CiBank className="p-4 size-12 bg-green-500 rounded-full" />
+        <div>
+          <p className="text-2xl font-semibold">{formatCurrencyVND(developerRevenue)}</p>
+          <p className="text-xs">Money in Bank Account</p>
         </div>
       </div>
     </>
