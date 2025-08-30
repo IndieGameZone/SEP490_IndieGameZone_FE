@@ -5,8 +5,11 @@ import { Avatar, Button, Rate, Tooltip } from "antd";
 import { useState } from "react";
 import { CiUser } from "react-icons/ci";
 import { FaFlag } from "react-icons/fa";
-
-const ReviewCard = ({ review }: { review: Review }) => {
+interface ReviewCardProps {
+  review: Review;
+  hideReportButton?: boolean;
+}
+const ReviewCard = ({ review, hideReportButton }: ReviewCardProps) => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const handleReportClick = () => {
     setIsReportModalOpen(true);
@@ -32,9 +35,11 @@ const ReviewCard = ({ review }: { review: Review }) => {
                 {review.createdAt ? timeAgo(new Date(review.createdAt)) : "Unknown date"}
               </p>
             </div>
-            <Tooltip title="Report this review">
-              <Button shape="circle" icon={<FaFlag />} onClick={handleReportClick} />{" "}
-            </Tooltip>
+            {!hideReportButton && (
+              <Tooltip title="Report this review">
+                <Button shape="circle" icon={<FaFlag />} onClick={handleReportClick} />
+              </Tooltip>
+            )}
           </div>
           <div className="my-1">
             <Rate disabled value={review.rating || 0} />

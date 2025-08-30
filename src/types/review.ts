@@ -1,3 +1,4 @@
+import { Game } from "./game";
 import { User } from "./user";
 
 export type Review = {
@@ -7,5 +8,6 @@ export type Review = {
   comment: string;
   createdAt: string;
   likes: number;
+  game: Game | null;
   dislikes: number;
 };
