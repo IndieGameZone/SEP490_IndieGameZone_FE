@@ -42,15 +42,17 @@ export const createReactionPost = async (userId: string, postId: string) => {
 };
 
 type GetGamePostParams = {
-  PageNumber?: number,
-  PageSize?: number
-}
+  PageNumber?: number;
+  PageSize?: number;
+};
 
 export const getGamePosts = async (gameId: string, params: GetGamePostParams) => {
   try {
     const { data, headers } = await axiosClient.get(`/api/games/${gameId}/posts${toSearchParams(params)}`);
     return {
-      error: null, data: { posts: data, headers }, success: true
+      error: null,
+      data: { posts: data, headers },
+      success: true,
     };
   } catch (error) {
     return handleApiError(error);
@@ -61,7 +63,9 @@ export const getGamePostById = async (postId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/posts/${postId}`);
     return {
-      error: null, data: data, success: true
+      error: null,
+      data: data,
+      success: true,
     };
   } catch (error) {
     return handleApiError(error);
@@ -89,7 +93,7 @@ export const getReactionPost = async (userId: string, postId: string) => {
 export const createPostComment = async (userId: string, postId: string, content: string) => {
   try {
     const { data } = await axiosClient.post(`/api/posts/${postId}/users/${userId}/post-comments`, {
-      content
+      content,
     });
     return { error: null, data: data, success: true };
   } catch (error) {
@@ -143,6 +147,30 @@ export const getDevActivePosts = async (developerId: string) => {
 export const getPostByUserId = async (userId: string) => {
   try {
     const { data } = await axiosClient.get(`/api/users/${userId}/posts`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+export const getAllPost = async () => {
+  try {
+    const { data } = await axiosClient.get(`/api/posts`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+export const getPostById = async (postId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/posts/${postId}`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+export const ChangePostStatus = async (postId: string, status: string) => {
+  try {
+    const { data } = await axiosClient.put(`/api/posts/${postId}/post-status`, toFormData({ status }));
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
