@@ -11,10 +11,7 @@ import { RiAdvertisementLine } from "react-icons/ri";
 import { TbCancel } from "react-icons/tb";
 import { NavigateFunction } from "react-router-dom";
 
-export const getAdminFullMenuItems = (
-  navigate: NavigateFunction,
-  handleLogout: () => void
-): MenuProps["items"] => {
+export const getAdminFullMenuItems = (navigate: NavigateFunction, handleLogout: () => void): MenuProps["items"] => {
   return [
     {
       key: "dashboard",
@@ -103,6 +100,11 @@ export const getAdminFullMenuItems = (
           key: "/admin/wallet",
           label: "Admin Wallet",
           onClick: () => navigate("/admin/wallet"),
+        },
+        {
+          key: "/admin/manage-orders",
+          label: "Manage Orders",
+          onClick: () => navigate("/admin/manage-orders"),
         },
         {
           key: "/admin/manage-system-transaction",

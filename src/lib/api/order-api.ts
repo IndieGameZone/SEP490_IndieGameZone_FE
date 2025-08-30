@@ -40,3 +40,11 @@ export const resetGameKey = async (userId: string, gameId: string) => {
     return handleApiError(error);
   }
 };
+export const getAllOrders = async () => {
+  try {
+    const { data } = await axiosClient.get(`/api/orders`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};

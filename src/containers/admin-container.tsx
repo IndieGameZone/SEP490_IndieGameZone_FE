@@ -25,6 +25,7 @@ const AdminWithdrawalRequestsPage = lazy(
   () => import("@/pages/admin/manage-withdraw-request/manage-admin-withdraw-requests-page")
 );
 const ManageAchievement = lazy(() => import("@/pages/admin/manage-achievement/manage-achievement"));
+const ManageOrders = lazy(() => import("@/pages/admin/manage-orders/manage-order"));
 const AdminContainer = () => {
   return (
     <AdminLayout>
@@ -35,6 +36,7 @@ const AdminContainer = () => {
           <Route path="*" element={<AdminNotFoundPage />} />
           <Route path="/manage-languages" element={<ManageLanguages />} />
           <Route path="/manage-tags" element={<ManageTags />} />
+          <Route path="/manage-orders" element={<ManageOrders />} />
           <Route path="/manage-report" element={<ManageReport />} />
           <Route path="/manage-system-transaction" element={<ManageAllTransaction />} />
           <Route path="/wallet" element={<ManageAdminWallet />} />

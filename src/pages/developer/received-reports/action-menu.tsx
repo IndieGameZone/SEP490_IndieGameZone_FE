@@ -49,22 +49,7 @@ const ActionMenu = ({ record, onSuccess }: ActionMenuProps) => {
               icon: <FaEye />,
               onClick: () => handleMenuClick("view"),
             },
-            ...(record.status === "Pending"
-              ? [
-                  {
-                    key: "approve",
-                    label: <span className="text-green-400">Approval</span>,
-                    icon: <FcApproval />,
-                    onClick: () => handleMenuClick("approve"),
-                  },
-                  {
-                    key: "reject",
-                    label: <span className="text-red-400">Rejection</span>,
-                    icon: <FcCancel />,
-                    onClick: () => handleMenuClick("reject"),
-                  },
-                ]
-              : []),
+          
           ],
         }}
         trigger={["click"]}
