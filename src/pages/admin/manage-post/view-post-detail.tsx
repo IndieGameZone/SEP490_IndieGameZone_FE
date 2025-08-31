@@ -7,6 +7,7 @@ import { getStatusBadge } from "./columns";
 import { FaComment, FaHeart } from "react-icons/fa";
 import { ChangePostStatus } from "@/lib/api/game-post-api";
 import { useGlobalMessage } from "@/components/message-provider";
+import TiptapView from "@/components/tiptap/tiptap-view";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -145,7 +146,7 @@ const ViewPostDetailModal: React.FC<ViewPostDetailModalProps> = ({ open, onClose
               </div>
               <Title level={5}>Post Content</Title>
               <div className="bg-gray-50 p-3 rounded border mt-2">
-                <Paragraph className="whitespace-pre-wrap mb-0">{post?.content || "No content available"}</Paragraph>
+                <TiptapView value={post?.content || "No content available"} darkTheme={false} />
               </div>
             </div>
 

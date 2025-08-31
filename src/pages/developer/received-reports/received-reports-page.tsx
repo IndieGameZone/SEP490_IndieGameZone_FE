@@ -37,7 +37,7 @@ const ReceivedReportsPage: React.FC = () => {
   useEffect(() => {
     fetchReceivedReports();
   }, [fetchReceivedReports]);
-  const handleReportTypeChange = (value: string ) => {
+  const handleReportTypeChange = (value: string) => {
     setReportType(value);
   };
   return (
@@ -48,7 +48,7 @@ const ReceivedReportsPage: React.FC = () => {
       <div className="container mx-auto md:px-4">
         <Card className="mb-4">
           <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-            <div>
+            <div className="flex gap-3 items-center justify-end">
               <label className="block mb-2 font-medium">Filter by Report Type:</label>
               <Select
                 style={{ width: 200 }}
