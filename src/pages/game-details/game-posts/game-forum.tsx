@@ -101,7 +101,7 @@ const GameForum = () => {
   }, [gameId, renderKey]);
 
   return (
-    <div className="grid grid-cols-12 gap-3">
+    <div className="flex flex-col md:grid md:grid-cols-12 gap-3">
       {contextHolder}
 
       <PostDetailModal

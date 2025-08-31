@@ -35,7 +35,7 @@ const ReviewFiltersPanel = ({ selectedRating, setFilters }: ReviewFiltersPanelPr
   };
 
   return (
-    <div className="p-3 bg-zinc-800 rounded">
+    <div className="p-3 bg-zinc-800 rounded md:block hidden">
       <p className="text-sm text-zinc-500 mb-1">Star ratings</p>
       <Radio.Group
         block

@@ -96,7 +96,7 @@ const GameReviews = () => {
         <hr className="my-1 border-zinc-600" />
 
         <ReviewFiltersPanel selectedRating={filters.rating} setFilters={setFilters} />
-        <div className="grid grid-cols-12 mt-3 gap-3">
+        <div className="flex flex-col md:grid md:grid-cols-12 mt-3 gap-3">
           <div className="col-span-4">
             <RatingChart data={ratingChartData} />
           </div>
