@@ -50,7 +50,7 @@ const GameOverView = () => {
   const activeFiles = game.gamePlatforms.filter((x) => x.isActive);
 
   return (
-    <div className="grid grid-cols-12 gap-2">
+    <div className="flex md:grid md:grid-cols-12 gap-2 flex-col-reverse">
       <div className="col-span-8 bg-zinc-900">
         <div className="bg-zinc-800 p-5 border border-zinc-800 rounded">
           {game.videoLink && (
@@ -104,7 +104,7 @@ const GameOverView = () => {
         </div>
       </div>
       {/* DISLAY DOWNLOAD/PURCHASE BUTTON */}
-      <div className="col-span-4">
+      <div className="md:col-span-4">
         {isGameDeveloper ? (
           <div className="bg-zinc-800 rounded p-5">
             <h1 className="font-semibold text-xl">Manage Game</h1>
@@ -142,7 +142,7 @@ const DownloadPanel = ({
   activeFiles: any[];
 }) => {
   return (
-    <div className="bg-zinc-800 rounded">
+    <div className="bg-zinc-800 rounded w-full">
       <h1 className="px-5 pt-5 font-semibold text-xl">Download Game</h1>
       <div className="px-5 pt-2 pb-5 border-b border-zinc-800 ">
         <div className="flex gap-3 items-center">
