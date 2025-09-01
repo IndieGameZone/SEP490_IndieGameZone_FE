@@ -28,8 +28,33 @@ public class ActivationScreen : MonoBehaviour
     {
         if (LicenseManager.IsActivated())
         {
-            SceneManager.LoadScene("MainMenu");
+            StartCoroutine(
+                LicenseManager.VerifyLicense(isValid =>
+                {
+                    if (isValid)
+                    {
+                        SceneManager.LoadScene("MainMenu");
+                    }
+                    else
+                    {
+                        if (Application.internetReachability == NetworkReachability.NotReachable)
+                        {
+                            Debug.LogWarning(
+                                "No internet connection, skipping license check temporarily."
+                            );
+                            SceneManager.LoadScene("MainMenu");
+                        }
+                        else
+                        {
+                            feedbackText.text = "License no longer valid. Please re-activate.";
+                            submitButton.interactable = true;
+                            buttonText.text = "Submit";
+                        }
+                    }
+                })
+            );
         }
+
         keyInput.onEndEdit.AddListener(TrimInput);
     }
 
