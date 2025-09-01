@@ -11,6 +11,7 @@ type CodeBlockProps = {
 
 export default function CodeBlock({ code, language, ...rest }: CodeBlockProps) {
   const { isCopied, copyToClipboard } = useClipboard();
+
   return (
     <div className="relative rounded-md overflow-hidden" {...rest}>
       <div className="flex justify-between items-center bg-zinc-800 text-white text-sm px-2 py-1">
@@ -24,13 +25,15 @@ export default function CodeBlock({ code, language, ...rest }: CodeBlockProps) {
           {isCopied ? "Copied!" : "Copy"}
         </Button>
       </div>
-      <SyntaxHighlighter
-        language={language}
-        style={vscDarkPlus}
-        customStyle={{ marginBlock: 0 }}
-      >
-        {code}
-      </SyntaxHighlighter>
+      <div className="max-h-96 overflow-auto"> 
+        <SyntaxHighlighter
+          language={language}
+          style={vscDarkPlus}
+          customStyle={{ marginBlock: 0 }}
+        >
+          {code}
+        </SyntaxHighlighter>
+      </div>
     </div>
   );
 }

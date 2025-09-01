@@ -4,19 +4,27 @@ import { Button, Tabs, TabsProps } from "antd";
 import { FaRegCopy } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const ActivateLicenseApiDocs = () => {
+const LicenseStatusEndpointDocs = () => {
   const { isCopied, copyToClipboard } = useClipboard();
 
   const responseItems: TabsProps["items"] = [
     {
-      key: "204",
-      label: "204 Success",
+      key: "200",
+      label: "200 OK",
       children: (
         <div>
-          <span className="italic text-zinc-400">204 No Content</span>
+          <p className="mb-1">
+            <strong>Response body</strong>
+          </p>
+          <CodeBlock language="json" code={`"true"`} />
           <p className="mt-1">
             <strong>Meaning: </strong>
-            License key successfully activated for this game.
+            The license key is still active and valid for use.
+          </p>
+          <CodeBlock language="json" code={`"false"`} />
+          <p className="mt-1">
+            <strong>Meaning: </strong>
+            The license key is no longer active or has been revoked.
           </p>
         </div>
       ),
@@ -41,32 +49,7 @@ const ActivateLicenseApiDocs = () => {
           />
           <p className="mt-1">
             <strong>Meaning: </strong>
-            The provided license key is invalid.
-          </p>
-        </div>
-      ),
-    },
-    {
-      key: "400",
-      label: "400 Bad Request",
-      children: (
-        <div>
-          <p className="mb-1">
-            <strong>Response body</strong>
-          </p>
-          <CodeBlock
-            language="json"
-            code={`{
-  "type": "BadRequestException",
-  "title": "An error occurred",
-  "status": 400,
-  "detail": "Key already used"
-}
-`}
-          />
-          <p className="mt-1">
-            <strong>Meaning: </strong>
-            License key already activated on another machine.
+            The provided license key does not exist.
           </p>
         </div>
       ),
@@ -82,16 +65,16 @@ const ActivateLicenseApiDocs = () => {
           <CodeBlock
             language="json"
             code={`{
-  "type": "NulIReferenceException",
+  "type": "Exception",
   "title": "An error occurred",
   "status": 500,
-  "detail": "object reference not set to an instance of an object."
+  "detail": "Unexpected server error"
 }
 `}
           />
           <p className="mt-1">
             <strong>Meaning: </strong>
-            Unexpected server-side error.
+            Something went wrong on the server side.
           </p>
         </div>
       ),
@@ -99,14 +82,15 @@ const ActivateLicenseApiDocs = () => {
   ];
 
   return (
-    <div className=" grid grid-cols-12">
+    <div className="grid grid-cols-12">
       <div className="col-span-8">
-        <h2 className="mb-3 text-3xl font-bold">Activate License Key</h2>
+        <h2 className="mb-3 text-3xl font-bold">Check License Status</h2>
         <p className="mb-3 text-zinc-400">
-          {new Date("2025-08-23").toDateString()}
+          {new Date("2025-08-30").toDateString()}
         </p>
         <p>
-          Activates a license key for a specific game on the current machine.
+          Checks if a license key is still active or has been revoked for a
+          specific game.
         </p>
 
         <h3 className="uppercase text-zinc-400 mb-2 mt-5 border-b border-zinc-700">
@@ -116,27 +100,31 @@ const ActivateLicenseApiDocs = () => {
           language="bash"
           code={`https://indiegamezonese101.azurewebsites.net/api`}
         />
+
         <h3 className="uppercase text-zinc-400 mb-2 mt-7 border-b border-zinc-700">
           Endpoint
         </h3>
         <div className="flex gap-2 items-center p-3 bg-zinc-950 font-mono">
-          <span className="bg-amber-500 px-2 py-0.5 text-xs text-white rounded">
-            PUT
+          <span className="bg-green-500 px-2 py-0.5 text-xs text-white rounded">
+            GET
           </span>
-          <span className="flex-1">{`/games/{gameId}/activation-keys/{licenseKey}/activation`}</span>
+          <span className="flex-1">
+            {`/games/{gameId}/activation-keys/{activationKey}/status`}
+          </span>
           <Button
             icon={<FaRegCopy />}
             type="text"
             size="small"
             onClick={() =>
               copyToClipboard(
-                `https://indiegamezonese101.azurewebsites.net/api/games/{gameId}/activation-keys/{licenseKey}/activation`
+                `https://indiegamezonese101.azurewebsites.net/api/games/{gameId}/activation-keys/{activationKey}/status`
               )
             }
           >
             {isCopied ? "Copied!" : "Copy"}
           </Button>
         </div>
+
         <h3 className="uppercase text-zinc-400 mb-2 mt-7 border-b border-zinc-700">
           Path Parameters
         </h3>
@@ -163,35 +151,30 @@ const ActivateLicenseApiDocs = () => {
           </tr>
           <tr>
             <td className="font-mono">
-              licenseKey
+              activationKey
               <br />
               <span className="text-rose-500">required</span>
             </td>
             <td className="text-zinc-400">string</td>
-            <td>The license key entered by the user.</td>
+            <td>The license key to check the status of.</td>
           </tr>
         </table>
+
         <h3 className="uppercase text-zinc-400 mb-2 mt-7 border-b border-zinc-700">
           Headers
         </h3>
-        <table className="params-table">
-          <tr>
-            <th>Header</th>
-            <th>Value</th>
-          </tr>
-          <tr>
-            <td className="font-mono">Content-Type</td>
-            <td className="font-mono">application/json</td>
-          </tr>
-        </table>
+        <p className="text-zinc-400 italic">No special headers required.</p>
+
         <h3 className="uppercase text-zinc-400 mb-2 mt-7 border-b border-zinc-700">
           Request Body
         </h3>
         <p className="text-zinc-400 italic">No request body required.</p>
+
         <h3 className="uppercase text-zinc-400 mb-2 mt-7 border-b border-zinc-700">
-          Responses Samples
+          Response Samples
         </h3>
-        <Tabs defaultActiveKey="204" type="card" items={responseItems} />
+        <Tabs defaultActiveKey="200" type="card" items={responseItems} />
+
         <h2 className="mt-10 mb-5 text-3xl font-bold" id="part-6">
           Next Steps
         </h2>
@@ -208,4 +191,4 @@ const ActivateLicenseApiDocs = () => {
   );
 };
 
-export default ActivateLicenseApiDocs;
+export default LicenseStatusEndpointDocs;

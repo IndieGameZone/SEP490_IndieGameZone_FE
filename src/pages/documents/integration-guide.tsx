@@ -44,6 +44,11 @@ const IntegrationGuide = () => {
             On subsequent runs the game checks local storage and validates that
             the saved machine ID matches the current machine ID.
           </li>
+          <li>
+            Periodically calls the status endpoint to verify that the saved
+            license key is still active. If the key is revoked, it resets local
+            activation.
+          </li>
         </ul>
         <p className="mt-2">
           This approach implements machine-bound license activation — useful for
@@ -54,7 +59,7 @@ const IntegrationGuide = () => {
         </h2>
         <h3 className="font-semibold text-lg">Example LicenseManager usage</h3>
         <SampleLicenseManager />
-        <p>
+        <p className="mt-5">
           Your code exposes a static{" "}
           <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono rounded">
             LicenseManager
@@ -79,12 +84,19 @@ const IntegrationGuide = () => {
           </li>
           <li>
             <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono text-sm rounded">
+              VerifyLicense(Action&lt;bool&gt; onResult)
+            </code>
+            — coroutine that calls the status API and resets license if
+            inactive.
+          </li>
+          <li>
+            <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono text-sm rounded">
               ResetLicense()
             </code>{" "}
             — clears local activation
           </li>
         </ul>
-        <h3 className="font-semibold text-lg">
+        <h3 className="font-semibold text-lg mt-8">
           Example MonoBehaviour usage (UI flow)
         </h3>
         <SampleUiFlow />
@@ -196,15 +208,41 @@ const IntegrationGuide = () => {
             Client stores only encrypted copies for offline checks.
           </li>
         </ul>
-        <h3>
-          <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono text-sm rounded">
+        <h4 className="font-semibold text-lg my-2">
+          <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono rounded">
+            VerifyLicense(...)
+          </code>{" "}
+          coroutine
+        </h4>
+        <ul className="list-disc ps-5">
+          <li>Builds the GET URL to the status API.</li>
+          <li>
+            Sends a request and checks if response is
+            <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono text-sm rounded">
+              "true"
+            </code>
+            or
+            <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono text-sm rounded">
+              "false".
+            </code>
+          </li>
+          <li>
+            If{" "}
+            <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono text-sm rounded">
+              "false"
+            </code>
+            , clears local activation (ResetLicense).
+          </li>
+        </ul>
+        <h4 className="font-semibold text-lg my-2">
+          <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono rounded">
             EncryptString
           </code>{" "}
           &amp;{" "}
-          <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono text-sm rounded">
+          <code className="px-1 py-0.5 bg-zinc-800 text-pink-600 font-mono rounded">
             DecryptString
           </code>
-        </h3>
+        </h4>
         <ul className="list-disc ps-5">
           <li>
             Uses AES with a static key declared in{" "}

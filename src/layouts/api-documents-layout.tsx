@@ -38,6 +38,18 @@ const ApiDocumentLayout = ({ children }: ApiDocumentLayout) => {
           onClick: () => navigate("/docs/api/activate-license"),
         },
         {
+          key: "license-status",
+          label: (
+            <div className="flex gap-2 items-center">
+              <span className="bg-green-500 px-2 py-0.5 text-xs text-white rounded">
+                GET
+              </span>
+              <span>Check License Status</span>
+            </div>
+          ),
+          onClick: () => navigate("/docs/api/license-status"),
+        },
+        {
           key: "integration-guide",
           label: "Integration Guide",
           onClick: () => navigate("/docs/api/integration-guide"),
