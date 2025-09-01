@@ -19,7 +19,7 @@ public static class LicenseManager
     private const string ActivatedPref = "Activated";
 
     private static string encryptionKey = "MySuperSecretKey"; // 16/24/32 chars for AES
-    private static string gameId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"; // replace with your actual game id
+    private static string gameId = "3028ecb2-ac3f-450b-ae43-972caa4fc258"; // replace with your actual game id
 
     public static bool IsActivated()
     {
@@ -77,6 +77,55 @@ public static class LicenseManager
             {
                 Debug.LogError(
                     $"Activation request failed! Status: {request.responseCode}, Error: {request.error}"
+                );
+                onResult?.Invoke(false);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies with the server if the stored license key is still valid.
+    /// If not, resets the license.
+    /// </summary>
+    public static IEnumerator VerifyLicense(Action<bool> onResult)
+    {
+        if (!IsActivated())
+        {
+            onResult?.Invoke(false);
+            yield break;
+        }
+
+        string encryptedKey = PlayerPrefs.GetString(LicenseKeyPref, "");
+        string savedKey = DecryptString(encryptedKey, encryptionKey);
+
+        string url =
+            $"https://indiegamezonese101.azurewebsites.net/api/games/{gameId}/activation-keys/{savedKey}/status";
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string responseText = request.downloadHandler.text.Trim().ToLower();
+
+                if (responseText == "true")
+                {
+                    // Still valid!
+                    onResult?.Invoke(true);
+                }
+                else
+                {
+                    // License no longer valid
+                    Debug.LogWarning("License key is no longer active. Resetting license.");
+                    ResetLicense();
+                    onResult?.Invoke(false);
+                }
+            }
+            else
+            {
+                Debug.LogError(
+                    $"VerifyLicense request failed! Status: {request.responseCode}, Error: {request.error}"
                 );
                 onResult?.Invoke(false);
             }

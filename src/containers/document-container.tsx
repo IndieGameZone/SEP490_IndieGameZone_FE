@@ -2,7 +2,7 @@ import ApiDocumentLayout from "@/layouts/api-documents-layout";
 import HomeLayout from "@/layouts/home-layout";
 import ActivateLicenseEndpointDocs from "@/pages/documents/api-docs/activate-license-endpoint-docs";
 import LicenseStatusEndpointDocs from "@/pages/documents/api-docs/license-status-endpoint-docs";
-import IntegrationGuide from "@/pages/documents/integration-guide";
+import IntegrationGuide from "@/pages/documents/integration-guide/integration-guide";
 import LicenseActivationOverview from "@/pages/documents/license-activation-overview";
 import NotFoundPage from "@/pages/errors/not-found-page";
 import { Route, Routes } from "react-router-dom";
