@@ -10,9 +10,17 @@ export const handleApiError = (error: any): { error: string | null; data: any; s
   }
 };
 
-export const createKeyByGameID = async (gameId: string) => {
+export const createDevKeyByGameID = async (gameId: string) => {
   try {
-    const { data } = await axiosClient.post(`/api/games/${gameId}/activation-keys`);
+    const { data } = await axiosClient.post(`/api/games/${gameId}/activation-keys-dev`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+export const createModeratorKeyByGameID = async (gameId: string) => {
+  try {
+    const { data } = await axiosClient.post(`/api/games/${gameId}/activation-keys-moderator`);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);
