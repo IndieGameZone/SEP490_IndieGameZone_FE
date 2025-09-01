@@ -38,7 +38,6 @@ import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import { getGameKeyByDevId } from "@/lib/api/game-key-api";
 import { GameKey } from "@/types/game-key";
 import GameKeyModal from "@/components/game-key-modal";
 import { useClipboard } from "@/hooks/use-clipboard";
@@ -61,27 +60,12 @@ const AdminGameDetail = () => {
   const [isDeclining, setIsDeclining] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const { profile } = useAuthStore();
-  const [gameKeys, setGameKeys] = useState<GameKey[]>([]);
+  const gameKeys: GameKey[] = [];
   const [keyModalOpen, setKeyModalOpen] = useState(false);
   const { isCopied, copyToClipboard } = useClipboard();
 
-  const fetchGameKeys = async () => {
-    if (!game?.id || !game.developer.id) return;
-
-    try {
-      const result = await getGameKeyByDevId(game.developer.id, game.id);
-      if (result.success) {
-        setGameKeys(result.data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch game keys:", error);
-    }
-  };
-  useEffect(() => {
-    if (game?.id && game?.developer.id) {
-      fetchGameKeys();
-    }
-  }, [game?.id, game?.developer.id]);
+  
+  const handleKeysUpdated = () => {};
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -584,7 +568,7 @@ const AdminGameDetail = () => {
         onClose={() => setKeyModalOpen(false)}
         gameId={game?.id}
         gameKeys={gameKeys}
-        onKeysUpdated={fetchGameKeys}
+        onKeysUpdated={handleKeysUpdated}
       />
     </div>
   );
