@@ -137,9 +137,9 @@ export const getPostReactionByPostId = async (userId: string, postId: string) =>
     return handleApiError(error);
   }
 };
-export const getDevActivePosts = async (developerId: string) => {
+export const getActivePosts = async (userId: string) => {
   try {
-    const { data } = await axiosClient.get(`/api/users/${developerId}/active-posts`);
+    const { data } = await axiosClient.get(`/api/users/${userId}/active-posts`);
     return { error: null, data: data, success: true };
   } catch (error) {
     return handleApiError(error);

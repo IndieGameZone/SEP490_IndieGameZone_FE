@@ -1,5 +1,5 @@
 import { useGlobalMessage } from "@/components/message-provider";
-import { getPostByUserId } from "@/lib/api/game-post-api";
+import { getPostByUserId, getActivePosts } from "@/lib/api/game-post-api";
 import { GamePost } from "@/types/game-post";
 import { Empty, Tag, Tooltip } from "antd";
 import { useEffect, useState } from "react";
@@ -23,34 +23,28 @@ const ViewUserPosts = () => {
 
   useEffect(() => {
     fetchUserPosts();
-  }, [userId, isProfileOwner]);
+  }, [userId, isProfileOwner, profile?.id]);
 
   const fetchUserPosts = async () => {
     if (!userId) return;
+
     setLoading(true);
     try {
-      const result = await getPostByUserId(userId);
-      if (result.success) {
-        if (isProfileOwner) {
-          setPosts(result.data);
-        } else {
-          const approvedPosts = result.data.filter(
-            (post: GamePost) => post.status?.toLowerCase() === "approved"
-          );
-          setPosts(approvedPosts);
+      const result = isProfileOwner 
+        ? await getPostByUserId(userId) 
+        : await getActivePosts(userId);
 
-          if (
-            result.data.length > 0 &&
-            result.data[0].user &&
-            result.data[0].user.userName
-          ) {
-            setUsername(result.data[0].user.userName);
-          }
+      if (result.success) {
+        setPosts(result.data);
+
+        if (result.data.length > 0 && result.data[0].user && result.data[0].user.userName) {
+          setUsername(result.data[0].user.userName);
         }
       } else {
         messageApi.error(result.error || "Failed to load posts");
       }
     } catch (error) {
+      console.error("Error fetching posts:", error);
       messageApi.error("Failed to load posts. Please try again!");
     } finally {
       setLoading(false);
@@ -111,11 +105,7 @@ const ViewUserPosts = () => {
     <div className="space-y-4 bg-zinc-900 border border-zinc-700 p-3 rounded">
       {posts.length === 0 ? (
         <Empty
-          description={
-            isProfileOwner
-              ? "You haven't created any posts yet"
-              : `${username} has no approved posts yet`
-          }
+          description={isProfileOwner ? "You haven't created any posts yet" : `${username} has no posts yet`}
           className="p-8 rounded"
         />
       ) : (
@@ -124,24 +114,21 @@ const ViewUserPosts = () => {
             const isApproved = post.status?.toLowerCase() === "approved";
             const gameName = post.game?.name || "Unknown Game";
             const tooltipTitle = `Post in game: ${gameName}`;
+
+            const shouldShowPost = isProfileOwner || isApproved;
+
+            if (!shouldShowPost) return null;
+
             return (
-              <Tooltip
-                key={post.id}
-                title={tooltipTitle}
-                placement="topRight"
-                mouseEnterDelay={0.3}
-              >
+              <Tooltip key={post.id} title={tooltipTitle} placement="topRight" mouseEnterDelay={0.3}>
                 <div
                   className={`relative ${
-                    !isApproved ? "opacity-70 transition-opacity" : ""
+                    !isApproved && isProfileOwner ? "opacity-70 transition-opacity" : ""
                   } cursor-pointer`}
                 >
-                  {!isApproved && post.status && (
+                  {isProfileOwner && post.status && (
                     <div className="absolute top-5 right-8 z-10">
-                      <Tag
-                        color={getStatusBadge(post.status).color}
-                        className="px-2 py-1 font-medium"
-                      >
+                      <Tag color={getStatusBadge(post.status).color} className="px-2 py-1 font-medium">
                         {getStatusBadge(post.status).text}
                       </Tag>
                     </div>
@@ -149,9 +136,7 @@ const ViewUserPosts = () => {
 
                   <PostCard
                     post={post}
-                    onViewPostDetail={() =>
-                      handleViewPostDetail(post.id, post.game.id)
-                    }
+                    onViewPostDetail={() => handleViewPostDetail(post.id, post.game.id)}
                     onDelete={isProfileOwner ? handleDeletePost : undefined}
                   />
                 </div>
