@@ -52,7 +52,7 @@ const GameForum = () => {
 
   const { filters, setFilter } = useFilters<PostFilters>(
     {
-      tags: [] || undefined,
+      tags: [],
     },
     {
       keepHash: true,

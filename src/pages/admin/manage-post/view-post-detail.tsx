@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Modal, Spin, Typography, Tag, Divider, Image, Row, Col, Avatar, Button, message } from "antd";
+import {
+  Modal,
+  Spin,
+  Typography,
+  Tag,
+  Divider,
+  Image,
+  Row,
+  Col,
+  Avatar,
+  Button,
+} from "antd";
 import { GamePost } from "@/types/game-post";
 import { formatDateTime } from "@/lib/date-n-time";
 import { UserOutlined } from "@ant-design/icons";
@@ -20,7 +31,13 @@ interface ViewPostDetailModalProps {
   onSuccess?: () => void;
 }
 
-const ViewPostDetailModal: React.FC<ViewPostDetailModalProps> = ({ open, onClose, post, loading, onSuccess }) => {
+const ViewPostDetailModal: React.FC<ViewPostDetailModalProps> = ({
+  open,
+  onClose,
+  post,
+  loading,
+  onSuccess,
+}) => {
   const [approveLoading, setApproveLoading] = useState(false);
   const [rejectLoading, setRejectLoading] = useState(false);
   const messageApi = useGlobalMessage();
@@ -28,10 +45,13 @@ const ViewPostDetailModal: React.FC<ViewPostDetailModalProps> = ({ open, onClose
     return null;
   }
 
-  const statusBadge = post?.status ? getStatusBadge(post.status) : { color: "default", text: "Unknown" };
+  const statusBadge = post?.status
+    ? getStatusBadge(post.status)
+    : { color: "default", text: "Unknown" };
 
   const isPending =
-    post?.status?.toLowerCase() === "pendingaireview" || post?.status?.toLowerCase() === "pendingmanualreview";
+    post?.status?.toLowerCase() === "pendingaireview" ||
+    post?.status?.toLowerCase() === "pendingmanualreview";
 
   const handleApprove = async () => {
     if (!post?.id) return;
@@ -99,10 +119,19 @@ const ViewPostDetailModal: React.FC<ViewPostDetailModalProps> = ({ open, onClose
                 <div className="mb-4">
                   <Text type="secondary">Post Creator</Text>
                   <div className="flex items-center mt-1">
-                    <Avatar icon={<UserOutlined />} src={post?.user?.avatar} size="small" className="mr-2" />
+                    <Avatar
+                      icon={<UserOutlined />}
+                      src={post?.user?.avatar}
+                      size="small"
+                      className="mr-2"
+                    />
                     <Text strong>{post?.user?.userName || "Unknown User"}</Text>
                   </div>
-                  {post?.user?.email && <div className="ml-6 text-xs text-gray-500">{post.user.email}</div>}
+                  {post?.user?.email && (
+                    <div className="ml-6 text-xs text-gray-500">
+                      {post.user.email}
+                    </div>
+                  )}
                 </div>
               </Col>
 
@@ -121,7 +150,9 @@ const ViewPostDetailModal: React.FC<ViewPostDetailModalProps> = ({ open, onClose
                 <div className="mb-4">
                   <Text type="secondary">Created At</Text>
                   <div className="mt-1 text-sm">
-                    {post?.createdAt ? formatDateTime(new Date(post.createdAt)) : "N/A"}
+                    {post?.createdAt
+                      ? formatDateTime(new Date(post.createdAt))
+                      : "N/A"}
                   </div>
                 </div>
               </Col>
@@ -130,7 +161,10 @@ const ViewPostDetailModal: React.FC<ViewPostDetailModalProps> = ({ open, onClose
                   <Text type="secondary">Status</Text>
                 </div>
                 {post?.status && (
-                  <Tag color={statusBadge.color} className="text-base px-2 py-1">
+                  <Tag
+                    color={statusBadge.color}
+                    className="text-base px-2 py-1"
+                  >
                     {statusBadge.text}
                   </Tag>
                 )}
@@ -142,11 +176,16 @@ const ViewPostDetailModal: React.FC<ViewPostDetailModalProps> = ({ open, onClose
             <div className="mb-4">
               <div>
                 <Text type="secondary">Post Title</Text>
-                <Paragraph className="mb-4">{post?.title || "Untitled Post"}</Paragraph>
+                <Paragraph className="mb-4">
+                  {post?.title || "Untitled Post"}
+                </Paragraph>
               </div>
               <Title level={5}>Post Content</Title>
               <div className="bg-gray-50 p-3 rounded border mt-2">
-                <TiptapView value={post?.content || "No content available"} darkTheme={false} />
+                <TiptapView
+                  value={post?.content || "No content available"}
+                  darkTheme={false}
+                />
               </div>
             </div>
 
@@ -191,10 +230,21 @@ const ViewPostDetailModal: React.FC<ViewPostDetailModalProps> = ({ open, onClose
 
             {isPending && (
               <div className="flex my-5 gap-10">
-                <Button type="primary" onClick={handleApprove} loading={approveLoading} disabled={rejectLoading}>
+                <Button
+                  type="primary"
+                  onClick={handleApprove}
+                  loading={approveLoading}
+                  disabled={rejectLoading}
+                >
                   Approve
                 </Button>
-                <Button type="primary" danger onClick={handleReject} loading={rejectLoading} disabled={approveLoading}>
+                <Button
+                  type="primary"
+                  danger
+                  onClick={handleReject}
+                  loading={rejectLoading}
+                  disabled={approveLoading}
+                >
                   Reject
                 </Button>
               </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Table, Typography, message, Button } from "antd";
+import { Table, Typography, message } from "antd";
 import { GamePost } from "@/types/game-post";
 import { getAllPostColumns } from "./columns";
 import { getAllPost, getPostById } from "@/lib/api/game-post-api";

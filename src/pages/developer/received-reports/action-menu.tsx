@@ -1,6 +1,5 @@
 import { Button, Dropdown } from "antd";
 import { useState } from "react";
-import { FcApproval, FcCancel } from "react-icons/fc";
 import { FaEye, FaEllipsisV } from "react-icons/fa";
 import { ReportItem } from "@/types/report";
 import ReplyReportModal from "@/pages/admin/manage-report/reply-report-modal";

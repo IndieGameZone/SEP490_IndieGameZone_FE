@@ -12,12 +12,6 @@ const ManageSystemReport: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [messageApi, contextHolder] = message.useMessage();
   const [reportType, setReportType] = useState<string>("Game");
-const reportTypeOptions = [
-  { value: "Game", color: "#108ee9", icon: "🎮" },
-  { value: "Review", color: "#87d068", icon: "⭐" },
-  { value: "Comment", color: "#2db7f5", icon: "💬" },
-  { value: "Post", color: "#f50", icon: "📝" },
-];
   const fetchReports = useCallback(async () => {
     setLoading(true);
     try {
@@ -41,7 +35,7 @@ const reportTypeOptions = [
   const handleReportTypeChange = (value: string) => {
     setReportType(value);
   };
-  
+
   return (
     <>
       {contextHolder}
@@ -52,7 +46,9 @@ const reportTypeOptions = [
         <Card className="mb-4">
           <Space direction="vertical" size="middle" style={{ width: "100%" }}>
             <div>
-              <label className="block mb-2 font-medium">Filter by Report Type:</label>
+              <label className="block mb-2 font-medium">
+                Filter by Report Type:
+              </label>
               <Select
                 style={{ width: 200 }}
                 placeholder="Select report type"

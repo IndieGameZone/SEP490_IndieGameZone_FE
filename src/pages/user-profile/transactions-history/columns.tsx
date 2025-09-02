@@ -4,7 +4,10 @@ import { Transaction, getReadableTransactionType } from "@/types/transaction";
 import { TableProps, Tag } from "antd";
 
 const getStatusTag = (status: Transaction["status"]) => {
-  const statusConfig: Record<Transaction["status"], { color: string; text: string }> = {
+  const statusConfig: Record<
+    Transaction["status"],
+    { color: string; text: string }
+  > = {
     Success: { color: "green", text: "Success" },
     Pending: { color: "orange", text: "Pending" },
     Failed: { color: "red", text: "Failed" },
@@ -41,7 +44,11 @@ export const columns: TableProps<Transaction>["columns"] = [
     title: "Type",
     dataIndex: "type",
     key: "type",
-    render: (type) => <span className="font-mono text-blue-400">{getReadableTransactionType(type)}</span>,
+    render: (type) => (
+      <span className="font-mono text-blue-400">
+        {getReadableTransactionType(type)}
+      </span>
+    ),
     width: 150,
   },
   {
@@ -49,19 +56,26 @@ export const columns: TableProps<Transaction>["columns"] = [
     dataIndex: "paymentMethod",
     key: "paymentMethod",
     width: 150,
-    render: (paymentMethod: string) => <span className="font-mono text-blue-400">{paymentMethod}</span>,
+    render: (paymentMethod: string) => (
+      <span className="font-mono text-blue-400">{paymentMethod}</span>
+    ),
   },
   {
     title: "Initial balance",
     dataIndex: "initialBalance",
     key: "initialBalance",
     width: 150,
-    render: (initialBalance: number) => (
-      <span className="font-mono text-zinc-400">
-        {initialBalance?.toLocaleString("vi-VN")}
-        <CoinIcon className="inline size-3 ms-1 mb-1" />
-      </span>
-    ),
+    render: (initialBalance: number, record) => {
+      if (record.paymentMethod == "PayOS") return "";
+      else {
+        return (
+          <span className="font-mono text-zinc-400">
+            {initialBalance?.toLocaleString("vi-VN")}
+            <CoinIcon className="inline size-3 ms-1 mb-1" />
+          </span>
+        );
+      }
+    },
   },
   {
     title: "Amount",
@@ -73,7 +87,10 @@ export const columns: TableProps<Transaction>["columns"] = [
       const isDeposit = type === "deposit";
       const isRefund = type === "ReceiveCommercialRefundPackage";
       const isWithdraw = type === "withdraw";
-      const isPurchase = type === "purchasegame" || type === "purchasecommercialpackage" || type === "donation";
+      const isPurchase =
+        type === "purchasegame" ||
+        type === "purchasecommercialpackage" ||
+        type === "donation";
       const isWallet = record.paymentMethod === "Wallet";
       const isPayOS = record.paymentMethod === "PayOS";
 
@@ -112,7 +129,9 @@ export const columns: TableProps<Transaction>["columns"] = [
         );
       }
 
-      return <span className="font-semibold text-gray-500">{formattedAmount}</span>;
+      return (
+        <span className="font-semibold text-gray-500">{formattedAmount}</span>
+      );
     },
   },
   {
@@ -120,12 +139,17 @@ export const columns: TableProps<Transaction>["columns"] = [
     dataIndex: "finalBalance",
     key: "finalBalance",
     width: 150,
-    render: (finalBalance: number) => (
-      <span className="font-mono text-green-400">
-        {finalBalance?.toLocaleString("vi-VN")}
-        <CoinIcon className="inline size-3 ms-1 mb-1" />
-      </span>
-    ),
+    render: (finalBalance: number, record) => {
+      if (record.paymentMethod == "PayOS") return "";
+      else {
+        return (
+          <span className="font-mono text-green-400">
+            {finalBalance?.toLocaleString("vi-VN")}
+            <CoinIcon className="inline size-3 ms-1 mb-1" />
+          </span>
+        );
+      }
+    },
   },
   {
     title: "Description",
