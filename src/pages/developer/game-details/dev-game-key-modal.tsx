@@ -3,7 +3,7 @@ import { GameKey } from "@/types/game-key";
 import { RiAddLine } from "react-icons/ri";
 import { useState } from "react";
 import { useGlobalMessage } from "@/components/message-provider";
-import { createKeyByGameID } from "@/lib/api/game-key-api";
+import { createDevKeyByGameID } from "@/lib/api/game-key-api";
 import { FaCheck, FaRegCopy } from "react-icons/fa";
 import { useClipboard } from "@/hooks/use-clipboard";
 
@@ -15,7 +15,7 @@ interface GameKeyModalProps {
   onKeysUpdated: () => void;
 }
 
-const GameKeyModal = ({
+const DevGameKeyModal = ({
   open,
   onClose,
   gameId,
@@ -33,7 +33,7 @@ const GameKeyModal = ({
       setLoading(true);
       setNewKey(null); 
       
-      const result = await createKeyByGameID(gameId);
+      const result = await createDevKeyByGameID(gameId);
       if (result.success) {
         messageApi.success("Game key generated successfully!");
         setNewKey(result.data);
@@ -102,4 +102,4 @@ const GameKeyModal = ({
   );
 };
 
-export default GameKeyModal;
+export default DevGameKeyModal;

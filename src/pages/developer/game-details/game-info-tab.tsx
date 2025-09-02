@@ -20,12 +20,13 @@ import { AITag, ModerationStatusBadge, VisibilityStatus } from "@/components/sta
 import GameNotFound from "@/pages/errors/game-not-found";
 import { CiClock1, CiWarning } from "react-icons/ci";
 import ViewCensorLogButton from "../../../components/buttons/view-censor-log-button";
-import {  GameCensorLog } from "@/types/game";
+import { GameCensorLog } from "@/types/game";
 import ViewAllVersionButton from "@/components/buttons/view-all-version-button";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 import { useClipboard } from "@/hooks/use-clipboard";
 import { GameKey } from "@/types/game-key";
-import GameKeyModal from "@/components/game-key-modal";
+
+import DevGameKeyModal from "@/pages/developer/game-details/dev-game-key-modal";
 
 const GameInfoTab = () => {
   const { game, error } = useGameStore();
@@ -356,7 +357,7 @@ const GameInfoTab = () => {
         <Descriptions column={2} layout="vertical" bordered items={versionDescriptionItems} style={{ marginTop: 15 }} />
         <Descriptions column={2} layout="vertical" bordered items={installInstructionItems} style={{ marginTop: 15 }} />
       </div>
-      <GameKeyModal
+      <DevGameKeyModal
         open={keyModalOpen}
         onClose={() => setKeyModalOpen(false)}
         gameId={game?.id}

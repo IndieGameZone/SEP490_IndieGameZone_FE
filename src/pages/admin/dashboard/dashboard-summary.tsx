@@ -13,6 +13,7 @@ type Data = {
 
   gamePurchaseRevenueByAdmin: number;
   commercialPackageRevenue: number;
+  adminBankBalance: number;
 };
 type DeveloperRevenue = {
   gamePurchaseRevenueByDeveloper: number;
@@ -21,6 +22,7 @@ const DashboardSummary = () => {
   const [summaryData, setSummaryData] = useState<Data>({
     onlineUserCount: 0,
     totalUserCount: 0,
+    adminBankBalance: 0,
     commercialPackageRevenue: 0,
     gamePurchaseRevenueByAdmin: 0,
   });
@@ -85,7 +87,7 @@ const DashboardSummary = () => {
       <div className="md:col-span-3 bg-green-600 text-white p-5 rounded flex items-center gap-5">
         <CiBank className="p-4 size-12 bg-green-500 rounded-full" />
         <div>
-          <p className="text-2xl font-semibold">{formatCurrencyVND(developerRevenue)}</p>
+          <p className="text-2xl font-semibold">{formatCurrencyVND(summaryData.adminBankBalance)}</p>
           <p className="text-xs">Money in Bank Account</p>
         </div>
       </div>

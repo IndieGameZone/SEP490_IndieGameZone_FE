@@ -2,11 +2,7 @@ import ExpandableWrapper from "@/components/wrappers/expandable-wrapper";
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 import FileCard from "@/components/file-card";
 import Loader from "@/components/loader";
-import {
-  AITag,
-  ModerationStatusBadge,
-  VisibilityStatus,
-} from "@/components/status-tags";
+import { AITag, ModerationStatusBadge, VisibilityStatus } from "@/components/status-tags";
 import TiptapView from "@/components/tiptap/tiptap-view";
 import ViewAllVersionButton from "@/components/buttons/view-all-version-button";
 import ViewCensorLogButton from "@/components/buttons/view-censor-log-button";
@@ -19,15 +15,7 @@ import useAuthStore from "@/store/use-auth-store";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
 import { GameCensorLog } from "@/types/game";
-import {
-  Button,
-  Descriptions,
-  DescriptionsProps,
-  Tag,
-  message,
-  Modal,
-  Input,
-} from "antd";
+import { Button, Descriptions, DescriptionsProps, Tag, message, Modal, Input } from "antd";
 import { useEffect, useState } from "react";
 import { FaCheck, FaEye, FaKey, FaRegCopy } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
@@ -39,20 +27,13 @@ import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import { GameKey } from "@/types/game-key";
-import GameKeyModal from "@/components/game-key-modal";
 import { useClipboard } from "@/hooks/use-clipboard";
+import ModGameKeyModal from "./mod-game-key-modal";
 
 const AdminGameDetail = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
-  const {
-    fetchGameById,
-    loading,
-    error,
-    game,
-    fetchGameCensorLog,
-    gameCensorLogs,
-  } = useGameStore();
+  const { fetchGameById, loading, error, game, fetchGameCensorLog, gameCensorLogs } = useGameStore();
   const [index, setIndex] = useState(-1);
   const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
   const { fetchGameFiles, gameFiles, installInstruction } = useGameStore();
@@ -64,7 +45,6 @@ const AdminGameDetail = () => {
   const [keyModalOpen, setKeyModalOpen] = useState(false);
   const { isCopied, copyToClipboard } = useClipboard();
 
-  
   const handleKeysUpdated = () => {};
   useEffect(() => {
     window.scrollTo({
@@ -159,21 +139,13 @@ const AdminGameDetail = () => {
     {
       key: "created-date",
       label: "Created date",
-      children: game ? (
-        formatDate(new Date(game.createdAt))
-      ) : (
-        <span className="text-gray-500">None</span>
-      ),
+      children: game ? formatDate(new Date(game.createdAt)) : <span className="text-gray-500">None</span>,
       span: 1,
     },
     {
       key: "updated-date",
       label: "Updated date",
-      children: game.updatedAt ? (
-        formatDate(new Date(game.updatedAt))
-      ) : (
-        <span className="text-gray-500">None</span>
-      ),
+      children: game.updatedAt ? formatDate(new Date(game.updatedAt)) : <span className="text-gray-500">None</span>,
       span: 1,
     },
     {
@@ -209,13 +181,9 @@ const AdminGameDetail = () => {
       label: "Moderated by",
       children: (() => {
         const latestLog = gameCensorLogs
-          .filter(
-            (log: GameCensorLog) =>
-              log.censorStatus === "Approved" || log.censorStatus === "Rejected"
-          )
+          .filter((log: GameCensorLog) => log.censorStatus === "Approved" || log.censorStatus === "Rejected")
           .sort(
-            (a: GameCensorLog, b: GameCensorLog) =>
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            (a: GameCensorLog, b: GameCensorLog) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           )[0];
 
         if (latestLog?.moderator) {
@@ -233,30 +201,17 @@ const AdminGameDetail = () => {
       label: "Censored at",
       children: (() => {
         const latestLog = gameCensorLogs
-          .filter(
-            (log: GameCensorLog) =>
-              log.censorStatus === "Approved" || log.censorStatus === "Rejected"
-          )
+          .filter((log: GameCensorLog) => log.censorStatus === "Approved" || log.censorStatus === "Rejected")
           .sort(
-            (a: GameCensorLog, b: GameCensorLog) =>
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            (a: GameCensorLog, b: GameCensorLog) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           )[0];
-        return latestLog ? (
-          formatDateTime(new Date(latestLog.createdAt))
-        ) : (
-          <span className="text-gray-500">None</span>
-        );
+        return latestLog ? formatDateTime(new Date(latestLog.createdAt)) : <span className="text-gray-500">None</span>;
       })(),
       span: 1,
     },
   ];
 
-  const slides = game
-    ? [
-        { src: game.coverImage },
-        ...game.gameImages.map((image) => ({ src: image.image })),
-      ]
-    : [];
+  const slides = game ? [{ src: game.coverImage }, ...game.gameImages.map((image) => ({ src: image.image }))] : [];
 
   if (game.censorReason) {
     infoItems.push({
@@ -287,12 +242,7 @@ const AdminGameDetail = () => {
       onOk: async () => {
         setIsApproving(true);
         if (gameId) {
-          const result = await updateGameActivation(
-            gameId,
-            "Approved",
-            profile.id,
-            ""
-          );
+          const result = await updateGameActivation(gameId, "Approved", profile.id, "");
           if (result.success) {
             messageApi.open({
               type: "success",
@@ -343,12 +293,7 @@ const AdminGameDetail = () => {
         setIsDeclining(true);
 
         if (gameId) {
-          const result = await updateGameActivation(
-            gameId,
-            "Rejected",
-            profile.id,
-            reason
-          );
+          const result = await updateGameActivation(gameId, "Rejected", profile.id, reason);
           if (result.success) {
             messageApi.success(`Game "${game.name}" rejected`);
             fetchGameById(gameId);
@@ -378,18 +323,11 @@ const AdminGameDetail = () => {
       <h1 className="text-2xl font-bold">
         "{game.name}"{" "}
         <span className="font-normal text-sm">
-          by{" "}
-          <Link to={`/profile/${game.developer.id}`}>
-            {game.developer.userName}
-          </Link>
+          by <Link to={`/profile/${game.developer.id}`}>{game.developer.userName}</Link>
         </span>
       </h1>
       <div className="flex gap-3 justify-end mb-3">
-        <Button
-          icon={<FaKey />}
-          type="primary"
-          onClick={() => setKeyModalOpen(true)}
-        >
+        <Button icon={<FaKey />} type="primary" onClick={() => setKeyModalOpen(true)}>
           Game key
         </Button>
         <DeleteGameButton />
@@ -397,16 +335,9 @@ const AdminGameDetail = () => {
           View game's page
         </Button>
 
-        {(game.censorStatus === "PendingAIReview" ||
-          game.censorStatus === "PendingManualReview") && (
+        {(game.censorStatus === "PendingAIReview" || game.censorStatus === "PendingManualReview") && (
           <>
-            <Button
-              icon={<IoMdClose />}
-              type="primary"
-              danger
-              onClick={handleDecline}
-              loading={isDeclining}
-            >
+            <Button icon={<IoMdClose />} type="primary" danger onClick={handleDecline} loading={isDeclining}>
               Decline game
             </Button>
             <Button
@@ -422,13 +353,7 @@ const AdminGameDetail = () => {
         )}
 
         {game.censorStatus === "Approved" && (
-          <Button
-            icon={<IoMdClose />}
-            type="primary"
-            danger
-            onClick={handleDecline}
-            loading={isDeclining}
-          >
+          <Button icon={<IoMdClose />} type="primary" danger onClick={handleDecline} loading={isDeclining}>
             Decline game
           </Button>
         )}
@@ -494,11 +419,7 @@ const AdminGameDetail = () => {
           <div className="col-span-2">
             <h3 className="font-bold mb-2 text-lg">Gameplay/trailer</h3>
             {game?.videoLink ? (
-              <ReactPlayer
-                className="react-player"
-                url={game?.videoLink}
-                controls
-              />
+              <ReactPlayer className="react-player" url={game?.videoLink} controls />
             ) : (
               <div className="text-gray-500">None</div>
             )}
@@ -550,10 +471,7 @@ const AdminGameDetail = () => {
               {game.versionDescription ? (
                 <ExpandableWrapper>
                   <div className="font-mono">
-                    <TiptapView
-                      value={game.versionDescription}
-                      darkTheme={false}
-                    />
+                    <TiptapView value={game.versionDescription} darkTheme={false} />
                   </div>
                 </ExpandableWrapper>
               ) : (
@@ -563,7 +481,7 @@ const AdminGameDetail = () => {
           </div>
         </div>
       </div>
-      <GameKeyModal
+      <ModGameKeyModal
         open={keyModalOpen}
         onClose={() => setKeyModalOpen(false)}
         gameId={game?.id}

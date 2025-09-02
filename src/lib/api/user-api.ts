@@ -185,3 +185,11 @@ export const createModerator = async (moderatorData: moderatorData) => {
     return handleApiError(error);
   }
 };
+export const getUserSocial = async (userId: string) => {
+  try {
+    const { data } = await axiosClient.get(`/api/users/${userId}/social-stats`);
+    return { error: null, data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
