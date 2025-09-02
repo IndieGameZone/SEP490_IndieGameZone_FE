@@ -5,6 +5,7 @@ export interface ApiResponse {
   data: any;
   success: boolean;
 }
+
 export const handleApiError = (error: any): ApiResponse => {
   try {
     const errorMessage = error.response?.data.message || error?.message || 'An unexpected error occurred.';
@@ -13,6 +14,7 @@ export const handleApiError = (error: any): ApiResponse => {
     return { error: 'An unexpected error occurred.', data: null, success: false };
   }
 };
+
 export const getAllTags = async () => {
     try {
         const { data } = await axiosClient.get(`/api/Tags`);
@@ -57,6 +59,7 @@ export const getTagById = async (tagId: string | number) => {
         return handleApiError(error);
     }
 };
+
 export const getAllPostTags = async () => {
   try {
     const { data } = await axiosClient.get(`/api/tags`, {
@@ -69,6 +72,7 @@ export const getAllPostTags = async () => {
     return handleApiError(error);
   }
 };
+
 export const getAllGameTags = async () => {
   try {
     const { data } = await axiosClient.get(`/api/tags`, {

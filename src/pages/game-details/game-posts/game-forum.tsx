@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Dropdown, Input, Tag, message } from "antd";
+import { Input, message } from "antd";
 import { FaSearch } from "react-icons/fa";
-import { MdOutlineSort } from "react-icons/md";
 import { LuRefreshCcw } from "react-icons/lu";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -19,21 +18,26 @@ import notFoundIcon from "@/assets/not-found-icon.svg";
 import usePostStore from "@/store/use-game-post-store";
 import { usePostDetail } from "@/hooks/use-post-detail";
 import useAuthStore from "@/store/use-auth-store";
+import { useFilters } from "@/hooks/use-filters";
 
-const SORT_TABS = ["Hot & Trending", "Most popular", "Best", "Latest"];
+// const SORT_TABS = ["Hot & Trending", "Most popular", "Best", "Latest"];
 const PAGE_SIZE = 4;
 
-const sortMenuItems = SORT_TABS.map((tab) => ({ key: tab, label: tab }));
+// const sortMenuItems = SORT_TABS.map((tab) => ({ key: tab, label: tab }));
+
+type PostFilters = {
+  tags: string[];
+};
 
 const GameForum = () => {
-  const { fetchTags } = useTagStore();
+  const { fetchPostTags, postTags } = useTagStore();
   const { gameId } = useParams();
   const { renderKey, rerender } = useRerender();
 
   const { postDetailOpen, selectedPostId, openPostDetail, closePostDetail } =
     usePostDetail();
 
-  const [selectedSortOption, setSelectedSortOption] = useState(SORT_TABS[0]);
+  // const [selectedSortOption, setSelectedSortOption] = useState(SORT_TABS[0]);
   const [messageApi, contextHolder] = message.useMessage();
 
   const { posts, setPosts } = usePostStore();
@@ -46,9 +50,18 @@ const GameForum = () => {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const postToDelete = useRef<string | null>(null);
 
-  const handleSortSelect = ({ key }: { key: string }) => {
-    setSelectedSortOption(key);
-  };
+  const { filters, setFilter } = useFilters<PostFilters>(
+    {
+      tags: [] || undefined,
+    },
+    {
+      keepHash: true,
+    }
+  );
+
+  // const handleSortSelect = ({ key }: { key: string }) => {
+  //   setSelectedSortOption(key);
+  // };
 
   const handleSetPostToDelete = (postId: string) => {
     postToDelete.current = postId;
@@ -73,6 +86,7 @@ const GameForum = () => {
     const result = await getGamePosts(gameId, {
       PageNumber: currentPage,
       PageSize: PAGE_SIZE,
+      Tags: filters.tags,
     });
 
     if (result.error) {
@@ -93,24 +107,22 @@ const GameForum = () => {
   const fetchMorePosts = () => fetchPosts(page);
 
   useEffect(() => {
-    fetchTags();
+    fetchPostTags();
   }, []);
 
   useEffect(() => {
     fetchPosts(1);
-  }, [gameId, renderKey]);
+  }, [gameId, renderKey, JSON.stringify(filters.tags)]);
 
   return (
     <div className="flex flex-col md:grid md:grid-cols-12 gap-3">
       {contextHolder}
-
       <PostDetailModal
         open={postDetailOpen}
         postId={selectedPostId}
         handleCancel={closePostDetail}
         onDelete={handleSetPostToDelete}
       />
-
       <DeletePostConfirmationModal
         postId={postToDelete.current}
         onCancel={handleCancelDelete}
@@ -121,7 +133,7 @@ const GameForum = () => {
       {/* Left Panel */}
       <div className="col-span-4">
         <div className="bg-zinc-800 p-3 rounded">
-          <Dropdown
+          {/* <Dropdown
             menu={{
               items: sortMenuItems,
               selectable: true,
@@ -136,7 +148,7 @@ const GameForum = () => {
                 '{selectedSortOption}'
               </span>
             </Button>
-          </Dropdown>
+          </Dropdown> */}
 
           <Input
             className="mt-2"
@@ -144,21 +156,33 @@ const GameForum = () => {
             variant="filled"
             suffix={<FaSearch />}
           />
-
-          <div className="flex flex-wrap gap-2 mt-3">
-            {[
-              "#Announcement",
-              "#Bug",
-              "#Discussion",
-              "#Question",
-              "#Guide",
-            ].map((tag) => (
-              <Tag key={tag} color="orange">
-                {tag}
-              </Tag>
-            ))}
+          <div className="flex flex-col gap-2 mt-3">
+            <button
+              className={`px-5 py-2 ${
+                filters.tags == undefined || filters.tags.length == 0
+                  ? "bg-orange-500"
+                  : "bg-zinc-900"
+              } font-semibold cursor-pointer highlight-hover text-left`}
+              onClick={() => setFilter("tags", [])}
+            >
+              All Posts
+            </button>
+            {postTags.map((tag) => {
+              return (
+                <button
+                  className={`px-5 py-2 ${
+                    filters.tags.includes(tag.id)
+                      ? "bg-orange-500"
+                      : "bg-zinc-900"
+                  } font-semibold cursor-pointer highlight-hover text-left`}
+                  key={tag.id}
+                  onClick={() => setFilter("tags", [tag.id])}
+                >
+                  {tag.name}
+                </button>
+              );
+            })}
           </div>
-
           <hr className="border border-zinc-700 my-3" />
           {profile && <CreatePostButton rerender={rerender} />}
         </div>
@@ -188,6 +212,7 @@ const GameForum = () => {
                 post={post}
                 onViewPostDetail={openPostDetail}
                 onDelete={handleSetPostToDelete}
+                setFilter={setFilter}
               />
             ))}
 

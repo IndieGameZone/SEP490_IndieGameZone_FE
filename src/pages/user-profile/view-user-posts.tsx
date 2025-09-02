@@ -1,13 +1,12 @@
 import { useGlobalMessage } from "@/components/message-provider";
 import { getPostByUserId } from "@/lib/api/game-post-api";
 import { GamePost } from "@/types/game-post";
-import { Alert, Empty, Spin, Tag, Tooltip } from "antd";
+import { Empty, Tag, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PostCard from "../game-details/game-posts/post-card";
 import DeletePostConfirmationModal from "../game-details/game-posts/delete-post-confirmation-modal";
 import useAuthStore from "@/store/use-auth-store";
-import { InfoCircleOutlined } from "@ant-design/icons";
 import Loader from "@/components/loader";
 
 const ViewUserPosts = () => {
@@ -35,10 +34,16 @@ const ViewUserPosts = () => {
         if (isProfileOwner) {
           setPosts(result.data);
         } else {
-          const approvedPosts = result.data.filter((post: GamePost) => post.status?.toLowerCase() === "approved");
+          const approvedPosts = result.data.filter(
+            (post: GamePost) => post.status?.toLowerCase() === "approved"
+          );
           setPosts(approvedPosts);
 
-          if (result.data.length > 0 && result.data[0].user && result.data[0].user.userName) {
+          if (
+            result.data.length > 0 &&
+            result.data[0].user &&
+            result.data[0].user.userName
+          ) {
             setUsername(result.data[0].user.userName);
           }
         }
@@ -104,46 +109,17 @@ const ViewUserPosts = () => {
 
   return (
     <div className="space-y-4 bg-zinc-900 border border-zinc-700 p-3 rounded">
-      <div className="">
-        {!isProfileOwner && (
-          <Alert
-            message={
-              <div className="flex items-center">
-                <InfoCircleOutlined className="mr-2" />
-                <span>You're viewing only the approved posts from {username}</span>
-              </div>
-            }
-            type="success"
-            showIcon={false}
-            className="mb-4"
-          />
-        )}
-      </div>
       {posts.length === 0 ? (
         <Empty
-          description={isProfileOwner ? "You haven't created any posts yet" : `${username} has no approved posts yet`}
+          description={
+            isProfileOwner
+              ? "You haven't created any posts yet"
+              : `${username} has no approved posts yet`
+          }
           className="p-8 rounded"
         />
       ) : (
         <>
-          <div>
-            {isProfileOwner && (
-              <Alert
-                message={
-                  <div>
-                    <span className="text-lg font-semibold">My Posts </span>
-                    <div className="flex items-center gap-2">
-                      <InfoCircleOutlined />
-                      <span>You can read all your Posts including all Post statuses</span>
-                    </div>
-                  </div>
-                }
-                type="info"
-                showIcon={false}
-                className="mb-4"
-              />
-            )}
-          </div>
           {posts.map((post) => {
             const isApproved = post.status?.toLowerCase() === "approved";
             const gameName = post.game?.name || "Unknown Game";
@@ -155,10 +131,17 @@ const ViewUserPosts = () => {
                 placement="topRight"
                 mouseEnterDelay={0.3}
               >
-                <div className={`relative ${!isApproved ? "opacity-70 transition-opacity" : ""} cursor-pointer`}>
+                <div
+                  className={`relative ${
+                    !isApproved ? "opacity-70 transition-opacity" : ""
+                  } cursor-pointer`}
+                >
                   {!isApproved && post.status && (
                     <div className="absolute top-5 right-8 z-10">
-                      <Tag color={getStatusBadge(post.status).color} className="px-2 py-1 font-medium">
+                      <Tag
+                        color={getStatusBadge(post.status).color}
+                        className="px-2 py-1 font-medium"
+                      >
                         {getStatusBadge(post.status).text}
                       </Tag>
                     </div>
@@ -166,7 +149,9 @@ const ViewUserPosts = () => {
 
                   <PostCard
                     post={post}
-                    onViewPostDetail={() => handleViewPostDetail(post.id, post.game.id)}
+                    onViewPostDetail={() =>
+                      handleViewPostDetail(post.id, post.game.id)
+                    }
                     onDelete={isProfileOwner ? handleDeletePost : undefined}
                   />
                 </div>

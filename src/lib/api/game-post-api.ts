@@ -44,6 +44,7 @@ export const createReactionPost = async (userId: string, postId: string) => {
 type GetGamePostParams = {
   PageNumber?: number;
   PageSize?: number;
+  Tags?: string[];
 };
 
 export const getGamePosts = async (gameId: string, params: GetGamePostParams) => {

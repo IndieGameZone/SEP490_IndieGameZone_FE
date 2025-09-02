@@ -38,12 +38,22 @@ export function toFormData(obj: Record<string, any>): FormData {
   return formData;
 }
 
-export const toSearchParams = (params: Record<string, string | number | boolean | undefined | null>): string => {
+export const toSearchParams = (
+  params: Record<
+    string,
+    string | number | boolean | (string | number | boolean)[] | undefined | null
+  >
+): string => {
   const query = Object.entries(params)
     .filter(([_, value]) => value !== undefined && value !== null)
-    .map(
-      ([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
-    )
+    .flatMap(([key, value]) => {
+      if (Array.isArray(value)) {
+        return value.map(
+          v => `${encodeURIComponent(key)}=${encodeURIComponent(String(v))}`
+        );
+      }
+      return [`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`];
+    })
     .join('&');
 
   return query ? `?${query}` : '';

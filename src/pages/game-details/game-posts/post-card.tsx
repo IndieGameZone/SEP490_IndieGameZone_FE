@@ -22,15 +22,21 @@ import { getPostReactionByPostId, reactPost } from "@/lib/api/game-post-api";
 import { useGlobalMessage } from "@/components/message-provider";
 import { useCopyCurrentLink } from "@/hooks/use-copy-current-link";
 import usePostStore from "@/store/use-game-post-store";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface PostCardProps {
   post: GamePost;
   onViewPostDetail?: (postId: string) => void;
   onDelete?: (postId: string) => void;
+  setFilter?: (key: "tags", value: string[]) => void;
 }
 
-const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
+const PostCard = ({
+  post,
+  onViewPostDetail,
+  onDelete,
+  setFilter,
+}: PostCardProps) => {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1); // for lightbox
   const [currentImage, setCurrentImage] = useState<number>(0); // for slider
   const [reportPostModalOpen, setReportPostModalOpen] = useState(false);
@@ -39,12 +45,16 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
   const messageApi = useGlobalMessage();
   const { copyLink } = useCopyCurrentLink();
   const { profile } = useAuthStore();
+  const navigate = useNavigate();
 
   const images: string[] = useMemo(() => {
     return post.postImages.map((image) => image.image);
   }, [post]);
 
-  const slides = useMemo(() => images.map((image) => ({ src: image })), [images]);
+  const slides = useMemo(
+    () => images.map((image) => ({ src: image })),
+    [images]
+  );
 
   const moreOptionItems: MenuProps["items"] = useMemo(() => {
     const items: MenuProps["items"] = [
@@ -126,7 +136,12 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
 
   return (
     <div>
-      <Lightbox index={currentImage} slides={slides} open={lightboxIndex >= 0} close={() => setLightboxIndex(-1)} />
+      <Lightbox
+        index={currentImage}
+        slides={slides}
+        open={lightboxIndex >= 0}
+        close={() => setLightboxIndex(-1)}
+      />
       <div className="bg-zinc-800 w-full p-3 rounded border border-zinc-700 hover:border-orange-500 duration-300">
         <div className="flex justify-between items-center gap-3">
           <div className="flex items-center gap-3">
@@ -138,7 +153,9 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
                 <div className="font-semibold">{post.user.userName}</div>
               </Link>
 
-              <div className="text-xs text-gray-400">{timeAgo(post.createdAt)}</div>
+              <div className="text-xs text-gray-400">
+                {timeAgo(post.createdAt)}
+              </div>
             </div>
           </div>
           <Dropdown menu={{ items: moreOptionItems }} trigger={["click"]}>
@@ -147,12 +164,18 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
         </div>
 
         <div className="mt-2">
-          <h4 className="font-bold text-xl cursor-pointer" onClick={handleViewPostDetail}>
+          <h4
+            className="font-bold text-xl cursor-pointer"
+            onClick={handleViewPostDetail}
+          >
             {post.title}
           </h4>
 
           {post.content.trim() && (
-            <ExpandableWrapper maxHeight={images.length > 0 ? 100 : 500} variant="text">
+            <ExpandableWrapper
+              maxHeight={images.length > 0 ? 100 : 500}
+              variant="text"
+            >
               <TiptapView value={post.content} />
             </ExpandableWrapper>
           )}
@@ -160,7 +183,20 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
           <div className="flex flex-wrap mt-2">
             {post.postTags.map((tag) => {
               return (
-                <Tag color="orange" key={tag.tag.id}>
+                <Tag
+                  color="orange"
+                  key={tag.tag.id}
+                  className="cursor-pointer"
+                  onClick={() => {
+                    if (setFilter) {
+                      setFilter("tags", [tag.tag.id]);
+                    } else {
+                      navigate(
+                        `/game/${post.game.id}?tags=${tag.tag.id}#forum`
+                      );
+                    }
+                  }}
+                >
                   {tag.tag.name}
                 </Tag>
               );
@@ -200,7 +236,13 @@ const PostCard = ({ post, onViewPostDetail, onDelete }: PostCardProps) => {
 
           <div className="flex items-center gap-3 mt-2">
             <Button
-              icon={post.liked ? <FaHeart className="fill-rose-600" /> : <FaRegHeart className="fill-gray-400" />}
+              icon={
+                post.liked ? (
+                  <FaHeart className="fill-rose-600" />
+                ) : (
+                  <FaRegHeart className="fill-gray-400" />
+                )
+              }
               shape="round"
               type="text"
               loading={isSubmittingLike}
