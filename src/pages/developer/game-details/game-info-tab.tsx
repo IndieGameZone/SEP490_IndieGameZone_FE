@@ -27,9 +27,10 @@ import { useClipboard } from "@/hooks/use-clipboard";
 import { GameKey } from "@/types/game-key";
 
 import DevGameKeyModal from "@/pages/developer/game-details/dev-game-key-modal";
+import ViewPriceLogButton from "@/components/buttons/view-price-log-button";
 
 const GameInfoTab = () => {
-  const { game, error } = useGameStore();
+  const { game, error, fetchGamePriceLogs, gamePriceLogs } = useGameStore();
   const navigate = useNavigate();
 
   const [index, setIndex] = useState(-1);
@@ -52,6 +53,7 @@ const GameInfoTab = () => {
       fetchPlatforms();
       fetchGameFiles(game.id);
       fetchGameCensorLog(game.id);
+      fetchGamePriceLogs(game.id);
     }
   }, [game]);
 
@@ -138,7 +140,11 @@ const GameInfoTab = () => {
     },
     {
       key: "price",
-      label: "Price",
+      label: (
+        <div>
+          Price <ViewPriceLogButton priceLogs={gamePriceLogs} />
+        </div>
+      ),
       children: game?.price != 0 ? formatCurrencyVND(game?.price ?? 0) : "Free",
       span: 1,
     },

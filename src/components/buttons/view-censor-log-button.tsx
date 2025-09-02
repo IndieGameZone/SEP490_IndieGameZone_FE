@@ -5,18 +5,9 @@ import { GameCensorStatus } from "@/types/game";
 import { Button, Modal, Steps } from "antd";
 import type { StepProps } from "antd";
 import { ReactNode, useMemo, useState } from "react";
-import {
-  FaCheck,
-  FaHistory,
-  FaHourglassEnd,
-  FaHourglassHalf,
-  FaTimes,
-} from "react-icons/fa";
+import { FaCheck, FaHistory, FaHourglassEnd, FaHourglassHalf, FaTimes } from "react-icons/fa";
 
-const censorStatusMap: Record<
-  GameCensorStatus,
-  { label: string; icon: ReactNode }
-> = {
+const censorStatusMap: Record<GameCensorStatus, { label: string; icon: ReactNode }> = {
   Approved: { label: "Approved", icon: <FaCheck className="size-4" /> },
   PendingManualReview: {
     label: "Pending Review",
@@ -50,13 +41,7 @@ const ViewCensorLogButton = () => {
         icon: (
           <div
             className={`rounded-full aspect-square flex justify-center items-center ${
-              i === 0
-                ? isDarkTheme
-                  ? "bg-orange-900"
-                  : "bg-orange-200"
-                : isDarkTheme
-                ? "bg-zinc-700"
-                : "bg-zinc-300"
+              i === 0 ? (isDarkTheme ? "bg-orange-900" : "bg-orange-200") : isDarkTheme ? "bg-zinc-700" : "bg-zinc-300"
             }`}
           >
             {censorStatusMap[log.censorStatus].icon}
@@ -68,8 +53,7 @@ const ViewCensorLogButton = () => {
             {log.moderator && (
               <>
                 <br />
-                by{" "}
-                <span className="font-semibold">{log.moderator?.userName}</span>
+                by <span className="font-semibold">{log.moderator?.userName}</span>
                 <br />
                 {log.censorReason && (
                   <>
@@ -94,24 +78,12 @@ const ViewCensorLogButton = () => {
 
   return (
     <>
-      <Button
-        type="text"
-        onClick={showModal}
-        icon={<FaHistory className="text-zinc-500" />}
-        shape="circle"
-      />
-      <Modal
-        title="Censor status history"
-        open={isModalOpen}
-        onCancel={handleCancel}
-        footer={null}
-      >
+      <Button type="text" onClick={showModal} icon={<FaHistory className="text-zinc-500" />} shape="circle" />
+      <Modal title="Censor status history" open={isModalOpen} onCancel={handleCancel} footer={null}>
         <div className="space-y-8">
           {Object.entries(groupedSteps).map(([date, steps]) => (
             <div key={date}>
-              <h3 className="text-lg font-semibold mb-2">
-                {new Date(date).toLocaleDateString()}
-              </h3>
+              <h3 className="text-lg font-semibold mb-2">{new Date(date).toLocaleDateString()}</h3>
               <Steps current={0} items={steps} direction="vertical" />
             </div>
           ))}

@@ -29,11 +29,13 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import { GameKey } from "@/types/game-key";
 import { useClipboard } from "@/hooks/use-clipboard";
 import ModGameKeyModal from "./mod-game-key-modal";
+import ViewPriceLogButton from "@/components/buttons/view-price-log-button";
 
 const AdminGameDetail = () => {
   const { gameId } = useParams();
   const navigate = useNavigate();
-  const { fetchGameById, loading, error, game, fetchGameCensorLog, gameCensorLogs } = useGameStore();
+  const { fetchGameById, loading, error, game, fetchGameCensorLog, gameCensorLogs, fetchGamePriceLogs, gamePriceLogs } =
+    useGameStore();
   const [index, setIndex] = useState(-1);
   const { getDefaultPlatforms, fetchPlatforms } = usePlatformStore();
   const { fetchGameFiles, gameFiles, installInstruction } = useGameStore();
@@ -58,6 +60,7 @@ const AdminGameDetail = () => {
       fetchPlatforms();
       fetchGameFiles(game.id);
       fetchGameCensorLog(game.id);
+      fetchGamePriceLogs(game.id);
     }
   }, [game]);
 
@@ -150,7 +153,11 @@ const AdminGameDetail = () => {
     },
     {
       key: "price",
-      label: "Price",
+      label: (
+        <div>
+          Price <ViewPriceLogButton priceLogs={gamePriceLogs} />
+        </div>
+      ),
       children: game?.price != 0 ? formatCurrencyVND(game?.price ?? 0) : "Free",
       span: 1,
     },
