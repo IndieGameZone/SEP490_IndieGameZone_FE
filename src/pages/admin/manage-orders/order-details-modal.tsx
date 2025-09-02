@@ -1,7 +1,9 @@
 import FaultTolerantImage from "@/components/fault-tolerant-image";
 import { useGlobalMessage } from "@/components/message-provider";
+import useDocumentTheme from "@/hooks/use-document-theme";
 import { getOrderById } from "@/lib/api/order-api";
 import { formatCurrencyVND } from "@/lib/currency";
+import useAuthStore from "@/store/use-auth-store";
 import { Order } from "@/types/order";
 import { Modal } from "antd";
 import { useEffect, useState } from "react";
@@ -20,6 +22,9 @@ const OrderDetailsModal = ({
   const [orderDetail, setOrderDetail] = useState<Order>();
   const [isLoading, setIsLoading] = useState(false);
   const messageApi = useGlobalMessage();
+  const theme = useDocumentTheme();
+  const isDarkTheme = theme == "dark";
+  const { profile } = useAuthStore();
 
   const fetchOrderDetail = async () => {
     if (!orderId) return;
@@ -37,6 +42,17 @@ const OrderDetailsModal = ({
     fetchOrderDetail();
   }, [orderId]);
 
+  const navigatePrefix =
+    profile?.role.name == "Developer"
+      ? "dev"
+      : profile?.role.name == "Admin"
+      ? "admin"
+      : profile?.role.name == "Moderator"
+      ? "moderator"
+      : "";
+
+  if (!orderDetail) return;
+
   return (
     <Modal
       title="Order details"
@@ -47,7 +63,8 @@ const OrderDetailsModal = ({
       loading={isLoading}
     >
       <h2 className="text-xl font-semibold">
-        Order code: {orderDetail?.transaction.orderCode}
+        Order code: ORD-{new Date(orderDetail.createdAt).getFullYear()}-
+        {orderDetail?.transaction.orderCode}
       </h2>
       <p className="text-zinc-400 mb-2">
         Type:{" "}
@@ -58,9 +75,13 @@ const OrderDetailsModal = ({
       {orderDetail?.commercialPackage && (
         <>
           <h4 className="mb-1 font-semibold">Commerical Package:</h4>
-          <div className="bg-zinc-800 p-3 rounded">
+          <div
+            className={`${
+              isDarkTheme ? "bg-zinc-800" : "bg-zinc-200"
+            } p-3 rounded`}
+          >
             <Link
-              to={`/dev/commercial-package/${orderDetail?.commercialPackage.id}`}
+              to={`/${navigatePrefix}/commercial-package/${orderDetail?.commercialPackage.id}`}
             >
               <p className="text-lg font-semibold">
                 {orderDetail.commercialPackage.name}
@@ -84,8 +105,12 @@ const OrderDetailsModal = ({
         </>
       )}
       <h4 className="mb-1 font-semibold">Game:</h4>
-      <div className="rounded bg-zinc-800 p-2 flex gap-2">
-        <Link to={`/dev/game/${orderDetail?.game.id}`}>
+      <div
+        className={`rounded ${
+          isDarkTheme ? "bg-zinc-800" : "bg-zinc-200"
+        } p-2 flex gap-2`}
+      >
+        <Link to={`/${navigatePrefix}/game/${orderDetail?.game.id}`}>
           <FaultTolerantImage
             src={orderDetail?.game.coverImage ?? ""}
             className="w-28 aspect-video"
@@ -93,7 +118,7 @@ const OrderDetailsModal = ({
         </Link>
 
         <div className="flex-1">
-          <Link to={`/dev/game/${orderDetail?.game.id}`}>
+          <Link to={`/${navigatePrefix}/game/${orderDetail?.game.id}`}>
             <p className="font-semibold text-lg">{orderDetail?.game.name}</p>
           </Link>
           <p className="text-sm text-zinc-500">

@@ -5,11 +5,10 @@ import { Order } from "@/types/order";
 import { Button, Tooltip } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { FaEye } from "react-icons/fa";
-import { RiResetLeftFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
 export const getColumns = (
-  setSelectedOrder: (orderId: string) => void,
+  setSelectedOrder: (orderId: string) => void
 ): ColumnsType<Order> => {
   return [
     {
@@ -81,20 +80,6 @@ export const getColumns = (
       render: (text) => formatDateTime(new Date(text)),
     },
     {
-      title: "Game Active Key",
-      dataIndex: "activationKey",
-      key: "activationKey",
-      render: (activationKey) => (
-        <span
-          className={`font-mono ${
-            activationKey?.isUsed ? "text-red-500" : "text-green-500"
-          }`}
-        >
-          {activationKey?.key || ""}
-        </span>
-      ),
-    },
-    {
       title: "Action",
       key: "action",
       render: (_, record) => {
@@ -106,13 +91,6 @@ export const getColumns = (
                 shape="circle"
                 onClick={() => setSelectedOrder(record.id)}
               />
-            </Tooltip>
-            <Tooltip placement="top" title={"Reset Key"}>
-              <Button
-                icon={<RiResetLeftFill />}
-                shape="circle"
-                className="hover:text-red-500"
-              />{" "}
             </Tooltip>
           </div>
         );
