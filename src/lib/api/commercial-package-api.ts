@@ -1,4 +1,4 @@
-import { axiosClient } from './config/axios-client';
+import { axiosClient } from "./config/axios-client";
 
 export interface ApiResponse {
   error: string | null;
@@ -7,10 +7,10 @@ export interface ApiResponse {
 }
 export const handleApiError = (error: any): ApiResponse => {
   try {
-    const errorMessage = error.response?.data.message || error?.message || 'An unexpected error occurred.';
+    const errorMessage = error.response?.data.message || error?.message || "An unexpected error occurred.";
     return { error: errorMessage, data: null, success: false };
   } catch (err) {
-    return { error: 'An unexpected error occurred.', data: null, success: false };
+    return { error: "An unexpected error occurred.", data: null, success: false };
   }
 };
 
@@ -22,7 +22,31 @@ export const getAllCommercialPackages = async () => {
     return handleApiError(error);
   }
 };
+export const deleteCommercialPackages = async (id: string) => {
+  try {
+    const { data } = await axiosClient.delete(`/api/commercial-packages/${id}`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 
+interface EditCommercialPackageData {
+  name?: string;
+  description?: string;
+  duration?: number;
+  price?: number;
+  type?: string;
+}
+
+export const editCommercialPackages = async (id: string, data: EditCommercialPackageData) => {
+  try {
+    const response = await axiosClient.put(`/api/commercial-packages/${id}`, data);
+    return { error: null, data: response.data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
 
 export const getCommercialPackageById = async (packageId: string) => {
   try {
@@ -33,15 +57,14 @@ export const getCommercialPackageById = async (packageId: string) => {
   }
 };
 
-export const getUnavailableDates = async (params: {
-  gameId: string;
-  commercialPackageId: string;
-}) => {
+export const getUnavailableDates = async (params: { gameId: string; commercialPackageId: string }) => {
   const searchParams = new URLSearchParams();
-  if (params.gameId) searchParams.append('gameId', params.gameId);
+  if (params.gameId) searchParams.append("gameId", params.gameId);
 
   try {
-    const { data } = await axiosClient.get(`/api/commercial-packages/${params.commercialPackageId}/unavailable-dates?${searchParams.toString()}`);
+    const { data } = await axiosClient.get(
+      `/api/commercial-packages/${params.commercialPackageId}/unavailable-dates?${searchParams.toString()}`
+    );
     return { error: null, data, success: true };
   } catch (error) {
     return handleApiError(error);

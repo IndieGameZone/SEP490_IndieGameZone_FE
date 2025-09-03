@@ -24,6 +24,7 @@ const ManageAdminWallet = lazy(() => import("@/pages/admin/admin-wallet/manage-a
 const AdminWithdrawalRequestsPage = lazy(
   () => import("@/pages/admin/manage-withdraw-request/manage-admin-withdraw-requests-page")
 );
+const ManageAllCommercialPackages = lazy(() => import("@/pages/admin/manage-all-commerical-package/manage-all-commerical-packages"));
 const ManageAchievement = lazy(() => import("@/pages/admin/manage-achievement/manage-achievement"));
 const ManageOrders = lazy(() => import("@/pages/admin/manage-orders/manage-order"));
 const ManagePost = lazy(() => import("@/pages/admin/manage-post/manage-post"));
@@ -37,6 +38,7 @@ const AdminContainer = () => {
           <Route path="/dashboard" element={<DashBoardPage />} />
 
           <Route path="/manage-posts" element={<ManagePost />} />
+          <Route path="/manage-all-commercial-packages" element={<ManageAllCommercialPackages />} />
           <Route path="*" element={<AdminNotFoundPage />} />
           <Route path="/manage-languages" element={<ManageLanguages />} />
           <Route path="/manage-tags" element={<ManageTags />} />
