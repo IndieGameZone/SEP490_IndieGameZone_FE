@@ -90,7 +90,11 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
       onFinish={onFinish}
       autoComplete="off"
       layout="vertical"
-      initialValues={{ price: 10000, pricingOption: "Free", allowDonate: true }}
+      initialValues={{
+        price: 10_000,
+        pricingOption: "Free",
+        allowDonate: true,
+      }}
     >
       <Form.Item<FieldType>
         name="name"
@@ -274,7 +278,10 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
       <Form.Item<FieldType>
         name="price"
         label="Minimum price"
-        rules={[{ required: true, message: "Please a price" }]}
+        rules={[
+          { required: true, message: "Please a price" },
+          { min: 10_000, message: "Game price must be at least 10.000₫" },
+        ]}
         hidden={isFree}
         extra="Minimum price to pay to get download access to game"
         style={{ marginBottom: 10 }}

@@ -8,6 +8,7 @@ import {
   FaFolderOpen,
   FaImages,
   FaInfoCircle,
+  FaTag,
 } from "react-icons/fa";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import UpdateGameFiles from "./game-files/update-game-files";
@@ -19,14 +20,10 @@ import useAgeRestrictionStore from "@/store/use-age-restriction-store";
 import useLanguageStore from "@/store/use-language-store";
 import usePlatformStore from "@/store/use-platform-store";
 import { useHashState } from "@/hooks/use-hash-state";
+import GameDiscountPage from "./game-discount-page";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-const items: MenuItem[] = [
-  { key: "info", icon: <FaInfoCircle />, label: "Information" },
-  { key: "media", icon: <FaImages />, label: "Media assets" },
-  { key: "file", icon: <FaFolderOpen />, label: "Files" },
-];
 const { useToken } = theme;
 const DevUpdateGamePage = () => {
   const { gameId } = useParams();
@@ -81,6 +78,15 @@ const DevUpdateGamePage = () => {
   if (!game) return;
   if (!gameId) return <Navigate to={"/dev/manage-games"} />;
 
+  const menuItems: MenuItem[] = [
+    { key: "info", icon: <FaInfoCircle />, label: "Information" },
+    { key: "media", icon: <FaImages />, label: "Media assets" },
+    { key: "file", icon: <FaFolderOpen />, label: "Files" },
+    ...(game.price > 0
+      ? [{ key: "discount", icon: <FaTag />, label: "Discount" }]
+      : []),
+  ];
+
   return (
     <div>
       <div className="p-5 bg-zinc-800 border border-zinc-700 text-2xl flex gap-3 justify-between">
@@ -97,7 +103,7 @@ const DevUpdateGamePage = () => {
           <Menu
             defaultSelectedKeys={[selectedKey]}
             mode="inline"
-            items={items}
+            items={menuItems}
             onClick={(e) => setSelectedKey(e.key)}
           />
         </div>
@@ -105,6 +111,7 @@ const DevUpdateGamePage = () => {
           {selectedKey === "info" && <UpdateGameInfo />}
           {selectedKey === "media" && <UpdateGameMediaAssets />}
           {selectedKey === "file" && <UpdateGameFiles />}
+          {game.price > 0 && selectedKey === "discount" && <GameDiscountPage />}
         </div>
       </div>
     </div>

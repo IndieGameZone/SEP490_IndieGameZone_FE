@@ -384,3 +384,17 @@ export const getGamePriceLogs = async (gameId: string) => {
     return handleApiError(error);
   }
 };
+
+type CreateGameDiscountRequest = {
+  percentage: number;
+  endDate: string;
+}
+
+export const createGameDiscount = async (gameId: string, request: CreateGameDiscountRequest) => {
+  try {
+    const { data } = await axiosClient.post(`/api/games/${gameId}/discounts`, request);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
