@@ -4,34 +4,12 @@ import { addGameFiles } from "@/lib/api/game-api";
 import { formatBytes } from "@/lib/file";
 import useGameStore from "@/store/use-game-store";
 import usePlatformStore from "@/store/use-platform-store";
-import {
-  Alert,
-  Button,
-  Form,
-  FormProps,
-  Input,
-  Modal,
-  Progress,
-  Select,
-  Upload,
-  UploadFile,
-} from "antd";
+import { Alert, Button, Form, FormProps, Input, Modal, Progress, Select, Upload, UploadFile } from "antd";
 import { RcFile } from "antd/es/upload";
 import { useMemo, useState } from "react";
 import { FaRedo, FaUpload } from "react-icons/fa";
 
-const allowedTypes = [
-  ".exe",
-  ".msi",
-  ".sh",
-  ".bat",
-  ".apk",
-  ".zip",
-  ".rar",
-  ".7z",
-  ".tar",
-  ".gz",
-];
+const allowedTypes = [".exe", ".msi", ".sh", ".bat", ".apk", ".zip", ".rar", ".7z", ".tar", ".gz"];
 
 type FieldType = {
   displayName: string;
@@ -64,32 +42,23 @@ const UploadNewFileButton = () => {
     const uploadedFile = fileList[0];
 
     const isDuplicate = gameFiles.some(
-      (x) =>
-        x.displayName === value &&
-        x.version === version &&
-        x.platform.id === platformId
+      (x) => x.displayName === value && x.version === version && x.platform.id === platformId
     );
 
     if (isDuplicate) {
       return Promise.reject(
-        new Error(
-          "A file with the same display name, version, and platform already exists! Please change one of them"
-        )
+        new Error("A file with the same display name, version, and platform already exists! Please change one of them")
       );
     }
 
     if (uploadedFile) {
       const originalName = uploadedFile.name;
-      const originalExt = originalName
-        .substring(originalName.lastIndexOf("."))
-        .toLowerCase();
+      const originalExt = originalName.substring(originalName.lastIndexOf(".")).toLowerCase();
       const displayExt = value.substring(value.lastIndexOf(".")).toLowerCase();
 
       if (originalExt !== displayExt) {
         return Promise.reject(
-          new Error(
-            `Display name extension must match the uploaded file extension (${originalExt})`
-          )
+          new Error(`Display name extension must match the uploaded file extension (${originalExt})`)
         );
       }
     }
@@ -97,13 +66,9 @@ const UploadNewFileButton = () => {
   };
 
   const handleBeforeUpload = (file: File) => {
-    const isAllowed = allowedTypes.some((type) =>
-      file.name.toLowerCase().endsWith(type)
-    );
+    const isAllowed = allowedTypes.some((type) => file.name.toLowerCase().endsWith(type));
     if (!isAllowed) {
-      messageApi.error(
-        `${file.name} is not a valid executable or compressed file`
-      );
+      messageApi.error(`${file.name} is not a valid executable or compressed file`);
       return false;
     }
     const rcFile = file as RcFile;
@@ -131,9 +96,7 @@ const UploadNewFileButton = () => {
     try {
       const response = await axiosClient.post("/api/files", formData, {
         onUploadProgress: (progressEvent) => {
-          const percent = Math.round(
-            (progressEvent.loaded * 100) / (progressEvent.total || 1)
-          );
+          const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
           setUploadProgress(percent);
 
           if (percent === 100) {
@@ -147,16 +110,13 @@ const UploadNewFileButton = () => {
       setIsScanning(false);
       if (
         error.response?.status === 400 &&
-        error.response?.data?.detail ===
-          "File scan failed. Please ensure the file is safe and appropriate."
+        error.response?.data?.detail === "File scan failed. Please ensure the file is safe and appropriate."
       ) {
         throw new Error(
           "The file couldn't be uploaded because it didn't pass our safety check. Please make sure the file is safe and try again."
         );
       } else {
-        throw new Error(
-          "Something went wrong! Please try again."
-        );
+        throw new Error("Something went wrong! Please try again.");
       }
     }
   };
@@ -205,9 +165,7 @@ const UploadNewFileButton = () => {
       }, 1000);
     } catch (err: any) {
       setFormDataCache(values);
-      messageApi.error(
-        err.message || "Something went wrong! Please try again."
-      );
+      messageApi.error(err.message || "Something went wrong! Please try again.");
       setErrorMessage(err.message || "Something went wrong! Please try again.");
     } finally {
       setLoading(false);
@@ -264,22 +222,11 @@ const UploadNewFileButton = () => {
           <>
             <Button onClick={handleCancel}>Cancel</Button>
             {errorMessage && fileUrl && formDataCache ? (
-              <Button
-                onClick={handleRetry}
-                disabled={loading}
-                type="primary"
-                loading={loading}
-                icon={<FaRedo />}
-              >
+              <Button onClick={handleRetry} disabled={loading} type="primary" loading={loading} icon={<FaRedo />}>
                 Retry Submit
               </Button>
             ) : (
-              <Button
-                type="primary"
-                onClick={handleOk}
-                icon={<FaUpload />}
-                loading={loading}
-              >
+              <Button type="primary" onClick={handleOk} icon={<FaUpload />} loading={loading}>
                 Submit
               </Button>
             )}
@@ -298,19 +245,14 @@ const UploadNewFileButton = () => {
             label="Upload File"
             name="file"
             rules={[{ required: true, message: "Please upload a file" }]}
-            extra="Upload the actual game file (compressed builds are accepted). File size limit: 1 GB."
+            extra="Upload the actual game file (compressed builds are accepted). File size limit: 512 MB."
             style={{ marginBottom: 10 }}
           >
             <Upload
               maxCount={1}
               beforeUpload={handleBeforeUpload}
               showUploadList={{
-                extra: ({ size = 0 }) => (
-                  <span style={{ color: "#cccccc" }}>
-                    {" "}
-                    ({formatBytes(size)})
-                  </span>
-                ),
+                extra: ({ size = 0 }) => <span style={{ color: "#cccccc" }}> ({formatBytes(size)})</span>,
                 showRemoveIcon: true,
               }}
               fileList={fileList}
@@ -326,10 +268,7 @@ const UploadNewFileButton = () => {
           <Form.Item<FieldType>
             label="Display Name"
             name="displayName"
-            rules={[
-              { required: true, message: "Please enter a display name" },
-              { validator: displayNameValidator },
-            ]}
+            rules={[{ required: true, message: "Please enter a display name" }, { validator: displayNameValidator }]}
             extra="The name that will be shown to users (e.g., Windows Build v1.2)"
             style={{ marginBottom: 10 }}
           >
@@ -343,11 +282,7 @@ const UploadNewFileButton = () => {
             extra="Select the platform this game file is for"
             style={{ marginBottom: 10 }}
           >
-            <Select
-              placeholder="Select platform"
-              disabled={loading}
-              options={platformsOptions}
-            ></Select>
+            <Select placeholder="Select platform" disabled={loading} options={platformsOptions}></Select>
           </Form.Item>
           <Form.Item<FieldType>
             label="Version"
@@ -356,27 +291,13 @@ const UploadNewFileButton = () => {
             extra="Specify the version of this build (like v1.0, v2.3-beta etc.)"
             style={{ marginBottom: 10 }}
           >
-            <Input
-              placeholder="Enter version (e.g. v1.0.2)"
-              disabled={loading}
-            />
+            <Input placeholder="Enter version (e.g. v1.0.2)" disabled={loading} />
           </Form.Item>
           {loading && uploadProgress > 0 && uploadProgress < 100 && (
-            <Progress
-              percent={uploadProgress}
-              status="active"
-              style={{ marginBottom: 16 }}
-            />
+            <Progress percent={uploadProgress} status="active" style={{ marginBottom: 16 }} />
           )}
         </Form>
-        {errorMessage && (
-          <Alert
-            message={errorMessage}
-            type="error"
-            showIcon
-            style={{ marginBottom: 16 }}
-          />
-        )}
+        {errorMessage && <Alert message={errorMessage} type="error" showIcon style={{ marginBottom: 16 }} />}
         {loading && isScanning && (
           <Alert
             message="Upload complete, scanning file on server..."

@@ -69,7 +69,7 @@ const DashboardSummary = () => {
         <GoPackage className="p-4 size-12 bg-blue-500 rounded-full" />
         <div>
           <p className="text-2xl font-semibold">
-            {summaryData.commercialPackageRevenue}{" "}
+            {summaryData.commercialPackageRevenue.toLocaleString("vi-VN")}{" "}
             <CoinIcon className="inline size-5 mb-1" />
           </p>
           <p className="text-xs">Commercial Revenue</p>
