@@ -194,8 +194,8 @@ const SignUpForm = () => {
         style={{ paddingBlock: "8px" }}
       >
         I accept the{" "}
-        <Link to="">
-          <span className="text-red-400 underline">Terms of Service</span>
+        <Link to="/policy">
+          <span className="text-red-400 underline">Policy</span>
         </Link>
       </Checkbox>
 
