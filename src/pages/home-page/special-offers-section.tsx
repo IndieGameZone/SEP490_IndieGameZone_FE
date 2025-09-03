@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Game } from "@/types/game";
 import { searchGames } from "@/lib/api/game-api";
 import { FaTag } from "react-icons/fa";
+import FaultTolerantImage from "@/components/fault-tolerant-image";
 
 const settings = {
   dots: true,
@@ -77,10 +78,10 @@ const SpecialOffersSection = () => {
               key={`special-offer-${game.id}`}
               className="rounded highlight-hover overflow-hidden bg-gradient-to-b from-zinc-700 to-zinc-800"
             >
-              <img
+              <FaultTolerantImage
                 src={game.coverImage}
                 alt=""
-                className="h-[180px] w-full object-cover"
+                className="h-[180px] w-full object-contain bg-zinc-900"
               />
               <div className="p-2 flex border-t-2 border-orange-500">
                 <div className="flex-1">

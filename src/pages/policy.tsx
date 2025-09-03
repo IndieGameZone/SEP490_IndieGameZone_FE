@@ -1,27 +1,25 @@
-import React from "react";
-import { Typography, Badge, Collapse } from "antd";
+import { Badge, Collapse, Typography } from "antd";
+import { AiOutlineSafety } from "react-icons/ai";
 import {
-  FaShieldAlt,
-  FaUserShield,
-  FaGamepad,
-  FaCreditCard,
-  FaCode,
-  FaExclamationTriangle,
   FaBan,
-  FaLock,
-  FaDownload,
-  FaTrash,
-  FaDollarSign,
-  FaHeart,
-  FaEnvelope,
-  FaCopyright,
-  FaGavel,
   FaChevronDown,
-  FaUndo,
   FaChild,
+  FaCode,
+  FaCopyright,
+  FaCreditCard,
+  FaDollarSign,
+  FaDownload,
+  FaEnvelope,
+  FaGamepad,
+  FaGavel,
+  FaHeart,
+  FaLock,
+  FaShieldAlt,
+  FaTrash,
+  FaUndo,
+  FaUserShield
 } from "react-icons/fa";
-import { MdPolicy, MdSecurity, MdWarning, MdBlock, MdReportProblem } from "react-icons/md";
-import { AiOutlineWarning, AiOutlineSafety } from "react-icons/ai";
+import { MdBlock, MdPolicy, MdReportProblem, MdSecurity, MdWarning } from "react-icons/md";
 
 const { Title, Paragraph, Text } = Typography;
 const { Panel } = Collapse;
