@@ -23,7 +23,12 @@ const SelectGameInput = ({
       const result = await getGamesByDeveloperId(profile.id);
       setFetching(false);
       if (!result.error) {
-        const formattedOptions = result.data.games.map((game: Game) => ({
+        const games: Game[] = result.data.games;
+        const availableGames = games.filter(
+          (game) =>
+            game.visibility == "Public" && game.censorStatus == "Approved"
+        );
+        const formattedOptions = availableGames.map((game: Game) => ({
           value: game.id,
           label: game.name,
           desc:
