@@ -141,6 +141,7 @@ const DownloadPanel = ({
   defaultPlatforms: any;
   activeFiles: any[];
 }) => {
+  const hasDiscount = game.price != game.priceAfterDiscount;
   return (
     <div className="bg-zinc-800 rounded w-full">
       <h1 className="px-5 pt-5 font-semibold text-xl">Download Game</h1>
@@ -156,7 +157,18 @@ const DownloadPanel = ({
           ) : (
             <>
               <BuyGameButton />
-              <p className="mt-1 text-xl">{formatCurrencyVND(game.price)}</p>
+              <div className="flex items-end gap-2">
+                <p className="mt-1 text-xl">
+                  {formatCurrencyVND(
+                    hasDiscount ? game.priceAfterDiscount : game.price
+                  )}
+                </p>
+                {hasDiscount && (
+                  <p className="line-through text-sx">
+                    {formatCurrencyVND(game.price)}
+                  </p>
+                )}
+              </div>
             </>
           )}
         </div>

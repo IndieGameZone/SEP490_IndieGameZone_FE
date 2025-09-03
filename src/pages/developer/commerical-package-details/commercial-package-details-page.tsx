@@ -198,8 +198,13 @@ const CommericalPackageDetailsPage = () => {
               </div>
             )}
             {!selectedGame && (
-              <div className="mt-2">
-                <Alert message="Select a game to continue" showIcon />
+              <div className="mt-2 ">
+                <Alert
+                  className="text-sm"
+                  message="Selected game must be visible to the public"
+                  type="warning"
+                  showIcon
+                ></Alert>
               </div>
             )}
             {selectedDate && (

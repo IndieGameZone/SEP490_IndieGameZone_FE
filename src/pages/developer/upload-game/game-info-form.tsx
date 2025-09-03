@@ -90,7 +90,11 @@ const GameInfoForm = ({ form }: { form: FormInstance<FieldType> }) => {
       onFinish={onFinish}
       autoComplete="off"
       layout="vertical"
-      initialValues={{ price: 10000, pricingOption: "Free", allowDonate: true }}
+      initialValues={{
+        price: 10_000,
+        pricingOption: "Free",
+        allowDonate: true,
+      }}
     >
       <Form.Item<FieldType>
         name="name"
