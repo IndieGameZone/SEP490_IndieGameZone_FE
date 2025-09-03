@@ -15,6 +15,7 @@ const ViewProfilePage = lazy(
 const GameDetailsPage = lazy(
   () => import("@/pages/game-details/game-details-page")
 );
+const PolicyPage = lazy(() => import("@/pages/policy"));
 const SendMailOtpPage = lazy(() => import("@/pages/user-profile/forgot-password/send-mail-otp-page"));
 const ResetPasswordPage = lazy(() => import("@/pages/user-profile/forgot-password/reset-password-page"));
 const HomeContainer = () => {
@@ -24,6 +25,7 @@ const HomeContainer = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/policy" element={<PolicyPage />} />
           <Route path="/forgot-password/send-mail-otp" element={<SendMailOtpPage />} />
           <Route path="/forgot-password/reset-password" element={<ResetPasswordPage />} />
           <Route path="/about-us" element={<AboutUsPage />} />

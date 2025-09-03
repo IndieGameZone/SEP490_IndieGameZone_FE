@@ -61,6 +61,7 @@ export type Game = {
     coverImage: string;
     description: string;
     shortDescription: string;
+    isDeleted: boolean;
     status: GameStatus;
     allowDonation: boolean;
     price: number;

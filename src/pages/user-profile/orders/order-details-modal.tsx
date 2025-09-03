@@ -12,11 +12,7 @@ interface OrderDetailsModalProps {
   open: boolean;
   handleCancel?: () => void;
 }
-const OrderDetailsModal = ({
-  orderId,
-  open,
-  handleCancel,
-}: OrderDetailsModalProps) => {
+const OrderDetailsModal = ({ orderId, open, handleCancel }: OrderDetailsModalProps) => {
   const [orderDetail, setOrderDetail] = useState<Order>();
   const [isLoading, setIsLoading] = useState(false);
   const messageApi = useGlobalMessage();
@@ -38,47 +34,29 @@ const OrderDetailsModal = ({
   }, [orderId]);
 
   return (
-    <Modal
-      title="Order details"
-      closable
-      open={open}
-      onCancel={handleCancel}
-      footer={null}
-      loading={isLoading}
-    >
-      <h2 className="text-xl font-semibold">
-        Order code: {orderDetail?.transaction.orderCode}
-      </h2>
+    <Modal title="Order details" closable open={open} onCancel={handleCancel} footer={null} loading={isLoading}>
+      <h2 className="text-xl font-semibold">Order code: {orderDetail?.transaction.orderCode}</h2>
       <p className="text-zinc-400 mb-2">
-        Type:{" "}
-        {orderDetail?.commercialPackage
-          ? "Commercial Package Registration"
-          : "Game Purchase"}
+        Type: {orderDetail?.commercialPackage ? "Commercial Package Registration" : "Game Purchase"}
       </p>
+      <p className="text-zinc-400 mb-2">Purchaser: {orderDetail?.user.fullname}</p>
+      <p className="text-zinc-400 mb-2">Email: {orderDetail?.user.email}</p>
       {orderDetail?.commercialPackage && (
         <>
           <h4 className="mb-1 font-semibold">Commerical Package:</h4>
           <div className="bg-zinc-800 p-3 rounded">
-            <Link
-              to={`/dev/commercial-package/${orderDetail?.commercialPackage.id}`}
-            >
-              <p className="text-lg font-semibold">
-                {orderDetail.commercialPackage.name}
-              </p>
+            <Link to={`/dev/commercial-package/${orderDetail?.commercialPackage.id}`}>
+              <p className="text-lg font-semibold">{orderDetail.commercialPackage.name}</p>
             </Link>
             <p>
               <span className="font-semibold">Start date: </span>
               {orderDetail.commercialRegistrationStartDate &&
-                new Date(
-                  orderDetail.commercialRegistrationStartDate
-                ).toLocaleDateString()}
+                new Date(orderDetail.commercialRegistrationStartDate).toLocaleDateString()}
             </p>
             <p>
               <span className="font-semibold">End date: </span>
               {orderDetail.commercialRegistrationEndDate &&
-                new Date(
-                  orderDetail.commercialRegistrationEndDate
-                ).toLocaleDateString()}
+                new Date(orderDetail.commercialRegistrationEndDate).toLocaleDateString()}
             </p>
           </div>
         </>
@@ -86,28 +64,21 @@ const OrderDetailsModal = ({
       <h4 className="mb-1 font-semibold">Game:</h4>
       <div className="rounded bg-zinc-800 p-2 flex gap-2">
         <Link to={`/dev/game/${orderDetail?.game.id}`}>
-          <FaultTolerantImage
-            src={orderDetail?.game.coverImage ?? ""}
-            className="w-28 aspect-video"
-          />
+          <FaultTolerantImage src={orderDetail?.game.coverImage ?? ""} className="w-28 aspect-video" />
         </Link>
 
         <div className="flex-1">
           <Link to={`/dev/game/${orderDetail?.game.id}`}>
             <p className="font-semibold text-lg">{orderDetail?.game.name}</p>
           </Link>
-          <p className="text-sm text-zinc-500">
-            {orderDetail?.game.category?.name ?? "undefined"}
-          </p>
+          <p className="text-sm text-zinc-500">{orderDetail?.game.category?.name ?? "undefined"}</p>
           <p>{formatCurrencyVND(orderDetail?.game?.price)}</p>
         </div>
       </div>
       <h4 className="mb-1 mt-5 font-semibold ">Order Summary</h4>
       <div className="flex justify-between">
         <span className="text-zinc-400">Subtotal</span>
-        <span className="font-semibold">
-          {formatCurrencyVND(orderDetail?.amount)}
-        </span>
+        <span className="font-semibold">{formatCurrencyVND(orderDetail?.amount)}</span>
       </div>
       <div className="flex justify-between">
         <span className="text-zinc-400">Discount</span>
