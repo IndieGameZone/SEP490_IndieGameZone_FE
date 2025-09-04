@@ -184,12 +184,12 @@ const WithdrawActionModal = ({
                 <Image src={record.user?.avatar || "N/A"} width={25} />
                 <div>
                   <span className="font-medium">Bank Name:</span>{" "}
-                  {record.user.bankInfo.bankName || "N/A"}
+                  {record.user?.bankInfo?.bankName || "N/A"}
                 </div>
               </div>
               <div>
                 <span className="font-medium">Bank Short Name:</span>{" "}
-                {record.user.bankInfo.bankShortName || "N/A"}
+                {record.user?.bankInfo?.bankShortName || "N/A"}
               </div>
               <div>
                 <span className="font-medium">Bank Account Name:</span>{" "}
