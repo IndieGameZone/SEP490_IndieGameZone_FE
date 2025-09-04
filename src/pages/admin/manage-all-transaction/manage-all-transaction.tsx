@@ -73,7 +73,7 @@ const ManageAllTransaction = () => {
       }
     };
     fetchAllTransactions();
-  }, [filters.page, filters.page]);
+  }, [filters.page, filters.pageSize]);
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((transaction) => {
@@ -273,6 +273,7 @@ const ManageAllTransaction = () => {
             },
             pageSizeOptions: ["10", "20", "50", "100"],
             current: pagination.currentPage,
+            total: pagination.totalCount
           }}
         />
       </div>

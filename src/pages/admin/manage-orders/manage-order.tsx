@@ -104,6 +104,7 @@ const ManageOrders = () => {
                 pageSize: pageSize,
               });
             },
+            total: pagination.totalCount
           }}
           scroll={{ x: "max-content" }}
           bordered
