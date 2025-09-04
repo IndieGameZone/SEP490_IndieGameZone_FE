@@ -31,7 +31,7 @@ const GameFileItem = ({
       valuePropName="fileList"
       getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
       rules={[{ required: true, message: "Please upload a file" }]}
-      extra="Upload the actual game file (compressed builds are accepted). File size limit: 1 GB."
+      extra="Upload the actual game file (compressed builds are accepted). File size limit: 512 MB."
     >
       <Upload
         maxCount={1}

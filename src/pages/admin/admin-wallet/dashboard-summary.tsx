@@ -1,3 +1,4 @@
+import CoinIcon from "@/components/coin-icon";
 import { getDashboardSummary, getTotalCurrentDevRevenue } from "@/lib/api/admin-dashboard-api";
 import { formatCurrencyVND } from "@/lib/currency";
 import { useEffect, useState } from "react";
@@ -63,7 +64,8 @@ const DashboardSummary = () => {
             <div>
               <h3 className="text-sm font-medium text-gray-600 mb-2">Total Developer Revenue</h3>
               <p className="text-2xl font-semibold text-blue-600 flex items-center gap-1">
-                {formatCurrencyVND(developerRevenue ?? 0)}
+                {developerRevenue.toLocaleString("vi-VN")}
+                <CoinIcon className="inline size-5 " />
               </p>
             </div>
           </div>
@@ -75,7 +77,8 @@ const DashboardSummary = () => {
             <div>
               <h3 className="text-sm font-medium text-gray-600 mb-2">Total Comission Revenue</h3>
               <p className="text-2xl font-semibold text-green-600 flex items-center gap-1">
-                {formatCurrencyVND(summaryData.gamePurchaseRevenueByAdmin ?? 0)}
+                {(summaryData.gamePurchaseRevenueByAdmin ?? 0).toLocaleString("vi-VN")}
+                <CoinIcon className="inline size-5 " />
               </p>
             </div>
           </div>
@@ -87,7 +90,8 @@ const DashboardSummary = () => {
             <div>
               <h3 className="text-sm font-medium text-gray-600 mb-2">Commercial Packages Revenue</h3>
               <p className="text-2xl font-semibold text-amber-600 flex items-center gap-1">
-                {formatCurrencyVND(summaryData.commercialPackageRevenue ?? 0)}
+                {(summaryData.commercialPackageRevenue ?? 0).toLocaleString("vi-VN")}
+                <CoinIcon className="inline size-5 " />
               </p>
             </div>
           </div>

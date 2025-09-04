@@ -7,6 +7,7 @@ export type CommercialPackage = {
   duration: number;
   price: number;
   startDate: string;
+  type: string;
   endDate: string;
   status: string;
   gameName: string;

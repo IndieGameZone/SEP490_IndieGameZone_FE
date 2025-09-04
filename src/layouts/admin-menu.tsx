@@ -9,7 +9,7 @@ import { GrAchievement } from "react-icons/gr";
 import { LiaLanguageSolid } from "react-icons/lia";
 import { MdCategory, MdSpaceDashboard } from "react-icons/md";
 import { RiAdvertisementLine } from "react-icons/ri";
-import { TbCancel } from "react-icons/tb";
+import { TbCancel, TbPackages } from "react-icons/tb";
 import { NavigateFunction } from "react-router-dom";
 
 export const getAdminFullMenuItems = (navigate: NavigateFunction, handleLogout: () => void): MenuProps["items"] => {
@@ -31,6 +31,12 @@ export const getAdminFullMenuItems = (navigate: NavigateFunction, handleLogout: 
       icon: <BsPostcardHeartFill />,
       label: "Manage Posts",
       onClick: () => navigate("/admin/manage-posts"),
+    },
+    {
+      key: "/admin/manage-all-commercial-packages",
+      icon: <TbPackages />,
+      label: "Manage All Commercial Packages",
+      onClick: () => navigate("/admin/manage-all-commercial-packages"),
     },
     {
       key: "report-management",
