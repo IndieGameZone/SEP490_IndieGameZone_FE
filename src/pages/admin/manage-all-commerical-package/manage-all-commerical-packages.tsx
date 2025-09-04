@@ -1,25 +1,37 @@
-import { Button, Input, InputRef, Space, Table, TableColumnType, TableProps, Tag, message } from "antd";
-import { useEffect, useRef, useState } from "react";
-import { CiEdit } from "react-icons/ci";
-import { MdOutlineDeleteForever } from "react-icons/md";
-import { FilterDropdownProps } from "antd/es/table/interface";
-import Highlighter from "react-highlight-words";
-import { FaSearch } from "react-icons/fa";
-import { CommercialPackage } from "@/types/commercial-package";
-import DeleteCommercialPackage from "./delete-commerical";
 import { getAllCommercialPackages } from "@/lib/api/commercial-package-api";
-import dayjs from "dayjs";
+import { CommercialPackage } from "@/types/commercial-package";
+import {
+  Button,
+  Input,
+  InputRef,
+  Space,
+  Table,
+  TableColumnType,
+  TableProps,
+  Tag,
+  message,
+} from "antd";
+import { FilterDropdownProps } from "antd/es/table/interface";
+import { useEffect, useRef, useState } from "react";
+import Highlighter from "react-highlight-words";
+import { CiEdit } from "react-icons/ci";
+import { FaSearch } from "react-icons/fa";
+import { MdOutlineDeleteForever } from "react-icons/md";
+import DeleteCommercialPackage from "./delete-commerical";
 import EditCommercial from "./edit-commercial";
 
 type DataIndex = keyof CommercialPackage;
 
 const ManageAllCommercialPackages = () => {
-  const [commercialPackages, setCommercialPackages] = useState<CommercialPackage[]>([]);
+  const [commercialPackages, setCommercialPackages] = useState<
+    CommercialPackage[]
+  >([]);
   const [loading, setLoading] = useState(false);
   const searchInput = useRef<InputRef>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedCommercialPackage, setSelectedCommercialPackage] = useState<CommercialPackage | null>(null);
+  const [selectedCommercialPackage, setSelectedCommercialPackage] =
+    useState<CommercialPackage | null>(null);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
@@ -31,7 +43,9 @@ const ManageAllCommercialPackages = () => {
       if (response.success) {
         setCommercialPackages(response.data);
       } else {
-        messageApi.error(response.error || "Failed to fetch commercial packages");
+        messageApi.error(
+          response.error || "Failed to fetch commercial packages"
+        );
       }
     } catch (error) {
       console.error("Error fetching commercial packages:", error);
@@ -59,7 +73,11 @@ const ManageAllCommercialPackages = () => {
     fetchCommercialPackages();
   };
 
-  const handleSearch = (selectedKeys: string[], confirm: FilterDropdownProps["confirm"], dataIndex: DataIndex) => {
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: FilterDropdownProps["confirm"],
+    dataIndex: DataIndex
+  ) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -70,28 +88,46 @@ const ManageAllCommercialPackages = () => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<CommercialPackage> => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): TableColumnType<CommercialPackage> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
             icon={<FaSearch />}
             size="small"
             style={{ width: 90 }}
           >
             Search
           </Button>
-          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
             Reset
           </Button>
           <Button
@@ -111,7 +147,12 @@ const ManageAllCommercialPackages = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => <FaSearch style={{ color: filtered ? "#FF6600" : undefined }} className="w-5" />,
+    filterIcon: (filtered: boolean) => (
+      <FaSearch
+        style={{ color: filtered ? "#FF6600" : undefined }}
+        className="w-5"
+      />
+    ),
     onFilter: (value, record) => {
       if (!record[dataIndex]) return false;
       return record[dataIndex]
@@ -146,7 +187,7 @@ const ManageAllCommercialPackages = () => {
       key: "name",
       sorter: (a, b) => (a.name || "").localeCompare(b.name || ""),
       ...getColumnSearchProps("name"),
-      render: (text: string, record: CommercialPackage) => (
+      render: (text: string) => (
         <div>
           <div className="font-semibold">{text || "N/A"}</div>
         </div>
