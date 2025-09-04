@@ -8,6 +8,7 @@ import { FaPencil } from "react-icons/fa6";
 
 const YourReview = ({ review }: { review: Review }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
 
   if (isEditing)
     return <UpdateReviewForm review={review} setIsEditing={setIsEditing} />;
@@ -25,15 +26,19 @@ const YourReview = ({ review }: { review: Review }) => {
         </Button>
       </div>
       <div className="flex gap-5 mt-2">
-        {review.user?.avatar ? (
+        {review.user?.avatar && !avatarError ? (
           <img
             src={review.user.avatar}
             alt=""
             className="size-16 rounded-full border-2 border-white object-cover"
+            onError={() => {
+              setAvatarError(true);
+              return false;
+            }}
           />
         ) : (
-          <div className="size-16 bg-zinc-500 flex items-center justify-center rounded-full border-2 border-white">
-            <CiUser className="size-14" />
+          <div className="size-16 bg-zinc-600 flex items-center justify-center rounded-full border-2 border-white">
+            <CiUser className="size-8" />
           </div>
         )}
         <div className="flex-1">

@@ -205,7 +205,7 @@ const DownloadGameButton = ({ isGameOwned }: { isGameOwned: boolean }) => {
             <div className="mt-3">
               <InputNumber
                 size="large"
-                min={1000}
+                min={10000}
                 max={MAX_DONATION}
                 step={1000}
                 onChange={(value) => setPrice(value ?? 0)}

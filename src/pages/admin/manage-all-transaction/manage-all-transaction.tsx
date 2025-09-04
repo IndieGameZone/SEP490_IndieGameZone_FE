@@ -6,10 +6,15 @@ import { getAllTransactionColumns } from "./columns";
 import { SearchOutlined, ClearOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { IoRefresh } from "react-icons/io5";
+import { useFilters } from "@/hooks/use-filters";
 
 const { Search } = Input;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+type TransactionFilter = {
+  page: number;
+  pageSize: number;
+};
 
 const ManageAllTransaction = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -26,14 +31,40 @@ const ManageAllTransaction = () => {
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(
     null
   );
+  const { filters, setFilters } = useFilters<TransactionFilter>({
+    page: 1,
+    pageSize: 10,
+  });
+
+  const [pagination, setPagination] = useState<{
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+  }>({
+    totalCount: 0,
+    currentPage: 1,
+    pageSize: 10,
+  });
 
   useEffect(() => {
     const fetchAllTransactions = async () => {
       setLoading(true);
       try {
-        const response = await getAllTransactions();
-        if (response.success) {
+        const response = await getAllTransactions({
+          PageNumber: filters.page,
+          PageSize: filters.pageSize,
+        });
+        if (!response.error) {
           setTransactions(response.data);
+          const paginationHeader = response.headers["x-pagination"];
+          const pagination = paginationHeader
+            ? JSON.parse(paginationHeader)
+            : null;
+          setPagination({
+            currentPage: pagination.CurrentPage,
+            pageSize: pagination.PageSize,
+            totalCount: pagination.TotalCount,
+          });
         }
       } catch (error) {
         console.error("Error fetching transactions:", error);
@@ -42,7 +73,7 @@ const ManageAllTransaction = () => {
       }
     };
     fetchAllTransactions();
-  }, []);
+  }, [filters.page, filters.page]);
 
   const filteredTransactions = useMemo(() => {
     return transactions.filter((transaction) => {
@@ -110,7 +141,7 @@ const ManageAllTransaction = () => {
     setLoading(true);
     try {
       const response = await getAllTransactions();
-      if (response.success) {
+      if (!response.error) {
         setTransactions(response.data);
       }
     } catch (error) {
@@ -229,12 +260,19 @@ const ManageAllTransaction = () => {
           bordered
           scroll={{ x: "max-content" }}
           pagination={{
-            pageSize: 10,
+            pageSize: pagination.pageSize,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) =>
-              `${range[0]}-${range[1]} of ${total} items`,
+            showTotal: (_, range) =>
+              `${range[0]}-${range[1]} of ${pagination.totalCount} items`,
+            onChange(page, pageSize) {
+              setFilters({
+                page: page,
+                pageSize: pageSize,
+              });
+            },
             pageSizeOptions: ["10", "20", "50", "100"],
+            current: pagination.currentPage,
           }}
         />
       </div>

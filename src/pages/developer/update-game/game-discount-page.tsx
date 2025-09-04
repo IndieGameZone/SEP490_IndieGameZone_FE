@@ -62,7 +62,7 @@ export default function GameDiscountPage() {
       message.success("Discount created!");
       rerender();
     } else {
-      message.error("Failed to create discount! Please try again.");
+      message.error(result.error);
     }
     setLoading(false);
   };

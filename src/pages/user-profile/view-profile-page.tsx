@@ -14,7 +14,13 @@ import { Button, Dropdown, MenuProps, Tabs, TabsProps, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { BsFileEarmarkPost } from "react-icons/bs";
 import { CiUser } from "react-icons/ci";
-import { FaFacebook, FaFlag, FaGamepad, FaLink, FaYoutube } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaFlag,
+  FaGamepad,
+  FaLink,
+  FaYoutube,
+} from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import ViewUserGames from "./view-user-games";
@@ -39,8 +45,15 @@ const ViewProfilePage = () => {
     numberOfFollowee: 0,
   });
   const [loadingSocial, setLoadingSocial] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
 
-  const { followDeveloper, checkIsFollowed, getFollowerCount, isFollowed, loading: followLoading } = useFollowStore();
+  const {
+    followDeveloper,
+    checkIsFollowed,
+    getFollowerCount,
+    isFollowed,
+    loading: followLoading,
+  } = useFollowStore();
   const messageApi = useGlobalMessage();
 
   const tabItems: TabsProps["items"] = [
@@ -170,7 +183,9 @@ const ViewProfilePage = () => {
     return (
       <div className="min-h-[70vh] flex items-center justify-center px-4">
         <div className="bg-zinc-800 shadow-xl rounded-2xl p-8 max-w-md text-center border border-orange-500">
-          <h1 className="text-3xl font-bold text-red-600 mb-4">User Not Found</h1>
+          <h1 className="text-3xl font-bold text-red-600 mb-4">
+            User Not Found
+          </h1>
           <p className="mb-6">We couldn't find the user you're looking for.</p>
           <Button onClick={() => navigate(-1)}>Go Back</Button>
         </div>
@@ -184,11 +199,15 @@ const ViewProfilePage = () => {
         <div className="col-span-4">
           <div className="bg-zinc-900 border border-zinc-700 flex flex-col items-center p-5 rounded hover:border-orange-500 duration-300">
             <div className="relative">
-              {user?.avatar ? (
+              {user?.avatar && !avatarError ? (
                 <img
                   src={user?.avatar}
                   alt=""
                   className="bg-zinc-700 size-36 rounded-full object-cover border-2 border-white"
+                  onError={() => {
+                    setAvatarError(true);
+                    return false;
+                  }}
                 />
               ) : (
                 <div className="bg-zinc-700 size-36 rounded-full flex justify-center items-center border-2 border-white">
@@ -206,21 +225,33 @@ const ViewProfilePage = () => {
             <div className="flex justify-center mt-2 gap-5">
               <div className="flex flex-col items-center">
                 <p className="text-2xl font-bold">
-                  {loadingSocial ? <span className="text-sm">...</span> : socialStats.numberOfFollowee}
+                  {loadingSocial ? (
+                    <span className="text-sm">...</span>
+                  ) : (
+                    socialStats.numberOfFollowee
+                  )}
                 </p>
                 <p className="text-sm text-zinc-500">Following</p>
               </div>
 
               <div className="flex flex-col items-center">
                 <p className="text-2xl font-bold">
-                  {loadingSocial ? <span className="text-sm">...</span> : socialStats.numberOfFollower}
+                  {loadingSocial ? (
+                    <span className="text-sm">...</span>
+                  ) : (
+                    socialStats.numberOfFollower
+                  )}
                 </p>
                 <p className="text-sm text-zinc-500">Followers</p>
               </div>
 
               <div className="flex flex-col items-center">
                 <p className="text-2xl font-bold">
-                  {loadingSocial ? <span className="text-sm">...</span> : socialStats.numberOfPost}
+                  {loadingSocial ? (
+                    <span className="text-sm">...</span>
+                  ) : (
+                    socialStats.numberOfPost
+                  )}
                 </p>
                 <p className="text-sm text-zinc-500">Posts</p>
               </div>
@@ -260,17 +291,29 @@ const ViewProfilePage = () => {
                 <TiptapView value={user?.bio} />
               </>
             )}
-            {(user?.facebookLink || user?.youtubeChannelLink) && <hr className="border-zinc-600 my-3 w-full" />}
+            {(user?.facebookLink || user?.youtubeChannelLink) && (
+              <hr className="border-zinc-600 my-3 w-full" />
+            )}
             {user?.facebookLink && (
-              <Link to={user.facebookLink} className="flex items-center w-full gap-2">
+              <Link
+                to={user.facebookLink}
+                className="flex items-center w-full gap-2"
+              >
                 <FaFacebook />
-                <p className="hover:underline">{user.facebookLink.split("/").pop()}</p>
+                <p className="hover:underline">
+                  {user.facebookLink.split("/").pop()}
+                </p>
               </Link>
             )}
             {user?.youtubeChannelLink && (
-              <Link to={user.youtubeChannelLink} className="flex items-center w-full gap-2">
+              <Link
+                to={user.youtubeChannelLink}
+                className="flex items-center w-full gap-2"
+              >
                 <FaYoutube />
-                <p className="hover:underline">{user.youtubeChannelLink.split("/").pop()}</p>
+                <p className="hover:underline">
+                  {user.youtubeChannelLink.split("/").pop()}
+                </p>
               </Link>
             )}
 

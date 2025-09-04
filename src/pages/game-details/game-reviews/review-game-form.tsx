@@ -23,6 +23,8 @@ const ReviewGameForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [errors, setErrors] = useState<ReactNode[]>([]);
+  const [avatarError, setAvatarError] = useState(false);
+
   const { rerender } = useReviewStore();
 
   const handlePostReview = async () => {
@@ -82,11 +84,15 @@ const ReviewGameForm = () => {
         and be respectful.
       </p>
       <div className="flex gap-5 pt-5">
-        {profile?.avatar ? (
+        {profile?.avatar && !avatarError ? (
           <img
             src={profile?.avatar}
             alt=""
             className="size-24 rounded-full border-2 border-white object-cover"
+            onError={() => {
+              setAvatarError(true);
+              return false;
+            }}
           />
         ) : (
           <div className="size-24 bg-zinc-500 flex items-center justify-center rounded-full border-2 border-white">

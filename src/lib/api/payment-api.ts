@@ -5,6 +5,7 @@ export interface ApiResponse {
   error: string | null;
   data: any;
   success: boolean;
+  headers?: any;
 }
 
 export const handleApiError = (error: any): ApiResponse => {
@@ -153,14 +154,14 @@ interface GetAllTransactionsParams {
 
 export const getAllTransactions = async (params?: GetAllTransactionsParams) => {
   try {
-    const { data } = await axiosClient.get(`/api/transactions`, {
+    const { data, headers } = await axiosClient.get(`/api/transactions`, {
       params: {
         PageNumber: params?.PageNumber || 1,
         PageSize: params?.PageSize || 30,
         TransactionTypes: params?.TransactionTypes,
       },
     });
-    return { error: null, data: data, success: true };
+    return { error: null, data: data, success: true, headers: headers };
   } catch (error) {
     return handleApiError(error);
   }

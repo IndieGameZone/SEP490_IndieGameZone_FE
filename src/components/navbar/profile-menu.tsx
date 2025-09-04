@@ -1,6 +1,6 @@
 import useProfileStore from "@/store/use-auth-store";
 import { Avatar, Divider, Dropdown, MenuProps, theme } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { CiUser } from "react-icons/ci";
 import {
   FaDoorOpen,
@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 const { useToken } = theme;
 const ProfileMenu = () => {
   const { logout, profile } = useProfileStore();
+  const [avatarError, setAvatarError] = useState(false);
   const { token } = useToken();
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -110,8 +111,15 @@ const ProfileMenu = () => {
         </div>
       )}
     >
-      {profile?.avatar ? (
-        <Avatar src={profile.avatar} className="cursor-pointer" />
+      {profile?.avatar && !avatarError ? (
+        <Avatar
+          src={profile.avatar}
+          className="cursor-pointer"
+          onError={() => {
+            setAvatarError(true);
+            return false;
+          }}
+        />
       ) : (
         <Avatar icon={<CiUser />} className="cursor-pointer" />
       )}
