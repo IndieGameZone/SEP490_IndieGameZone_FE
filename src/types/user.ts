@@ -26,6 +26,8 @@ export type User = {
   role: {
     name: string;
   };
+  bankName?: string;
+  bankShortName?: string;
 };
 
 export type UserBanHistory = {
