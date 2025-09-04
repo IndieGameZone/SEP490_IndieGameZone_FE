@@ -23,7 +23,7 @@ import { useGlobalMessage } from "@/components/message-provider";
 const BuyGameButton = () => {
   const { game } = useGameStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [price, setPrice] = useState(game?.price ?? 10_000);
+  const [price, setPrice] = useState(game?.priceAfterDiscount ?? 10_000);
   const { getDefaultPlatforms } = usePlatformStore();
   const navigate = useNavigate();
   const { profile, fetchProfile, loading: loadingProfile } = useAuthStore();
@@ -125,13 +125,15 @@ const BuyGameButton = () => {
       >
         <p>
           Download this game by purchasing it for{" "}
-          <span className="font-semibold">{formatCurrencyVND(game.price)}</span>
+          <span className="font-semibold">
+            {formatCurrencyVND(game.priceAfterDiscount)}
+          </span>
           .
         </p>
         <InputNumber
           size="large"
-          min={game.price}
-          max={MAX_DONATION + game.price}
+          min={game.priceAfterDiscount}
+          max={MAX_DONATION + game.priceAfterDiscount}
           step={1_000}
           onChange={(value) => setPrice(value ?? 0)}
           value={price}
