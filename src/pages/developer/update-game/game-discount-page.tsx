@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -8,6 +8,7 @@ import {
   Space,
   Typography,
   Checkbox,
+  Alert,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { formatCurrencyVND } from "@/lib/currency";
@@ -39,12 +40,27 @@ export default function GameDiscountPage() {
 
   const basePrice = game?.price;
 
+  const activeDiscount = useMemo(() => {
+    if (!game?.discounts?.length) return null;
+    return game.discounts.find((d: any) =>
+      dayjs(d.endDate).isAfter(dayjs(), "day")
+    );
+  }, [game?.discounts]);
+
+  useEffect(() => {
+    if (activeDiscount) {
+      form.setFieldsValue({
+        discountValue: activeDiscount.percentage,
+        endDate: dayjs(activeDiscount.endDate),
+      });
+    }
+  }, [activeDiscount, form]);
+
   const discountValue = Form.useWatch("discountValue", form) as
     | number
     | undefined;
 
   const previewPrice = useMemo(() => {
-    console.log(basePrice);
     if (typeof basePrice === "number" && typeof discountValue === "number") {
       return computeDiscountedPrice(basePrice, discountValue);
     }
@@ -93,12 +109,11 @@ export default function GameDiscountPage() {
               same game.
             </p>
             <p className="mb-1">
-              • Game price much not be changed more than once per 28 days.
+              • Game price must not be changed more than once per 28 days.
             </p>
           </div>
         </Card>
 
-        {/* Form */}
         <Card>
           <Form
             form={form}
@@ -116,12 +131,12 @@ export default function GameDiscountPage() {
                     message: "Please select an end date",
                   },
                 ]}
-                extra={"Discounts start right away once created."}
               >
                 <DatePicker
                   className="w-full"
                   disabledDate={disabledPast}
                   format="DD-MM-YYYY"
+                  disabled={!!activeDiscount}
                 />
               </Form.Item>
 
@@ -146,11 +161,11 @@ export default function GameDiscountPage() {
                   min={1}
                   max={95}
                   addonAfter="%"
+                  disabled={!!activeDiscount}
                 />
               </Form.Item>
             </div>
 
-            {/* Live Preview */}
             <Space direction="vertical" className="w-full">
               <Text strong>Preview</Text>
               <div className="flex flex-wrap items-center gap-3">
@@ -181,29 +196,43 @@ export default function GameDiscountPage() {
             </Space>
 
             {/* Policy Agreement */}
-            <Form.Item
-              name="agreePolicy"
-              valuePropName="checked"
-              rules={[
-                {
-                  validator: (_, v) =>
-                    v
-                      ? Promise.resolve()
-                      : Promise.reject("Please agree to the policy"),
-                },
-              ]}
-            >
-              <Checkbox>
-                I have read and agree to the Discount Policy above
-              </Checkbox>
-            </Form.Item>
+            {!activeDiscount && (
+              <Form.Item
+                name="agreePolicy"
+                valuePropName="checked"
+                rules={[
+                  {
+                    validator: (_, v) =>
+                      v
+                        ? Promise.resolve()
+                        : Promise.reject("Please agree to the policy"),
+                  },
+                ]}
+              >
+                <Checkbox>
+                  I have read and agree to the Discount Policy above
+                </Checkbox>
+              </Form.Item>
+            )}
 
             <Space className="w-full justify-end">
-              <Button type="primary" htmlType="submit" loading={loading}>
-                Create Discount
-              </Button>
+              {!activeDiscount && (
+                <Button type="primary" htmlType="submit" loading={loading}>
+                  Create Discount
+                </Button>
+              )}
             </Space>
           </Form>
+
+          {activeDiscount && (
+            <Alert
+              type="warning"
+              message="Active Discount Exists"
+              description="You cannot create a new discount until the current one expires."
+              showIcon
+              className="mb-4"
+            />
+          )}
         </Card>
       </Space>
     </div>

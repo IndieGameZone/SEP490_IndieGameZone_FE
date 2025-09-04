@@ -11,6 +11,12 @@ export type Image = {
     image: string;
 }
 
+export type Discount = {
+    id: string;
+    percentage: number;
+    endDate: string;
+}
+
 export type GameInfoFieldType = {
     name: string;
     shortDescription: string;
@@ -89,6 +95,7 @@ export type Game = {
     hasCommercial: boolean;
     versionDescription: string;
     requireActivationKey: boolean;
+    discounts: Discount[];
 }
 
 export type GameStatus = "Released" | "InDevelopment" | "OnHold" | "Canceled" | "Prototype";
